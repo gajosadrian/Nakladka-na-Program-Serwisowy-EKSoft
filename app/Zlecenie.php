@@ -30,6 +30,33 @@ class Zlecenie extends Model
         return $this->attributes['id_maszyny'] ?? false;
     }
 
+    public function getZnacznikAttribute(): object
+    {
+        $array = [
+            'A' => (object) [
+                'nazwa' => 'Gwarancja',
+                'icon' => 'fa fa-shield-alt',
+                'color' => false,
+            ],
+            'B' => (object) [
+                'nazwa' => 'Odpłatne',
+                'icon' => 'fa fa-dollar-sign',
+                'color' => false,
+            ],
+            'H' => (object) [
+                'nazwa' => 'Ubezpieczenie',
+                'icon' => 'fa fa-hands-helping',
+                'color' => false,
+            ],
+            '_default' => (object) [
+                'nazwa' => 'Inne',
+                'icon' => 'far fa-bookmark',
+                'color' => false,
+            ],
+        ];
+        return $array[$this->attributes['Z']] ??  $array['_default'];
+    }
+
     public function getNrAttribute(): string
     {
         return $this->attributes['NrZlecenia'];
@@ -150,7 +177,7 @@ class Zlecenie extends Model
 
     public function getNiezakonczone()
     {
-        foreach (Zlecenie_Status::$id_zakonczonych as $status_id) {
+        foreach (Zlecenie_Status::$ZAKONCZONE_IDS as $status_id) {
             $this->where('status_id', '!=', $status_id);
         }
         return $this->where('Archiwalny', false)->where('Anulowany', null)->orderBy('DataKoniec')->get()->sortByDesc('dni_od_zakonczenia');
