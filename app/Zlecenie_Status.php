@@ -12,7 +12,7 @@ class Zlecenie_Status extends Model
     public static $ZAKONCZONE_IDS = [26, 29];
     private static $PROPERTIES = [
         11 => [ 'icon' => 'zlec_wpisane', 'color' => false ], 12 => [ 'icon' => 'umowiono_kl', 'color' => false ], 13 => [ 'icon' => 'zamowiono_czesc', 'color' => false ],
-        14 => [ 'icon' => 'gotowe_do_wyjazdu', 'color' => false ], 16 => [ 'icon' => 'fa fa-home', 'color' => 'warning' ], 17 => [ 'icon' => 'nie_odbiera_tel', 'color' => false ],
+        14 => [ 'icon' => 'fa fa-car-side', 'color' => 'danger' ], 16 => [ 'icon' => 'fa fa-home', 'color' => 'warning' ], 17 => [ 'icon' => 'nie_odbiera_tel', 'color' => false ],
         18 => [ 'icon' => 'ponowna_wizyta', 'color' => false ], 25 => [ 'icon' => 'do_wyjasnienia', 'color' => false ], 26 => [ 'icon' => 'zamkniete', 'color' => false ],
         29 => [ 'icon' => 'odwolano', 'color' => false ], 30 => [ 'icon' => 'wniosek_o_wymiane', 'color' => false ], 31 => [ 'icon' => 'fa fa-flag', 'color' => 'danger' ],
         32 => [ 'icon' => 'upierdliwy_kl', 'color' => false ], 33 => [ 'icon' => 'nie_obslugiwac', 'color' => false ], 34 => [ 'icon' => 'zaliczka', 'color' => false ],

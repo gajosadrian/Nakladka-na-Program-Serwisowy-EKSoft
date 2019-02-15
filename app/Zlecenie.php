@@ -137,7 +137,7 @@ class Zlecenie extends Model
         return $this->data_przyjecia->diffInDays(Carbon::now()->endOfDay(), false);
     }
 
-    public function getErrorAttribute()
+    public function getErrorsAttribute(): array
     {
         // return Carbon::parse(null);
     }
@@ -175,11 +175,12 @@ class Zlecenie extends Model
     *
     */
 
-    public function getNiezakonczone()
+    public static function getNiezakonczone()
     {
+        $query = self::with('status', 'terminarz', 'urzadzenie');
         foreach (Zlecenie_Status::$ZAKONCZONE_IDS as $status_id) {
-            $this->where('status_id', '!=', $status_id);
+            $query->where('id_status', '!=', $status_id);
         }
-        return $this->where('Archiwalny', false)->where('Anulowany', null)->orderBy('DataKoniec')->get()->sortByDesc('dni_od_zakonczenia');
+        return $query->where('Archiwalny', false)->where('Anulowany', null)->orderBy('DataKoniec')->get()->sortByDesc('dni_od_zakonczenia');
     }
 }

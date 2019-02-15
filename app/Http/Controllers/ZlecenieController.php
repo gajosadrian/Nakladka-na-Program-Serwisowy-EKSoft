@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Facades\App\Zlecenie;
+use App\Zlecenie;
 use Illuminate\Http\Request;
 
 class ZlecenieController extends Controller
