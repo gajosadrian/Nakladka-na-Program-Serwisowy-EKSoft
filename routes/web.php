@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Auth::routes();
 
+Route::view('/', 'empty')->name('home');
+Route::view('szukaj', 'empty')->name('szukaj');
 
-Route::get('test', 'ZlecenieController@index');
+Route::get('test', 'ZlecenieController@index')->name('test');
