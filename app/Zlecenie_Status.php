@@ -16,8 +16,8 @@ class Zlecenie_Status extends Model
         18 => [ 'icon' => 'ponowna_wizyta', 'color' => false ], 25 => [ 'icon' => 'do_wyjasnienia', 'color' => false ], 26 => [ 'icon' => 'zamkniete', 'color' => false ],
         29 => [ 'icon' => 'odwolano', 'color' => false ], 30 => [ 'icon' => 'wniosek_o_wymiane', 'color' => false ], 31 => [ 'icon' => 'fa fa-flag', 'color' => 'danger' ],
         32 => [ 'icon' => 'upierdliwy_kl', 'color' => false ], 33 => [ 'icon' => 'nie_obslugiwac', 'color' => false ], 34 => [ 'icon' => 'zaliczka', 'color' => false ],
-        35 => [ 'icon' => 'uzupelnienie_danych', 'color' => false ], 36 => [ 'icon' => 'czesci_do_wyslania', 'color' => false ], 37 => [ 'icon' => 'do_rozliczenia', 'color' => false ],
-        38 => [ 'icon' => 'informacja_o_ksztach', 'color' => false ], 39 => [ 'icon' => 'do_zamowienia', 'color' => false ], 40 => [ 'icon' => 'do_wyceny', 'color' => false ],
+        35 => [ 'icon' => 'uzupelnienie_danych', 'color' => false ], 36 => [ 'icon' => 'czesci_do_wyslania', 'color' => false ], 37 => [ 'icon' => 'fa fa-calculator', 'color' => 'danger' ],
+        38 => [ 'icon' => 'fa fa-bubbles', 'color' => 'danger' ], 39 => [ 'icon' => 'do_zamowienia', 'color' => false ], 40 => [ 'icon' => 'do_wyceny', 'color' => false ],
     ];
 
     public function getIdAttribute(): int

@@ -16,10 +16,10 @@
             {{-- Logo --}}
             <a class="link-fx font-w600 font-size-lg text-white" href="{{ route('home') }}">
                 <span class="smini-visible">
-                    <span class="text-white-75">G</span><span class="text-white">T</span>
+                    <span class="text-white-75">S</span><span class="text-white">S</span>
                 </span>
                 <span class="smini-hidden">
-                    <span class="text-white-75">GR</span><span class="text-white">A</span><span class="text-white-75">NT</span>
+                    <span class="text-white-75">SE</span><span class="text-white">R</span><span class="text-white-75">WIS</span>
                 </span>
             </a>
             {{-- END Logo --}}

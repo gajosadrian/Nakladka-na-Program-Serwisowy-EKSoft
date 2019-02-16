@@ -12,7 +12,7 @@
     <div class="content">
         <b-block>
             <template slot="content">
-                <table class="table table-sm table-striped table-hover dataTable js-dataTable-full">
+                <table class="table table-sm table-striped table-hover js-dataTable-full">
                     <tr class="thead-light">
                         <th>Imię i nazwisko</th>
                         <th>Adres</th>
@@ -26,9 +26,9 @@
                         <tr>
                             <td><br><small class="text-muted">({{ $zlecenie->klient_id }})</small></td>
                             <td>adres<br>27-400 miasto</td>
-                            <td><a href="#!" class="font-w600"><i class="{{ $zlecenie->znacznik->icon }} mr-2"></i> {{ $zlecenie->nr_obcy ?: $zlecenie->nr }}</a> <a href="#!" class="ml-2"><i class="far fa-copy"></i></a></td>
+                            <td><a href="javascript:void(0)" onclick="window.open('{{ route('zlecenia.show', [ 'zlecenie' => $zlecenie->id ]) }}', 'zlecenie{{ $zlecenie->id }}', 'width=1000,height=700')" class="font-w600"><i class="{{ $zlecenie->znacznik->icon }} mr-2"></i> {{ $zlecenie->nr_obcy ?: $zlecenie->nr }}</a> <a href="#!" class="ml-2"><i class="far fa-copy"></i></a></td>
                             <td>{{ $zlecenie->urzadzenie->nazwa }}<br>{{ $zlecenie->urzadzenie->producent }}</td>
-                            <td><i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }}"></i> {{ $zlecenie->status->nazwa }}</td>
+                            <td class="{{ $zlecenie->status->color ? 'table-' . $zlecenie->status->color : '' }}"><i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }} mx-2"></i> {{ $zlecenie->status->nazwa }}</td>
                             <td></td>
                             <td>
                                 {{ $zlecenie->data_zakonczenia->format('d-m-Y') }}<br>

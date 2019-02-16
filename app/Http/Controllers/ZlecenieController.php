@@ -16,7 +16,7 @@ class ZlecenieController extends Controller
     {
         $zleceniaNiezakonczone = Zlecenie::getNiezakonczone();
 
-        return view('test', [
+        return view('zlecenie.lista', [
             'zlecenia' => $zleceniaNiezakonczone,
         ]);
     }
@@ -50,7 +50,9 @@ class ZlecenieController extends Controller
      */
     public function show(Zlecenie $zlecenie)
     {
-        //
+        return view('zlecenie.show', [
+            'zlecenie' => $zlecenie,
+        ]);
     }
 
     /**

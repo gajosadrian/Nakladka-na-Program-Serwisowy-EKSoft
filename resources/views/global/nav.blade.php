@@ -2,8 +2,8 @@
     $routeName = Route::currentRouteName();
     $nav = [
         [
-            'name' => 'Test',
-            'route' => 'test',
+            'name' => 'Zlecenia',
+            'route' => 'zlecenia.lista',
             'routeOptions' => [],
             'icon' => 'si si-cursor',
         ],

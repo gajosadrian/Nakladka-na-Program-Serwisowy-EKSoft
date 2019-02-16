@@ -16,4 +16,7 @@ Auth::routes();
 Route::view('/', 'empty')->name('home');
 Route::view('szukaj', 'empty')->name('szukaj');
 
-Route::get('test', 'ZlecenieController@index')->name('test');
+Route::prefix('zlecenia')->name('zlecenia.')->group(function () {
+    Route::get('/', 'ZlecenieController@index')->name('lista');
+    Route::get('/{zlecenie}', 'ZlecenieController@show')->name('show');
+});
