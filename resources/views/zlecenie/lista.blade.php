@@ -22,7 +22,7 @@
                             <th>Urządzenie</th>
                             <th>Status</th>
                             <th>Błędy</th>
-                            <th>Data zakończenia</th>
+                            <th>Ostatnia data</th>
                         </tr>
                         @php $counter = 0 @endphp
                         @foreach ($zlecenia as $index => $zlecenie)
@@ -39,7 +39,7 @@
                                 </td>
 
                                 <td class="align-middle font-w600">
-                                    <a href="javascript:void(0)" onclick="PopupCenter('{{ route('zlecenia.show', $zlecenie->id) }}', 'zlecenie{{ $zlecenie->id }}', 1000, 700)">
+                                    <a href="javascript:void(0)" onclick="PopupCenter('{{ route('zlecenia.show', $zlecenie->id) }}', 'zlecenie{{ $zlecenie->id }}', 1200, 700)">
                                         <i class="{{ $zlecenie->znacznik->icon }} mr-2"></i>
                                         {{ $zlecenie->nr_obcy ?: $zlecenie->nr }}
                                     </a>
@@ -56,7 +56,10 @@
                                     {{ $zlecenie->status->nazwa }}
                                 </td>
 
-                                <td>
+                                <td class="text-danger font-small">
+                                    @foreach ($zlecenie->errors as $error)
+                                        {{ $error }}
+                                    @endforeach
                                 </td>
 
                                 <td>

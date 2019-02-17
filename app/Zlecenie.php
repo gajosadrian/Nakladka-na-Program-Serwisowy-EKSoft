@@ -105,6 +105,11 @@ class Zlecenie extends Model
         return $this->attributes['Anulowany'] ?? false;
     }
 
+    public function getIsZakonczoneAttribute(): bool
+    {
+        return in_array($this->status_id, Zlecenie_Status::$ZAKONCZONE_IDS) or $this->archiwalny or $this->anulowany;
+    }
+
     public function getIsDataPrzyjeciaAttribute(): bool
     {
         return $this->attributes['DataPrzyjecia'] ? true : false;
@@ -160,9 +165,41 @@ class Zlecenie extends Model
         return $this->data_przyjecia->diffInDays(Carbon::now()->endOfDay(), false);
     }
 
+    public function getCzasTrwaniaAttribute(): int
+    {
+        $data = Carbon::now();
+        if ($this->is_zakonczone) $data = $this->data_zakonczenia;
+        return $this->data_przyjecia->startOfDay()->diffInDays($data->startOfDay());
+    }
+
+    public function getCzasTrwaniaFormattedAttribute(): string
+    {
+        $str = $this->czas_trwania;
+        $str .= ($this->czas_trwania == 1) ? ' dzień' : ' dni';
+        return $str;
+    }
+
     public function getErrorsAttribute(): array
     {
-        // return Carbon::parse(null);
+        $array = [];
+
+        if ($this->dni_od_zakonczenia > 2 and in_array($this->status_id, [Zlecenie_Status::UMOWIONO_ID, Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID, Zlecenie_Status::NA_WARSZTACIE_ID, Zlecenie_Status::NIE_ODBIERA_TEL_ID, Zlecenie_Status::PONOWNA_WIZYTA_ID]))
+            $array[] = 'Zlecenie niezamknięte';
+
+        return $array;
+    }
+
+    /**
+    * Scopes
+    *
+    */
+
+    public function scopeNiezakonczone($query)
+    {
+        foreach (Zlecenie_Status::$ZAKONCZONE_IDS as $status_id) {
+            $query->where('id_status', '!=', $status_id);
+        }
+        return $query->where('Archiwalny', false)->where('Anulowany', null);
     }
 
     /**
@@ -200,16 +237,7 @@ class Zlecenie extends Model
 
     public function getNiezakonczone()
     {
-        $dni_od_zakonczenia = 5;
-
-        $query = $this->with('status', 'terminarz', 'urzadzenie');
-        $query->where(function($q) {
-            foreach (Zlecenie_Status::$ZAKONCZONE_IDS as $status_id) {
-                $q->where('id_status', '!=', $status_id);
-            }
-            $q->where('Archiwalny', false)->where('Anulowany', null);
-        });
-        $collection = $query->oldest('DataKoniec')->get();
+        $collection = $this->with('status', 'terminarz', 'urzadzenie')->niezakonczone()->oldest('DataKoniec')->get();
         return $collection->sortByDesc('dni_od_zakonczenia');
     }
 }

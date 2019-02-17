@@ -11,7 +11,7 @@ window.Vue = require('vue');
 
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
-// import 'bootstrap-vue/dist/bootstrap-vue.min.css'
+import 'bootstrap-vue/dist/bootstrap-vue.min.css'
 
 
 

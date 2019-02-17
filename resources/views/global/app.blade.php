@@ -83,11 +83,11 @@
             'main-content-boxed'                        Full width Main Content with a specific maximum width (screen width > 1200px)
             'main-content-narrow'                       Full width Main Content with a percentage width (screen width > 1200px)
         --}}
-        <div id="page-container" class="{{ empty($window) ? 'sidebar-o page-header-fixed' : 'mt-3' }} enable-page-overlay side-scroll page-header-dark main-content-full">
+        <div id="page-container" class="@empty($window) sidebar-o page-header-fixed @endempty enable-page-overlay side-scroll page-header-dark">
             @empty($window)
                 @include('global.sidebar')
                 @include('global.header')
-            @endisset
+            @endempty
             <main id="main-container">
                 <div id="app">
                     @yield('content')
@@ -95,7 +95,7 @@
             </main>
             @empty($window)
                 @include('global.footer')
-            @endisset
+            @endempty
         </div>
         {{-- END Page Container --}}
 
