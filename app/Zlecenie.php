@@ -30,6 +30,29 @@ class Zlecenie extends Model
         return $this->attributes['id_maszyny'] ?? false;
     }
 
+    public function getZrodloAttribute(): object
+    {
+        $array = [
+            0 => (object) [
+                'nazwa' => 'zz',
+                'icon' => 'fa fa-info-circle',
+            ],
+            3 => (object) [
+                'nazwa' => 'xx',
+                'icon' => 'fa fa-info-circle',
+            ],
+            4 => (object) [
+                'nazwa' => 'yy',
+                'icon' => 'fa fa-info-circle',
+            ],
+            '_default' => (object) [
+                'nazwa' => '-',
+                'icon' => '',
+            ],
+        ];
+        return $array[$this->attributes['Zamowienie_obce']] ?? $array['_default'];
+    }
+
     public function getZnacznikAttribute(): object
     {
         $array = [
@@ -54,7 +77,7 @@ class Zlecenie extends Model
                 'color' => false,
             ],
         ];
-        return $array[$this->attributes['Z']] ??  $array['_default'];
+        return $array[$this->attributes['Z']] ?? $array['_default'];
     }
 
     public function getNrAttribute(): string
@@ -104,7 +127,7 @@ class Zlecenie extends Model
 
     public function getDataZakonczeniaAttribute(): Carbon
     {
-        return $this->terminarz->data_zakonczenia;
+        return $this->terminarz->is_data_zakonczenia ? $this->terminarz->data_zakonczenia : Carbon::parse($this->attributes['DataKoniec']);
     }
 
     public function getDataZakonczeniaFormattedAttribute(): String
@@ -175,12 +198,18 @@ class Zlecenie extends Model
     *
     */
 
-    public static function getNiezakonczone()
+    public function getNiezakonczone()
     {
-        $query = self::with('status', 'terminarz', 'urzadzenie');
-        foreach (Zlecenie_Status::$ZAKONCZONE_IDS as $status_id) {
-            $query->where('id_status', '!=', $status_id);
-        }
-        return $query->where('Archiwalny', false)->where('Anulowany', null)->orderBy('DataKoniec')->get()->sortByDesc('dni_od_zakonczenia');
+        $dni_od_zakonczenia = 5;
+
+        $query = $this->with('status', 'terminarz', 'urzadzenie');
+        $query->where(function($q) {
+            foreach (Zlecenie_Status::$ZAKONCZONE_IDS as $status_id) {
+                $q->where('id_status', '!=', $status_id);
+            }
+            $q->where('Archiwalny', false)->where('Anulowany', null);
+        });
+        $collection = $query->oldest('DataKoniec')->get();
+        return $collection->sortByDesc('dni_od_zakonczenia');
     }
 }

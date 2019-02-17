@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Zlecenie;
+use Facades\App\Zlecenie;
 use Illuminate\Http\Request;
 
 class ZlecenieController extends Controller
@@ -48,10 +48,10 @@ class ZlecenieController extends Controller
      * @param  \App\Zlecenie  $zlecenie
      * @return \Illuminate\Http\Response
      */
-    public function show(Zlecenie $zlecenie)
+    public function show(Request $request, $id)
     {
         return view('zlecenie.show', [
-            'zlecenie' => $zlecenie,
+            'zlecenie' => Zlecenie::find($id),
         ]);
     }
 
@@ -61,7 +61,7 @@ class ZlecenieController extends Controller
      * @param  \App\Zlecenie  $zlecenie
      * @return \Illuminate\Http\Response
      */
-    public function edit(Zlecenie $zlecenie)
+    public function edit(Request $request)
     {
         //
     }
@@ -73,7 +73,7 @@ class ZlecenieController extends Controller
      * @param  \App\Zlecenie  $zlecenie
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Zlecenie $zlecenie)
+    public function update(Request $request)
     {
         //
     }
@@ -84,7 +84,7 @@ class ZlecenieController extends Controller
      * @param  \App\Zlecenie  $zlecenie
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Zlecenie $zlecenie)
+    public function destroy(Request $request)
     {
         //
     }

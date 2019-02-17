@@ -18,5 +18,5 @@ Route::view('szukaj', 'empty')->name('szukaj');
 
 Route::prefix('zlecenia')->name('zlecenia.')->group(function () {
     Route::get('/', 'ZlecenieController@index')->name('lista');
-    Route::get('/{zlecenie}', 'ZlecenieController@show')->name('show');
+    Route::get('/{id}', 'ZlecenieController@show')->name('show');
 });

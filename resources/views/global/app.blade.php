@@ -32,6 +32,7 @@
 
         {{-- Scripts --}}
         <script>window.Laravel = {!! json_encode(['csrfToken' => csrf_token(),]) !!};</script>
+        <script src="{{ asset('js/helpers.js') }}"></script>
         <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
     <body>
@@ -82,8 +83,8 @@
             'main-content-boxed'                        Full width Main Content with a specific maximum width (screen width > 1200px)
             'main-content-narrow'                       Full width Main Content with a percentage width (screen width > 1200px)
         --}}
-        <div id="page-container" class="{{ !isset($window) ? 'sidebar-o page-header-fixed' : '' }} enable-page-overlay side-scroll page-header-dark main-content-full">
-            @isset($window)@else
+        <div id="page-container" class="{{ empty($window) ? 'sidebar-o page-header-fixed' : 'mt-3' }} enable-page-overlay side-scroll page-header-dark main-content-full">
+            @empty($window)
                 @include('global.sidebar')
                 @include('global.header')
             @endisset
@@ -92,7 +93,7 @@
                     @yield('content')
                 </div>
             </main>
-            @isset($window)@else
+            @empty($window)
                 @include('global.footer')
             @endisset
         </div>

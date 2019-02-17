@@ -12,41 +12,71 @@
     <div class="content">
         <b-block>
             <template slot="content">
-                <table class="table table-sm table-striped table-hover js-dataTable-full">
-                    <tr class="thead-light">
-                        <th>Imię i nazwisko</th>
-                        <th>Adres</th>
-                        <th>Nr zlecenia</th>
-                        <th>Urządzenie</th>
-                        <th>Status</th>
-                        <th>Błędy</th>
-                        <th>Data zakończenia</th>
-                    </tr>
-                    @foreach ($zlecenia as $key => $zlecenie)
-                        <tr>
-                            <td><br><small class="text-muted">({{ $zlecenie->klient_id }})</small></td>
-                            <td>adres<br>27-400 miasto</td>
-                            <td><a href="javascript:void(0)" onclick="window.open('{{ route('zlecenia.show', [ 'zlecenie' => $zlecenie->id ]) }}', 'zlecenie{{ $zlecenie->id }}', 'width=1000,height=700')" class="font-w600"><i class="{{ $zlecenie->znacznik->icon }} mr-2"></i> {{ $zlecenie->nr_obcy ?: $zlecenie->nr }}</a> <a href="#!" class="ml-2"><i class="far fa-copy"></i></a></td>
-                            <td>{{ $zlecenie->urzadzenie->nazwa }}<br>{{ $zlecenie->urzadzenie->producent }}</td>
-                            <td class="{{ $zlecenie->status->color ? 'table-' . $zlecenie->status->color : '' }}"><i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }} mx-2"></i> {{ $zlecenie->status->nazwa }}</td>
-                            <td></td>
-                            <td>
-                                {{ $zlecenie->data_zakonczenia->format('d-m-Y') }}<br>
-                                @if ($zlecenie->dni_od_zakonczenia > 0)
-                                    <small class="text-muted">
-                                        @if ($zlecenie->dni_od_zakonczenia >= 2)
-                                            ({{ $zlecenie->dni_od_zakonczenia }} dni temu)
-                                        @else
-                                            (wczoraj)
-                                        @endif
-                                    <small>
-                                @else
-                                @endif
-                            </td>
-                            <td class="d-none">{{ $zlecenie->nr }} ; {{ $zlecenie->nr_obcy }}</td>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped table-hover js-dataTable-full">
+                        <tr class="thead-light">
+                            <th>Lp.</th>
+                            <th>Imię i nazwisko</th>
+                            <th>Adres</th>
+                            <th>Nr zlecenia</th>
+                            <th>Urządzenie</th>
+                            <th>Status</th>
+                            <th>Błędy</th>
+                            <th>Data zakończenia</th>
                         </tr>
-                    @endforeach
-                </table>
+                        @php $counter = 0 @endphp
+                        @foreach ($zlecenia as $index => $zlecenie)
+                            <tr>
+                                <td class="align-middle text-muted">{{ ++$counter }}</td>
+                                <td>
+                                    <br>
+                                    <small class="text-muted">({{ $zlecenie->klient_id }})</small>
+                                </td>
+
+                                <td>
+                                    adres<br>
+                                    00-000 miasto
+                                </td>
+
+                                <td class="align-middle font-w600">
+                                    <a href="javascript:void(0)" onclick="PopupCenter('{{ route('zlecenia.show', $zlecenie->id) }}', 'zlecenie{{ $zlecenie->id }}', 1000, 700)">
+                                        <i class="{{ $zlecenie->znacznik->icon }} mr-2"></i>
+                                        {{ $zlecenie->nr_obcy ?: $zlecenie->nr }}
+                                    </a>
+                                    {{-- <a href="javascript:void(0)" class="ml-2"><i class="far fa-copy"></i></a> --}}
+                                </td>
+
+                                <td class="align-middle">
+                                    {{ $zlecenie->urzadzenie->nazwa }}<br>
+                                    {{ $zlecenie->urzadzenie->producent }}
+                                </td>
+
+                                <td class="align-middle {{ $zlecenie->status->color ? 'table-' . $zlecenie->status->color : '' }}">
+                                    <i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }} mx-2"></i>
+                                    {{ $zlecenie->status->nazwa }}
+                                </td>
+
+                                <td>
+                                </td>
+
+                                <td>
+                                    {{ $zlecenie->data_zakonczenia->format('d-m-Y') }}<br>
+                                    @if ($zlecenie->dni_od_zakonczenia > 0)
+                                        <small class="text-muted">
+                                            @if ($zlecenie->dni_od_zakonczenia >= 2)
+                                                ({{ $zlecenie->dni_od_zakonczenia }} dni temu)
+                                            @else
+                                                (wczoraj)
+                                            @endif
+                                        </small>
+                                    @endif
+                                </td>
+
+                                <td class="d-none">{{ $zlecenie->nr }} ; {{ $zlecenie->nr_obcy }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
             </template>
         </b-block>
     </div>
