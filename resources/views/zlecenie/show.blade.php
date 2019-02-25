@@ -101,8 +101,8 @@
                         <table class="table table-sm table-striped">
                             <thead>
                                 <tr>
-                                    <th>Symbol</th>
                                     <th>Symbol dost.</th>
+                                    <th>Symbol</th>
                                     <th>Nazwa</th>
                                     {{-- <th>Opis</th> --}}
                                     <th>Cena netto</th>
@@ -122,9 +122,9 @@
                                         $wartosc_brutto += $pozycja->wartosc_brutto;
                                     @endphp
                                     <tr>
-                                        <td>{{ $pozycja->towar->symbol }}</td>
                                         <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
-                                        <td class="small">{{ $pozycja->towar->nazwa }}</td>
+                                        <td>{{ $pozycja->towar->symbol }}</td>
+                                        <td class="small align-middle">{{ $pozycja->towar->nazwa }}</td>
                                         {{-- <td class="small">{{ $pozycja->towar->opis }}</td> --}}
                                         <td>{{ $pozycja->cena }} zł</td>
                                         <td class="{{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
