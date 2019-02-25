@@ -34,15 +34,15 @@ class Zlecenie extends Model
     {
         $array = [
             0 => (object) [
-                'nazwa' => 'zz',
+                'nazwa' => 'Telefon',
                 'icon' => 'fa fa-info-circle',
             ],
             3 => (object) [
-                'nazwa' => 'xx',
+                'nazwa' => 'WWW',
                 'icon' => 'fa fa-info-circle',
             ],
             4 => (object) [
-                'nazwa' => 'yy',
+                'nazwa' => 'Osobiście',
                 'icon' => 'fa fa-info-circle',
             ],
             '_default' => (object) [
