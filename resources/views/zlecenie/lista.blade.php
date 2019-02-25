@@ -10,6 +10,8 @@
     </div>
 
     <div class="content">
+        <b-block>
+            <template slot="content">
                 <div class="table-responsive">
                     <table class="table table-sm table-striped table-hover dataTable">
 						<thead>
@@ -88,5 +90,7 @@
 						</tbody>
                     </table>
                 </div>
+            </template>
+        </b-block>
     </div>
 @endsection

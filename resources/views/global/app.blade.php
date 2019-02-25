@@ -33,7 +33,7 @@
         {{-- Scripts --}}
         <script>window.Laravel = {!! json_encode(['csrfToken' => csrf_token(),]) !!};</script>
         <script src="{{ asset('js/helpers.js') }}"></script>
-		{{-- <script src="{{ asset('js/app.js') }}" defer></script> --}}
+		<script src="{{ asset('js/app.js') }}" defer></script>
     </head>
     <body>
         {{--
@@ -105,7 +105,7 @@
         <script src="{{ asset('js/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
         {{-- Laravel Scaffolding JS --}}
-        <script src="{{ asset('js/laravel.app.js') }}"></script>
+        {{-- <script src="{{ asset('js/laravel.app.js') }}"></script> --}}
 
         @yield('js_after')
 

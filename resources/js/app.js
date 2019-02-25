@@ -5,8 +5,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./scrollLock'); // Dashmix bug fix
-require('./bootstrap');
+require('./bootstrap_laravel');
 window.Vue = require('vue');
 
 import Vue from 'vue'
