@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="content">
+		{{ $zlecenie->kosztorys_pozycje }}
         @if ($zlecenie->errors)
             <b-row>
                 <b-col>

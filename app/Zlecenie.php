@@ -230,6 +230,11 @@ class Zlecenie extends Model
         ]);
     }
 
+    public function kosztorys_pozycje()
+    {
+        return $this->hasMany('App\Zlecenie_Kosztorys_Pozycja', 'id_zs', 'id_zlecenia');
+    }
+
     /**
     * Methods
     *
@@ -237,7 +242,7 @@ class Zlecenie extends Model
 
     public function getNiezakonczone()
     {
-        $collection = $this->with('status', 'terminarz', 'urzadzenie')->niezakonczone()->oldest('DataKoniec')->get();
+        $collection = $this->with('status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje')->niezakonczone()->oldest('DataKoniec')->get();
         return $collection->sortByDesc('dni_od_zakonczenia');
     }
 }
