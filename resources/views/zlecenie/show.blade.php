@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="content">
-		{{ $zlecenie->kosztorys_pozycje }}
         @if ($zlecenie->errors)
             <b-row>
                 <b-col>
@@ -24,19 +23,19 @@
                         <table class="table table-sm table-borderless">
                             <tr>
                                 <th style="width:1%">Nazwa:</th>
-                                <td>{{ $zlecenie->klient_id }}</td>
+                                <td>{{ $zlecenie->klient->imie }} {{ $zlecenie->klient->nazwisko }}</td>
                             </tr>
                             <tr>
                                 <th>Ulica:</th>
-                                <td>{{ $zlecenie->klient_id }}</td>
+                                <td>-</td>
                             </tr>
                             <tr>
                                 <th>Miasto:</th>
-                                <td>{{ $zlecenie->klient_id }}</td>
+                                <td>00-000 -</td>
                             </tr>
                             <tr>
                                 <th>Telefony:</th>
-                                <td>{{ $zlecenie->klient_id }}</td>
+                                <td>-</td>
                             </tr>
                         </table>
                     </template>
@@ -96,6 +95,60 @@
             </b-col>
         </b-row>
         <b-row>
+            <b-col lg="12">
+                <b-block title="Kosztorys">
+                    <template slot="content">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Symbol dost.</th>
+                                    <th>Nazwa</th>
+                                    {{-- <th>Opis</th> --}}
+                                    <th>Cena netto</th>
+                                    <th>Ilość</th>
+                                    <th>Wartość netto</th>
+                                    <th>Wartość brutto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $wartosc_netto = 0.00;
+                                    $wartosc_brutto = 0.00;
+                                @endphp
+                                @foreach ($zlecenie->kosztorys_pozycje as $pozycja)
+                                    @php
+                                        $wartosc_netto += $pozycja->wartosc;
+                                        $wartosc_brutto += $pozycja->wartosc_brutto;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $pozycja->towar->symbol }}</td>
+                                        <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
+                                        <td class="small">{{ $pozycja->towar->nazwa }}</td>
+                                        {{-- <td class="small">{{ $pozycja->towar->opis }}</td> --}}
+                                        <td>{{ $pozycja->cena }} zł</td>
+                                        <td class="{{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
+                                        <td>{{ $pozycja->wartosc }} zł</td>
+                                        <td>{{ $pozycja->wartosc_brutto }} zł</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    {{-- <th></th> --}}
+                                    <th></th>
+                                    <th></th>
+                                    <th>{{ $wartosc_netto }} zł</th>
+                                    <th>{{ $wartosc_brutto }} zł</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </template>
+                </b-block>
+            </b-col>
             <b-col lg="12">
                 <b-block title="Opis" full>
                     <template slot="content">

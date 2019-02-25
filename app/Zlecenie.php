@@ -207,6 +207,11 @@ class Zlecenie extends Model
     *
     */
 
+    public function klient()
+    {
+        return $this->hasOne('App\Models\Subiekt\Subiekt_Kontrahent', 'kh_Id', 'id_firmy');
+    }
+
     public function status()
     {
         return $this->hasOne('App\Zlecenie_Status', 'id_stat', 'id_status')->withDefault([
@@ -242,7 +247,7 @@ class Zlecenie extends Model
 
     public function getNiezakonczone()
     {
-        $collection = $this->with('status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje')->niezakonczone()->oldest('DataKoniec')->get();
+        $collection = $this->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje')->niezakonczone()->oldest('DataKoniec')->get();
         return $collection->sortByDesc('dni_od_zakonczenia');
     }
 }

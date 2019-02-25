@@ -33,8 +33,8 @@
 								<tr>
 									<td class="align-middle text-muted">{{ ++$counter }}</td>
 									<td>
-										<br>
-										<small class="text-muted">({{ $zlecenie->klient_id }})</small>
+										{{ $zlecenie->klient->imie }} {{ $zlecenie->klient->nazwisko }}<br>
+										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
 									</td>
 
 									<td>
@@ -82,7 +82,7 @@
 									<td class="d-none">
 										{{ $zlecenie->nr }} ; {{ $zlecenie->nr_obcy }}
 										@foreach ($zlecenie->kosztorys_pozycje as $pozycja)
-											; {{ $pozycja->opis }} ; {{ $pozycja->id_o_tw }}
+											; {{ $pozycja->opis }} ; {{ $pozycja->towar->symbol }} ; {{ $pozycja->towar->symbol_dostawcy }}
 										@endforeach
 									</td>
 								</tr>

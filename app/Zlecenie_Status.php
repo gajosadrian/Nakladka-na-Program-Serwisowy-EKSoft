@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Zlecenie_Status extends Model
 {
     protected $table = 'SYSTEM_STATUS';
-    protected $infoKey = 'id_stat';
+    protected $primaryKey = 'id_stat';
 
     public const ZLECENIE_WPISANE = 11; public const UMOWIONO_ID = 12; public const ZAMOWIONO_CZESC_ID = 13; public const GOTOWE_DO_WYJAZDU_ID = 14; public const NA_WARSZTACIE_ID = 16;
     public const NIE_ODBIERA_TEL_ID = 17; public const PONOWNA_WIZYTA_ID = 18; public const DO_WYJASNIENIA_ID = 25; public const ZAKONCZONE_ID = 26;
