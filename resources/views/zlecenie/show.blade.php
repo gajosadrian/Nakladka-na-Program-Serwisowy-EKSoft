@@ -23,7 +23,7 @@
                         <table class="table table-sm table-borderless">
                             <tr>
                                 <th style="width:1%">Nazwa:</th>
-                                <td>{{ $zlecenie->klient->imie }} {{ $zlecenie->klient->nazwisko }}</td>
+                                <td>{{ $zlecenie->klient->nazwisko }} {{ $zlecenie->klient->imie }}</td>
                             </tr>
                             <tr>
                                 <th>Ulica:</th>

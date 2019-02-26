@@ -17,7 +17,7 @@
 						<thead>
 							<tr class="thead-light">
 								<th>Lp.</th>
-								<th>Imię i nazwisko</th>
+								<th>Nazwisko i imię</th>
 								<th>Adres</th>
 								<th>Nr zlecenia</th>
 								<th>Urządzenie</th>
@@ -33,7 +33,7 @@
 								<tr>
 									<td class="align-middle text-muted">{{ ++$counter }}</td>
 									<td>
-										{{ $zlecenie->klient->imie }} {{ $zlecenie->klient->nazwisko }}<br>
+										{{ $zlecenie->klient->nazwisko }} {{ $zlecenie->klient->imie }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
 									</td>
 

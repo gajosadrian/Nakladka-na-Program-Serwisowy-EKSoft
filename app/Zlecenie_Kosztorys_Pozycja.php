@@ -46,6 +46,11 @@ class Zlecenie_Kosztorys_Pozycja extends Model
 
     public function towar()
     {
-        return $this->hasOne('App\Models\Subiekt\Subiekt_Towar', 'tw_Id', 'id_o_tw');
+        return $this->hasOne('App\Models\Subiekt\Subiekt_Towar', 'tw_Id', 'id_o_tw')->withDefault([
+            'tw_Nazwa' => '-',
+            'tw_Opis' => '',
+            'tw_Symbol' => '-',
+            'tw_DostSymbol' => '-',
+        ]);
     }
 }
