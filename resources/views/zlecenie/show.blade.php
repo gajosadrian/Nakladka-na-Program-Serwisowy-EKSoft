@@ -23,7 +23,7 @@
                         <table class="table table-sm table-borderless">
                             <tr>
                                 <th style="width:1%">Nazwa:</th>
-                                <td>{{ $zlecenie->klient->nazwisko }} {{ $zlecenie->klient->imie }}</td>
+                                <td>{{ $zlecenie->klient->nazwa }} <span class="small text-muted">({{ $zlecenie->klient->symbol }})</span></td>
                             </tr>
                             <tr>
                                 <th>Ulica:</th>
@@ -73,19 +73,19 @@
                                     </tr>
                                     <tr>
                                         <th>Przyjęcie:</th>
-                                        <td>{{ $zlecenie->data_przyjecia }}</td>
+                                        <td>{{ $zlecenie->data_przyjecia_formatted }}</td>
                                     </tr>
                                     <tr>
                                         <th>Zakończenie:</th>
-                                        <td>{{ $zlecenie->data_zakonczenia }}</td>
+                                        <td>{{ $zlecenie->data_zakonczenia_formatted }}</td>
                                     </tr>
                                     <tr>
                                         <th>Termin&nbsp;od:</th>
-                                        <td>{{ $zlecenie->terminarz->data_rozpoczecia }}</td>
+                                        <td>{{ $zlecenie->terminarz->data_rozpoczecia_formatted }}</td>
                                     </tr>
                                     <tr>
                                         <th>Termin&nbsp;do:</th>
-                                        <td>{{ $zlecenie->terminarz->data_zakonczenia }}</td>
+                                        <td>{{ $zlecenie->terminarz->data_zakonczenia_formatted }}</td>
                                     </tr>
                                 </table>
                             </b-col>

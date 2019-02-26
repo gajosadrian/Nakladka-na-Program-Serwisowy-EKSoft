@@ -33,7 +33,7 @@
 								<tr>
 									<td class="align-middle text-muted">{{ ++$counter }}</td>
 									<td>
-										{{ $zlecenie->klient->nazwisko }} {{ $zlecenie->klient->imie }}<br>
+										{{ $zlecenie->klient->nazwa }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
 									</td>
 
@@ -67,7 +67,7 @@
 									</td>
 
 									<td>
-										{{ $zlecenie->data_zakonczenia->format('d-m-Y') }}<br>
+										{{ $zlecenie->data_zakonczenia_formatted }}<br>
 										@if ($zlecenie->dni_od_zakonczenia > 0)
 											<small class="text-muted">
 												@if ($zlecenie->dni_od_zakonczenia >= 2)

@@ -29,4 +29,9 @@ class Subiekt_Kontrahent extends Model
     {
         return $this->attributes['kh_Symbol'];
     }
+
+    public function getNazwaAttribute(): string
+    {
+        return $this->nazwisko . ' ' . $this->imie; // &nbsp;
+    }
 }
