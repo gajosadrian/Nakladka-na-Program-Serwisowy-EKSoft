@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Zlecenie_Status extends Model
 {
+    protected $connection = 'sqlsrv';
     protected $table = 'SYSTEM_STATUS';
     protected $primaryKey = 'id_stat';
 

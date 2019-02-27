@@ -12,11 +12,16 @@
 */
 
 Auth::routes();
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::view('/', 'empty')->name('home');
-Route::view('szukaj', 'empty')->name('szukaj');
+Route::middleware('auth')->group(function() {
 
-Route::prefix('zlecenia')->name('zlecenia.')->group(function () {
-    Route::get('/', 'ZlecenieController@index')->name('lista');
-    Route::get('/{id}', 'ZlecenieController@show')->name('show');
+    Route::view('/', 'empty')->name('home');
+    Route::view('szukaj', 'empty')->name('szukaj');
+
+    Route::prefix('zlecenia')->name('zlecenia.')->group(function() {
+        Route::get('/', 'ZlecenieController@index')->name('lista');
+        Route::get('/{id}', 'ZlecenieController@show')->name('show');
+    });
+
 });

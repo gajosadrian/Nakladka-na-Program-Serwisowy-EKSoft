@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Zlecenie_Urzadzenie extends Model
 {
+    protected $connection = 'sqlsrv';
     protected $table = 'Maszyny';
     protected $primaryKey = 'ID_MASZYNY';
 

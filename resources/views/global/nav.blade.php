@@ -3,9 +3,15 @@
     $nav = [
         [
             'name' => 'Zlecenia',
+        ],
+        [
+            'name' => 'Lista zleceń',
             'route' => 'zlecenia.lista',
             'routeOptions' => [],
-            'icon' => 'si si-cursor',
+            'icon' => 'si si-list',
+        ],
+        [
+            'name' => 'Admin',
         ],
     ];
 @endphp

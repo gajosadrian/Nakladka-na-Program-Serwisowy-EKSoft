@@ -96,65 +96,75 @@
         </b-row>
         <b-row>
             <b-col lg="12">
-                <b-block title="Kosztorys">
-                    <template slot="content">
-                        <table class="table table-sm table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Symbol dost.</th>
-                                    <th>Symbol</th>
-                                    <th>Nazwa</th>
-                                    {{-- <th>Opis</th> --}}
-                                    <th>Cena netto</th>
-                                    <th>Ilość</th>
-                                    <th>Wartość netto</th>
-                                    <th>Wartość brutto</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $wartosc_netto = 0.00;
-                                    $wartosc_brutto = 0.00;
-                                @endphp
-                                @foreach ($zlecenie->kosztorys_pozycje as $pozycja)
-                                    @php
-                                        $wartosc_netto += $pozycja->wartosc;
-                                        $wartosc_brutto += $pozycja->wartosc_brutto;
-                                    @endphp
+                <div class="block block-rounded shadow-sm">
+                    <ul class="nav nav-tabs nav-tabs-alt js-tabs" data-toggle="tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#kosztorys">Kosztorys</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active show" href="#opis">Opis</a>
+                        </li>
+                    </ul>
+                    <div class="block-content tab-content overflow-hidden block-content-full">
+                        <div class="tab-pane fade" id="kosztorys" role="tabpanel">
+                            <table class="table table-sm table-striped">
+                                <thead>
                                     <tr>
-                                        <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
-                                        <td>{{ $pozycja->towar->symbol }}</td>
-                                        <td class="small align-middle">{{ $pozycja->towar->nazwa }}</td>
-                                        {{-- <td class="small">{{ $pozycja->towar->opis }}</td> --}}
-                                        <td>{{ $pozycja->cena }} zł</td>
-                                        <td class="{{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
-                                        <td>{{ $pozycja->wartosc }} zł</td>
-                                        <td>{{ $pozycja->wartosc_brutto }} zł</td>
+                                        <th>Symbol dost.</th>
+                                        <th>Symbol</th>
+                                        <th>Nazwa</th>
+                                        {{-- <th>Opis</th> --}}
+                                        <th>Cena netto</th>
+                                        <th>Ilość</th>
+                                        <th>Wartość netto</th>
+                                        <th>Wartość brutto</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    {{-- <th></th> --}}
-                                    <th></th>
-                                    <th></th>
-                                    <th>{{ $wartosc_netto }} zł</th>
-                                    <th>{{ $wartosc_brutto }} zł</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </template>
-                </b-block>
-            </b-col>
-            <b-col lg="12">
-                <b-block title="Opis" full>
-                    <template slot="content">
-                        {!! $zlecenie->opisBr !!}
-                    </template>
-                </b-block>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $wartosc_netto = 0.00;
+                                        $wartosc_brutto = 0.00;
+                                    @endphp
+                                    @foreach ($zlecenie->kosztorys_pozycje as $pozycja)
+                                        @php
+                                            $wartosc_netto += $pozycja->wartosc;
+                                            $wartosc_brutto += $pozycja->wartosc_brutto;
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
+                                            <td>{{ $pozycja->towar->symbol }}</td>
+                                            <td class="small align-middle">{{ $pozycja->towar->nazwa }}</td>
+                                            {{-- <td class="small">{{ $pozycja->towar->opis }}</td> --}}
+                                            <td>{{ $pozycja->cena }} zł</td>
+                                            <td class="{{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
+                                            <td>{{ $pozycja->wartosc }} zł</td>
+                                            <td>{{ $pozycja->wartosc_brutto }} zł</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        {{-- <th></th> --}}
+                                        <th></th>
+                                        <th></th>
+                                        <th>{{ $wartosc_netto }} zł</th>
+                                        <th>{{ $wartosc_brutto }} zł</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade active show" id="opis" role="tabpanel">
+                            <div class="mb-3">
+                                {!! $zlecenie->opisBr !!}
+                            </div>
+                            <textarea class="form-control form-control-alt mb-2" name="opis" placeholder="Dodaj opis.."></textarea>
+                            <b-button size="sm" onclick="$(this).attr('disabled', true)">Dodaj opis</b-button>
+                        </div>
+                    </div>
+                </div>
             </b-col>
         </b-row>
     </div>

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Zlecenie_Kosztorys_Pozycja extends Model
 {
+    protected $connection = 'sqlsrv';
     protected $table = 'ser_ZlecKosztPoz';
     protected $with = ['towar'];
 

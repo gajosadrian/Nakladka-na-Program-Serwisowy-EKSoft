@@ -5,7 +5,7 @@
                 Zaprojektowano przez: {{ author()->name }}
             </div>
             <div class="col-sm-6 order-sm-1 text-center text-sm-left">
-                © <a class="font-w600" href="//agdev.pl" target="_blank">{{ author()->name }}</a> <span data-toggle="year-copy">{{ date('Y') }}</span>
+                © <a class="font-w600" href="{{ author()->url }}" target="_blank">{{ author()->name }}</a> <span data-toggle="year-copy">{{ date('Y') }}</span>
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@ use Carbon\Carbon;
 
 class Zlecenie_Terminarz extends Model
 {
+    protected $connection = 'sqlsrv';
     protected $table = 'ser_Terminarz';
     protected $primaryKey = 'ID_TERMINU';
 
