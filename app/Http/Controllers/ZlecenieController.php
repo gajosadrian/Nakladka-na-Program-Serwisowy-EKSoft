@@ -97,7 +97,7 @@ class ZlecenieController extends Controller
         $user = auth()->user();
         $zlecenie = Zlecenie::find($id);
 
-        $zlecenie->opis .= "\r\n** " . $user->short_name . " dnia " . date('d.m') . ": „" . $request->opis . "”";
+        $zlecenie->opis .= "\r\n** " . $user->short_name . " dnia " . date('d.m H:i') . ": „" . $request->opis . "”";
         $zlecenie->save();
 
         return response()->json('success', 200);
