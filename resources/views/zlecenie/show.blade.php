@@ -18,7 +18,7 @@
         @endif
         <b-row class="row-deck">
             <b-col lg="5">
-                <b-block title="Kontrahent">
+                <b-block title="Kontrahent" theme="bg-primary-light">
                     <template slot="content">
                         <table class="table table-sm table-borderless">
                             <tr>
@@ -42,7 +42,7 @@
                 </b-block>
             </b-col>
             <b-col lg="7">
-                <b-block title="Dane zlecenia">
+                <b-block title="Dane zlecenia" theme="bg-primary-light">
                     <template slot="content">
                         <b-row>
                             <b-col lg="6">
@@ -96,7 +96,7 @@
         </b-row>
         <b-row class="row-deck">
             <b-col lg="3">
-                <b-block title="Urządzenie">
+                <b-block title="Urządzenie" theme="bg-primary-light">
                     <template slot="content">
                         <table class="table table-sm table-borderless">
                             <tr>
@@ -125,12 +125,12 @@
             </b-col>
             <b-col lg="9">
                 <div class="block block-rounded shadow-sm">
-                    <ul class="nav nav-tabs nav-tabs-alt js-tabs block-header-default" data-toggle="tabs" role="tablist">
+                    <ul class="nav nav-tabs nav-tabs-alt js-tabs bg-primary-light" data-toggle="tabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link" href="#kosztorys">Kosztorys</a>
+                            <a href="#kosztorys" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Kosztorys</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active show" href="#opis">Opis</a>
+                            <a href="#opis" class="nav-link active show" style="color: rgba(255, 255, 255, 0.9)">Opis</a>
                         </li>
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">
