@@ -14,7 +14,10 @@ class ZlecenieController extends Controller
      */
     public function index()
     {
-        $zleceniaNiezakonczone = Zlecenie::getNiezakonczone();
+        $user = auth()->user();
+        $zleceniaNiezakonczone = Zlecenie::getNiezakonczone([
+            'technik_id' => $user->technik_id,
+        ]);
 
         return view('zlecenie.lista', [
             'zlecenia' => $zleceniaNiezakonczone,

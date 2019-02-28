@@ -242,13 +242,27 @@ class Zlecenie extends Model
     }
 
     /**
+    * Scopes
+    *
+    */
+
+    public function scopeTechnik($query, $technik_id)
+    {
+        return $query->where('id_o_technika', $technik_id);
+    }
+
+    /**
     * Methods
     *
     */
 
-    public function getNiezakonczone()
+    public function getNiezakonczone(array $data = [])
     {
-        $collection = $this->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje')->niezakonczone()->oldest('DataKoniec')->get();
-        return $collection->sortByDesc('dni_od_zakonczenia');
+        $data = (object) $data;
+        $query = $this->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje')->niezakonczone()->oldest('DataKoniec');
+        if (@$data->technik_id) {
+            $query->technik($data->technik_id);
+        }
+        return $query->get()->sortByDesc('dni_od_zakonczenia');
     }
 }
