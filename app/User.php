@@ -39,4 +39,19 @@ class User extends Authenticatable
     {
         return $this->technik_id;
     }
+
+    public function getShortNameAttribute(): string
+    {
+        return explode(' ', $this->name)[1];
+    }
+
+    /**
+    * Relations
+    *
+    */
+
+    public function pracownik()
+    {
+        return $this->hasOne('App\Models\SMS\Pracownik', 'LOGIN', 'email');
+    }
 }

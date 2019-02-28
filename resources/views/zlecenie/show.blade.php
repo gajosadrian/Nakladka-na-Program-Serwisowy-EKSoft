@@ -94,10 +94,38 @@
                 </b-block>
             </b-col>
         </b-row>
-        <b-row>
-            <b-col lg="12">
+        <b-row class="row-deck">
+            <b-col lg="3">
+                <b-block title="Urządzenie">
+                    <template slot="content">
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <th style="width:1%">Nazwa:</th>
+                                <td>{{ $zlecenie->urzadzenie->nazwa }}</td>
+                            </tr>
+                            <tr>
+                                <th>Producent:</th>
+                                <td>{{ $zlecenie->urzadzenie->producent }}</td>
+                            </tr>
+                            <tr>
+                                <th>Model:</th>
+                                <td>{!! $zlecenie->urzadzenie->model ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
+                            </tr>
+                            <tr>
+                                <th>Kod&nbsp;wyrobu:</th>
+                                <td>{!! $zlecenie->urzadzenie->kod_wyrobu ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
+                            </tr>
+                            <tr>
+                                <th>Nr seryjny:</th>
+                                <td>{!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
+                            </tr>
+                        </table>
+                    </template>
+                </b-block>
+            </b-col>
+            <b-col lg="9">
                 <div class="block block-rounded shadow-sm">
-                    <ul class="nav nav-tabs nav-tabs-alt js-tabs" data-toggle="tabs" role="tablist">
+                    <ul class="nav nav-tabs nav-tabs-alt js-tabs block-header-default" data-toggle="tabs" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link" href="#kosztorys">Kosztorys</a>
                         </li>
@@ -160,8 +188,7 @@
                             <div class="mb-3">
                                 {!! $zlecenie->opisBr !!}
                             </div>
-                            <textarea class="form-control form-control-alt mb-2" name="opis" placeholder="Dodaj opis.."></textarea>
-                            <b-button size="sm" onclick="$(this).attr('disabled', true)">Dodaj opis</b-button>
+                            <zlecenie-append-opis zlecenie_id=@json($zlecenie->id) />
                         </div>
                     </div>
                 </div>

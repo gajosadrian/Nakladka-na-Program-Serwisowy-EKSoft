@@ -20,13 +20,14 @@
             'icon' => 'si si-users',
             'route' => 'admin.users',
             'routeOptions' => [],
+            'role' => 'super-admin',
         ],
     ];
 @endphp
 
 <ul class="nav-main">
     @foreach ($nav as $item)
-        @if(@!$item['role'] or $user->hasanyrole($item['role']) or @!$item['permission'] or $user->hasanyrole($item['permission']))
+        @if((@!$item['role'] or $user->hasanyrole($item['role'])) and (@!$item['permission'] or $user->hasanyrole($item['permission'])))
             @if (@$item['route'])
                 <li class="nav-main-item">
                     <a class="nav-main-link {{ $routeName == $item['route'] ? 'active' : '' }}" href="{{ route($item['route'], $item['routeOptions']) ?? [] }}">
@@ -54,7 +55,7 @@
                     </a>
                     <ul class="nav-main-submenu">
                         @foreach ($item['subitems'] as $subitem)
-                            @if(@!$subitem['role'] or $user->hasanyrole($subitem['role']) or @!$subitem['permission'] or $user->hasanyrole($subitem['permission']))
+                            @if((@!$subitem['role'] or $user->hasanyrole($subitem['role'])) and (@!$subitem['permission'] or $user->hasanyrole($subitem['permission'])))
                                 <li class="nav-main-item">
                                     <a class="nav-main-link {{ $routeName == $subitem['route'] ? 'active' : '' }}" href="{{ route($subitem['route'], $subitem['routeOptions']) ?? [] }}">
                                         @if (@$subitem['icon'])

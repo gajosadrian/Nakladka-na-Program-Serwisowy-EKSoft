@@ -10,6 +10,7 @@ class Zlecenie extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'ser_Zlecenia';
     protected $primaryKey = 'id_zlecenia';
+    public $timestamps = false;
 
     /**
     * Attributes
@@ -144,6 +145,11 @@ class Zlecenie extends Model
     public function getGodzinaZakonczeniaAttribute(): String
     {
         return $this->terminarz->godzina_zakonczenia;
+    }
+
+    public function setOpisAttribute(string $value): void
+    {
+        $this->attributes['OpisZlec'] = $value;
     }
 
     public function getOpisAttribute(): string

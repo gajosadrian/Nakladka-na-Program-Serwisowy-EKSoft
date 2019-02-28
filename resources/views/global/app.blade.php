@@ -83,6 +83,8 @@
             'main-content-boxed'                        Full width Main Content with a specific maximum width (screen width > 1200px)
             'main-content-narrow'                       Full width Main Content with a percentage width (screen width > 1200px)
         --}}
+        @routes
+
         <div id="page-container" class="@empty($window) sidebar-o page-header-fixed @endempty enable-page-overlay side-scroll page-header-dark">
             @empty($window)
                 @include('global.sidebar')

@@ -16,9 +16,13 @@ import 'bootstrap-vue/dist/bootstrap-vue.min.css'
 
 Vue.use(BootstrapVue);
 Vue.component('b-block', require('./components/Dashmix/Block/b-block.vue').default);
+Vue.component('zlecenie-append-opis', require('./components/Zlecenie/append-opis.vue').default);
 
-
-
+Vue.mixin({
+    methods: {
+        route: route,
+    }
+});
 const app = new Vue({
     el: '#app'
 });

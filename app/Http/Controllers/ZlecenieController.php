@@ -51,7 +51,7 @@ class ZlecenieController extends Controller
      * @param  \App\Zlecenie  $zlecenie
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
         return view('zlecenie.show', [
             'zlecenie' => Zlecenie::find($id),
@@ -76,7 +76,7 @@ class ZlecenieController extends Controller
      * @param  \App\Zlecenie  $zlecenie
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -90,5 +90,16 @@ class ZlecenieController extends Controller
     public function destroy(Request $request)
     {
         //
+    }
+
+    public function apiAppendNotatka(Request $request, int $id)
+    {
+        $user = auth()->user();
+        $zlecenie = Zlecenie::find($id);
+
+        $zlecenie->opis .= "\r\n** " . $user->short_name . " dnia " . date('d.m') . ": „" . $request->opis . "”";
+        $zlecenie->save();
+
+        return response()->json('success', 200);
     }
 }
