@@ -24,6 +24,8 @@
         "vue-template-compiler": "^2.6.6"
     },
     "dependencies": {
-        "bootstrap-vue": "^2.0.0-rc.12"
+        "bootstrap-vue": "^2.0.0-rc.12",
+        "vue-clipboard2": "^0.3.0",
+        "vue-nl2br": "^0.1.1"
     }
 }

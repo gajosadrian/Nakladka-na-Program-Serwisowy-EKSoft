@@ -49,7 +49,12 @@
                                 <table class="table table-sm table-borderless">
                                     <tr>
                                         <th style="width:1%">Numer:</th>
-                                        <td>{{ $zlecenie->nr }}</td>
+                                        <td>
+                                            {{ $zlecenie->nr }}
+                                            <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{{ $zlecenie->nr }}'">
+                                                <i class="far fa-copy"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Nr&nbsp;obcy:</th>
@@ -185,10 +190,7 @@
                             </table>
                         </div>
                         <div class="tab-pane fade active show" id="opis" role="tabpanel">
-                            <div class="mb-3">
-                                {!! $zlecenie->opisBr !!}
-                            </div>
-                            <zlecenie-append-opis zlecenie_id=@json($zlecenie->id) />
+                            <zlecenie-opis zlecenie_id=@json($zlecenie->id) />
                         </div>
                     </div>
                 </div>

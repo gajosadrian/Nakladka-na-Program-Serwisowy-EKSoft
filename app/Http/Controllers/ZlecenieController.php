@@ -92,6 +92,13 @@ class ZlecenieController extends Controller
         //
     }
 
+    public function apiGetOpis(Request $request, int $id)
+    {
+        $zlecenie = Zlecenie::find($id);
+
+        return response()->json($zlecenie->opis, 200);
+    }
+
     public function apiAppendNotatka(Request $request, int $id)
     {
         $user = auth()->user();
@@ -100,6 +107,6 @@ class ZlecenieController extends Controller
         $zlecenie->opis .= "\r\n** " . $user->short_name . " dnia " . date('d.m H:i') . ": „" . $request->opis . "”";
         $zlecenie->save();
 
-        return response()->json('success', 200);
+        return response()->json($zlecenie->opis, 200);
     }
 }

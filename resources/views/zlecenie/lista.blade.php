@@ -47,7 +47,9 @@
 											<i class="{{ $zlecenie->znacznik->icon }} mr-2"></i>
 											{{ $zlecenie->nr_obcy ?: $zlecenie->nr }}
 										</a>
-										{{-- <a href="javascript:void(0)" class="ml-2"><i class="far fa-copy"></i></a> --}}
+                                        <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{{ $zlecenie->nr }}'">
+                                            <i class="far fa-copy"></i>
+                                        </a>
 									</td>
 
 									<td class="align-middle">
