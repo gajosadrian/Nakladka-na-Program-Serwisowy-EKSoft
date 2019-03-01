@@ -97,6 +97,11 @@ class Zlecenie extends Model
         return $this->attributes['id_status'] ?? false;
     }
 
+    public function setStatusIdAttribute(int $value): void
+    {
+        $this->attributes['id_status'] = $value;
+    }
+
     public function getArchiwalnyAttribute(): bool
     {
         return $this->attributes['Archiwalny'] ?? false;
@@ -276,6 +281,25 @@ class Zlecenie extends Model
     * Methods
     *
     */
+
+    public function changeStatus(int $status_id, int $pracownik_id, bool $remove_termin = false): void
+    {
+        $status_historia = new Models\Zlecenie\StatusHistoria;
+        $status_historia->pracownik_id = $pracownik_id;
+        $status_historia->status_id = $status_id;
+        $status_historia->data = Carbon::now()->format('Y-m-d H:i:s.000');
+        $status_historia->nr_o_zlecenia = null;
+
+        $this->status_historia()->save($status_historia);
+        $this->status_id = $status_id;
+        $this->save();
+    }
+
+    public function appendOpis(string $opis, string $name): void
+    {
+        $this->opis .= "\r\n** " . $name . " dnia " . date('d.m H:i') . ": „" . $opis . "”";
+        $this->save();
+    }
 
     public function getNiezakonczone(array $data = [])
     {

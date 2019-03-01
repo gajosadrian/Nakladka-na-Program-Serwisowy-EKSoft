@@ -6,6 +6,11 @@
 
 @section('content')
     <div class="content">
+
+        @foreach ($zlecenie->status_historia as $status_historia)
+            {{ $status_historia->status->id }}<br>
+        @endforeach
+
         @if ($zlecenie->errors)
             <b-row>
                 <b-col>
@@ -157,7 +162,7 @@
                                         name=@json(App\Zlecenie_Status::getName(App\Zlecenie_Status::PREAUTORYZACJA_ID))
                                         icon=@json(App\Zlecenie_Status::getIcon(App\Zlecenie_Status::PREAUTORYZACJA_ID))
                                         color=@json(App\Zlecenie_Status::getColor(App\Zlecenie_Status::PREAUTORYZACJA_ID))></zlecenie-change-status>
-                                @elseif (!$user->is_technik)
+                                @elseif (!$user->is_technik and $zlecenie->status->id == App\Zlecenie_Status::ZAMOWIONO_CZESC_ID)
                                     <zlecenie-change-status
                                         zlecenie_id=@json($zlecenie->id)
                                         status_id=@json(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID)

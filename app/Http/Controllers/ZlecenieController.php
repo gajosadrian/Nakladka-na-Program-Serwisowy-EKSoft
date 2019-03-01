@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Facades\App\Zlecenie;
-use App\Models;
 use Illuminate\Http\Request;
-use Carbon\Carbon; // TODO remove
 
 class ZlecenieController extends Controller
 {
@@ -106,8 +104,7 @@ class ZlecenieController extends Controller
         $user = auth()->user();
         $zlecenie = Zlecenie::find($id);
 
-        $zlecenie->opis .= "\r\n** " . $user->short_name . " dnia " . date('d.m H:i') . ": „" . $request->opis . "”";
-        $zlecenie->save();
+        $zlecenie->appendOpis($request->opis, $user->short_name);
 
         return response()->json($zlecenie->opis, 200);
     }
@@ -117,13 +114,8 @@ class ZlecenieController extends Controller
         $user = auth()->user();
         $zlecenie = Zlecenie::find($id);
 
-        $status_historia = new Models\Zlecenie\StatusHistoria;
-        $status_historia->zlecenie_id = $zlecenie->id;
-        $status_historia->pracownik_id = $user->pracownik->id;
-        $status_historia->data = Carbon::now()->format('Y-m-d H:i:s.000');
-        $status_historia->nr_o_zlecenia = null;
-        $status_historia->save();
+        $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false);
 
-        return response()->json($status_historia, 200);
+        return response()->json('success', 200);
     }
 }
