@@ -129,7 +129,7 @@ class Zlecenie extends Model
 
     public function getIsDataZakonczeniaAttribute(): bool
     {
-        return $this->terminarz->is_data_zakonczenia;
+        return $this->attributes['DataKoniec'] ? true : false;
     }
 
     public function getDataZakonczeniaAttribute(): Carbon
@@ -139,7 +139,7 @@ class Zlecenie extends Model
 
     public function getDataZakonczeniaFormattedAttribute(): String
     {
-        return $this->terminarz->data_zakonczenia_formatted;
+        return $this->data_zakonczenia->format('Y-m-d H:i');
     }
 
     public function getGodzinaZakonczeniaAttribute(): String
@@ -196,6 +196,16 @@ class Zlecenie extends Model
         return $array;
     }
 
+    public function getIsTerminAttribute(): bool
+    {
+        return $this->terminarz->is_termin;
+    }
+
+    public function getStatusyAttribute()
+    {
+        return $this->status_historia;
+    }
+
     /**
     * Scopes
     *
@@ -224,6 +234,11 @@ class Zlecenie extends Model
         return $this->hasOne('App\Zlecenie_Status', 'id_stat', 'id_status')->withDefault([
             'status' => 'Brak statusu',
         ]);
+    }
+
+    public function status_historia()
+    {
+        return $this->hasMany('App\Models\Zlecenie\StatusHistoria', 'id_zs', 'id_zlecenia');
     }
 
     public function terminarz()

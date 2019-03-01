@@ -1,5 +1,9 @@
 @extends('global.app', [ 'window' => true ])
 
+@php
+    $user = auth()->user();
+@endphp
+
 @section('content')
     <div class="content">
         @if ($zlecenie->errors)
@@ -68,6 +72,13 @@
                                         <th>Źródło:</th>
                                         <td><i class="{{ $zlecenie->zrodlo->icon }}"></i> {{ $zlecenie->zrodlo->nazwa }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Status:</th>
+                                        <td class="align-middle {{ $zlecenie->status->color ? 'table-' . $zlecenie->status->color : '' }}">
+                                            <i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }} mx-2"></i>
+    										{{ $zlecenie->status->nazwa }}
+                                        </td>
+                                    </tr>
                                 </table>
                             </b-col>
                             <b-col lg="6">
@@ -130,12 +141,31 @@
             </b-col>
             <b-col lg="9">
                 <div class="block block-rounded shadow-sm">
-                    <ul class="nav nav-tabs nav-tabs-alt js-tabs bg-primary-light" data-toggle="tabs" role="tablist">
+                    <ul class="nav nav-tabs nav-tabs-alt align-items-center js-tabs bg-primary-light" data-toggle="tabs" role="tablist">
                         <li class="nav-item">
                             <a href="#kosztorys" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Kosztorys</a>
                         </li>
                         <li class="nav-item">
                             <a href="#opis" class="nav-link active show" style="color: rgba(255, 255, 255, 0.9)">Opis</a>
+                        </li>
+                        <li class="nav-item ml-auto">
+                            <b-button-group size="sm" class="mr-2">
+                                @if ($user->is_technik and $zlecenie->status->id != App\Zlecenie_Status::PREAUTORYZACJA_ID)
+                                    <zlecenie-change-status
+                                        zlecenie_id=@json($zlecenie->id)
+                                        status_id=@json(App\Zlecenie_Status::PREAUTORYZACJA_ID)
+                                        name=@json(App\Zlecenie_Status::getName(App\Zlecenie_Status::PREAUTORYZACJA_ID))
+                                        icon=@json(App\Zlecenie_Status::getIcon(App\Zlecenie_Status::PREAUTORYZACJA_ID))
+                                        color=@json(App\Zlecenie_Status::getColor(App\Zlecenie_Status::PREAUTORYZACJA_ID))></zlecenie-change-status>
+                                @elseif (!$user->is_technik)
+                                    <zlecenie-change-status
+                                        zlecenie_id=@json($zlecenie->id)
+                                        status_id=@json(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID)
+                                        name=@json(App\Zlecenie_Status::getName(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))
+                                        icon=@json(App\Zlecenie_Status::getIcon(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))
+                                        color=@json(App\Zlecenie_Status::getColor(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status>
+                                @endif
+                            </b-button-group>
                         </li>
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">

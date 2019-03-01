@@ -78,6 +78,8 @@
 													(wczoraj)
 												@endif
 											</small>
+                                        @elseif ($zlecenie->dni_od_zakonczenia == 0 and $zlecenie->is_termin)
+                                            (dzisiaj)
 										@endif
 									</td>
 

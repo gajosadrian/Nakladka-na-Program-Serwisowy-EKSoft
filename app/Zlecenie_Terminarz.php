@@ -46,6 +46,11 @@ class Zlecenie_Terminarz extends Model
         return $this->is_data_zakonczenia ? $this->data_zakonczenia->format('Y-m-d H:i') : 'Brak daty zakończenia';
     }
 
+    public function getIsTerminAttribute(): bool
+    {
+        return $this->is_data_rozpoczecia;
+    }
+
     // ========== //
 
     public function getGodzinaRozpoczeciaAttribute($value): string

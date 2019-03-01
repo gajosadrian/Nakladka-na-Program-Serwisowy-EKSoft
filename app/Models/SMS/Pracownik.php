@@ -8,6 +8,7 @@ class Pracownik extends Model
 {
     protected $connection = 'sqlsrv';
     protected $table = 'PRACOWNICY';
+    protected $primaryKey = 'ID_PRACOWNIKA';
 
     /**
     * Attributes
