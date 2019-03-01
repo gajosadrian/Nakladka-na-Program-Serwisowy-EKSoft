@@ -2182,6 +2182,7 @@ __webpack_require__.r(__webpack_exports__);
   props: {
     zlecenie_id: String,
     status_id: String,
+    remove_termin: Boolean,
     name: String,
     icon: String,
     color: String
@@ -2195,7 +2196,8 @@ __webpack_require__.r(__webpack_exports__);
     changeStatus: function changeStatus() {
       axios.post(route('zlecenia.api.change_status', {
         id: this.zlecenie_id,
-        status_id: this.status_id
+        status_id: this.status_id,
+        remove_termin: this.remove_termin
       })).then(function (response) {
         location.reload();
       });

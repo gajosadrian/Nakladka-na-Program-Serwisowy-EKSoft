@@ -6,11 +6,6 @@
 
 @section('content')
     <div class="content">
-
-        @foreach ($zlecenie->status_historia as $status_historia)
-            {{ $status_historia->status->id }}<br>
-        @endforeach
-
         @if ($zlecenie->errors)
             <b-row>
                 <b-col>
@@ -159,6 +154,7 @@
                                     <zlecenie-change-status
                                         zlecenie_id=@json($zlecenie->id)
                                         status_id=@json(App\Zlecenie_Status::PREAUTORYZACJA_ID)
+                                        remove_termin="0"
                                         name=@json(App\Zlecenie_Status::getName(App\Zlecenie_Status::PREAUTORYZACJA_ID))
                                         icon=@json(App\Zlecenie_Status::getIcon(App\Zlecenie_Status::PREAUTORYZACJA_ID))
                                         color=@json(App\Zlecenie_Status::getColor(App\Zlecenie_Status::PREAUTORYZACJA_ID))></zlecenie-change-status>
@@ -166,6 +162,7 @@
                                     <zlecenie-change-status
                                         zlecenie_id=@json($zlecenie->id)
                                         status_id=@json(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID)
+                                        remove_termin="1"
                                         name=@json(App\Zlecenie_Status::getName(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))
                                         icon=@json(App\Zlecenie_Status::getIcon(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))
                                         color=@json(App\Zlecenie_Status::getColor(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status>

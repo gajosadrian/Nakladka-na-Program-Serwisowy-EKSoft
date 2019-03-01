@@ -9,6 +9,7 @@ export default {
     props: {
         zlecenie_id: String,
         status_id: String,
+        remove_termin: Boolean,
         name: String,
         icon: String,
         color: String,
@@ -25,6 +26,7 @@ export default {
             axios.post(route('zlecenia.api.change_status', {
                 id: this.zlecenie_id,
                 status_id: this.status_id,
+                remove_termin: this.remove_termin,
             })).then(response => {
                 location.reload();
             });
