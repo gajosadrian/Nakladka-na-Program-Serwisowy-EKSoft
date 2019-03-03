@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models\Zlecenie;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class Zlecenie_Terminarz extends Model
+class Terminarz extends Model
 {
     protected $connection = 'sqlsrv';
     protected $table = 'ser_Terminarz';

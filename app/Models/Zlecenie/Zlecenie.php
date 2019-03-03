@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Zlecenie;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -114,7 +114,7 @@ class Zlecenie extends Model
 
     public function getIsZakonczoneAttribute(): bool
     {
-        return in_array($this->status_id, Zlecenie_Status::$ZAKONCZONE_IDS) or $this->archiwalny or $this->anulowany;
+        return in_array($this->status_id, Status::$ZAKONCZONE_IDS) or $this->archiwalny or $this->anulowany;
     }
 
     public function getIsDataPrzyjeciaAttribute(): bool
@@ -195,7 +195,7 @@ class Zlecenie extends Model
     {
         $array = [];
 
-        if ($this->dni_od_zakonczenia > 2 and in_array($this->status_id, [Zlecenie_Status::UMOWIONO_ID, Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID, Zlecenie_Status::NA_WARSZTACIE_ID, Zlecenie_Status::NIE_ODBIERA_TEL_ID, Zlecenie_Status::PONOWNA_WIZYTA_ID]))
+        if ($this->dni_od_zakonczenia > 2 and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_TEL_ID, Status::PONOWNA_WIZYTA_ID]))
             $array[] = 'Zlecenie niezamknięte';
 
         return $array;
@@ -218,7 +218,7 @@ class Zlecenie extends Model
 
     public function scopeNiezakonczone($query)
     {
-        foreach (Zlecenie_Status::$ZAKONCZONE_IDS as $status_id) {
+        foreach (Status::$ZAKONCZONE_IDS as $status_id) {
             $query->where('id_status', '!=', $status_id);
         }
         return $query->where('Archiwalny', false)->where('Anulowany', null);
@@ -236,7 +236,7 @@ class Zlecenie extends Model
 
     public function status()
     {
-        return $this->hasOne('App\Zlecenie_Status', 'id_stat', 'id_status')->withDefault([
+        return $this->hasOne('App\Models\Zlecenie\Status', 'id_stat', 'id_status')->withDefault([
             'status' => 'Brak statusu',
         ]);
     }
@@ -248,7 +248,7 @@ class Zlecenie extends Model
 
     public function terminarz()
     {
-        return $this->hasOne('App\Zlecenie_Terminarz', 'ID_ZLECENIA', 'id_zlecenia')->withDefault([
+        return $this->hasOne('App\Models\Zlecenie\Terminarz', 'ID_ZLECENIA', 'id_zlecenia')->withDefault([
             'STARTDATE' => false,
             'ENDDATE' => false,
         ]);
@@ -256,7 +256,7 @@ class Zlecenie extends Model
 
     public function urzadzenie()
     {
-        return $this->hasOne('App\Zlecenie_Urzadzenie', 'ID_MASZYNY', 'id_maszyny')->withDefault([
+        return $this->hasOne('App\Models\Zlecenie\Urzadzenie', 'ID_MASZYNY', 'id_maszyny')->withDefault([
             'NAZWA_MASZ' => 'Brak urządzenia',
             'KATEGORIA' => false,
         ]);
@@ -264,7 +264,7 @@ class Zlecenie extends Model
 
     public function kosztorys_pozycje()
     {
-        return $this->hasMany('App\Zlecenie_Kosztorys_Pozycja', 'id_zs', 'id_zlecenia');
+        return $this->hasMany('App\Models\Zlecenie\KosztorysPozycja', 'id_zs', 'id_zlecenia');
     }
 
     /**
@@ -284,7 +284,7 @@ class Zlecenie extends Model
 
     public function changeStatus(int $status_id, int $pracownik_id, bool $remove_termin = false): void
     {
-        $status_historia = new Models\Zlecenie\StatusHistoria;
+        $status_historia = new StatusHistoria;
         $status_historia->pracownik_id = $pracownik_id;
         $status_historia->status_id = $status_id;
         $status_historia->data = Carbon::now()->format('Y-m-d H:i:s.000');

@@ -1,4 +1,5 @@
 @extends('global.app', [ 'window' => true ])
+{{-- @inject('App\Models\Zlecenie\Status', 'App\Models\Zlecenie\Status') --}}
 
 @php
     $user = auth()->user();
@@ -150,22 +151,22 @@
                         </li>
                         <li class="nav-item ml-auto">
                             <b-button-group size="sm" class="mr-2">
-                                @if ($user->is_technik and $zlecenie->status->id != App\Zlecenie_Status::PREAUTORYZACJA_ID)
+                                @if ($user->is_technik and $zlecenie->status->id != App\Models\Zlecenie\Status::PREAUTORYZACJA_ID)
                                     <zlecenie-change-status
                                         zlecenie_id=@json($zlecenie->id)
-                                        status_id=@json(App\Zlecenie_Status::PREAUTORYZACJA_ID)
+                                        status_id=@json(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID)
                                         remove_termin="0"
-                                        name=@json(App\Zlecenie_Status::getName(App\Zlecenie_Status::PREAUTORYZACJA_ID))
-                                        icon=@json(App\Zlecenie_Status::getIcon(App\Zlecenie_Status::PREAUTORYZACJA_ID))
-                                        color=@json(App\Zlecenie_Status::getColor(App\Zlecenie_Status::PREAUTORYZACJA_ID))></zlecenie-change-status>
-                                @elseif (!$user->is_technik and $zlecenie->status->id == App\Zlecenie_Status::ZAMOWIONO_CZESC_ID)
+                                        name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID))
+                                        icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID))
+                                        color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID))></zlecenie-change-status>
+                                @elseif (!$user->is_technik and $zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
                                     <zlecenie-change-status
                                         zlecenie_id=@json($zlecenie->id)
-                                        status_id=@json(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID)
+                                        status_id=@json(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID)
                                         remove_termin="1"
-                                        name=@json(App\Zlecenie_Status::getName(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))
-                                        icon=@json(App\Zlecenie_Status::getIcon(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))
-                                        color=@json(App\Zlecenie_Status::getColor(App\Zlecenie_Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status>
+                                        name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                        icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                        color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status>
                                 @endif
                             </b-button-group>
                         </li>

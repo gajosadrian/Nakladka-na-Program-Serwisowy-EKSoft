@@ -70,17 +70,17 @@
 
 									<td>
 										{{ $zlecenie->data_zakonczenia_formatted }}<br>
-										@if ($zlecenie->dni_od_zakonczenia > 0)
-											<small class="text-muted">
-												@if ($zlecenie->dni_od_zakonczenia >= 2)
-													({{ $zlecenie->dni_od_zakonczenia }} dni temu)
-												@else
-													(wczoraj)
-												@endif
-											</small>
-                                        @elseif ($zlecenie->dni_od_zakonczenia == 0 and $zlecenie->is_termin)
-                                            (dzisiaj)
-										@endif
+                                        <small class="text-muted">
+    										@if ($zlecenie->dni_od_zakonczenia > 0)
+    											@if ($zlecenie->dni_od_zakonczenia >= 2)
+    												({{ $zlecenie->dni_od_zakonczenia }} dni temu)
+    											@else
+    												(wczoraj)
+    											@endif
+                                            @elseif ($zlecenie->dni_od_zakonczenia == 0 and $zlecenie->is_termin)
+                                                (dzisiaj)
+    										@endif
+                                        </small>
 									</td>
 
 									<td class="d-none">

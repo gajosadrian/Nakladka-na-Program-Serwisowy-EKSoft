@@ -16,6 +16,13 @@
             'role' => 'super-admin',
         ],
         [
+            'name' => 'Rozliczenia',
+            'icon' => 'si si-calculator',
+            'route' => 'admin.rozliczenia',
+            'routeOptions' => [],
+            'role' => 'super-admin',
+        ],
+        [
             'name' => 'Użytkownicy',
             'icon' => 'si si-users',
             'route' => 'admin.users',

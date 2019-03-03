@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models\Zlecenie;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Zlecenie_Urzadzenie extends Model
+class Urzadzenie extends Model
 {
     protected $connection = 'sqlsrv';
     protected $table = 'Maszyny';

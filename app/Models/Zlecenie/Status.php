@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models\Zlecenie;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Zlecenie_Status extends Model
+class Status extends Model
 {
     protected $connection = 'sqlsrv';
     protected $table = 'SYSTEM_STATUS';

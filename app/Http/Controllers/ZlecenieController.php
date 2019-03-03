@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Facades\App\Zlecenie;
+use Facades\App\Models\Zlecenie;
 use Illuminate\Http\Request;
 
 class ZlecenieController extends Controller
@@ -10,12 +10,11 @@ class ZlecenieController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
         $user = auth()->user();
-        $zleceniaNiezakonczone = Zlecenie::getNiezakonczone([
+        $zleceniaNiezakonczone = Zlecenie\Zlecenie::getNiezakonczone([
             'technik_id' => $user->technik_id,
         ]);
 
@@ -27,7 +26,6 @@ class ZlecenieController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -37,8 +35,6 @@ class ZlecenieController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -48,21 +44,19 @@ class ZlecenieController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Zlecenie  $zlecenie
-     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
+        $zlecenie = Zlecenie\Zlecenie::find($id);
+
         return view('zlecenie.show', [
-            'zlecenie' => Zlecenie::find($id),
+            'zlecenie' => $zlecenie,
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Zlecenie  $zlecenie
-     * @return \Illuminate\Http\Response
      */
     public function edit(Request $request)
     {
@@ -72,9 +66,6 @@ class ZlecenieController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Zlecenie  $zlecenie
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
@@ -84,8 +75,6 @@ class ZlecenieController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Zlecenie  $zlecenie
-     * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
     {
@@ -94,7 +83,7 @@ class ZlecenieController extends Controller
 
     public function apiGetOpis(Request $request, int $id)
     {
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie\Zlecenie::find($id);
 
         return response()->json($zlecenie->opis, 200);
     }
@@ -102,7 +91,7 @@ class ZlecenieController extends Controller
     public function apiAppendNotatka(Request $request, int $id)
     {
         $user = auth()->user();
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie\Zlecenie::find($id);
 
         $zlecenie->appendOpis($request->opis, $user->short_name);
 
@@ -112,7 +101,7 @@ class ZlecenieController extends Controller
     public function apiChangeStatus(Request $request, int $id)
     {
         $user = auth()->user();
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie\Zlecenie::find($id);
 
         $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false);
 

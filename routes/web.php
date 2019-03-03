@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/users', 'AdminController@users')->name('users');
+        Route::get('users', 'AdminController@users')->middleware('role:super-admin')->name('users');
+        Route::get('rozliczenia', 'Admin\RozliczeniaController@index')->middleware('role:super-admin')->name('rozliczenia');
     });
 });
