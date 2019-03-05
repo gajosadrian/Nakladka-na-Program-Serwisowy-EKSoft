@@ -10,7 +10,7 @@ class Status extends Model
     protected $table = 'SYSTEM_STATUS';
     protected $primaryKey = 'id_stat';
 
-    public const ZLECENIE_WPISANE = 11; public const UMOWIONO_ID = 12; public const ZAMOWIONO_CZESC_ID = 13; public const GOTOWE_DO_WYJAZDU_ID = 14;
+    public const ZLECENIE_WPISANE_ID = 11; public const UMOWIONO_ID = 12; public const ZAMOWIONO_CZESC_ID = 13; public const GOTOWE_DO_WYJAZDU_ID = 14;
     public const NA_WARSZTACIE_ID = 16; public const NIE_ODBIERA_TEL_ID = 17; public const PONOWNA_WIZYTA_ID = 18; public const DO_WYJASNIENIA_ID = 25;
     public const ZAKONCZONE_ID = 26; public const ODWOLANE_ID = 29; public const WNIOSEK_O_WYMIANE_ID = 30; public const DO_ODBIORU_ID = 31;
     public const UPIERDLIWY_KL_ID = 32; public const NIE_OBSLUGIWAC_ID = 33; public const ZALICZKA_ID = 34; public const UZUPELNIENIE_DANYCH_ID = 35;
@@ -30,7 +30,7 @@ class Status extends Model
 
     public function getIdAttribute(): int
     {
-        return $this->attributes['id_stat'];
+        return $this->attributes['id_stat'] ?? false;
     }
 
     public function getNazwaAttribute(): string
@@ -40,12 +40,12 @@ class Status extends Model
 
     public function getIconAttribute(): string
     {
-        return self::$PROPERTIES[$this->id]['icon'];
+        return self::$PROPERTIES[$this->id]['icon'] ?? 'fa fa-question';
     }
 
     public function getColorAttribute(): string
     {
-        return self::$PROPERTIES[$this->id]['color'];
+        return self::$PROPERTIES[$this->id]['color'] ?? 'secondary';
     }
 
     public static function getName(int $id)

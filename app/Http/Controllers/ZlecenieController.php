@@ -94,6 +94,7 @@ class ZlecenieController extends Controller
         $zlecenie = Zlecenie\Zlecenie::find($id);
 
         $zlecenie->appendOpis($request->opis, $user->short_name);
+        $zlecenie->save();
 
         return response()->json($zlecenie->opis, 200);
     }
@@ -104,6 +105,7 @@ class ZlecenieController extends Controller
         $zlecenie = Zlecenie\Zlecenie::find($id);
 
         $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false);
+        $zlecenie->save();
 
         return response()->json('success', 200);
     }

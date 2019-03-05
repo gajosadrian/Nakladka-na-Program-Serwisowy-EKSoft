@@ -92,6 +92,11 @@ class Zlecenie extends Model
         return $this->attributes['NrObcy'] ?? false;
     }
 
+    public function getNrOrObcyAttribute(): string
+    {
+        return $this->nr_obcy ?: $this->nr;
+    }
+
     public function getStatusIdAttribute(): int
     {
         return $this->attributes['id_status'] ?? false;
@@ -277,6 +282,11 @@ class Zlecenie extends Model
         return $query->where('id_o_technika', $technik_id);
     }
 
+    public function scopeWithRelations($query)
+    {
+        return $query->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje');
+    }
+
     /**
     * Methods
     *
@@ -292,19 +302,22 @@ class Zlecenie extends Model
 
         $this->status_historia()->save($status_historia);
         $this->status_id = $status_id;
-        $this->save();
+
+        if ($this->terminarz()->exists()) {
+            $this->terminarz->removeTermin();
+            $this->terminarz->save();
+        }
     }
 
     public function appendOpis(string $opis, string $name): void
     {
         $this->opis .= "\r\n** " . $name . " dnia " . date('d.m H:i') . ": „" . $opis . "”";
-        $this->save();
     }
 
     public function getNiezakonczone(array $data = [])
     {
         $data = (object) $data;
-        $query = $this->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje')->niezakonczone()->oldest('DataKoniec');
+        $query = $this->withRelations()->niezakonczone()->oldest('DataKoniec');
         if (@$data->technik_id) {
             $query->technik($data->technik_id);
         }

@@ -45,7 +45,7 @@
 									<td class="align-middle font-w600">
 										<a href="javascript:void(0)" onclick="PopupCenter('{{ route('zlecenia.show', $zlecenie->id) }}', 'zlecenie{{ $zlecenie->id }}', 1500, 700)">
 											<i class="{{ $zlecenie->znacznik->icon }} mr-2"></i>
-											{{ $zlecenie->nr_obcy ?: $zlecenie->nr }}
+											{{ $zlecenie->nr_or_obcy }}
 										</a>
                                         <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{{ $zlecenie->nr }}'">
                                             <i class="far fa-copy"></i>

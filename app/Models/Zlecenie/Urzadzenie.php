@@ -22,12 +22,12 @@ class Urzadzenie extends Model
 
     public function getProducentAttribute(): string
     {
-        return $this->attributes['KATEGORIA'];
+        return $this->attributes['KATEGORIA'] ?? false;
     }
 
     public function getNazwaAttribute(): string
     {
-        return $this->attributes['NAZWA_MASZ'];
+        return $this->attributes['NAZWA_MASZ'] ?? false;
     }
 
     public function getModelAttribute(): string
