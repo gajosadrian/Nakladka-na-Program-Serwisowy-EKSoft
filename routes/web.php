@@ -28,8 +28,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/api/change_status/{id}', 'ZlecenieController@apiChangeStatus')->name('api.change_status');
     });
 
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('users', 'AdminController@users')->middleware('role:super-admin')->name('users');
-        Route::get('rozliczenia', 'Admin\RozliczeniaController@index')->middleware('role:super-admin')->name('rozliczenia');
+    Route::prefix('admin')->middleware('role:super-admin')->name('admin.')->group(function () {
+        Route::get('users', 'AdminController@users')->name('users.lista');
+        Route::get('rozliczenia', 'Admin\RozliczenieController@index')->name('rozliczenia.lista');
+        Route::get('rozliczenia/{id}', 'Admin\RozliczenieController@show')->name('rozliczenia.pokaz');
     });
 });

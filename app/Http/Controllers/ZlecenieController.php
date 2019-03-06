@@ -14,12 +14,12 @@ class ZlecenieController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $zleceniaNiezakonczone = Zlecenie\Zlecenie::getNiezakonczone([
+        $zlecenia_niezakonczone = Zlecenie\Zlecenie::getNiezakonczone([
             'technik_id' => $user->technik_id,
         ]);
 
         return view('zlecenie.lista', [
-            'zlecenia' => $zleceniaNiezakonczone,
+            'zlecenia' => $zlecenia_niezakonczone,
         ]);
     }
 
@@ -49,9 +49,9 @@ class ZlecenieController extends Controller
     {
         $zlecenie = Zlecenie\Zlecenie::find($id);
 
-        return view('zlecenie.show', [
-            'zlecenie' => $zlecenie,
-        ]);
+        return view('zlecenie.zlecenie', compact(
+            'zlecenie'
+        ));
     }
 
     /**

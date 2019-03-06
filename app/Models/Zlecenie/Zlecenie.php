@@ -211,6 +211,11 @@ class Zlecenie extends Model
         return $this->terminarz->is_termin;
     }
 
+    public function getIsRozliczoneAttribute(): bool
+    {
+        return isset($this->rozliczenie);
+    }
+
     public function getStatusyAttribute()
     {
         return $this->status_historia;
@@ -272,6 +277,11 @@ class Zlecenie extends Model
         return $this->hasMany('App\Models\Zlecenie\KosztorysPozycja', 'id_zs', 'id_zlecenia');
     }
 
+    public function rozliczenie()
+    {
+        return $this->hasOne('App\Models\Rozliczenie\RozliczoneZlecenie', 'zlecenie_id', 'id_zlecenia');
+    }
+
     /**
     * Scopes
     *
@@ -284,7 +294,7 @@ class Zlecenie extends Model
 
     public function scopeWithRelations($query)
     {
-        return $query->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje');
+        return $query->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje', 'rozliczenie');
     }
 
     /**

@@ -151,7 +151,7 @@
                         </li>
                         <li class="nav-item ml-auto">
                             <b-button-group size="sm" class="mr-2">
-                                @if ($user->is_technik and $zlecenie->status->id != App\Models\Zlecenie\Status::PREAUTORYZACJA_ID)
+                                @if ($user->is_technik and $zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
                                     <zlecenie-change-status
                                         zlecenie_id=@json($zlecenie->id)
                                         status_id=@json(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID)

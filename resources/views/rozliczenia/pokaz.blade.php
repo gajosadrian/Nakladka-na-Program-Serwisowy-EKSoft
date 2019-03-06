@@ -4,7 +4,7 @@
     <div class="bg-body-light">
         <div class="content content-full">
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
-                <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Rozliczenia</h1>
+                <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Rozliczenie (( $rozliczenie->nr ))</h1>
             </div>
         </div>
     </div>
@@ -43,7 +43,7 @@
 							</tr>
 						</thead>
 						<tbody>
-                            @foreach ($zlecenieNierozliczone as $index => $zlecenie)
+                            @foreach ($zlecenia_nierozliczone as $index => $zlecenie)
                                 <tr>
                                     <td>
                                         <b-form-checkbox

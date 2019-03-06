@@ -18,14 +18,14 @@
         [
             'name' => 'Rozliczenia',
             'icon' => 'si si-calculator',
-            'route' => 'admin.rozliczenia',
+            'route' => 'admin.rozliczenia.lista',
             'routeOptions' => [],
             'role' => 'super-admin',
         ],
         [
             'name' => 'Użytkownicy',
             'icon' => 'si si-users',
-            'route' => 'admin.users',
+            'route' => 'admin.users.lista',
             'routeOptions' => [],
             'role' => 'super-admin',
         ],
