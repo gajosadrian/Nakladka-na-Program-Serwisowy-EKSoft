@@ -15,12 +15,13 @@ class CreateRozliczeniaTable extends Migration
     {
         Schema::create('rozliczenia', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('pracownik');
+            $table->string('pracownik');
             $table->unsignedSmallInteger('rok');
             $table->unsignedTinyInteger('miesiac');
             $table->unsignedInteger('suma_robocizn')->default(0);
             $table->unsignedInteger('suma_dojazdow')->default(0);
             $table->boolean('is_closed')->default(false);
+            $table->timestamp('closed_at')->nullable();
             $table->timestamps();
         });
     }

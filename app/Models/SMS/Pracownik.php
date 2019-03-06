@@ -24,4 +24,19 @@ class Pracownik extends Model
     {
         return $this->attributes['LOGIN'];
     }
+
+    public function getNazwiskoAttribute(): string
+    {
+        return $this->attributes['NAZWISKO'];
+    }
+
+    public function getImieAttribute(): string
+    {
+        return $this->attributes['IMIE'];
+    }
+
+    public function getNazwaAttribute(): string
+    {
+        return $this->nazwisko . ' ' . $this->imie; // &nbsp;
+    }
 }

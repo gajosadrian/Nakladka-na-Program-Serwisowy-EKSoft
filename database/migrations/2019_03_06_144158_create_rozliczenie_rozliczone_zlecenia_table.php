@@ -15,7 +15,7 @@ class CreateRozliczenieRozliczoneZleceniaTable extends Migration
     {
         Schema::create('rozliczenie_rozliczone_zlecenia', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('pracownik');
+            $table->string('pracownik');
             $table->unsignedInteger('rozliczenie_id');
             $table->unsignedInteger('zlecenie_id');
             $table->string('producent_type');
