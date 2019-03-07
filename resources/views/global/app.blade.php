@@ -23,8 +23,8 @@
         @yield('css_before')
         <link rel="stylesheet" id="css-main" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700">
         <link rel="stylesheet" id="css-theme" href="{{ asset('css/dashmix.css') }}">
-        <link rel="stylesheet" id="css-theme" href="{{ asset('css/custom.css') }}">
-        <link rel="stylesheet" id="css-theme" href="{{ asset('js/plugins/datatables/dataTables.bootstrap4.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+        <link rel="stylesheet" href="{{ asset('js/plugins/datatables/dataTables.bootstrap4.css') }}">
 
         {{-- Theme --}}
         <link rel="stylesheet" href="{{ asset('css/themes/xmodern.css') }}">
@@ -112,6 +112,8 @@
         @yield('js_after')
 
 		<script>$(function() {
+            Dashmix.helpers('table-tools-checkable');
+
 			$('table.dataTable').DataTable({
 			   paging: false,
 			   language: {

@@ -4,7 +4,7 @@
     <div class="bg-body-light">
         <div class="content content-full">
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
-                <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Rozliczenie (( $rozliczenie->nr ))</h1>
+                <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Rozliczenie nr <span class="font-w600">{{ $rozliczenie->nr }}</span></h1>
             </div>
         </div>
     </div>
@@ -27,32 +27,41 @@
             </template>
         </b-block>
 
+        <b-block full>
+            <template slot="content">
+                Do rozliczenia: {{ $zlecenia_amount }} zleceń
+            </template>
+        </b-block>
+
         <b-block>
             <template slot="content">
                 <div class="table-responsive">
-                    <table class="table table-sm table-striped table-hover">
+                    <table class="table table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
 						<thead>
-							<tr class="thead-light">
-                                <th>#</th>
+							<tr class="text-uppercase">
+                                <th>
+                                    <b-form-checkbox id="check-all" name="check-all"></b-form-checkbox>
+                                </th>
 								<th>Nr zlecenia</th>
-								<th>Urządzenie</th>
+                                <th>Robocizny</th>
+								<th>Dojazdy</th>
+								<th>Przyjęcie</th>
+								<th>Zakończenie</th>
 								<th>Status</th>
-								<th>Błędy</th>
-								<th>Ostatnia data</th>
-								<th class="d-none"></th>
 							</tr>
 						</thead>
 						<tbody>
-                            @foreach ($zlecenia_nierozliczone as $index => $zlecenie)
+                            @php $counter = 0 @endphp
+                            @foreach ($zlecenia_nierozliczone as $zlecenie)
+                                @php
+                                    $counter++;
+                                    $robocizny = $zlecenie->robocizny;
+                                @endphp
                                 <tr>
                                     <td>
-                                        <b-form-checkbox
-                                            id="checkbox{{ $zlecenie->id }}"
-                                            value="accepted"
-                                            unchecked-value="not_accepted">
-                                        </b-form-checkbox>
+                                        <b-form-checkbox id="row_{{ $counter }}" name="row_{{ $counter }}"></b-form-checkbox>
                                     </td>
-                                    <td class="align-middle font-w600">
+                                    <td class="font-w600">
                                         <a href="javascript:void(0)" onclick="PopupCenter('{{ route('zlecenia.show', $zlecenie->id) }}', 'zlecenie{{ $zlecenie->id }}', 1500, 700)">
                                             <i class="{{ $zlecenie->znacznik->icon }} mr-2"></i>
                                             {{ $zlecenie->nr_or_obcy }}
@@ -61,12 +70,11 @@
                                             <i class="far fa-copy"></i>
                                         </a>
                                     </td>
-                                    <td>{{ $zlecenie->data_zakonczenia }}</td>
-                                    <td>{{ $zlecenie->data_zakonczenia_formatted }}</td>
-                                    <td class="{{ $zlecenie->status->color ? 'table-' . $zlecenie->status->color : '' }}">
-                                        <i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }} mx-2"></i>
-                                        {{ $zlecenie->status->nazwa }}
-                                    </td>
+                                    <td class="{{ empty($robocizny) ? 'table-danger' : '' }}">{!! $robocizny ? $zlecenie->robocizny_html : '<span class="text-danger font-w700">Do uzupełnienia</span>' !!}</td>
+                                    <td>{!! $zlecenie->dojazdy_html !!}</td>
+                                    <td>{{ $zlecenie->data_przyjecia->toDateString() }}</td>
+                                    <td>{{ $zlecenie->is_data_zakonczenia ? $zlecenie->data_zakonczenia->toDateString() : '-' }}</td>
+                                    {!! $zlecenie->tableCellStatusHTML !!}
                                 </tr>
                             @endforeach
 						</tbody>

@@ -13,7 +13,7 @@
         <b-block>
             <template slot="content">
                 <div class="table-responsive">
-                    <table class="table table-sm table-striped table-hover dataTable">
+                    <table class="table table-sm table-striped table-hover table-vcenter dataTable">
 						<thead>
 							<tr class="thead-light">
 								<th>Lp.</th>
@@ -29,9 +29,9 @@
 						</thead>
 						<tbody>
 							@php $counter = 0 @endphp
-							@foreach ($zlecenia as $index => $zlecenie)
+							@foreach ($zlecenia as $zlecenie)
 								<tr>
-									<td class="align-middle text-muted">{{ ++$counter }}</td>
+									<td class="text-muted">{{ ++$counter }}</td>
 									<td>
 										{{ $zlecenie->klient->nazwa }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
@@ -42,9 +42,8 @@
 										00-000 miasto
 									</td>
 
-									<td class="align-middle font-w600">
+									<td class="font-w600">
 										<a href="javascript:void(0)" onclick="PopupCenter('{{ route('zlecenia.show', $zlecenie->id) }}', 'zlecenie{{ $zlecenie->id }}', 1500, 700)">
-                                            ({{ (int) $zlecenie->is_rozliczone }})
                                             <i class="{{ $zlecenie->znacznik->icon }} mr-2"></i>
 											{{ $zlecenie->nr_or_obcy }}
 										</a>
@@ -53,15 +52,12 @@
                                         </a>
 									</td>
 
-									<td class="align-middle">
+									<td>
 										{{ $zlecenie->urzadzenie->nazwa }}<br>
 										{{ $zlecenie->urzadzenie->producent }}
 									</td>
 
-									<td class="align-middle {{ $zlecenie->status->color ? 'table-' . $zlecenie->status->color : '' }}">
-										<i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }} mx-2"></i>
-										{{ $zlecenie->status->nazwa }}
-									</td>
+                                    {!! $zlecenie->tableRowStatusHTML !!}
 
 									<td class="text-danger font-small">
 										@foreach ($zlecenie->errors as $error)

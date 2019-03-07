@@ -12,6 +12,11 @@ class Zlecenie extends Model
     protected $primaryKey = 'id_zlecenia';
     public $timestamps = false;
 
+    public static $SYMBOLE_KOSZTORYSU = [
+        'ROBOCIZNY' => ['MICHAL-R' => ['Michał'], 'FILIP-R' => ['Filip'], 'MARCIN-R' => ['Marcin'], 'BOGUS-R' => ['Bogdan'], 'ROBERT-R' => ['Robert']],
+        'DOJAZDY' => ['MICHAL-D' => ['Michał'], 'FILIP-D' => ['Filip'], 'MARCIN-D' => ['Marcin'], 'BOGUS-D' => ['Bogdan'], 'ROBERT-D' => ['Robert']],
+    ];
+
     /**
     * Attributes
     *
@@ -216,10 +221,59 @@ class Zlecenie extends Model
         return isset($this->rozliczenie);
     }
 
-    public function getStatusyAttribute()
+    public function getOkresAttribute(): string
     {
-        return $this->status_historia;
+        return $this->data_zakonczenia->format('Y-m');
     }
+
+    public function getRobociznyAttribute(): array
+    {
+        return $this->getCalcKosztorys('ROBOCIZNY');
+    }
+
+    public function getDojazdyAttribute(): array
+    {
+        return $this->getCalcKosztorys('DOJAZDY');
+    }
+
+    public function getRobociznyHtmlAttribute(): string
+    {
+        $symbole_robocizn = self::$SYMBOLE_KOSZTORYSU['ROBOCIZNY'];
+        $robocizny = $this->robocizny;
+        $str = '';
+
+        foreach ($robocizny as $symbol => $kwota) {
+            $robocizna_symbol = $symbole_robocizn[$symbol];
+            $robocizna_imie = $robocizna_symbol[0];
+
+            $str .= '<span class="mr-2"><span class="font-w700">' . $robocizna_imie . '</span>: ' . $kwota . ' zł</span> ';
+        }
+
+        return $str;
+    }
+
+    public function getTableCellStatusHTMLAttribute(): string
+    {
+        $status_table_color = $this->status->color ? 'table-' . $this->status->color : '';
+        $status_text_color = $this->status->color ? 'text-' . $this->status->color : '';
+
+        return <<<HTML
+            <td class="{$status_table_color}">
+                <i class="{$this->status->icon} {$status_text_color} mx-2"></i>
+                {$this->status->nazwa}
+            </td>
+HTML;
+    }
+
+    public function getTableRowStatusHTMLAttribute(): string
+    {
+        return $this->tableCellStatusHTML;
+    }
+
+    // public function getStatusyAttribute()
+    // {
+    //     return $this->status_historia;
+    // }
 
     /**
     * Scopes
@@ -301,6 +355,30 @@ class Zlecenie extends Model
     * Methods
     *
     */
+
+    private function getCalcKosztorys(string $type): array
+    {
+        $symbole_robocizn = self::$SYMBOLE_KOSZTORYSU[$type];
+        $array = [];
+
+        foreach ($this->kosztorys_pozycje as $kosztorys_pozycja) {
+            $symbol = $kosztorys_pozycja->symbol;
+            if (isset($symbole_robocizn[$symbol])) {
+                if (!isset($array[$symbol])) $array[$symbol] = 0;
+                $ilosc = ($kosztorys_pozycja->ilosc == 0) ? 1 : $kosztorys_pozycja->ilosc;
+                $kwota = $kosztorys_pozycja->cena * $ilosc;
+
+                $array[$symbol] += $kwota;
+            }
+        }
+
+        return $array;
+    }
+
+    private function getHtmlKosztorys(string $type): string
+    {
+        return '';
+    }
 
     public function changeStatus(int $status_id, int $pracownik_id, bool $remove_termin = false): void
     {

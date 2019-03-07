@@ -15,6 +15,16 @@ class KosztorysPozycja extends Model
     *
     */
 
+    public function getNazwaAttribute(): string
+    {
+        return $this->towar->nazwa;
+    }
+
+    public function getSymbolAttribute(): string
+    {
+        return $this->towar->symbol;
+    }
+
 	public function getOpisAttribute(): string
     {
         return $this->attributes['opis_dodatkowy'] ?? false;
