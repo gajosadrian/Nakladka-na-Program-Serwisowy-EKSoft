@@ -18,7 +18,7 @@
         [
             'name' => 'Rozliczenia',
             'icon' => 'si si-calculator',
-            'route' => 'admin.rozliczenia.lista',
+            'route' => 'rozliczenia.lista',
             'routeOptions' => [],
             'role' => 'super-admin',
         ],

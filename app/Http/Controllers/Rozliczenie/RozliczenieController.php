@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Rozliczenie;
 
 use App\Models\Zlecenie;
 use App\Models\Rozliczenie\Rozliczenie;
@@ -96,6 +96,6 @@ class RozliczenieController extends Controller
         $rozliczenie->miesiac = $request->miesiac;
         $rozliczenie->save();
 
-        return redirect()->route('admin.rozliczenia.lista');
+        return redirect()->route('rozliczenia.lista');
     }
 }

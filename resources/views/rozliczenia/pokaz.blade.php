@@ -1,4 +1,7 @@
 @extends('global.app')
+@php
+    $room = rand();
+@endphp
 
 @section('content')
     <div class="bg-body-light">
@@ -35,8 +38,11 @@
 
         <b-block>
             <template slot="content">
+                <div class="">
+                    <b-button variant="primary" size="sm" onclick="rozliczZaznaczone{{ $room }}()">Rozlicz zaznaczone</b-button>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
+                    <table id="{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
 						<thead>
 							<tr class="text-uppercase">
                                 <th class="font-w700">
@@ -59,19 +65,11 @@
                                     $counter++;
                                     $robocizny = $zlecenie->robocizny;
                                 @endphp
-                                <tr class="{{ ($zlecenie->is_data_zakonczenia and $zlecenie->data->gt($rozliczenie->data) or (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->gt($rozliczenie->data))) ? 'table-secondary' : '' }}">
+                                <tr data-zlecenie_id="{{ $zlecenie->id }}" class="{{ ($zlecenie->is_data_zakonczenia and $zlecenie->data->gt($rozliczenie->data) or (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->gt($rozliczenie->data))) ? 'table-secondary' : '' }}">
                                     <td>
                                         <b-form-checkbox id="row_{{ $counter }}" name="row_{{ $counter }}"></b-form-checkbox>
                                     </td>
-                                    <td class="font-w600">
-                                        <a href="javascript:void(0)" onclick="PopupCenter('{{ route('zlecenia.show', $zlecenie->id) }}', 'zlecenie{{ $zlecenie->id }}', 1500, 700)">
-                                            <i class="{{ $zlecenie->znacznik->icon }} mr-2"></i>
-                                            {{ $zlecenie->nr_or_obcy }}
-                                        </a>
-                                        <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{{ $zlecenie->nr }}'">
-                                            <i class="far fa-copy"></i>
-                                        </a>
-                                    </td>
+                                    {!! $zlecenie->tableCellNrHTML !!}
                                     <td>{{ $zlecenie->zleceniodawca }}</td>
                                     <td class="{{ empty($robocizny) ? 'table-danger' : '' }}">{!! $robocizny ? $zlecenie->robocizny_html : '<span class="text-danger font-w700">Do uzupełnienia</span>' !!}</td>
                                     <td>{!! $zlecenie->dojazdy_html !!}</td>
@@ -90,3 +88,24 @@
         </b-block>
     </div>
 @endsection
+
+@section('js_after')<script>
+    function rozliczZaznaczone{{ $room }} () {
+        let zlecenia_ids = [];
+
+        $('table#{{ $room }} tbody tr').each(function () {
+            let $row = $(this);
+
+            if ($row.find('input[type=checkbox]:checked').length) {
+                let zlecenie_id = String($row.data('zlecenie_id'));
+
+                zlecenia_ids.push(zlecenie_id);
+            }
+        });
+
+        $.post('{{ route('rozliczone_zlecenia.storeMany') }}', { '_token': '{{ csrf_token() }}', rozliczenie_id: {{ $rozliczenie->id }}, zlecenia_ids: zlecenia_ids })
+            .done(function( data ) {
+                console.log(data);
+            });
+    }
+</script>@endsection

@@ -319,6 +319,23 @@ class Zlecenie extends Model
 HTML;
     }
 
+    public function getTableCellNrHTMLAttribute(): string
+    {
+        $route_zleceniaPokaz = route('zlecenia.pokaz', $this->id);
+
+        return <<<HTML
+            <td class="font-w600">
+                <a href="javascript:void(0)" onclick="PopupCenter('{$route_zleceniaPokaz}', 'zlecenie{$this->id}', 1500, 700)">
+                    <i class="{$this->znacznik->icon} mr-2"></i>
+                    {$this->nr_or_obcy}
+                </a>
+                <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{$this->nr}'">
+                    <i class="far fa-copy"></i>
+                </a>
+            </td>
+HTML;
+    }
+
     // public function getStatusyAttribute()
     // {
     //     return $this->status_historia;

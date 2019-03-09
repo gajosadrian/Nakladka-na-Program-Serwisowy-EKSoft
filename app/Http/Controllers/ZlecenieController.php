@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Facades\App\Models\Zlecenie;
+use Facades\App\Models\Zlecenie\Zlecenie;
 use Illuminate\Http\Request;
 
 class ZlecenieController extends Controller
@@ -14,7 +14,7 @@ class ZlecenieController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $zlecenia_niezakonczone = Zlecenie\Zlecenie::getNiezakonczone([
+        $zlecenia_niezakonczone = Zlecenie::getNiezakonczone([
             'technik_id' => $user->technik_id,
         ]);
 
@@ -47,9 +47,9 @@ class ZlecenieController extends Controller
      */
     public function show($id)
     {
-        $zlecenie = Zlecenie\Zlecenie::find($id);
+        $zlecenie = Zlecenie::find($id);
 
-        return view('zlecenie.zlecenie', compact(
+        return view('zlecenie.pokaz', compact(
             'zlecenie'
         ));
     }
@@ -83,7 +83,7 @@ class ZlecenieController extends Controller
 
     public function apiGetOpis(Request $request, int $id)
     {
-        $zlecenie = Zlecenie\Zlecenie::find($id);
+        $zlecenie = Zlecenie::find($id);
 
         return response()->json($zlecenie->opis, 200);
     }
@@ -91,7 +91,7 @@ class ZlecenieController extends Controller
     public function apiAppendNotatka(Request $request, int $id)
     {
         $user = auth()->user();
-        $zlecenie = Zlecenie\Zlecenie::find($id);
+        $zlecenie = Zlecenie::find($id);
 
         $zlecenie->appendOpis($request->opis, $user->short_name);
         $zlecenie->save();
@@ -102,7 +102,7 @@ class ZlecenieController extends Controller
     public function apiChangeStatus(Request $request, int $id)
     {
         $user = auth()->user();
-        $zlecenie = Zlecenie\Zlecenie::find($id);
+        $zlecenie = Zlecenie::find($id);
 
         $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false);
         $zlecenie->save();

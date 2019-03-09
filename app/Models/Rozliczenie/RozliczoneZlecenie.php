@@ -8,4 +8,9 @@ class RozliczoneZlecenie extends Model
 {
     protected $connection = 'mysql';
     protected $table = 'rozliczenie_rozliczone_zlecenia';
+    protected $guarded = [];
+    protected $casts = [
+        'robocizny' => 'array',
+        'dojazdy' => 'array',
+    ];
 }
