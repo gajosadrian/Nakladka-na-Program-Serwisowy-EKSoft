@@ -39,15 +39,17 @@
                     <table class="table table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
 						<thead>
 							<tr class="text-uppercase">
-                                <th>
+                                <th class="font-w700">
                                     <b-form-checkbox id="check-all" name="check-all"></b-form-checkbox>
                                 </th>
-								<th>Nr zlecenia</th>
-                                <th>Robocizny</th>
-								<th>Dojazdy</th>
-								<th>Przyjęcie</th>
-								<th>Zakończenie</th>
-								<th>Status</th>
+                                <th class="font-w700">Nr zlecenia</th>
+								<th class="font-w700">Zleceniodawca</th>
+                                <th class="font-w700">Robocizny</th>
+								<th class="font-w700">Dojazdy</th>
+								<th class="font-w700">Przyjęcie</th>
+								<th class="font-w700">Zakończenie</th>
+								<th class="font-w700">Status</th>
+								<th class="d-none"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -57,7 +59,7 @@
                                     $counter++;
                                     $robocizny = $zlecenie->robocizny;
                                 @endphp
-                                <tr>
+                                <tr class="{{ ($zlecenie->is_data_zakonczenia and $zlecenie->data->gt($rozliczenie->data) or (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->gt($rozliczenie->data))) ? 'table-secondary' : '' }}">
                                     <td>
                                         <b-form-checkbox id="row_{{ $counter }}" name="row_{{ $counter }}"></b-form-checkbox>
                                     </td>
@@ -70,11 +72,15 @@
                                             <i class="far fa-copy"></i>
                                         </a>
                                     </td>
+                                    <td>{{ $zlecenie->zleceniodawca }}</td>
                                     <td class="{{ empty($robocizny) ? 'table-danger' : '' }}">{!! $robocizny ? $zlecenie->robocizny_html : '<span class="text-danger font-w700">Do uzupełnienia</span>' !!}</td>
                                     <td>{!! $zlecenie->dojazdy_html !!}</td>
                                     <td>{{ $zlecenie->data_przyjecia->toDateString() }}</td>
-                                    <td>{{ $zlecenie->is_data_zakonczenia ? $zlecenie->data_zakonczenia->toDateString() : '-' }}</td>
+                                    <td>{!! $zlecenie->is_data_zakonczenia ? $zlecenie->data_zakonczenia->toDateString() : '<span class="text-danger font-w700">Brak terminu</span>' !!}</td>
                                     {!! $zlecenie->tableCellStatusHTML !!}
+									<td class="d-none">
+										{{ $zlecenie->nr }} ; {{ $zlecenie->nr_obcy }}
+									</td>
                                 </tr>
                             @endforeach
 						</tbody>

@@ -32,7 +32,12 @@ class KosztorysPozycja extends Model
 
     public function getCenaAttribute(): float
     {
-        return round($this->attributes['cena'], 2);
+        return round($this->attributes['cena'], 4);
+    }
+
+    public function getCenaFormattedAttribute(): string
+    {
+        return number_format($this->cena, 2, '.', ' ') . ' zł'; // &nbsp;
     }
 
     public function getIloscAttribute(): float
@@ -42,12 +47,22 @@ class KosztorysPozycja extends Model
 
     public function getWartoscAttribute(): float
     {
-        return round($this->cena * $this->ilosc, 2);
+        return round($this->cena * $this->ilosc, 4);
+    }
+
+    public function getWartoscFormattedAttribute(): string
+    {
+        return number_format($this->wartosc, 2, '.', ' ') . ' zł'; // &nbsp;
     }
 
     public function getWartoscBruttoAttribute(): float
     {
-        return round($this->wartosc * ($this->vat + 1), 2);
+        return round($this->wartosc * ($this->vat + 1), 4);
+    }
+
+    public function getWartoscBruttoFormattedAttribute(): string
+    {
+        return number_format($this->wartosc_brutto, 2, '.', ' ') . ' zł'; // &nbsp;
     }
 
     /**

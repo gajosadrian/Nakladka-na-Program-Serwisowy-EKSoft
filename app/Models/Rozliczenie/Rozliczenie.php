@@ -16,9 +16,19 @@ class Rozliczenie extends Model
      *
      */
 
-    public function getNrAttribute()
+    public function getNrAttribute(): string
     {
-        return Carbon::create($this->rok, $this->miesiac)->format('Y-m');
+        return $this->data->format('Y-m');
+    }
+
+    public function getOkresAttribute(): string
+    {
+        return $this->nr;
+    }
+
+    public function getDataAttribute(): Carbon
+    {
+        return Carbon::create($this->rok, $this->miesiac)->endOfMonth()->endOfDay();
     }
 
     /**

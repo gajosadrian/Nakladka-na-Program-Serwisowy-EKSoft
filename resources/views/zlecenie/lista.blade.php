@@ -13,17 +13,17 @@
         <b-block>
             <template slot="content">
                 <div class="table-responsive">
-                    <table class="table table-sm table-striped table-hover table-vcenter dataTable">
+                    <table class="table table-sm table-striped table-hover table-vcenter font-size-sm dataTable">
 						<thead>
-							<tr class="thead-light">
-								<th>Lp.</th>
-								<th>Nazwisko i imię</th>
-								<th>Adres</th>
-								<th>Nr zlecenia</th>
-								<th>Urządzenie</th>
-								<th>Status</th>
-								<th>Błędy</th>
-								<th>Ostatnia data</th>
+							<tr class="text-uppercase">
+								<th class="font-w700">Lp.</th>
+								<th class="font-w700">Nazwisko i imię</th>
+								<th class="font-w700">Adres</th>
+								<th class="font-w700">Nr zlecenia</th>
+								<th class="font-w700">Urządzenie</th>
+								<th class="font-w700">Status</th>
+								<th class="font-w700">Błędy</th>
+								<th class="font-w700">Ostatnia data</th>
 								<th class="d-none"></th>
 							</tr>
 						</thead>
@@ -57,7 +57,7 @@
 										{{ $zlecenie->urzadzenie->producent }}
 									</td>
 
-                                    {!! $zlecenie->tableRowStatusHTML !!}
+                                    {!! $zlecenie->tableCellStatusHTML !!}
 
 									<td class="text-danger font-small">
 										@foreach ($zlecenie->errors as $error)

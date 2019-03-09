@@ -67,7 +67,7 @@
                                     </tr>
                                     <tr>
                                         <th>Rodzaj:</th>
-                                        <td><i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik->nazwa }}</td>
+                                        <td><i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }}</td>
                                     </tr>
                                     <tr>
                                         <th>Źródło:</th>
@@ -173,17 +173,17 @@
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">
                         <div class="tab-pane fade" id="kosztorys" role="tabpanel">
-                            <table class="table table-sm table-striped">
+                            <table class="table table-sm table-striped table-vcenter font-size-sm">
                                 <thead>
                                     <tr>
-                                        <th>Symbol dost.</th>
-                                        <th>Symbol</th>
-                                        <th>Nazwa</th>
-                                        {{-- <th>Opis</th> --}}
-                                        <th>Cena netto</th>
-                                        <th>Ilość</th>
-                                        <th>Wartość netto</th>
-                                        <th>Wartość brutto</th>
+                                        <th class="font-w700">Symbol dost.</th>
+                                        <th class="font-w700">Symbol</th>
+                                        <th class="font-w700">Nazwa</th>
+                                        {{-- <th class="font-w700">Opis</th> --}}
+                                        <th class="font-w700 text-right">Cena netto</th>
+                                        <th class="font-w700 text-center">Ilość</th>
+                                        <th class="font-w700 text-right">Wartość netto</th>
+                                        <th class="font-w700 text-right">Wartość brutto</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -199,12 +199,12 @@
                                         <tr>
                                             <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
                                             <td>{{ $pozycja->towar->symbol }}</td>
-                                            <td class="small align-middle">{{ $pozycja->towar->nazwa }}</td>
+                                            <td>{{ $pozycja->towar->nazwa }}</td>
                                             {{-- <td class="small">{{ $pozycja->towar->opis }}</td> --}}
-                                            <td>{{ $pozycja->cena }} zł</td>
-                                            <td class="{{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
-                                            <td>{{ $pozycja->wartosc }} zł</td>
-                                            <td>{{ $pozycja->wartosc_brutto }} zł</td>
+                                            <td class="text-right">{{ $pozycja->cena_formatted }}</td>
+                                            <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
+                                            <td class="text-right">{{ $pozycja->wartosc_formatted }}</td>
+                                            <td class="text-right">{{ $pozycja->wartosc_brutto_formatted }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -216,8 +216,8 @@
                                         {{-- <th></th> --}}
                                         <th></th>
                                         <th></th>
-                                        <th>{{ $wartosc_netto }} zł</th>
-                                        <th>{{ $wartosc_brutto }} zł</th>
+                                        <th class="text-right">{{ number_format($wartosc_netto, 2, '.', ' ') }} zł</th>
+                                        <th class="text-right">{{ number_format($wartosc_brutto, 2, '.', ' ') }} zł</th>
                                     </tr>
                                 </tfoot>
                             </table>

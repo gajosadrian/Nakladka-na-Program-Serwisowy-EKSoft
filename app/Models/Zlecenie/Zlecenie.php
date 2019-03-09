@@ -10,6 +10,7 @@ class Zlecenie extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'ser_Zlecenia';
     protected $primaryKey = 'id_zlecenia';
+    protected $with = ['kosztorys_opis'];
     public $timestamps = false;
 
     public static $SYMBOLE_KOSZTORYSU = [
@@ -17,10 +18,33 @@ class Zlecenie extends Model
         'DOJAZDY' => ['MICHAL-D' => ['Michał'], 'FILIP-D' => ['Filip'], 'MARCIN-D' => ['Marcin'], 'BOGUS-D' => ['Bogdan'], 'ROBERT-D' => ['Robert']],
     ];
 
+    public const ERROR_STR = '*Error*';
+    public const ODPLATNE_NAME = 'Odpłatne';
+    public static $ZLECENIODAWCY = [
+        // NIE EDYTOWAĆ INDEX'ÓW
+        'Odpłatne' => ['', 'odplatne', 'odpłatne'],
+        'Termet' => ['termet'],
+        'Amica' => ['amica', 'amika'],
+        'Gorenje' => ['gorenje', 'gorenie'],
+        'ERGO Hestia' => ['efficient', 'logisfera', 'logiswera', 'ergo-hestia', 'ergohestia', 'ergo', 'hestia'],
+        'Quadra-Net' => ['quadra', 'quadra-net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
+        'IBC' => ['ibc'],
+        'Kromet' => ['kromet', 'kromed', 'cromet', 'cromed'],
+        'Kernau' => ['kernau', 'kernał'],
+        'Novoterm' => ['novoterm', 'nowoterm'],
+        'Deante' => ['deante', 'deande'],
+        'Ciarko' => ['ciarko', 'ciarco'],
+    ];
+
     /**
     * Attributes
     *
     */
+
+    public function getDataAttribute(): Carbon
+    {
+        return $this->data_zakonczenia->startOfDay();
+    }
 
     public function getIdAttribute(): string
     {
@@ -69,7 +93,7 @@ class Zlecenie extends Model
                 'color' => false,
             ],
             'B' => (object) [
-                'nazwa' => 'Odpłatne',
+                'nazwa' => self::ODPLATNE_NAME,
                 'icon' => 'fa fa-dollar-sign',
                 'color' => false,
             ],
@@ -84,7 +108,42 @@ class Zlecenie extends Model
                 'color' => false,
             ],
         ];
-        return $array[$this->attributes['Z']] ?? $array['_default'];
+        $znacznik = $array[$this->attributes['Z']] ?? $array['_default'];
+
+        return $znacznik;
+    }
+
+    public function getZnacznikFormattedAttribute(): string
+    {
+        $nazwa = $this->znacznik->nazwa;
+
+        if ($nazwa != self::ODPLATNE_NAME) {
+            $nazwa .= '-' . $this->zleceniodawca;
+        }
+
+        return $nazwa;
+    }
+
+    public function getZleceniodawcaAttribute(): string
+    {
+        $zleceniodawcy = self::$ZLECENIODAWCY;
+        $zleceniodawca_type = strtolower($this->kosztorys_opis->opis ?? '');
+        $zleceniodawca = '';
+
+        if ($zleceniodawca_type == '' and $this->znacznik->nazwa != self::ODPLATNE_NAME) {
+            return self::ERROR_STR;
+        }
+
+        foreach ($zleceniodawcy as $_zleceniodawca => $arr) {
+            if (in_array($zleceniodawca_type, $arr)) {
+                $zleceniodawca = $_zleceniodawca;
+            }
+        }
+
+        if ($zleceniodawca == '') {
+            return 'Nieznany(' . $zleceniodawca_type . ')';
+        }
+        return $zleceniodawca;
     }
 
     public function getNrAttribute(): string
@@ -238,36 +297,26 @@ class Zlecenie extends Model
 
     public function getRobociznyHtmlAttribute(): string
     {
-        $symbole_robocizn = self::$SYMBOLE_KOSZTORYSU['ROBOCIZNY'];
-        $robocizny = $this->robocizny;
-        $str = '';
+        return $this->getHtmlKosztorys('ROBOCIZNY', $this->robocizny);
+    }
 
-        foreach ($robocizny as $symbol => $kwota) {
-            $robocizna_symbol = $symbole_robocizn[$symbol];
-            $robocizna_imie = $robocizna_symbol[0];
-
-            $str .= '<span class="mr-2"><span class="font-w700">' . $robocizna_imie . '</span>: ' . $kwota . ' zł</span> ';
-        }
-
-        return $str;
+    public function getDojazdyHtmlAttribute(): string
+    {
+        return $this->getHtmlKosztorys('DOJAZDY', $this->dojazdy);
     }
 
     public function getTableCellStatusHTMLAttribute(): string
     {
         $status_table_color = $this->status->color ? 'table-' . $this->status->color : '';
         $status_text_color = $this->status->color ? 'text-' . $this->status->color : '';
+        $status_nazwa = str_replace(' ', ' ', $this->status->nazwa); // &nbsp;
 
         return <<<HTML
-            <td class="{$status_table_color}">
+            <td class="{$status_table_color}" nowrap>
                 <i class="{$this->status->icon} {$status_text_color} mx-2"></i>
-                {$this->status->nazwa}
+                <span class="mr-2">{$status_nazwa}</span>
             </td>
 HTML;
-    }
-
-    public function getTableRowStatusHTMLAttribute(): string
-    {
-        return $this->tableCellStatusHTML;
     }
 
     // public function getStatusyAttribute()
@@ -331,6 +380,11 @@ HTML;
         return $this->hasMany('App\Models\Zlecenie\KosztorysPozycja', 'id_zs', 'id_zlecenia');
     }
 
+    public function kosztorys_opis()
+    {
+        return $this->hasOne('App\Models\Zlecenie\KosztorysOpis', 'id_zs', 'id_zlecenia');
+    }
+
     public function rozliczenie()
     {
         return $this->hasOne('App\Models\Rozliczenie\RozliczoneZlecenie', 'zlecenie_id', 'id_zlecenia');
@@ -368,16 +422,26 @@ HTML;
                 $ilosc = ($kosztorys_pozycja->ilosc == 0) ? 1 : $kosztorys_pozycja->ilosc;
                 $kwota = $kosztorys_pozycja->cena * $ilosc;
 
-                $array[$symbol] += $kwota;
+                $array[$symbol] += round($kwota, 4);
             }
         }
 
         return $array;
     }
 
-    private function getHtmlKosztorys(string $type): string
+    public static function getHtmlKosztorys(string $type, array $pozycje): string
     {
-        return '';
+        $symbole_pocyzji = self::$SYMBOLE_KOSZTORYSU[$type];
+        $str = '';
+
+        foreach ($pozycje as $symbol => $kwota) {
+            $pozycja_symbol = $symbole_pocyzji[$symbol];
+            $pozycja_imie = $pozycja_symbol[0];
+
+            $str .= '<span class="mr-2"><span class="font-w700">' . $pozycja_imie . '</span>: ' . number_format($kwota, 2, '.', ' ') . ' zł</span> ';
+        }
+
+        return $str;
     }
 
     public function changeStatus(int $status_id, int $pracownik_id, bool $remove_termin = false): void
