@@ -65,6 +65,11 @@ class KosztorysPozycja extends Model
         return number_format($this->wartosc_brutto, 2, '.', ' ') . ' zł'; // &nbsp;
     }
 
+    public function getIsCzescAttribute(): bool
+    {
+        return is_numeric($this->symbol) or $this->opis;
+    }
+
     /**
     * Relations
     *

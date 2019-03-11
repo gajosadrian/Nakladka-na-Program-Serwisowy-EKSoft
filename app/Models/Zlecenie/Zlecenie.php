@@ -14,8 +14,9 @@ class Zlecenie extends Model
     public $timestamps = false;
 
     public static $SYMBOLE_KOSZTORYSU = [
-        'ROBOCIZNY' => ['MICHAL-R' => ['Michał'], 'FILIP-R' => ['Filip'], 'MARCIN-R' => ['Marcin'], 'BOGUS-R' => ['Bogdan'], 'ROBERT-R' => ['Robert']],
-        'DOJAZDY' => ['MICHAL-D' => ['Michał'], 'FILIP-D' => ['Filip'], 'MARCIN-D' => ['Marcin'], 'BOGUS-D' => ['Bogdan'], 'ROBERT-D' => ['Robert']],
+        // MOŻNA EDYTOWAĆ IMIONA
+        'ROBOCIZNY' => ['SZEF-R' => ['Szef'], 'MICHAL-R' => ['Michał'], 'FILIP-R' => ['Filip'], 'MARCIN-R' => ['Marcin'], 'BOGUS-R' => ['Bogdan'], 'ROBERT-R' => ['Robert']],
+        'DOJAZDY' => ['SZEF-D' => ['Szef'], 'MICHAL-D' => ['Michał'], 'FILIP-D' => ['Filip'], 'MARCIN-D' => ['Marcin'], 'BOGUS-D' => ['Bogdan'], 'ROBERT-D' => ['Robert']],
     ];
 
     public const ERROR_STR = '*Error*';
@@ -322,6 +323,7 @@ HTML;
     public function getTableCellNrHTMLAttribute(): string
     {
         $route_zleceniaPokaz = route('zlecenia.pokaz', $this->id);
+        $copy_nr = $this->nr_obcy ?: $this->nr;
 
         return <<<HTML
             <td class="font-w600">
@@ -329,7 +331,7 @@ HTML;
                     <i class="{$this->znacznik->icon} mr-2"></i>
                     {$this->nr_or_obcy}
                 </a>
-                <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{$this->nr}'">
+                <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{$copy_nr}'">
                     <i class="far fa-copy"></i>
                 </a>
             </td>
@@ -455,11 +457,34 @@ HTML;
             $pozycja_symbol = $symbole_pocyzji[$symbol];
             $pozycja_imie = $pozycja_symbol[0];
 
-            $str .= '<span class="mr-2"><span class="font-w700">' . $pozycja_imie . '</span>: ' . number_format($kwota, 2, '.', ' ') . ' zł</span> ';
+            $str .= '<span class="mr-2"><span class="font-w700">' . $pozycja_imie . '</span>: ' . round($kwota, 2) . ' zł</span> ';
         }
 
         return $str;
     }
+
+    // public function getSumOf(string $type, string $pozycja_type = null): int
+    // {
+    //     $type_lower = strtolower($type);
+    //     $pozycje = $this->type_lower;
+    //
+    //     return self::helper_getSumOf($pozycje);
+    // }
+    //
+    // public static function helper_getSumOf(array $pozycje, string $pozycja_type = null): int
+    // {
+    //     if (!isset($pozycja_type)) {
+    //         return array_sum($pozycje);
+    //     }
+    //
+    //     $sum = 0;
+    //     foreach ($pozycje as $pozycja_symbol => $kwota) {
+    //         if ($pozycja_symbol == $pozycja_type) {
+    //             $sum += $kwota;
+    //         }
+    //     }
+    //     return $sum;
+    // }
 
     public function changeStatus(int $status_id, int $pracownik_id, bool $remove_termin = false): void
     {

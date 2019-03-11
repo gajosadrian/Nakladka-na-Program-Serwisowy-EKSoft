@@ -53,21 +53,19 @@ class RozliczenieController extends Controller
      * Display the specified resource.
      *
      */
-    public function show($id)
+    public function show(int $id)
     {
-        $rozliczenie = Rozliczenie::with('zlecenia')->findOrFail($id);
+        $rozliczenie = Rozliczenie::with('rozliczone_zlecenia.zlecenie')->findOrFail($id);
+        $rozliczone_zlecenia = $rozliczenie->rozliczone_zlecenia->sortBy('zleceniodawca');
 
-        $zlecenia_nierozliczone = Zlecenie\Zlecenie::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->latest('id_zlecenia')->limit(100)->get();
+        $zlecenia_nierozliczone = Zlecenie\Zlecenie::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->latest('id_zlecenia')->limit(6000)->get();
         $zlecenia_nierozliczone = $zlecenia_nierozliczone->filter(function ($zlecenie) {
             // return !$zlecenie->is_rozliczone and $zlecenie->data_zakonczenia <= Carbon::create(2019, 1, 31)->endOfDay() and $zlecenie->status->id == 26;
             return !$zlecenie->is_rozliczone and in_array($zlecenie->status->id, [Zlecenie\Status::ZAKONCZONE_ID, Zlecenie\Status::DO_ROZLICZENIA_ID]);
         })->sortBy('data_zakonczenia');
-        // $okresy_zlecen = $zlecenia_nierozliczone->groupBy('okres');
 
-        $zlecenia_rozliczone = $rozliczenie->zlecenia;
-
-        $nierozliczone_zlecenia_amount = count($zlecenia_nierozliczone);
-        $rozliczone_zlecenia_amount = count($zlecenia_rozliczone);
+        $zlecenia_nierozliczone_amount = count($zlecenia_nierozliczone);
+        $rozliczone_zlecenia_amount = count($rozliczone_zlecenia);
 
         // foreach ($zlecenia_nierozliczone as $zlecenie) {
         //     $rozliczone_zlecenie = new RozliczoneZlecenie;
@@ -81,8 +79,29 @@ class RozliczenieController extends Controller
         return view('rozliczenia.pokaz', compact(
             'rozliczenie',
             'zlecenia_nierozliczone',
-            'nierozliczone_zlecenia_amount',
+            'rozliczone_zlecenia',
+            'zlecenia_nierozliczone_amount',
             'rozliczone_zlecenia_amount'
+        ));
+    }
+
+    public function analiza(int $id, string $zleceniodawca = null)
+    {
+        $rozliczenie = Rozliczenie::findOrFail($id);
+        // $rozliczone_zlecenia = $rozliczenie->rozliczone_zlecenia->sortBy('zleceniodawca');
+        $zleceniodawcy = $rozliczenie->zleceniodawcy;
+
+        $is_zleceniodawca = isset($zleceniodawca);
+        if ($is_zleceniodawca) {
+            $zlecenia = $rozliczenie->rozliczone_zlecenia()->with('zlecenie', 'zlecenie.kosztorys_pozycje')->where('zleceniodawca', $zleceniodawca)->get();
+        }
+
+        return view('rozliczenia.analiza', compact(
+            'rozliczenie',
+            'zleceniodawcy',
+            'is_zleceniodawca',
+            'zleceniodawca',
+            'zlecenia'
         ));
     }
 

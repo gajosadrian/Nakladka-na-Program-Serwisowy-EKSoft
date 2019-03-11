@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('rozliczenia')->name('rozliczenia.')->group(function () {
             Route::get('/', 'Rozliczenie\RozliczenieController@index')->name('lista');
             Route::get('/{id}', 'Rozliczenie\RozliczenieController@show')->name('pokaz');
+            Route::get('/{id}/analiza/{zleceniodawca?}', 'Rozliczenie\RozliczenieController@analiza')->name('analiza');
             Route::post('/', 'Rozliczenie\RozliczenieController@store')->name('store');
         });
 

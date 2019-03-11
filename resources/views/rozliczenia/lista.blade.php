@@ -58,13 +58,16 @@
                             @foreach ($rozliczenia ?? [] as $rozliczenie)
                                 <tr>
                                     <td>{{ $rozliczenie->nr }}</td>
-                                    <td class="text-right text-muted">-</td>
-                                    <td class="text-right text-muted">-</td>
+                                    <td class="text-right text-muted">{{ $rozliczenie->suma_robocizn_formatted }}</td>
+                                    <td class="text-right text-muted">{{ $rozliczenie->suma_dojazdow_formatted }}</td>
                                     <td class="text-muted">{!! $rozliczenie->is_closed ? $rozliczenie->closed_at : '<i class="text-success font-w600">w trakcie rozliczania</i>' !!}</td>
                                     <td class="text-muted">-</td>
                                     <td>
-                                        <a href="{{ route('rozliczenia.pokaz', [ 'id' => $rozliczenie->id ]) }}" class="font-w600" onclick="$('#storeRozliczenie').click()">
+                                        <a href="{{ route('rozliczenia.pokaz', [ 'id' => $rozliczenie->id ]) }}" class="font-w600">
                                             <i class="far fa-eye"></i> Zobacz
+                                        </a>
+                                        <a href="{{ route('rozliczenia.analiza', [ 'id' => $rozliczenie->id ]) }}" class="font-w600 ml-3">
+                                            <i class="fa fa-align-left"></i> Analiza
                                         </a>
                                         <a href="javascript:void(0)" class="text-danger font-w600 ml-3" onclick="$('#storeRozliczenie').click()">
                                             <i class="fa fa-lock"></i> Zakończ rozliczenie
