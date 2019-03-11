@@ -64,12 +64,16 @@
                                     <td class="text-muted">-</td>
                                     <td>
                                         <a href="{{ route('rozliczenia.pokaz', [ 'id' => $rozliczenie->id ]) }}" class="font-w600">
-                                            <i class="far fa-eye"></i> Zobacz
+                                            @if ($rozliczenie->is_closed)
+                                                <i class="far fa-eye"></i> Zobacz
+                                            @else
+                                                <i class="fa fa-pencil-alt"></i> Edytuj
+                                            @endif
                                         </a>
                                         <a href="{{ route('rozliczenia.analiza', [ 'id' => $rozliczenie->id ]) }}" class="font-w600 ml-3">
                                             <i class="fa fa-align-left"></i> Analiza
                                         </a>
-                                        <a href="javascript:void(0)" class="text-danger font-w600 ml-3" onclick="$('#storeRozliczenie').click()">
+                                        <a href="javascript:void(0)" class="text-danger font-w600 ml-3">
                                             <i class="fa fa-lock"></i> Zakończ rozliczenie
                                         </a>
                                     </td>

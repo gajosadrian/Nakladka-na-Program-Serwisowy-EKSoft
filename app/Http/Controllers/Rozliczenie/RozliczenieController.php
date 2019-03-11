@@ -58,14 +58,16 @@ class RozliczenieController extends Controller
         $rozliczenie = Rozliczenie::with('rozliczone_zlecenia.zlecenie')->findOrFail($id);
         $rozliczone_zlecenia = $rozliczenie->rozliczone_zlecenia->sortBy('zleceniodawca');
 
-        $zlecenia_nierozliczone = Zlecenie\Zlecenie::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->latest('id_zlecenia')->limit(6000)->get();
-        $zlecenia_nierozliczone = $zlecenia_nierozliczone->filter(function ($zlecenie) {
-            // return !$zlecenie->is_rozliczone and $zlecenie->data_zakonczenia <= Carbon::create(2019, 1, 31)->endOfDay() and $zlecenie->status->id == 26;
-            return !$zlecenie->is_rozliczone and in_array($zlecenie->status->id, [Zlecenie\Status::ZAKONCZONE_ID, Zlecenie\Status::DO_ROZLICZENIA_ID]);
-        })->sortBy('data_zakonczenia');
+        if (! $rozliczenie->is_closed) {
+            $zlecenia_nierozliczone = Zlecenie\Zlecenie::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->latest('id_zlecenia')->limit(6000)->get();
+            $zlecenia_nierozliczone = $zlecenia_nierozliczone->filter(function ($zlecenie) {
+                // return !$zlecenie->is_rozliczone and $zlecenie->data_zakonczenia <= Carbon::create(2019, 1, 31)->endOfDay() and $zlecenie->status->id == 26;
+                return !$zlecenie->is_rozliczone and in_array($zlecenie->status->id, [Zlecenie\Status::ZAKONCZONE_ID, Zlecenie\Status::DO_ROZLICZENIA_ID]);
+            })->sortBy('data_zakonczenia');
+        }
 
-        $zlecenia_nierozliczone_amount = count($zlecenia_nierozliczone);
         $rozliczone_zlecenia_amount = count($rozliczone_zlecenia);
+        $zlecenia_nierozliczone_amount = @count($zlecenia_nierozliczone) ?? 0;
 
         // foreach ($zlecenia_nierozliczone as $zlecenie) {
         //     $rozliczone_zlecenie = new RozliczoneZlecenie;

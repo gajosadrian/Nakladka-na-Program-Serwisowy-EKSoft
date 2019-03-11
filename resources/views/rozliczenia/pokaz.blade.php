@@ -61,7 +61,7 @@
                         Rozliczone zlecenia
                     </a>
                 </div>
-                <div id="accordion_q1" class="collapse" role="tabpanel" aria-labelledby="accordion_h1" data-parent="#accordion">
+                <div id="accordion_q1" class="collapse {{ $rozliczenie->is_closed ? 'show' : '' }}" role="tabpanel" aria-labelledby="accordion_h1" data-parent="#accordion">
                     <div class="block-content">
                         <div class="table-responsive">
                             <table id="rozliczone{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm dataTable">
@@ -86,63 +86,65 @@
                     </div>
                 </div>
             </div>
-            <div class="block block-rounded shadow-sm mb-1">
-                <div class="block-header block-header-default" role="tab" id="accordion_h2">
-                    <a class="font-w600" data-toggle="collapse" data-parent="#accordion" href="#accordion_q2" aria-expanded="true" aria-controls="accordion_q2">
-                        Nierozliczone zlecenia
-                    </a>
-                </div>
-                <div id="accordion_q2" class="collapse show" role="tabpanel" aria-labelledby="accordion_h2" data-parent="#accordion">
-                    <div class="block-content">
-                        <div>
-                            <b-button variant="primary" size="sm" onclick="rozliczZaznaczone{{ $room }}()">Rozlicz zaznaczone</b-button>
-                        </div>
-                        <div class="table-responsive">
-                            <table id="nierozliczone{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
-                                <thead>
-                                    <tr class="text-uppercase">
-                                        <th class="font-w700">
-                                            <b-form-checkbox id="check-all" name="check-all"></b-form-checkbox>
-                                        </th>
-                                        <th class="font-w700">Nr zlecenia</th>
-                                        <th class="font-w700">Zleceniodawca</th>
-                                        <th class="font-w700">Robocizny</th>
-                                        <th class="font-w700">Dojazdy</th>
-                                        <th class="font-w700">Przyjęcie</th>
-                                        <th class="font-w700">Zakończenie</th>
-                                        <th class="font-w700">Status</th>
-                                        <th class="d-none"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php $counter = 0 @endphp
-                                    @foreach ($zlecenia_nierozliczone as $zlecenie)
-                                        @php
-                                            $counter++;
-                                            $robocizny = $zlecenie->robocizny;
-                                        @endphp
-                                        <tr data-zlecenie_id="{{ $zlecenie->id }}" class="{{ ($zlecenie->is_data_zakonczenia and $zlecenie->data->gt($rozliczenie->data) or (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->gt($rozliczenie->data))) ? 'table-secondary' : '' }}">
-                                            <td>
-                                                <b-form-checkbox id="row_{{ $counter }}" name="row_{{ $counter }}"></b-form-checkbox>
-                                            </td>
-                                            {!! $zlecenie->tableCellNrHTML !!}
-                                            <td>{{ $zlecenie->zleceniodawca }}</td>
-                                            <td class="{{ empty($robocizny) ? 'table-danger' : '' }}">{!! $robocizny ? $zlecenie->robocizny_html : '<span class="text-danger font-w700">Do uzupełnienia</span>' !!}</td>
-                                            <td>{!! $zlecenie->dojazdy_html !!}</td>
-                                            <td>{{ $zlecenie->data_przyjecia->toDateString() }}</td>
-                                            <td>{!! $zlecenie->is_data_zakonczenia ? $zlecenie->data_zakonczenia->toDateString() : '<span class="text-danger font-w700">Brak terminu</span>' !!}</td>
-                                            {!! $zlecenie->tableCellStatusHTML !!}
-                                            <td class="d-none">
-                                                {{ $zlecenie->nr }} ; {{ $zlecenie->nr_obcy }}
-                                            </td>
+            @if (! $rozliczenie->is_closed)
+                <div class="block block-rounded shadow-sm mb-1">
+                    <div class="block-header block-header-default" role="tab" id="accordion_h2">
+                        <a class="font-w600" data-toggle="collapse" data-parent="#accordion" href="#accordion_q2" aria-expanded="true" aria-controls="accordion_q2">
+                            Nierozliczone zlecenia
+                        </a>
+                    </div>
+                    <div id="accordion_q2" class="collapse show" role="tabpanel" aria-labelledby="accordion_h2" data-parent="#accordion">
+                        <div class="block-content">
+                            <div>
+                                <b-button variant="primary" size="sm" onclick="rozliczZaznaczone{{ $room }}()">Rozlicz zaznaczone</b-button>
+                            </div>
+                            <div class="table-responsive">
+                                <table id="nierozliczone{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
+                                    <thead>
+                                        <tr class="text-uppercase">
+                                            <th class="font-w700">
+                                                <b-form-checkbox id="check-all" name="check-all"></b-form-checkbox>
+                                            </th>
+                                            <th class="font-w700">Nr zlecenia</th>
+                                            <th class="font-w700">Zleceniodawca</th>
+                                            <th class="font-w700">Robocizny</th>
+                                            <th class="font-w700">Dojazdy</th>
+                                            <th class="font-w700">Przyjęcie</th>
+                                            <th class="font-w700">Zakończenie</th>
+                                            <th class="font-w700">Status</th>
+                                            <th class="d-none"></th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @php $counter = 0 @endphp
+                                        @foreach ($zlecenia_nierozliczone as $zlecenie)
+                                            @php
+                                                $counter++;
+                                                $robocizny = $zlecenie->robocizny;
+                                            @endphp
+                                            <tr data-zlecenie_id="{{ $zlecenie->id }}" class="{{ ($zlecenie->is_data_zakonczenia and $zlecenie->data->gt($rozliczenie->data) or (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->gt($rozliczenie->data))) ? 'table-secondary' : '' }}">
+                                                <td>
+                                                    <b-form-checkbox id="row_{{ $counter }}" name="row_{{ $counter }}"></b-form-checkbox>
+                                                </td>
+                                                {!! $zlecenie->tableCellNrHTML !!}
+                                                <td>{{ $zlecenie->zleceniodawca }}</td>
+                                                <td class="{{ empty($robocizny) ? 'table-danger' : '' }}">{!! $robocizny ? $zlecenie->robocizny_html : '<span class="text-danger font-w700">Do uzupełnienia</span>' !!}</td>
+                                                <td>{!! $zlecenie->dojazdy_html !!}</td>
+                                                <td>{{ $zlecenie->data_przyjecia->toDateString() }}</td>
+                                                <td>{!! $zlecenie->is_data_zakonczenia ? $zlecenie->data_zakonczenia->toDateString() : '<span class="text-danger font-w700">Brak terminu</span>' !!}</td>
+                                                {!! $zlecenie->tableCellStatusHTML !!}
+                                                <td class="d-none">
+                                                    {{ $zlecenie->nr }} ; {{ $zlecenie->nr_obcy }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 @endsection
