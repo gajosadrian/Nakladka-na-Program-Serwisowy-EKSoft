@@ -31,6 +31,11 @@ class Rozliczenie extends Model
         return Carbon::create($this->rok, $this->miesiac)->endOfMonth()->endOfDay();
     }
 
+    public function getRozliczylAttribute(): string
+    {
+        return $this->_pracownik->nazwa;
+    }
+
     /**
      * Methods
      *
@@ -39,5 +44,20 @@ class Rozliczenie extends Model
     public static function getLast()
     {
         return self::latest()->first();
+    }
+
+    /**
+     * Relations
+     *
+     */
+
+    public function zlecenia()
+    {
+        return $this->hasMany('App\Models\Rozliczenie\RozliczoneZlecenie');
+    }
+
+    public function _pracownik()
+    {
+        return $this->hasOne('App\Models\SMS\Pracownik', 'LOGIN', 'pracownik');
     }
 }

@@ -17,6 +17,10 @@ class RozliczoneZlecenieController extends Controller
     {
         $user = auth()->user();
 
+        if (empty($request->zlecenia_ids)) {
+            return response()->json('success', 200);
+        }
+
         foreach ($request->zlecenia_ids as $zlecenie_id) {
             $zlecenie = Zlecenie::findOrFail($zlecenie_id);
 

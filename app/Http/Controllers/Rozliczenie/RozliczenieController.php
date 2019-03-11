@@ -55,16 +55,19 @@ class RozliczenieController extends Controller
      */
     public function show($id)
     {
-        $rozliczenie = Rozliczenie::findOrFail($id);
+        $rozliczenie = Rozliczenie::with('zlecenia')->findOrFail($id);
 
-        $zlecenia_nierozliczone = Zlecenie\Zlecenie::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->latest('id_zlecenia')->limit(6000)->get();
+        $zlecenia_nierozliczone = Zlecenie\Zlecenie::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->latest('id_zlecenia')->limit(100)->get();
         $zlecenia_nierozliczone = $zlecenia_nierozliczone->filter(function ($zlecenie) {
             // return !$zlecenie->is_rozliczone and $zlecenie->data_zakonczenia <= Carbon::create(2019, 1, 31)->endOfDay() and $zlecenie->status->id == 26;
             return !$zlecenie->is_rozliczone and in_array($zlecenie->status->id, [Zlecenie\Status::ZAKONCZONE_ID, Zlecenie\Status::DO_ROZLICZENIA_ID]);
         })->sortBy('data_zakonczenia');
         // $okresy_zlecen = $zlecenia_nierozliczone->groupBy('okres');
 
-        $zlecenia_amount = count($zlecenia_nierozliczone);
+        $zlecenia_rozliczone = $rozliczenie->zlecenia;
+
+        $nierozliczone_zlecenia_amount = count($zlecenia_nierozliczone);
+        $rozliczone_zlecenia_amount = count($zlecenia_rozliczone);
 
         // foreach ($zlecenia_nierozliczone as $zlecenie) {
         //     $rozliczone_zlecenie = new RozliczoneZlecenie;
@@ -78,7 +81,8 @@ class RozliczenieController extends Controller
         return view('rozliczenia.pokaz', compact(
             'rozliczenie',
             'zlecenia_nierozliczone',
-            'zlecenia_amount'
+            'nierozliczone_zlecenia_amount',
+            'rozliczone_zlecenia_amount'
         ));
     }
 
@@ -96,6 +100,6 @@ class RozliczenieController extends Controller
         $rozliczenie->miesiac = $request->miesiac;
         $rozliczenie->save();
 
-        return redirect()->route('rozliczenia.lista');
+        return redirect()->back();
     }
 }
