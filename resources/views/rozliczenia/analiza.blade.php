@@ -17,7 +17,7 @@
             <template slot="content">
                 <b-button-group>
                     @foreach ($zleceniodawcy as $_zleceniodawca)
-                        <b-link href="{{ route('rozliczenia.analiza', [ 'id' => $rozliczenie->id, 'zleceniodawca' => $_zleceniodawca ]) }}" class="btn btn-outline-primary">{{ $_zleceniodawca }}</b-link>
+                        <b-link href="{{ route('rozliczenia.analiza', [ 'id' => $rozliczenie->id, 'zleceniodawca' => $_zleceniodawca ]) }}" class="btn btn-outline-primary {{ ($_zleceniodawca == $zleceniodawca) ? 'active' : '' }}">{{ $_zleceniodawca }}</b-link>
                     @endforeach
                 </b-button-group>
             </template>
@@ -58,15 +58,28 @@
                                 </tr>
                                 @foreach ($zlecenie->kosztorys_pozycje as $index2 => $pozycja)
                                     @if ($pozycja->is_czesc)
+                                        @if ($index2 == 0)
+                                            <tr id="noclicable">
+                                                <th>{{ $index + 1 }}.{{ $index2 }}</th>
+                                                <th>Symbol</th>
+                                                <th>Symbol dost.</th>
+                                                <th>Nazwa</th>
+                                                <th class="text-right">Cena netto</th>
+                                                <th class="text-center">Ilość</th>
+                                                <th class="text-right">Wartość netto</th>
+                                                <th class="text-right">Wartość brutto</th>
+                                                <th class="d-none"></th>
+                                            </tr>
+                                        @endif
                                         <tr>
                                             <th>{{ $index + 1 }}.{{ $index2 + 1 }}</th>
                                             <td>{{ $pozycja->towar->symbol }}</td>
                                             <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
-                                            <td>{{ $pozycja->towar->nazwa }}</td>
+                                            <td>{{ $pozycja->towar->nazwa }} {{ $pozycja->opis ? '-' : '' }} <span class="text-danger">{{ $pozycja->opis }}</span></td>
                                             <td class="text-right">{{ $pozycja->cena_formatted }}</td>
                                             <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
-                                            <td class="text-right">{{ $pozycja->wartosc_formatted }}</td>
-                                            <td class="text-right">{{ $pozycja->wartosc_brutto_formatted }}</td>
+                                            <th class="text-right">{{ $pozycja->wartosc_formatted }}</th>
+                                            <th class="text-right">{{ $pozycja->wartosc_brutto_formatted }}</th>
                                             <td class="d-none">
                                                 {{ $zlecenie->nr }} ; {{ $zlecenie->nr_obcy }}
                                             </td>
@@ -81,3 +94,18 @@
         @endif
     </div>
 @endsection
+
+@section('js_after')<script>$(function(){
+    var $lastRow = null;
+
+    $('table#zlecenia{{ $room }} > tbody tr:not(#noclicable)').click(function () {
+        let $row = $(this);
+
+        if ($lastRow) {
+            $lastRow.removeClass('table-danger');
+        }
+        $row.addClass('table-danger');
+
+        $lastRow = $row;
+    });
+})</script>@endsection
