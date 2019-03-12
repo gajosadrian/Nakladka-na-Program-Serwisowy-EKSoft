@@ -15,8 +15,8 @@ class Zlecenie extends Model
 
     public static $SYMBOLE_KOSZTORYSU = [
         // MOŻNA EDYTOWAĆ IMIONA
-        'ROBOCIZNY' => ['SZEF-R' => ['Szef'], 'MICHAL-R' => ['Michał'], 'FILIP-R' => ['Filip'], 'MARCIN-R' => ['Marcin'], 'BOGUS-R' => ['Bogdan'], 'ROBERT-R' => ['Robert']],
-        'DOJAZDY' => ['SZEF-D' => ['Szef'], 'MICHAL-D' => ['Michał'], 'FILIP-D' => ['Filip'], 'MARCIN-D' => ['Marcin'], 'BOGUS-D' => ['Bogdan'], 'ROBERT-D' => ['Robert']],
+        'ROBOCIZNY' => ['SZEF-R' => ['Szef'], 'MICHAL-R' => ['Michał'], 'FILIP-R' => ['Filip'], 'MARCIN-R' => ['Marcin'], 'BOGUS-R' => ['Bogdan'], 'ROBERT-R' => ['Robert'], 'DAMIAN-R' => ['Damian']],
+        'DOJAZDY' => ['SZEF-D' => ['Szef'], 'MICHAL-D' => ['Michał'], 'FILIP-D' => ['Filip'], 'MARCIN-D' => ['Marcin'], 'BOGUS-D' => ['Bogdan'], 'ROBERT-D' => ['Robert'], 'DAMIAN-D' => ['Damian']],
     ];
 
     public const ERROR_STR = '*Error*';

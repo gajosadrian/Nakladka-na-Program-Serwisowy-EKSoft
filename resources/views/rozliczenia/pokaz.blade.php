@@ -70,6 +70,7 @@
                                     <th class="font-w700">Zleceniodawca</th>
                                     <th class="font-w700">Robocizny</th>
                                     <th class="font-w700">Dojazdy</th>
+                                    <th class="d-none"></th>
                                 </thead>
                                 <tbody>
                                     @foreach ($rozliczone_zlecenia as $rozliczone_zlecenie)
@@ -78,6 +79,9 @@
                                             <td>{{ $rozliczone_zlecenie->zleceniodawca }}</td>
                                             <td>{!! $rozliczone_zlecenie->robocizny_html !!}</td>
                                             <td>{!! $rozliczone_zlecenie->dojazdy_html !!}</td>
+                                            <td class="d-none">
+                                                {{ $rozliczone_zlecenie->zlecenie->nr }} ; {{ $rozliczone_zlecenie->zlecenie->nr_obcy }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
