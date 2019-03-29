@@ -21,6 +21,7 @@ class Zlecenie extends Model
 
     public const ERROR_STR = '*Error*';
     public const ODPLATNE_NAME = 'Odpłatne';
+    public const GWARANCJA_NAME = 'Gwarancja';
     public static $ZLECENIODAWCY = [
         // NIE EDYTOWAĆ INDEX'ÓW
         'Odpłatne' => ['', 'odplatne', 'odpłatne'],
@@ -36,6 +37,15 @@ class Zlecenie extends Model
         'Deante' => ['deante', 'deande'],
         'Ciarko' => ['ciarko', 'ciarco'],
         'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi'],
+        'Europ Assistance' => ['europ assistance', 'europ', 'eap'],
+        'RTV Euro AGD' => ['euro-net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
+        'Mentax' => ['mentax', 'mentaks'],
+        'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
+        'Arconet' => ['arconet', 'arkonet', 'arqonet'],
+        'Ferroli' => ['ferroli', 'feroli'],
+        'Mondial' => ['mondial'],
+        'Enpol' => ['enpol'],
+        'Akpo' => ['akpo'],
     ];
 
     /**
@@ -90,7 +100,7 @@ class Zlecenie extends Model
     {
         $array = [
             'A' => (object) [
-                'nazwa' => 'Gwarancja',
+                'nazwa' => self::GWARANCJA_NAME,
                 'icon' => 'fa fa-shield-alt',
                 'color' => false,
             ],
@@ -133,7 +143,11 @@ class Zlecenie extends Model
         $zleceniodawca = '';
 
         if ($zleceniodawca_type == '' and $this->znacznik->nazwa != self::ODPLATNE_NAME) {
-            return self::ERROR_STR;
+            if ($this->znacznik->nazwa == self::GWARANCJA_NAME) {
+                $zleceniodawca_type = strtolower($this->urzadzenie->producent);
+            } else {
+                return self::ERROR_STR;
+            }
         }
 
         foreach ($zleceniodawcy as $_zleceniodawca => $arr) {
@@ -146,6 +160,15 @@ class Zlecenie extends Model
             return 'Nieznany(' . $zleceniodawca_type . ')';
         }
         return $zleceniodawca;
+    }
+
+    public function getZleceniodawcaFormattedAttribute(): string
+    {
+        if ($this->zleceniodawca != self::ERROR_STR) {
+            return $this->zleceniodawca;
+        }
+
+        return '<span class="font-w700 text-danger">' . $this->zleceniodawca . '</span>';
     }
 
     public function getNrAttribute(): string
@@ -292,9 +315,19 @@ class Zlecenie extends Model
         return $this->getCalcKosztorys('ROBOCIZNY');
     }
 
+    public function getSumaRobociznAttribute(): float
+    {
+        return array_sum($this->robocizny);
+    }
+
     public function getDojazdyAttribute(): array
     {
         return $this->getCalcKosztorys('DOJAZDY');
+    }
+
+    public function getSumaDojazdowAttribute(): float
+    {
+        return array_sum($this->dojazdy);
     }
 
     public function getRobociznyHtmlAttribute(): string

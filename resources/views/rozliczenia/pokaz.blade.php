@@ -15,10 +15,20 @@
     <div class="content">
         <b-block full>
             <template slot="content">
+                @foreach ($rozliczenie->robocizny as $symbol => $kwota)
+                    <div>
+                        <span class="font-w700">{{ $symbol }}:</span> {{ $kwota }}
+                    </div>
+                @endforeach
+            </template>
+        </b-block>
+
+        <b-block full>
+            <template slot="content">
                 <b-row class="text-center">
                     @foreach ([
                         [true, 'fa fa-user-check text-primary', false, $rozliczenie->rozliczyl, ($rozliczenie->is_closed ? 'Rozliczył' : 'Utworzył')],
-                        [!$rozliczenie->is_closed, 'fa fa-clock text-primary', 'zlecenia_nierozliczone_amount' . $room, $zlecenia_nierozliczone_amount, 'Zlecenia nierozliczone'],
+                        [!$rozliczenie->is_closed, 'fa fa-clock text-primary', 'zlecenia_nierozliczone_amount' . $room, '??', 'Zlecenia nierozliczone'],
                         [true, 'fa fa-check text-success', 'rozliczone_zlecenia_amount' . $room, $rozliczone_zlecenia_amount, 'Zlecenia rozliczone']
                     ] as $value)
                         @if ($value[0])
@@ -66,19 +76,32 @@
                         <div class="table-responsive">
                             <table id="rozliczone{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm dataTable">
                                 <thead>
+                                    <th class="font-w700" style="width:1%">Lp.</th>
                                     <th class="font-w700">Nr zlecenia</th>
                                     <th class="font-w700">Zleceniodawca</th>
                                     <th class="font-w700">Robocizny</th>
                                     <th class="font-w700">Dojazdy</th>
+                                    <th class="font-w700">Zakończenie</th>
+                                    <th class="font-w700">Działania</th>
                                     <th class="d-none"></th>
                                 </thead>
                                 <tbody>
+                                    @php $counter = 0 @endphp
                                     @foreach ($rozliczone_zlecenia as $rozliczone_zlecenie)
-                                        <tr>
+                                        <tr id="{{ $rozliczone_zlecenie->id }}">
+                                            <th>{{ ++$counter }}</th>
                                             {!! $rozliczone_zlecenie->zlecenie->tableCellNrHTML !!}
                                             <td>{{ $rozliczone_zlecenie->zleceniodawca }}</td>
                                             <td>{!! $rozliczone_zlecenie->robocizny_html !!}</td>
                                             <td>{!! $rozliczone_zlecenie->dojazdy_html !!}</td>
+                                            <td>{{ $rozliczone_zlecenie->zlecenie->data_zakonczenia->toDateString() }}</td>
+                                            <td>
+                                                @if (! $rozliczenie->is_closed)
+                                                    <a onclick="removeRozliczoneZlecenie{{ $room }}({{ $rozliczone_zlecenie->id }})" href="javascript:void(0)" class="text-danger font-w600">
+                                                        <i class="fa fa-trash-alt"></i> Usuń
+                                                    </a>
+                                                @endif
+                                            </td>
                                             <td class="d-none">
                                                 {{ $rozliczone_zlecenie->zlecenie->nr }} ; {{ $rozliczone_zlecenie->zlecenie->nr_obcy }}
                                             </td>
@@ -100,7 +123,10 @@
                     <div id="accordion_q2" class="collapse show" role="tabpanel" aria-labelledby="accordion_h2" data-parent="#accordion">
                         <div class="block-content">
                             <div>
-                                <b-button variant="primary" size="sm" onclick="rozliczZaznaczone{{ $room }}()">Rozlicz zaznaczone</b-button>
+                                <b-button variant="primary" size="sm" onclick="rozliczZaznaczone{{ $room }}(false)">Rozlicz zaznaczone</b-button>
+                                <span class="ml-10">
+                                    <b-button variant="danger" size="sm" onclick="rozliczZaznaczone{{ $room }}(true)"><i class="fa fa-trash-alt mr-1"></i> Usuń zaznaczone</b-button>
+                                </span>
                             </div>
                             <div class="table-responsive">
                                 <table id="nierozliczone{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
@@ -126,12 +152,12 @@
                                                 $counter++;
                                                 $robocizny = $zlecenie->robocizny;
                                             @endphp
-                                            <tr data-zlecenie_id="{{ $zlecenie->id }}" class="{{ ($zlecenie->is_data_zakonczenia and $zlecenie->data->gt($rozliczenie->data) or (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->gt($rozliczenie->data))) ? 'table-secondary' : '' }}">
+                                            <tr data-zlecenie_id="{{ $zlecenie->id }}" class="{{ ($zlecenie->is_data_zakonczenia and $zlecenie->data->gt($rozliczenie->data) or (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->gt($rozliczenie->data))) ? 'table-secondary' : '' }} {{ (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->lte($rozliczenie->data)) ? 'table-danger' : '' }}">
                                                 <td>
                                                     <b-form-checkbox id="row_{{ $counter }}" name="row_{{ $counter }}"></b-form-checkbox>
                                                 </td>
                                                 {!! $zlecenie->tableCellNrHTML !!}
-                                                <td>{{ $zlecenie->zleceniodawca }}</td>
+                                                <td>{!! $zlecenie->zleceniodawca_formatted !!}</td>
                                                 <td class="{{ empty($robocizny) ? 'table-danger' : '' }}">{!! $robocizny ? $zlecenie->robocizny_html : '<span class="text-danger font-w700">Do uzupełnienia</span>' !!}</td>
                                                 <td>{!! $zlecenie->dojazdy_html !!}</td>
                                                 <td>{{ $zlecenie->data_przyjecia->toDateString() }}</td>
@@ -154,7 +180,23 @@
 @endsection
 
 @section('js_after')<script>
-    function rozliczZaznaczone{{ $room }} () {
+    $(function(){
+        let zlecenia_nierozliczone_amount = 0;
+        $('table#nierozliczone{{ $room }} tbody tr:not(.table-danger):not(.table-secondary)').each(function () {
+            zlecenia_nierozliczone_amount++;
+        });
+        $('#zlecenia_nierozliczone_amount{{ $room }}').text(zlecenia_nierozliczone_amount);
+    });
+
+    function removeRozliczoneZlecenie{{ $room }} (id) {
+        $.post('{{ route('rozliczone_zlecenia.destroy') }}', { '_token': '{{ csrf_token() }}', id: id })
+            .done(function( data ) {
+                let $row = $('table#rozliczone{{ $room }} tbody > tr#' + id)
+                $row.remove();
+            });
+    }
+
+    function rozliczZaznaczone{{ $room }} (remove = false) {
         let zlecenia_ids = [];
         let rows_refs = [];
 
@@ -169,7 +211,7 @@
             }
         });
 
-        $.post('{{ route('rozliczone_zlecenia.storeMany') }}', { '_token': '{{ csrf_token() }}', rozliczenie_id: {{ $rozliczenie->id }}, zlecenia_ids: zlecenia_ids })
+        $.post('{{ route('rozliczone_zlecenia.storeMany') }}', { '_token': '{{ csrf_token() }}', rozliczenie_id: {{ $rozliczenie->id }}, zlecenia_ids: zlecenia_ids, remove: Number(remove) })
             .done(function( data ) {
                 $.each( rows_refs, function( index, $row ) {
                     $row.find('input[type=checkbox]:checked').prop('checked', false).prop('disabled', true);
@@ -178,6 +220,7 @@
 
                 let $zlecenia_nierozliczone = $('#zlecenia_nierozliczone_amount{{ $room }}');
                 let $rozliczone_zlecenia = $('#rozliczone_zlecenia_amount{{ $room }}');
+
                 let zlecenia_nierozliczone_amount = Number($zlecenia_nierozliczone.text());
                 let rozliczone_zlecenia_amount = Number($rozliczone_zlecenia.text());
 

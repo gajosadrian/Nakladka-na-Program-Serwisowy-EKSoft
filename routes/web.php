@@ -41,7 +41,8 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('rozliczone_zlecenia')->name('rozliczone_zlecenia.')->group(function () {
-            Route::post('/many', 'Rozliczenie\RozliczoneZlecenieController@apiStoreMany')->name('storeMany');
+            Route::post('many', 'Rozliczenie\RozliczoneZlecenieController@apiStoreMany')->name('storeMany');
+            Route::post('destroy', 'Rozliczenie\RozliczoneZlecenieController@apiDestory')->name('destroy');
         });
     });
 });

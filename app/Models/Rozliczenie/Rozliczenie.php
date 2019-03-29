@@ -32,7 +32,7 @@ class Rozliczenie extends Model
 
     public function getDataAttribute(): Carbon
     {
-        return Carbon::create($this->rok, $this->miesiac)->endOfMonth()->endOfDay();
+        return Carbon::create($this->rok, $this->miesiac, 1)->endOfMonth()->endOfDay();
     }
 
     public function getRozliczylAttribute(): string

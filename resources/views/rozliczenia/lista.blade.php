@@ -60,8 +60,8 @@
                                     <td>{{ $rozliczenie->nr }}</td>
                                     <td class="text-right text-muted">{{ $rozliczenie->suma_robocizn_formatted }}</td>
                                     <td class="text-right text-muted">{{ $rozliczenie->suma_dojazdow_formatted }}</td>
-                                    <td class="text-muted">{!! $rozliczenie->is_closed ? $rozliczenie->closed_at : '<i class="text-success font-w600">w trakcie rozliczania</i>' !!}</td>
-                                    <td class="text-muted">-</td>
+                                    <td class="text-muted">{!! $rozliczenie->is_closed ? $rozliczenie->closed_at->format('Y-m-d') : '<i class="text-success font-w600">w trakcie rozliczania</i>' !!}</td>
+                                    <td class="text-muted">{{ $rozliczenie->is_closed ? $rozliczenie->rozliczyl : '-' }}</td>
                                     <td>
                                         <a href="{{ route('rozliczenia.pokaz', [ 'id' => $rozliczenie->id ]) }}" class="font-w600">
                                             @if ($rozliczenie->is_closed)

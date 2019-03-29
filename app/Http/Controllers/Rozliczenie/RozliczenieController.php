@@ -17,6 +17,10 @@ class RozliczenieController extends Controller
      */
     public function index()
     {
+        // $zlecenie = Zlecenie\Zlecenie::where('NrZlecenia', 'ZS//12/18')->firstOrFail();
+        // $rozliczone_zlecenie = RozliczoneZlecenie::where('zlecenie_id', $zlecenie->id)->firstOrFail();
+        // $rozliczone_zlecenie->delete();
+
         // for ($i = 42239; $i < 45182; $i++) {
         //     $rozliczone_zlecenie = new RozliczoneZlecenie;
         //     $rozliczone_zlecenie->pracownik = '';
@@ -27,6 +31,8 @@ class RozliczenieController extends Controller
         // }
         // return response()->json('success', 200);
 
+        $rozliczenia = Rozliczenie::limit(12)->orderByDesc('id')->get();
+
         $now = now();
         $end_of_month = now()->endOfMonth();
         $diff = $now->diffInDays($end_of_month);
@@ -35,12 +41,8 @@ class RozliczenieController extends Controller
             $creatable_date->subMonth();
         }
 
-        $rozliczenia = Rozliczenie::limit(12)->get();
-        if ($ostatnie_rozliczenie = Rozliczenie::getLast()) {
-            $is_creatable = (Carbon::create($ostatnie_rozliczenie->rok, $ostatnie_rozliczenie->miesiac)->format('Y-m') != $creatable_date->format('Y-m'));
-        } else {
-            $is_creatable = true;
-        }
+        $ostatnie_rozliczenie = Rozliczenie::getLast();
+        $is_creatable = ($ostatnie_rozliczenie->okres != $creatable_date->format('Y-m'));
 
         return view('rozliczenia.lista', compact(
             'is_creatable',
@@ -55,7 +57,7 @@ class RozliczenieController extends Controller
      */
     public function show(int $id)
     {
-        $rozliczenie = Rozliczenie::with('rozliczone_zlecenia.zlecenie')->findOrFail($id);
+        $rozliczenie = Rozliczenie::with('rozliczone_zlecenia.zlecenie.terminarz')->findOrFail($id);
         $rozliczone_zlecenia = $rozliczenie->rozliczone_zlecenia->sortBy('zleceniodawca');
 
         if (! $rozliczenie->is_closed) {
