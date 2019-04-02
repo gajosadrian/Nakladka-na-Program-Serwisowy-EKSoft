@@ -32,15 +32,15 @@
                             </tr>
                             <tr>
                                 <th>Ulica:</th>
-                                <td>-</td>
+                                <td>{{ $zlecenie->klient->adres }}</td>
                             </tr>
                             <tr>
                                 <th>Miasto:</th>
-                                <td>00-000 -</td>
+                                <td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
                             </tr>
                             <tr>
-                                <th>Telefony:</th>
-                                <td>-</td>
+                                <th>Telefon:</th>
+                                <td>{{ $zlecenie->klient->telefon }}</td>
                             </tr>
                         </table>
                     </template>

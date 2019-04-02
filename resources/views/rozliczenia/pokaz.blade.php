@@ -64,6 +64,14 @@
             </template>
         </b-block>
 
+        <b-block title="Zleceniodawcy" full>
+            <template slot="content">
+                @foreach ($zleceniodawcy as $i => $_zleceniodawca)
+                    <span class="{{ ($i % 2 == 0) ? 'text-info' : '' }}">{{ $_zleceniodawca }}</span>{{ ($i < $zleceniodawcy->count() - 1) ? ',' : '' }}
+                @endforeach
+            </template>
+        </b-block>
+
         <div id="accordion" role="tablist" aria-multiselectable="true">
             <div class="block block-rounded shadow-sm mb-1">
                 <div class="block-header block-header-default" role="tab" id="accordion_h1">

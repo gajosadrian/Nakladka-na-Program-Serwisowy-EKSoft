@@ -62,7 +62,7 @@ class Rozliczenie extends Model
 
     public function getZleceniodawcyAttribute(): object
     {
-        return $this->rozliczone_zlecenia->unique('zleceniodawca')->pluck('zleceniodawca')->sort();
+        return $this->rozliczone_zlecenia->unique('zleceniodawca')->pluck('zleceniodawca')->sort()->values();
     }
 
     /**

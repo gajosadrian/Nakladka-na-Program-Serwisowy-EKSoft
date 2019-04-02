@@ -22,13 +22,14 @@ class Zlecenie extends Model
     public const ERROR_STR = '*Error*';
     public const ODPLATNE_NAME = 'Odpłatne';
     public const GWARANCJA_NAME = 'Gwarancja';
+    public const SPRZEDAZ_CZESCI_NAME = 'Sprzedaż części';
     public static $ZLECENIODAWCY = [
         // NIE EDYTOWAĆ INDEX'ÓW
         'Odpłatne' => ['', 'odplatne', 'odpłatne'],
         'Termet' => ['termet'],
         'Amica' => ['amica', 'amika'],
         'Gorenje' => ['gorenje', 'gorenie'],
-        'ERGO Hestia' => ['efficient', 'logisfera', 'logiswera', 'ergo-hestia', 'ergohestia', 'ergo', 'hestia'],
+        'ERGO Hestia' => ['efficient', 'logisfera', 'logiswera', 'ergo-hestia', 'ergohestia', 'ergo', 'hestia', 'ergo hestia'],
         'Quadra-Net' => ['quadra', 'quadra-net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
         'IBC' => ['ibc'],
         'Kromet' => ['kromet', 'kromed', 'cromet', 'cromed'],
@@ -46,6 +47,12 @@ class Zlecenie extends Model
         'Mondial' => ['mondial'],
         'Enpol' => ['enpol'],
         'Akpo' => ['akpo'],
+        'Ferro' => ['ferro', 'fero'],
+        'Solgaz' => ['solgaz', 'solgas'],
+        'Kospel' => ['kospel'],
+        'Haier' => ['haier', 'hajer'],
+        'Formaster' => ['formaster'],
+        'MPM' => ['mpm'],
     ];
 
     /**
@@ -114,6 +121,16 @@ class Zlecenie extends Model
                 'icon' => 'fa fa-hands-helping',
                 'color' => false,
             ],
+            'G' => (object) [
+                'nazwa' => 'NKS',
+                'icon' => 'fa fa-sync-alt',
+                'color' => false,
+            ],
+            'D' => (object) [
+                'nazwa' => self::SPRZEDAZ_CZESCI_NAME,
+                'icon' => 'fa fa-shopping-cart',
+                'color' => false,
+            ],
             '_default' => (object) [
                 'nazwa' => 'Inne',
                 'icon' => 'far fa-bookmark',
@@ -139,10 +156,10 @@ class Zlecenie extends Model
     public function getZleceniodawcaAttribute(): string
     {
         $zleceniodawcy = self::$ZLECENIODAWCY;
-        $zleceniodawca_type = strtolower($this->kosztorys_opis->opis ?? '');
+        $zleceniodawca_type = trim(strtolower($this->kosztorys_opis->opis ?? ''));
         $zleceniodawca = '';
 
-        if ($zleceniodawca_type == '' and $this->znacznik->nazwa != self::ODPLATNE_NAME) {
+        if ($zleceniodawca_type == '' and !in_array($this->znacznik->nazwa, [self::ODPLATNE_NAME, self::SPRZEDAZ_CZESCI_NAME])) {
             if ($this->znacznik->nazwa == self::GWARANCJA_NAME) {
                 $zleceniodawca_type = strtolower($this->urzadzenie->producent);
             } else {
@@ -360,9 +377,10 @@ HTML;
         $copy_nr = $this->nr_obcy ?: $this->nr;
 
         return <<<HTML
-            <td class="font-w600">
+            <td class="font-w600" nowrap>
+				{$this->znacznik_formatted}<br>
                 <a href="javascript:void(0)" onclick="PopupCenter('{$route_zleceniaPokaz}', 'zlecenie{$this->id}', 1500, 700)">
-                    <i class="{$this->znacznik->icon} mr-2"></i>
+                    <i class="{$this->znacznik->icon} mr-1"></i>
                     {$this->nr_or_obcy}
                 </a>
                 <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{$copy_nr}'">
@@ -388,6 +406,13 @@ HTML;
             $query->where('id_status', '!=', $status_id);
         }
         return $query->where('Archiwalny', false)->where('Anulowany', null);
+    }
+
+    public function scopeZakonczone($query)
+    {
+        return $query->where(function ($subquery) {
+            $subquery->where('id_status', Status::ZAKONCZONE_ID)->orWhere('id_status', Status::DO_ROZLICZENIA_ID);
+        })->where('Anulowany', null);
     }
 
     /**
@@ -539,7 +564,7 @@ HTML;
 
     public function appendOpis(string $opis, string $name): void
     {
-        $this->opis .= "\r\n** " . $name . " dnia " . date('d.m H:i') . ": „" . $opis . "”";
+        $this->opis .= "\r\n** " . $name . " " . date('d.m H:i') . ": „" . $opis . "”";
     }
 
     public function getNiezakonczone(array $data = [])
@@ -550,5 +575,14 @@ HTML;
             $query->technik($data->technik_id);
         }
         return $query->get()->sortByDesc('dni_od_zakonczenia');
+    }
+
+    public static function getDoRozliczenia()
+    {
+        return $query = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->limit(6000)->get()
+            ->filter(function ($zlecenie) {
+                // return !$zlecenie->is_rozliczone and $zlecenie->data_zakonczenia <= Carbon::create(2019, 1, 31)->endOfDay() and $zlecenie->status->id == 26;
+                return !$zlecenie->is_rozliczone;
+            })->sortBy('data_zakonczenia');
     }
 }

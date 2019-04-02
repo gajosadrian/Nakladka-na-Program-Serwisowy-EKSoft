@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Rozliczenie;
 
-use App\Models\Zlecenie;
+use App\Models\Zlecenie\Zlecenie;
 use App\Models\Rozliczenie\Rozliczenie;
 use App\Models\Rozliczenie\RozliczoneZlecenie; // TODO remove
 use App\Http\Controllers\Controller;
@@ -59,14 +59,16 @@ class RozliczenieController extends Controller
     {
         $rozliczenie = Rozliczenie::with('rozliczone_zlecenia.zlecenie.terminarz')->findOrFail($id);
         $rozliczone_zlecenia = $rozliczenie->rozliczone_zlecenia->sortBy('zleceniodawca');
+        $zleceniodawcy = $rozliczenie->zleceniodawcy;
 
         if (! $rozliczenie->is_closed) {
-            $zlecenia_nierozliczone = Zlecenie\Zlecenie::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->latest('id_zlecenia')->limit(6000)->get();
-            $zlecenia_nierozliczone = $zlecenia_nierozliczone->filter(function ($zlecenie) {
-                // return !$zlecenie->is_rozliczone and $zlecenie->data_zakonczenia <= Carbon::create(2019, 1, 31)->endOfDay() and $zlecenie->status->id == 26;
-                return !$zlecenie->is_rozliczone and in_array($zlecenie->status->id, [Zlecenie\Status::ZAKONCZONE_ID, Zlecenie\Status::DO_ROZLICZENIA_ID]);
-            })->sortBy('data_zakonczenia');
+            $zlecenia_nierozliczone = Zlecenie::getDoRozliczenia();
+            $zleceniodawcy = $zleceniodawcy->merge($zlecenia_nierozliczone->unique('zleceniodawca')->pluck('zleceniodawca')->values())->unique()->sort()->values();
         }
+
+        $zleceniodawcy->filter(function ($value) {
+            return $value != Zlecenie::ODPLATNE_NAME;
+        });
 
         $rozliczone_zlecenia_amount = count($rozliczone_zlecenia);
         $zlecenia_nierozliczone_amount = @count($zlecenia_nierozliczone) ?? 0;
@@ -85,7 +87,8 @@ class RozliczenieController extends Controller
             'zlecenia_nierozliczone',
             'rozliczone_zlecenia',
             'zlecenia_nierozliczone_amount',
-            'rozliczone_zlecenia_amount'
+            'rozliczone_zlecenia_amount',
+            'zleceniodawcy'
         ));
     }
 

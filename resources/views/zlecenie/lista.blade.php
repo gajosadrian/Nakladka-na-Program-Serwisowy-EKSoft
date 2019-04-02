@@ -32,32 +32,32 @@
 							@foreach ($zlecenia as $zlecenie)
 								<tr>
 									<td class="text-muted">{{ ++$counter }}</td>
-									<td>
+									<td nowrap>
 										{{ $zlecenie->klient->nazwa }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
 									</td>
 
-									<td>
-										adres<br>
-										00-000 miasto
+									<td nowrap>
+										{{ $zlecenie->klient->adres }}<br>
+										{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}
 									</td>
 
 									{!! $zlecenie->tableCellNrHTML !!}
 
-									<td>
+									<td nowrap>
 										{{ $zlecenie->urzadzenie->nazwa }}<br>
 										{{ $zlecenie->urzadzenie->producent }}
 									</td>
 
                                     {!! $zlecenie->tableCellStatusHTML !!}
 
-									<td class="text-danger font-small">
+									<td class="text-danger font-small" nowrap>
 										@foreach ($zlecenie->errors as $error)
 											{{ $error }}
 										@endforeach
 									</td>
 
-									<td>
+									<td nowrap>
 										{{ $zlecenie->data_zakonczenia_formatted }}<br>
                                         <small class="text-muted">
     										@if ($zlecenie->dni_od_zakonczenia > 0)
