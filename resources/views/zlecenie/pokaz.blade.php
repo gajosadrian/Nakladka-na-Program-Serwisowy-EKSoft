@@ -176,14 +176,14 @@
                             <table class="table table-sm table-striped table-vcenter font-size-sm">
                                 <thead>
                                     <tr>
-                                        <th class="font-w700">Symbol dost.</th>
-                                        <th class="font-w700">Symbol</th>
-                                        <th class="font-w700">Nazwa</th>
-                                        {{-- <th class="font-w700">Opis</th> --}}
-                                        <th class="font-w700 text-right">Cena netto</th>
-                                        <th class="font-w700 text-center">Ilość</th>
-                                        <th class="font-w700 text-right">Wartość netto</th>
-                                        <th class="font-w700 text-right">Wartość brutto</th>
+                                        <th class="font-w700" nowrap>Symbol dost.</th>
+                                        <th class="font-w700" nowrap>Symbol</th>
+                                        <th class="font-w700" nowrap>Nazwa</th>
+                                        <th class="font-w700" nowrap>Opis</th>
+                                        <th class="font-w700 text-right" nowrap>Cena netto</th>
+                                        <th class="font-w700 text-center" nowrap>Ilość</th>
+                                        <th class="font-w700 text-right" nowrap>Wartość netto</th>
+                                        <th class="font-w700 text-right" nowrap>Wartość brutto</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -197,14 +197,14 @@
                                             $wartosc_brutto += $pozycja->wartosc_brutto;
                                         @endphp
                                         <tr>
-                                            <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
-                                            <td>{{ $pozycja->towar->symbol }}</td>
-                                            <td>{{ $pozycja->towar->nazwa }}</td>
-                                            {{-- <td class="small">{{ $pozycja->towar->opis }}</td> --}}
-                                            <td class="text-right">{{ $pozycja->cena_formatted }}</td>
-                                            <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
-                                            <td class="text-right">{{ $pozycja->wartosc_formatted }}</td>
-                                            <td class="text-right">{{ $pozycja->wartosc_brutto_formatted }}</td>
+                                            <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
+                                            <td nowrap>{{ $pozycja->symbol }}</td>
+                                            <td nowrap>{{ $pozycja->nazwa }}</td>
+                                            <td class="small" nowrap>{{ $pozycja->opis }}</td>
+                                            <td class="text-right" nowrap>{{ $pozycja->cena_formatted }}</td>
+                                            <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}" nowrap>{{ $pozycja->ilosc }}</td>
+                                            <td class="text-right" nowrap>{{ $pozycja->wartosc_formatted }}</td>
+                                            <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -41,9 +41,9 @@ class Subiekt_Kontrahent extends Model
         return $this->dane->adres;
     }
 
-    public function getMiatoAttribute(): string
+    public function getMiastoAttribute(): string
     {
-        return $this->dane->miato;
+        return $this->dane->miejscowosc;
     }
 
     public function getKodPocztowyAttribute(): string

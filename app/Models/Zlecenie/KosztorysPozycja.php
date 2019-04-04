@@ -25,6 +25,11 @@ class KosztorysPozycja extends Model
         return $this->towar->symbol;
     }
 
+    public function getSymbolDostawcyAttribute(): string
+    {
+        return $this->towar->symbol_dostawcy;
+    }
+
 	public function getOpisAttribute(): string
     {
         return $this->attributes['opis_dodatkowy'] ?? false;

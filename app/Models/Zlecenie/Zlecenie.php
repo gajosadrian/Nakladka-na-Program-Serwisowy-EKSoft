@@ -23,9 +23,10 @@ class Zlecenie extends Model
     public const ODPLATNE_NAME = 'Odpłatne';
     public const GWARANCJA_NAME = 'Gwarancja';
     public const SPRZEDAZ_CZESCI_NAME = 'Sprzedaż części';
+	public const MONTAZ_URZADZENIA_NAME = 'Montaż urządzenia';
     public static $ZLECENIODAWCY = [
         // NIE EDYTOWAĆ INDEX'ÓW
-        'Odpłatne' => ['', 'odplatne', 'odpłatne'],
+        'Odpłatne' => ['', 'odplatne', 'odpłatne', 'odplatnie', 'odpłatnie'],
         'Termet' => ['termet'],
         'Amica' => ['amica', 'amika'],
         'Gorenje' => ['gorenje', 'gorenie'],
@@ -85,15 +86,15 @@ class Zlecenie extends Model
         $array = [
             0 => (object) [
                 'nazwa' => 'Telefon',
-                'icon' => 'fa fa-info-circle',
+                'icon' => 'fa fa-phone',
             ],
             3 => (object) [
                 'nazwa' => 'WWW',
-                'icon' => 'fa fa-info-circle',
+                'icon' => 'fa fa-globe',
             ],
             4 => (object) [
                 'nazwa' => 'Osobiście',
-                'icon' => 'fa fa-info-circle',
+                'icon' => 'fa fa-user-edit',
             ],
             '_default' => (object) [
                 'nazwa' => '-',
@@ -131,6 +132,11 @@ class Zlecenie extends Model
                 'icon' => 'fa fa-shopping-cart',
                 'color' => false,
             ],
+            'E' => (object) [
+                'nazwa' => self::MONTAZ_URZADZENIA_NAME,
+                'icon' => 'fa fa-dollar-sign',
+                'color' => false,
+            ],
             '_default' => (object) [
                 'nazwa' => 'Inne',
                 'icon' => 'far fa-bookmark',
@@ -159,7 +165,7 @@ class Zlecenie extends Model
         $zleceniodawca_type = trim(strtolower($this->kosztorys_opis->opis ?? ''));
         $zleceniodawca = '';
 
-        if ($zleceniodawca_type == '' and !in_array($this->znacznik->nazwa, [self::ODPLATNE_NAME, self::SPRZEDAZ_CZESCI_NAME])) {
+        if ($zleceniodawca_type == '' and !in_array($this->znacznik->nazwa, [self::ODPLATNE_NAME, self::SPRZEDAZ_CZESCI_NAME, self::MONTAZ_URZADZENIA_NAME])) {
             if ($this->znacznik->nazwa == self::GWARANCJA_NAME) {
                 $zleceniodawca_type = strtolower($this->urzadzenie->producent);
             } else {

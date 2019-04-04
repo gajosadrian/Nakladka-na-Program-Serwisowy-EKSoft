@@ -45,7 +45,7 @@ class KontrahentEwidencja extends Model
         return $this->attributes['adr_Kod'];
     }
 
-    public function getMiastoAttribute()
+    public function getMiejscowoscAttribute()
     {
         return $this->attributes['adr_Miejscowosc'];
     }
