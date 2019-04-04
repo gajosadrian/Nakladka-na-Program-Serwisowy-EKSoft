@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Facades\App\Models\Zlecenie\Zlecenie;
+use Facades\App\Models\Zlecenie\Terminarz;
+use Facades\App\Models\SMS\Technik;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ZlecenieController extends Controller
 {
@@ -79,6 +82,35 @@ class ZlecenieController extends Controller
     public function destroy(Request $request)
     {
         //
+    }
+
+    public function dlaTechnika(int $technik_id = null, int $timestamp = null)
+    {
+        $user = auth()->user();
+
+        $technicy = Technik::getLast();
+        $technik_id = ($user->technik_id > 0) ? $user->technik_id : $technik_id;
+        $technik = Technik::find($technik_id);
+
+        $date = $timestamp ? Carbon::createFromTimestamp($timestamp) : now();
+        // $date_string = $date->toDateString();
+        $date_string = '2018-08-06';
+        $date_formatted = $date->format('d-m-Y');
+
+        $zlecenia = Zlecenie::withRelations()->whereHas('terminarz', function ($query) use ($date_string) {
+            $query->where('STARTDATE', '>=', $date_string);
+            $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
+        })->get();
+
+        return view('zlecenie.dla-technika', compact(
+            'technicy',
+            'technik_id',
+            'technik',
+            'timestamp',
+            'date',
+            'date_formatted',
+            'zlecenia'
+        ));
     }
 
     public function apiGetOpis(Request $request, int $id)

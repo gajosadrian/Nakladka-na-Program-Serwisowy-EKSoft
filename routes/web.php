@@ -20,8 +20,9 @@ Route::middleware('auth')->group(function () {
     Route::view('szukaj', 'empty')->name('szukaj');
 
     Route::prefix('zlecenia')->name('zlecenia.')->group(function () {
-        Route::get('/', 'ZlecenieController@index')->name('lista');
-        Route::get('/{id}', 'ZlecenieController@show')->name('pokaz');
+        Route::get('lista', 'ZlecenieController@index')->name('lista');
+        Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');
+        Route::get('dla-technika/{technik_id?}/{timestamp?}', 'ZlecenieController@dlaTechnika')->name('dla-technika');
 
         Route::get('api/get_opis/{id}', 'ZlecenieController@apiGetOpis')->name('api.get_opis');
         Route::post('api/append_notatka/{id}', 'ZlecenieController@apiAppendNotatka')->name('api.append_opis');

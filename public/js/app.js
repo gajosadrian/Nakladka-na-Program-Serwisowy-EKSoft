@@ -2148,6 +2148,7 @@ __webpack_require__.r(__webpack_exports__);
     'noround': Boolean,
     'full': Boolean,
     'shadow': Boolean,
+    'noprint': Boolean,
     'title': String,
     'theme': String
   },
@@ -44183,7 +44184,13 @@ var render = function() {
             "div",
             {
               staticClass: "block-header",
-              class: [_vm.theme, { "block-header-default": !_vm.theme }]
+              class: [
+                _vm.theme,
+                {
+                  "block-header-default": !_vm.theme,
+                  "d-print-none": _vm.noprint
+                }
+              ]
             },
             [
               _c("h3", { staticClass: "block-title" }, [

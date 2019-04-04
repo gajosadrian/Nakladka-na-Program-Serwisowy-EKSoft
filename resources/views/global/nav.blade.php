@@ -12,6 +12,12 @@
             'routeOptions' => [],
         ],
         [
+            'name' => 'Zlecenia dla technika',
+            'icon' => 'si si-list',
+            'route' => 'zlecenia.dla-technika',
+            'routeOptions' => [],
+        ],
+        [
             'name' => 'Admin',
             'role' => 'super-admin',
         ],

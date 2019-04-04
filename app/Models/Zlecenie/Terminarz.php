@@ -77,6 +77,11 @@ class Terminarz extends Model
         return $this->is_data_rozpoczecia;
     }
 
+    public function getTechnikIdAttribute(): int
+    {
+        return $this->attributes['id_techn_term'];
+    }
+
     // ========== //
 
     public function getGodzinaRozpoczeciaAttribute($value): string
@@ -87,6 +92,16 @@ class Terminarz extends Model
     public function getGodzinaZakonczeniaAttribute($value): string
     {
         return $this->is_data_zakonczenia ? $this->data_zakonczenia->format('H:i') : 'Brak godziny zakończenia';
+    }
+
+    /**
+    * Relations
+    *
+    */
+
+    public function technik()
+    {
+        return $this->hasOne('App\Models\SMS\Technik', 'id_technika', 'id_techn_term');
     }
 
     /**
