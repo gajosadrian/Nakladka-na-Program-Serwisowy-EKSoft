@@ -33,7 +33,7 @@
 								<tr>
 									<td class="text-muted">{{ ++$counter }}</td>
 									<td nowrap>
-										{{ $zlecenie->klient->nazwa }}<br>
+										{{ str_limit($zlecenie->klient->nazwa, 30) }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
 									</td>
 
@@ -51,7 +51,7 @@
 
                                     {!! $zlecenie->tableCellStatusHTML !!}
 
-									<td class="text-danger font-small" nowrap>
+									<td class="text-danger font-small">
 										@foreach ($zlecenie->errors as $error)
 											{{ $error }}
 										@endforeach
