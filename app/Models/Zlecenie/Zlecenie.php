@@ -421,6 +421,16 @@ HTML;
         })->where('Anulowany', null);
     }
 
+    public function scopeTechnik($query, $technik_id)
+    {
+        return $query->where('id_o_technika', $technik_id);
+    }
+
+    public function scopeWithRelations($query)
+    {
+        return $query->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje', 'rozliczenie');
+    }
+
     /**
     * Relations
     *
@@ -472,21 +482,6 @@ HTML;
     public function rozliczenie()
     {
         return $this->hasOne('App\Models\Rozliczenie\RozliczoneZlecenie', 'zlecenie_id', 'id_zlecenia');
-    }
-
-    /**
-    * Scopes
-    *
-    */
-
-    public function scopeTechnik($query, $technik_id)
-    {
-        return $query->where('id_o_technika', $technik_id);
-    }
-
-    public function scopeWithRelations($query)
-    {
-        return $query->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje', 'rozliczenie');
     }
 
     /**
