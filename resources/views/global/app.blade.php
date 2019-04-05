@@ -25,6 +25,7 @@
         <link rel="stylesheet" id="css-theme" href="{{ asset('css/dashmix.css') }}">
         <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('js/plugins/datatables/dataTables.bootstrap4.css') }}">
+        <link rel="stylesheet" href="{{ asset('js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
 
         {{-- Theme --}}
         <link rel="stylesheet" href="{{ asset('css/themes/xmodern.css') }}">
@@ -105,6 +106,8 @@
         <script src="{{ asset('js/dashmix.app.js') }}"></script>
         <script src="{{ asset('js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('js/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+        {{-- <script src="{{ asset('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.pl.min.js') }}"></script> --}}
 
         {{-- Laravel Scaffolding JS --}}
         {{-- <script src="{{ asset('js/laravel.app.js') }}"></script> --}}
@@ -112,8 +115,6 @@
         @yield('js_after')
 
 		<script>$(function() {
-            Dashmix.helpers('table-tools-checkable');
-
 			$('table.dataTable').DataTable({
 			   paging: false,
 			   language: {
@@ -124,6 +125,16 @@
 				   info: '',
 			   },
 			});
+
+            $('.js-datepicker').datepicker({
+                language: 'pl',
+                weekStart: 1,
+                todayHighlight: true,
+                autoclose: true,
+                format: 'yyyy-mm-dd',
+            });
+
+            Dashmix.helpers(['table-tools-checkable', 'datepicker']);
 		})</script>
     </body>
 </html>

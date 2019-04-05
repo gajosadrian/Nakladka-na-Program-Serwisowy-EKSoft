@@ -92,22 +92,34 @@ class ZlecenieController extends Controller
         $technik_id = ($user->technik_id > 0) ? $user->technik_id : $technik_id;
         $technik = Technik::find($technik_id);
 
-        $date = $timestamp ? Carbon::createFromTimestamp($timestamp) : now();
-        // $date_string = $date->toDateString();
-        $date_string = '2018-08-06';
+        $now = now();
+        if ($timestamp) {
+            $date = Carbon::createFromTimestamp($timestamp);
+        } elseif ($now->copy()->startOfDay()->addHours(10)->lt($now)) {
+            $date = $now->copy()->addDay();
+        } else {
+            $date = $now;
+        }
+        $date_string = $date->toDateString();
         $date_formatted = $date->format('d-m-Y');
 
-        $zlecenia = Zlecenie::withRelations()->whereHas('terminarz', function ($query) use ($date_string) {
-            $query->where('STARTDATE', '>=', $date_string);
-            $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
-        })->get();
+        $zlecenia = null;
+        if ($technik) {
+            $zlecenia = Zlecenie::withRelations()->whereHas('terminarz', function ($query) use ($date_string, $technik) {
+                $query->where('STARTDATE', '>=', $date_string);
+                $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
+                $query->where('id_techn_term', $technik->id);
+            })->get()->sortBy('terminarz.data_rozpoczecia');
+        }
 
         return view('zlecenie.dla-technika', compact(
             'technicy',
             'technik_id',
             'technik',
             'timestamp',
+            'now',
             'date',
+            'date_string',
             'date_formatted',
             'zlecenia'
         ));

@@ -15,6 +15,9 @@
                 @foreach ($technicy as $_technik)
                     <b-link href="{{ route('zlecenia.dla-technika', [ 'technik_id' => $_technik->id, 'timestamp' => $timestamp ]) }}" class="btn btn-outline-primary {{ ($_technik->id == $technik_id) ? 'active' : '' }}">{{ $_technik->nazwa }}</b-link>
                 @endforeach
+
+                <input type="text" class="js-datepicker form-control" value="{{ $date_string }}"
+                    onclick="updateUrl()">
             </template>
         </b-block>
 
@@ -26,10 +29,12 @@
                     </b-button>
                 </template>
                 <template slot="content">
+                    <p>{{ $date_formatted }}</p>
                     @foreach ($zlecenia as $zlecenie)
                         <div class="mb-5">
+                            {{ $zlecenie->terminarz->godzina_rozpoczecia }} - {{ $zlecenie->terminarz->przeznaczony_czas_formatted }}<br>
                             Zlecenie nr {{ $zlecenie->nr }} - {{ $zlecenie->nr_obcy }}<br>
-                            {{ $zlecenie->klient->nazwa }}<br>
+                            {{ $zlecenie->klient->symbol }} {{ $zlecenie->klient->nazwa }}<br>
                         </div>
                     @endforeach
                 </template>
@@ -37,3 +42,11 @@
         @endif
     </div>
 @endsection
+
+@section('js_after')<script>
+
+function updateUrl() {
+    window.location.replace(route('zlecenia.dla-technika'))
+}
+
+</script>@endsection

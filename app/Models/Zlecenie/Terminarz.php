@@ -82,6 +82,13 @@ class Terminarz extends Model
         return $this->attributes['id_techn_term'];
     }
 
+    public function getPrzeznaczonyCzasFormattedAttribute(): string
+    {
+        $diff = $this->data_zakonczenia->diffInSeconds($this->data_rozpoczecia);
+        list($hours, $minutes) = explode(':', gmdate('H:i', $diff));
+        return sprintf('%u godz. %u min', $hours, $minutes);
+    }
+
     // ========== //
 
     public function getGodzinaRozpoczeciaAttribute($value): string
