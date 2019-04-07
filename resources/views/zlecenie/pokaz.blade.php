@@ -213,7 +213,7 @@
                                         <th></th>
                                         <th></th>
                                         <th></th>
-                                        {{-- <th></th> --}}
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th class="text-right">{{ number_format($wartosc_netto, 2, '.', ' ') }} zł</th>

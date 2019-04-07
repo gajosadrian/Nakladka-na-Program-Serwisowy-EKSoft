@@ -269,14 +269,19 @@ class Zlecenie extends Model
         return $this->terminarz->godzina_zakonczenia;
     }
 
-    public function setOpisAttribute(string $value): void
-    {
-        $this->attributes['OpisZlec'] = $value;
-    }
-
     public function getOpisAttribute(): string
     {
         return $this->attributes['OpisZlec'];
+    }
+
+    public function getOpisFormattedAttribute(): string
+    {
+        return str_replace("\n", '<br>', $this->opis);
+    }
+
+    public function setOpisAttribute(string $value): void
+    {
+        $this->attributes['OpisZlec'] = $value;
     }
 
     public function getOpisBrAttribute(): string

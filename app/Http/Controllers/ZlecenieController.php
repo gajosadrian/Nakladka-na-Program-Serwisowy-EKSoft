@@ -106,7 +106,7 @@ class ZlecenieController extends Controller
         $zlecenia = null;
         if ($technik) {
             $zlecenia = Zlecenie::withRelations()->whereHas('terminarz', function ($query) use ($date_string, $technik) {
-                $query->where('STARTDATE', '>=', $date_string);
+                $query->where('STARTDATE', '>=', $date_string . ' 00:00:01');
                 $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
                 $query->where('id_techn_term', $technik->id);
             })->get()->sortBy('terminarz.data_rozpoczecia');

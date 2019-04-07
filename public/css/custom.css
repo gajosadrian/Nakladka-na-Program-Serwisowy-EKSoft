@@ -5,3 +5,21 @@
         /* margin:0; */
     }
 }
+
+@media print {
+    @page {
+        size: A4;
+        margin-left: 0;
+        margin-right: 0;
+        /* margin: 0; */
+        /* padding: 0; */
+    }
+    html, body {
+        width: 210mm;
+        height: 297mm;
+    }
+    div {
+        page-break-inside: avoid;
+    }
+    .pagebreak { page-break-before: always; }
+}

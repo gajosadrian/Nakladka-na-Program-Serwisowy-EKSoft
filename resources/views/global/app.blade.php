@@ -135,6 +135,14 @@
             });
 
             Dashmix.helpers(['table-tools-checkable', 'datepicker']);
+
+            // fixing printing background
+            window.onbeforeprint = function() {
+                $('body').css('background', '#fff');
+            }
+            window.onafterprint = function() {
+                $('body').css('background', '');
+            }
 		})</script>
     </body>
 </html>

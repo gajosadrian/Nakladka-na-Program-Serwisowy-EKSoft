@@ -6,7 +6,7 @@
                 <slot name="options"></slot>
             </div>
         </div>
-        <div class="block-content" :class="{'block-content-full': full}">
+        <div class="block-content" :class="{'block-content-full': full, 'pt-0': noprint}">
             <slot name="content"></slot>
         </div>
         <div v-if="hasFooterSlot" class="block-content block-content-full block-content-sm bg-body-light font-size-sm">
