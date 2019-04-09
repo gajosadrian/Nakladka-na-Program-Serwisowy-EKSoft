@@ -271,7 +271,7 @@ class Zlecenie extends Model
 
     public function getOpisAttribute(): string
     {
-        return $this->attributes['OpisZlec'];
+        return $this->attributes['OpisZlec'] ?? false;
     }
 
     public function getOpisFormattedAttribute(): string

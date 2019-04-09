@@ -41,21 +41,21 @@
         </b-block>
 
         @if ($technik)
-            <b-block title="Zlecenia" noprint>
+            <b-block title="Zlecenia" noprint class="d-lg-none">
                 <template slot="content">
-                    <div class="mx-3" style="font-family: 'Times New Roman', Times, serif">
-                        <div class="mb-3" style="font-size: 3em">{{ $technik->nazwa }} {{ $date_formatted }}</div>
+                    <div class="mx-3" style="font-size: 1.1em">
+                        <div class="mb-3" style="font-size: 2.6em">{{ $technik->nazwa }} {{ $date_formatted }}</div>
                         @foreach ($zlecenia as $zlecenie)
                             <div class="mb-4">
-                                <div class="font-w700 bg-gray-light p-2">
+                                <div class="font-w700 bg-gray-light p-1">
                                     <b-row>
                                         <b-col cols="2">
-                                            {{ $zlecenie->nr_or_obcy }}
+                                            {{ $zlecenie->nr }}
                                         </b-col>
-                                        <b-col cols="4">
-                                            <i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }}
+                                        <b-col cols="7">
+                                            <i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }} {{ $zlecenie->nr_obcy ? ('| ' . $zlecenie->nr_obcy) : '' }}
                                         </b-col>
-                                        <b-col cols="6" class="text-right">
+                                        <b-col cols="3" class="text-right">
                                             {{ $zlecenie->terminarz->godzina_rozpoczecia }} - {{ $zlecenie->terminarz->przeznaczony_czas_formatted }}
                                         </b-col>
                                     </b-row>
@@ -67,23 +67,29 @@
                                             {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
                                             {{ $zlecenie->klient->telefon }}
                                         </b-col>
-                                        <b-col cols="6">
+                                        <b-col cols="4">
                                             <span class="font-w700">{{ $zlecenie->urzadzenie->nazwa }}, {{ $zlecenie->urzadzenie->producent }}<br></span>
-                                            {!! $zlecenie->urzadzenie->model ?: '<span class="font-w700"><u>uzupełnić model:</u></span>' !!}<br>
-                                            {!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="font-w700"><u>uzupełnić nr seryjny:</u></span>' !!}
+                                            <span class="font-w700">Model:</span> {!! $zlecenie->urzadzenie->model ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}<br>
+                                            <span class="font-w700">Nr ser.:</span> {!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}
                                         </b-col>
+                                        <b-col cols="2">
+											<div class="text-right">
+												Zabudowa: [   ]<br>
+												Trudna: [   ]
+											</div>
+										</b-col>
                                     </b-row>
                                 </div>
                                 <div class="mt-3">
                                     <b-row>
-                                        <b-col cols="6" style="border-right: 1px solid #aaa">
+                                        <b-col cols="7" style="border-right: 1px solid #aaa">
                                             <div class="font-w700 text-uppercase">Opis zlecenia:</div>
                                             <div class="py-2">
                                                 {!! $zlecenie->opis_formatted !!}
                                             </div>
                                         </b-col>
-                                        <b-col cols="6">
-                                            <div style="min-height: 200px">
+                                        <b-col cols="5">
+                                            <div class="clearfix" style="min-height: 170px">
                                                 <div class="font-w700 text-uppercase">Uwagi technika:</div>
                                             </div>
                                         </b-col>
@@ -98,30 +104,26 @@
                                                     <th class="font-w700" nowrap>Symbol</th>
                                                     <th class="font-w700" nowrap>Nazwa</th>
                                                     <th class="font-w700" nowrap>Opis</th>
-                                                    <th class="font-w700 text-right" nowrap>Cena netto</th>
+                                                    <th class="font-w700 text-right" nowrap>Cena brutto</th>
                                                     <th class="font-w700 text-center" nowrap>Ilość</th>
-                                                    <th class="font-w700 text-right" nowrap>Wartość netto</th>
                                                     <th class="font-w700 text-right" nowrap>Wartość brutto</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @php
-                                                    $wartosc_netto = 0.00;
                                                     $wartosc_brutto = 0.00;
                                                 @endphp
                                                 @foreach ($zlecenie->kosztorys_pozycje as $pozycja)
                                                     @php
-                                                        $wartosc_netto += $pozycja->wartosc;
                                                         $wartosc_brutto += $pozycja->wartosc_brutto;
                                                     @endphp
                                                     <tr>
                                                         <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
                                                         <td nowrap>{{ $pozycja->symbol }}</td>
                                                         <td nowrap>{{ $pozycja->nazwa }}</td>
-                                                        <td class="small" nowrap>{{ $pozycja->opis }}</td>
-                                                        <td class="text-right" nowrap>{{ $pozycja->cena_formatted }}</td>
-                                                        <td class="text-center" nowrap>{!! $pozycja->ilosc > 1 ? ('<strong><u>' . $pozycja->ilosc . '</u></strong>') : $pozycja->ilosc !!}</td>
-                                                        <td class="text-right" nowrap>{{ $pozycja->wartosc_formatted }}</td>
+                                                        <td nowrap>{{ $pozycja->opis }}</td>
+                                                        <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
+                                                        <td class="text-center" nowrap>{!! $pozycja->ilosc > 1 ? ('<span class="bg-gray font-w700 px-1">' . $pozycja->ilosc . '</span>') : $pozycja->ilosc !!}</td>
                                                         <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
                                                     </tr>
                                                 @endforeach
@@ -134,7 +136,6 @@
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
-                                                    <th class="text-right">{{ number_format($wartosc_netto, 2, '.', ' ') }} zł</th>
                                                     <th class="text-right">{{ number_format($wartosc_brutto, 2, '.', ' ') }} zł</th>
                                                 </tr>
                                             </tfoot>

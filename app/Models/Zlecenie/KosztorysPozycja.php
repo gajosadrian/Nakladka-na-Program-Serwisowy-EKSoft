@@ -44,6 +44,16 @@ class KosztorysPozycja extends Model
     {
         return number_format($this->cena, 2, '.', ' ') . ' zł'; // &nbsp;
     }
+	
+    public function getCenaBruttoAttribute(): float
+    {
+        return round($this->cena * ($this->vat + 1), 4);
+    }
+	
+	public function getCenaBruttoFormattedAttribute(): string
+    {
+        return number_format($this->cena_brutto, 2, '.', ' ') . ' zł'; // &nbsp;
+    }
 
     public function getIloscAttribute(): float
     {
