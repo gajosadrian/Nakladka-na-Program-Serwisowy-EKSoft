@@ -97,7 +97,6 @@
 
 @section('js_after')<script>$(function(){
     var $lastRow = null;
-
     $('table#zlecenia{{ $room }} > tbody tr:not(#noclicable)').click(function () {
         let $row = $(this);
 

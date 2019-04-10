@@ -73,9 +73,11 @@
                                         <a href="{{ route('rozliczenia.analiza', [ 'id' => $rozliczenie->id ]) }}" class="font-w600 ml-3">
                                             <i class="fa fa-align-left"></i> Analiza
                                         </a>
-                                        <a href="javascript:void(0)" class="text-danger font-w600 ml-3">
-                                            <i class="fa fa-lock"></i> Zakończ rozliczenie
-                                        </a>
+										@if (!$rozliczenie->is_closed)
+											<a href="javascript:void(0)" class="text-danger font-w600 ml-3">
+												<i class="fa fa-lock"></i> Zakończ rozliczenie
+											</a>
+										@endif
                                     </td>
                                 </tr>
                             @endforeach

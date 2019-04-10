@@ -1,4 +1,8 @@
 @extends('global.app')
+@php
+    $room = rand();
+@endphp
+
 
 @section('content')
     <div class="bg-body-light">
@@ -13,7 +17,7 @@
         <b-block>
             <template slot="content">
                 <div class="table-responsive">
-                    <table class="table table-sm table-striped table-hover table-vcenter font-size-sm dataTable">
+                    <table id="zlecenia{{ $room }}" class="table table-sm table-striped table-hover table-vcenter font-size-sm dataTable">
 						<thead>
 							<tr class="text-uppercase">
 								<th class="font-w700">Lp.</th>
@@ -31,7 +35,7 @@
 							@php $counter = 0 @endphp
 							@foreach ($zlecenia as $zlecenie)
 								<tr>
-									<td class="text-muted">{{ ++$counter }}</td>
+									<th class="text-muted">{{ ++$counter }}</th>
 									<td nowrap>
 										{{ str_limit($zlecenie->klient->nazwa, 30) }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
@@ -87,3 +91,17 @@
         </b-block>
     </div>
 @endsection
+
+@section('js_after')<script>$(function(){
+    var $lastRow = null;
+    $('table#zlecenia{{ $room }} > tbody tr:not(#noclicable)').click(function () {
+        let $row = $(this);
+
+        if ($lastRow) {
+            $lastRow.removeClass('table-info');
+        }
+        $row.addClass('table-info');
+
+        $lastRow = $row;
+    });
+})</script>@endsection

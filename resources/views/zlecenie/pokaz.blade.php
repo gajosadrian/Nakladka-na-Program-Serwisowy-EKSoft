@@ -160,13 +160,13 @@
                                         icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID))
                                         color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID))></zlecenie-change-status>
                                 @elseif (!$user->is_technik and $zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
-                                    <zlecenie-change-status
+                                    {{-- <zlecenie-change-status
                                         zlecenie_id=@json($zlecenie->id)
                                         status_id=@json(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID)
                                         remove_termin="1"
                                         name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
                                         icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
-                                        color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status>
+										color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status> --}}
                                 @endif
                             </b-button-group>
                         </li>
@@ -231,3 +231,13 @@
         </b-row>
     </div>
 @endsection
+
+@section('js_after')<script>
+
+$(document).keydown(function (e) {
+	if (e.keyCode == 27) {
+		window.close();
+	}
+});
+
+</script>@endsection
