@@ -7,8 +7,8 @@
 
 @section('content')
     <div class="content">
-        @if ($zlecenie->errors)
-            <b-row>
+		<b-row>
+			@if ($zlecenie->errors)
                 <b-col>
                     <div class="alert alert-danger d-flex align-items-center">
                         <div class="flex-00-auto">
@@ -19,8 +19,23 @@
                         </div>
                     </div>
                 </b-col>
-            </b-row>
-        @endif
+			@endif
+			@if ($zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
+                <b-col>
+                    <div class="alert alert-warning d-flex align-items-center">
+                        <div class="flex-00-auto">
+                            <i class="fa fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="flex-fill ml-3">
+                            <p class="mb-0">
+								Jeżeli część dotarła do serwisu, należy w kosztorysie przy zamówionych częściach zmienić opis na <strong>„<u>odłożono</u>”</strong> i odłożyć opisaną część na magazyn<br>
+								oraz zmienić status na <strong>„<u>{{ App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID) }}</u>”</strong> i znaleźć zlecenie na półce, jeżeli wszystkie części dotarły.
+							</p>
+                        </div>
+                    </div>
+                </b-col>
+			@endif
+		</b-row>
         <b-row class="row-deck">
             <b-col lg="5">
                 <b-block title="Kontrahent" theme="bg-primary-light">
