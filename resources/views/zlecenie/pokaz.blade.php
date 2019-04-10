@@ -54,8 +54,8 @@
                                 <td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
                             </tr>
                             <tr>
-                                <th>Telefon:</th>
-                                <td>{{ $zlecenie->klient->telefon }}</td>
+                                <th>Telefony:</th>
+                                <td>{{ $zlecenie->klient->telefony_formatted }}</td>
                             </tr>
                         </table>
                     </template>

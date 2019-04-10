@@ -89,6 +89,11 @@ class Terminarz extends Model
         return sprintf('%u godz. %u min', $hours, $minutes);
     }
 
+    public function getTematAttribute(): string
+    {
+        return $this->attributes['temat'] ?? false;
+    }
+
     // ========== //
 
     public function getGodzinaRozpoczeciaAttribute($value): string

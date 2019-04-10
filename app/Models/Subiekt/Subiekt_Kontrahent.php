@@ -51,6 +51,16 @@ class Subiekt_Kontrahent extends Model
         return $this->dane->kod_pocztowy;
     }
 
+    public function getTelefonyAttribute(): object
+    {
+        return $this->dane->telefony;
+    }
+
+    public function getTelefonyFormattedAttribute(): string
+    {
+        return implode(', ', $this->telefony->pluck('tel_Numer')->toArray());
+    }
+
     /**
      * Relations
      *

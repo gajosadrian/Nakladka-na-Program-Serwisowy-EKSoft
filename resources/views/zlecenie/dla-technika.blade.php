@@ -41,21 +41,29 @@
         </b-block>
 
         @if ($technik)
-            <b-block title="Zlecenia" noprint class="d-lg-none">
+            <b-block title="Zlecenia" noprint>
                 <template slot="content">
                     <div class="mx-3" style="font-size: 1.1em">
                         <div class="mb-3" style="font-size: 2.6em">{{ $technik->nazwa }} {{ $date_formatted }}</div>
                         @foreach ($zlecenia as $zlecenie)
                             <div class="mb-4">
-                                <div class="font-w700 bg-gray-light p-1">
+                                @if ($zlecenie->terminarz->temat)
+                                    <div class="font-w700 bg-gray">
+                                        <span class="{{ (strlen($zlecenie->terminarz->temat) <= 40) ? 'bg-dark text-white' : '' }} px-1">{{ $zlecenie->terminarz->temat }}</span>
+                                    </div>
+                                @endif
+                                <div class="font-w700 bg-gray p-1">
                                     <b-row>
                                         <b-col cols="2">
                                             {{ $zlecenie->nr }}
                                         </b-col>
-                                        <b-col cols="7">
+                                        <b-col cols="6">
                                             <i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }} {{ $zlecenie->nr_obcy ? ('| ' . $zlecenie->nr_obcy) : '' }}
                                         </b-col>
-                                        <b-col cols="3" class="text-right">
+                                        <b-col cols="4" class="text-right">
+                                            @if ($zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
+                                                <span class="bg-dark text-white px-1">warsztat</span>
+                                            @endif
                                             {{ $zlecenie->terminarz->godzina_rozpoczecia }} - {{ $zlecenie->terminarz->przeznaczony_czas_formatted }}
                                         </b-col>
                                     </b-row>
@@ -65,7 +73,7 @@
                                         <b-col cols="6">
                                             <span class="font-w700">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span><br>
                                             {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
-                                            {{ $zlecenie->klient->telefon }}
+                                            {{ $zlecenie->klient->telefony_formatted }}
                                         </b-col>
                                         <b-col cols="4">
                                             <span class="font-w700">{{ $zlecenie->urzadzenie->nazwa }}, {{ $zlecenie->urzadzenie->producent }}<br></span>
@@ -123,7 +131,7 @@
                                                         <td nowrap>{{ $pozycja->nazwa }}</td>
                                                         <td nowrap>{{ $pozycja->opis }}</td>
                                                         <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
-                                                        <td class="text-center" nowrap>{!! $pozycja->ilosc > 1 ? ('<span class="bg-gray font-w700 px-1">' . $pozycja->ilosc . '</span>') : $pozycja->ilosc !!}</td>
+                                                        <td class="text-center" nowrap>{!! $pozycja->ilosc != 1 ? ('<span class="bg-gray font-w700 px-1">' . $pozycja->ilosc . '</span>') : $pozycja->ilosc !!}</td>
                                                         <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
                                                     </tr>
                                                 @endforeach

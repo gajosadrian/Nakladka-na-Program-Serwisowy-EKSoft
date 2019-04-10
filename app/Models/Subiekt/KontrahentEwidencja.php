@@ -9,6 +9,7 @@ class KontrahentEwidencja extends Model
     protected $connection = 'sqlsrv2';
     protected $table = 'adr__Ewid';
     protected $primaryKey = 'adr_Id';
+    protected $with = ['telefony_ewidencja'];
 
     /**
     * Attributes
@@ -48,5 +49,20 @@ class KontrahentEwidencja extends Model
     public function getMiejscowoscAttribute()
     {
         return $this->attributes['adr_Miejscowosc'];
+    }
+
+    public function getTelefonyAttribute(): object
+    {
+        return $this->telefony_ewidencja->sortByDesc('tel_Podstawowy');
+    }
+
+    /**
+     * Relations
+     *
+     */
+
+    public function telefony_ewidencja()
+    {
+        return $this->hasMany('App\Models\Subiekt\TelefonEwidencja', 'tel_IdAdresu', 'adr_Id');
     }
 }
