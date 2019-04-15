@@ -15,11 +15,9 @@
     <div class="content">
         <b-block title="Wybierz zleceniodawcę" full>
             <template slot="content">
-                <b-button-group>
-                    @foreach ($zleceniodawcy as $_zleceniodawca)
-                        <b-link href="{{ route('rozliczenia.analiza', [ 'id' => $rozliczenie->id, 'zleceniodawca' => $_zleceniodawca ]) }}" class="btn btn-outline-primary {{ ($_zleceniodawca == $zleceniodawca) ? 'active' : '' }}">{{ $_zleceniodawca }}</b-link>
-                    @endforeach
-                </b-button-group>
+                @foreach ($zleceniodawcy as $_zleceniodawca)
+                    <b-button href="{{ route('rozliczenia.analiza', [ 'id' => $rozliczenie->id, 'zleceniodawca' => $_zleceniodawca ]) }}" class="btn btn-outline-primary mb-1 {{ ($_zleceniodawca == $zleceniodawca) ? 'active' : '' }}">{{ $_zleceniodawca }}</b-button>
+                @endforeach
             </template>
         </b-block>
 

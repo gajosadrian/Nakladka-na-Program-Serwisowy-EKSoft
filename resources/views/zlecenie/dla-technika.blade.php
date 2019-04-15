@@ -44,7 +44,10 @@
             <b-block title="Zlecenia" noprint>
                 <template slot="content">
                     <div class="mx-3" style="font-size: 1.1em">
-                        <div class="mb-3" style="font-size: 2.6em">{{ $technik->nazwa }} {{ $date_formatted }}</div>
+                        <div class="mb-3 clearfix" style="font-size: 2.3em">
+                            {{ $technik->nazwa }} {{ $date_formatted }}
+                            <b-img src="{{ asset('media/dargaz-logo.png') }}" class="float-right" alt="logo"></b-img>
+                        </div>
                         @foreach ($zlecenia as $zlecenie)
                             <div class="mb-4">
                                 @if ($zlecenie->terminarz->temat)
@@ -91,7 +94,8 @@
                                 <div class="mt-3">
                                     <b-row>
                                         <b-col cols="7" style="border-right: 1px solid #aaa">
-                                            <div class="font-w700 text-uppercase">Opis zlecenia:</div>
+											{{-- <div class="font-w700 text-uppercase">Opis zlecenia:</div> --}}
+											<hr class="m-0" style="border-top-color: #aaa">
                                             <div class="py-2">
                                                 {!! $zlecenie->opis_formatted !!}
                                             </div>

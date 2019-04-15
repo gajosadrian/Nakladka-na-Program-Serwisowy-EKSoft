@@ -82,7 +82,7 @@
                 <div id="accordion_q1" class="collapse {{ $rozliczenie->is_closed ? 'show' : '' }}" role="tabpanel" aria-labelledby="accordion_h1" data-parent="#accordion">
                     <div class="block-content">
                         <div class="table-responsive">
-                            <table id="rozliczone{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm dataTable">
+                            <table id="rozliczone{{ $room }}" class="table table-sm table-striped table-hover table-borderless table-vcenter font-size-sm dataTable">
                                 <thead>
                                     <th class="font-w700" style="width:1%">Lp.</th>
                                     <th class="font-w700">Nr zlecenia</th>
@@ -91,6 +91,7 @@
                                     <th class="font-w700">Dojazdy</th>
                                     <th class="font-w700">Zakończenie</th>
                                     <th class="font-w700">Działania</th>
+                                    <th class="font-w700">Status</th>
                                     <th class="d-none"></th>
                                 </thead>
                                 <tbody>
@@ -110,6 +111,7 @@
                                                     </a>
                                                 @endif
                                             </td>
+                                            <td>{!! ($rozliczone_zlecenie->zlecenie->status_id != App\Models\Zlecenie\Status::ZAKONCZONE_ID) ? '<span class="text-danger font-w600">Zlecenie niezarchiwizowane</span>' : '' !!}</td>
                                             <td class="d-none">
                                                 {{ $rozliczone_zlecenie->zlecenie->nr }} ; {{ $rozliczone_zlecenie->zlecenie->nr_obcy }}
                                             </td>
@@ -137,7 +139,7 @@
                                 </span>
                             </div>
                             <div class="table-responsive">
-                                <table id="nierozliczone{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
+                                <table id="nierozliczone{{ $room }}" class="table table-sm table-striped table-hover table-borderless table-vcenter font-size-sm js-table-checkable dataTable">
                                     <thead>
                                         <tr class="text-uppercase">
                                             <th class="font-w700">

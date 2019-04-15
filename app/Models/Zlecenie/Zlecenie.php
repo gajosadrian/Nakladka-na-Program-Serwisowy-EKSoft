@@ -39,7 +39,7 @@ class Zlecenie extends Model
         'Deante' => ['deante', 'deande'],
         'Ciarko' => ['ciarko', 'ciarco'],
         'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi'],
-        'Europ Assistance' => ['europ assistance', 'europ', 'eap'],
+        'Europ Assistance' => ['europ assistance', 'europ-assistance', 'europ', 'eap'],
         'RTV Euro AGD' => ['euro-net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
         'Mentax' => ['mentax', 'mentaks'],
         'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
@@ -276,7 +276,12 @@ class Zlecenie extends Model
 
     public function getOpisFormattedAttribute(): string
     {
-        return str_replace("\n", '<br>', $this->opis);
+        $opis = $this->opis;
+        $opis = str_replace("\n", '<br>', $opis);
+        $opis = str_replace(['>> ', ' <<'], ['>>', '<<'], $opis);
+        $opis = str_replace('>>', '<span class="bg-gray font-w700 px-1">', $opis);
+        $opis = str_replace('<<', '</span>', $opis);
+        return $opis;
     }
 
     public function setOpisAttribute(string $value): void
