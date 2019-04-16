@@ -277,10 +277,15 @@ class Zlecenie extends Model
     public function getOpisFormattedAttribute(): string
     {
         $opis = $this->opis;
+        $opis = strtr($opis, [
+            '>> ' => '>>',
+            ' <<' => '<<',
+        ]);
+        $opis = strtr($opis, [
+            '>>' => '<span class="bg-gray font-w700 px-1">',
+            '<<' => '</span>',
+        ]);
         $opis = str_replace("\n", '<br>', $opis);
-        $opis = str_replace(['>> ', ' <<'], ['>>', '<<'], $opis);
-        $opis = str_replace('>>', '<span class="bg-gray font-w700 px-1">', $opis);
-        $opis = str_replace('<<', '</span>', $opis);
         return $opis;
     }
 

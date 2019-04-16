@@ -94,7 +94,7 @@
                                 <div class="mt-3">
                                     <b-row>
                                         <b-col cols="7" style="border-right: 1px solid #aaa">
-											{{-- <div class="font-w700 text-uppercase">Opis zlecenia:</div> --}}
+											{{-- <div class="font-w700">OPIS ZLECENIA:</div> --}}
 											<hr class="m-0" style="border-top-color: #aaa">
                                             <div class="py-2">
                                                 {!! $zlecenie->opis_formatted !!}
@@ -102,7 +102,7 @@
                                         </b-col>
                                         <b-col cols="5">
                                             <div class="clearfix" style="min-height: 170px">
-                                                <div class="font-w700 text-uppercase">Uwagi technika:</div>
+                                                <div class="font-w700">UWAGI TECHNIKA:</div>
                                             </div>
                                         </b-col>
                                     </b-row>
