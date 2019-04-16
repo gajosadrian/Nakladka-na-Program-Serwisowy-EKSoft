@@ -15,8 +15,8 @@ class Zlecenie extends Model
 
     public static $SYMBOLE_KOSZTORYSU = [
         // MOŻNA EDYTOWAĆ IMIONA
-        'ROBOCIZNY' => ['SZEF-R' => ['Szef'], 'MICHAL-R' => ['Michał'], 'FILIP-R' => ['Filip'], 'MARCIN-R' => ['Marcin'], 'BOGUS-R' => ['Bogdan'], 'ROBERT-R' => ['Robert'], 'DAMIAN-R' => ['Damian']],
-        'DOJAZDY' => ['SZEF-D' => ['Szef'], 'MICHAL-D' => ['Michał'], 'FILIP-D' => ['Filip'], 'MARCIN-D' => ['Marcin'], 'BOGUS-D' => ['Bogdan'], 'ROBERT-D' => ['Robert'], 'DAMIAN-D' => ['Damian']],
+        'ROBOCIZNY' => ['SZEF-R' => ['Szef', -1], 'MICHAL-R' => ['Michał', 2], 'FILIP-R' => ['Filip', 13], 'MARCIN-R' => ['Marcin', 16], 'BOGUS-R' => ['Bogdan', 17], 'ROBERT-R' => ['Robert', 15], 'DAMIAN-R' => ['Damian', 18]],
+        'DOJAZDY' => ['SZEF-D' => ['Szef', -1], 'MICHAL-D' => ['Michał', 2], 'FILIP-D' => ['Filip', 13], 'MARCIN-D' => ['Marcin', 16], 'BOGUS-D' => ['Bogdan', 17], 'ROBERT-D' => ['Robert', 15], 'DAMIAN-D' => ['Damian', 18]],
     ];
 
     public const ERROR_STR = '*Error*';
@@ -66,7 +66,7 @@ class Zlecenie extends Model
         return $this->data_zakonczenia->startOfDay();
     }
 
-    public function getIdAttribute(): string
+    public function getIdAttribute(): int
     {
         return $this->attributes['id_zlecenia'];
     }

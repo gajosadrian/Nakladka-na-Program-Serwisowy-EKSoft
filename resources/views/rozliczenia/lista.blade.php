@@ -20,6 +20,7 @@
 						<thead>
 							<tr class="text-uppercase">
                                 <th class="font-w700">Okres</th>
+                                <th class="font-w700">Ilość zleceń</th>
                                 <th class="font-w700 text-right" v-b-tooltip.hover title="Netto">Suma robocizn</th>
                                 <th class="font-w700 text-right" v-b-tooltip.hover title="Netto">Suma dojazdów</th>
                                 <th class="font-w700">Zamknięcie</th>
@@ -44,6 +45,7 @@
                                             </b-form-row>
                                         </b-form>
                                     </td>
+                                    <td>-</td>
                                     <td class="text-right">-</td>
                                     <td class="text-right">-</td>
                                     <td>-</td>
@@ -57,9 +59,10 @@
                             @endif
                             @foreach ($rozliczenia ?? [] as $rozliczenie)
                                 <tr>
-                                    <td>{{ $rozliczenie->nr }}</td>
-                                    <td class="text-right text-muted">{{ $rozliczenie->suma_robocizn_formatted }}</td>
-                                    <td class="text-right text-muted">{{ $rozliczenie->suma_dojazdow_formatted }}</td>
+                                    <th>{{ $rozliczenie->nr }}</th>
+                                    <td class="text-muted">{{ $rozliczenie->rozliczone_zlecenia->count() }}</td>
+                                    <td class="text-muted text-right">{{ $rozliczenie->suma_robocizn_formatted }}</td>
+                                    <td class="text-muted text-right">{{ $rozliczenie->suma_dojazdow_formatted }}</td>
                                     <td class="text-muted">{!! $rozliczenie->is_closed ? $rozliczenie->closed_at->format('Y-m-d') : '<i class="text-success font-w600">w trakcie rozliczania</i>' !!}</td>
                                     <td class="text-muted">{{ $rozliczenie->is_closed ? $rozliczenie->rozliczyl : '-' }}</td>
                                     <td>

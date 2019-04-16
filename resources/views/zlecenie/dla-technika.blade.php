@@ -10,7 +10,7 @@
     </div>
 
     <div class="content">
-        <b-block title="Wybierz technika" full class="d-print-none">
+        <b-block title="Parametry" full class="d-print-none">
             {{-- <template slot="options">
                 @if ($technik)
                     <b-button class="btn-rounded shadow" variant="info" size="sm" onclick="Dashmix.helpers('print')">
@@ -19,11 +19,13 @@
                 @endif
             </template> --}}
             <template slot="content">
-                <div class="mb-3">
-                    @foreach ($technicy as $_technik)
-                        <b-link href="{{ route('zlecenia.dla-technika', [ 'technik_id' => $_technik->id, 'timestamp' => $timestamp ]) }}" class="btn btn-outline-primary {{ ($_technik->id == $technik_id) ? 'active' : '' }}">{{ $_technik->nazwa }}</b-link>
-                    @endforeach
-                </div>
+                @if ($can_choose_technik)
+                    <div class="mb-3">
+                        @foreach ($technicy as $_technik)
+                            <b-link href="{{ route('zlecenia.dla-technika', [ 'technik_id' => $_technik->id, 'timestamp' => $timestamp ]) }}" class="btn btn-outline-primary {{ ($_technik->id == $technik_id) ? 'active' : '' }}">{{ $_technik->nazwa }}</b-link>
+                        @endforeach
+                    </div>
+                @endif
 
                 <b-row>
                     @if ($technik)
@@ -45,14 +47,35 @@
                 <template slot="content">
                     <div class="mx-3" style="font-size: 1.1em">
                         <div class="mb-3 clearfix" style="font-size: 2.3em">
-                            {{ $technik->nazwa }} {{ $date_formatted }}
-                            <b-img src="{{ asset('media/dargaz-logo.png') }}" class="float-right" alt="logo"></b-img>
+                            <div class="float-left">
+                                {{ $technik->nazwa }} {{ $date_formatted }}
+                            </div>
+                            <div class="float-right">
+                                <b-img src="{{ asset('media/dargaz-logo.png') }}" alt="logo"></b-img>
+                            </div>
                         </div>
-                        @foreach ($zlecenia as $zlecenie)
+
+                        {{-- <div class="">
+                            <span class="font-w700">Samochód:</span> {{ $samochod['value'][0] }}
+                        </div>
+
+                        <div class="">
+                            @foreach ($terminarz_notatki as $terminarz_notatka)
+                                {{ $terminarz_notatka->temat }}
+                            @endforeach
+                        </div> --}}
+
+                        @foreach ($terminy as $terminarz)
+                            @php
+                                $zlecenie = $terminarz->zlecenie;
+                                if (! $zlecenie->id) {
+                                    continue;
+                                }
+                            @endphp
                             <div class="mb-4">
-                                @if ($zlecenie->terminarz->temat)
+                                @if ($terminarz->temat)
                                     <div class="font-w700 bg-gray">
-                                        <span class="{{ (strlen($zlecenie->terminarz->temat) <= 40) ? 'bg-dark text-white' : '' }} px-1">{{ $zlecenie->terminarz->temat }}</span>
+                                        <span class="{{ (strlen($terminarz->temat) <= 40) ? 'bg-dark text-white' : '' }} px-1">{{ $terminarz->temat }}</span>
                                     </div>
                                 @endif
                                 <div class="font-w700 bg-gray p-1">
@@ -67,7 +90,7 @@
                                             @if ($zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
                                                 <span class="bg-dark text-white px-1">warsztat</span>
                                             @endif
-                                            {{ $zlecenie->terminarz->godzina_rozpoczecia }} - {{ $zlecenie->terminarz->przeznaczony_czas_formatted }}
+                                            {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
                                         </b-col>
                                     </b-row>
                                 </div>

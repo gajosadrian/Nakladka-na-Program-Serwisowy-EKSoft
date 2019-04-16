@@ -31,7 +31,7 @@ class RozliczenieController extends Controller
         // }
         // return response()->json('success', 200);
 
-        $rozliczenia = Rozliczenie::limit(12)->orderByDesc('id')->get();
+        $rozliczenia = Rozliczenie::limit(12)->with('rozliczone_zlecenia')->orderByDesc('id')->get();
 
         $now = now();
         $end_of_month = now()->endOfMonth();
