@@ -15,10 +15,12 @@ class Terminarz extends Model
 
     public const SAMOCHOD_KEYS = ['samochod', 'samochód'];
 
-    // public const BRAK_ID = '0x00000000006C8EAE'; public const TERMIN_USTALONY_ID = '0x00000000006C8EA5';
-    // public const DZWONIC_WCZESNIEJ_ID = '0x00000000006C8EA6'; public const ZAKONCZONE_ID = '0x00000000006C8EA7';
-    // public const TERMIN_WSTEPNIE_USTALONY_ID = '0x00000000006C8EA8'; public const DO_ODWIEZIENIA_ID = '0x00000000006C8EA9';
-    // public const ZAMOWIONO_CZESC_ID = '0x00000000006C8EAA'; public const NA_WARSZTACIE_ID = '0x00000000006C8EAB';
+    public const BRAK_ID = '536870912'; public const UMOWIONO_ID = '8689404';
+    public const DZWONIC_WCZESNIEJ_ID = '14982788'; public const ZAKONCZONE_ID = '6610596';
+    public const TERMIN_WSTEPNIE_USTALONY_ID = '7649020'; public const DO_ODWIEZIENIA_ID = '16051844';
+    public const ZAMOWIONO_CZESC_ID = '16033476'; public const NA_WARSZTACIE_ID = '7661308';
+
+    public const DZWONIC_WCZESNIEJ_STR = 'Dzwonić 30 min wcześniej';
 
     /**
      * Attributes
@@ -35,14 +37,14 @@ class Terminarz extends Model
          $this->attributes['ID_ZLECENIA'] = $value;
      }
 
-     public function getTypAttribute(): int
+     public function getStatusIdAttribute(): string
      {
-         return $this->attributes['TS'];
+         return $this->attributes['label'] ?? self::BRAK_ID;
      }
 
-     public function setTypAttribute(string $value): void
+     public function setStatusIdAttribute(string $value): void
      {
-         $this->attributes['TS'] = $value;
+         $this->attributes['label'] = $value;
      }
 
     public function getIsDataRozpoczeciaAttribute($value): bool
@@ -171,6 +173,6 @@ class Terminarz extends Model
         }
 
         $this->zlecenie_id = null;
-        // $this->typ = Terminarz::ZAKONCZONE_ID;
+        $this->status_id = Terminarz::ZAKONCZONE_ID;
     }
 }

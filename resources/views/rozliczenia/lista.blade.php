@@ -13,6 +13,17 @@
     </div>
 
     <div class="content">
+        <b-block full>
+            <template slot="content">
+                <b-row>
+                    <b-col cols="6">
+                        <canvas id="wykresRobocizn" height="400" style="width:100%"></canvas>
+                    </b-col>
+                    <b-col cols="6"></b-col>
+                </b-row>
+            </template>
+        </b-block>
+
         <b-block>
             <template slot="content">
                 <div class="table-responsive">
@@ -91,3 +102,30 @@
         </b-block>
     </div>
 @endsection
+
+@section('js_after')<script>$(function(){
+
+var wykresRobocizn = new Chart(document.getElementById('wykresRobocizn').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: ['MAR', 'KWI', 'MAJ', 'CZE', 'LIP', 'SIE', 'WRZ', 'PAŹ', 'LIS', 'GRU', 'STY', 'LUT'],
+        datasets: [{
+            label: 'Suma robocizn',
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23380, 25099],
+            borderWidth: 1,
+            backgroundColor: '#64b5f6',
+            borderColor: '#2286c3',
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                }
+            }]
+        },
+    },
+});
+
+})</script>@endsection

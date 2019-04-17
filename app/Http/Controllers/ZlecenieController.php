@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Facades\App\Models\Zlecenie\Zlecenie;
-use Facades\App\Models\Zlecenie\Terminarz;
-use Facades\App\Models\SMS\Technik;
+use App\Models\Zlecenie\Terminarz;
+use App\Models\Zlecenie\Status;
+use App\Models\SMS\Technik;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -88,7 +89,7 @@ class ZlecenieController extends Controller
     {
         $user = auth()->user();
 
-        $can_choose_technik = (bool) ($user->technik_id == 0);
+        $is_technik = (bool) ($user->technik_id != 0);
 
         $technicy = Technik::getLast();
         $technik_id = ($user->technik_id > 0) ? $user->technik_id : $technik_id;
@@ -132,7 +133,7 @@ class ZlecenieController extends Controller
         }
 
         return view('zlecenie.dla-technika', compact(
-            'can_choose_technik',
+            'is_technik',
             'technicy',
             'technik_id',
             'technik',
@@ -172,6 +173,24 @@ class ZlecenieController extends Controller
 
         $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false);
         $zlecenie->save();
+
+        return response()->json('success', 200);
+    }
+
+    public function apiUmowKlienta(Request $request, int $id)
+    {
+        $user = auth()->user();
+        $zlecenie = Zlecenie::find($id);
+
+        $zlecenie->changeStatus(Status::UMOWIONO_ID, $user->pracownik->id, false);
+        $zlecenie->save();
+        if (! $request->dzwonic_wczesniej) {
+            $zlecenie->terminarz->status_id = Terminarz::UMOWIONO_ID;
+        } else {
+            $zlecenie->terminarz->status_id = Terminarz::DZWONIC_WCZESNIEJ_ID;
+            $zlecenie->terminarz->temat = Terminarz::DZWONIC_WCZESNIEJ_STR;
+        }
+        $zlecenie->terminarz->save();
 
         return response()->json('success', 200);
     }

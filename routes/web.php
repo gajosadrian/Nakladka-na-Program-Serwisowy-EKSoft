@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
         Route::get('api/get_opis/{id}', 'ZlecenieController@apiGetOpis')->name('api.get_opis');
         Route::post('api/append_notatka/{id}', 'ZlecenieController@apiAppendNotatka')->name('api.append_opis');
         Route::post('api/change_status/{id}', 'ZlecenieController@apiChangeStatus')->name('api.change_status');
+        Route::post('api/umow_klienta/{id}', 'ZlecenieController@apiUmowKlienta')->name('api.umow_klienta');
     });
 
     Route::prefix('admin')->middleware('role:super-admin')->group(function () {

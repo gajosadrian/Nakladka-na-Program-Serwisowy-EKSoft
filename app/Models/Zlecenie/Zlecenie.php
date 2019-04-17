@@ -572,7 +572,7 @@ HTML;
         $this->status_historia()->save($status_historia);
         $this->status_id = $status_id;
 
-        if ($this->terminarz()->exists()) {
+        if ($remove_termin and $this->terminarz()->exists()) {
             $this->terminarz->removeTermin();
             $this->terminarz->save();
         }

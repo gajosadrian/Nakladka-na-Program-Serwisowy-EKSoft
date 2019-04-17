@@ -19,7 +19,7 @@
                 @endif
             </template> --}}
             <template slot="content">
-                @if ($can_choose_technik)
+                @if (! $is_technik)
                     <div class="mb-3">
                         @foreach ($technicy as $_technik)
                             <b-link href="{{ route('zlecenia.dla-technika', [ 'technik_id' => $_technik->id, 'timestamp' => $timestamp ]) }}" class="btn btn-outline-primary {{ ($_technik->id == $technik_id) ? 'active' : '' }}">{{ $_technik->nazwa }}</b-link>
@@ -55,18 +55,16 @@
                             </div>
                         </div>
 
-                        @if ($terminarz_notatki->count() > 0)
-                            <div class="mb-3" style="border: 1px solid #aaa">
-                                <span class="px-2" style="border-right: 1px solid #aaa">
-                                    <span class="font-w700">Samochód:</span> {{ $samochod['value'][0] }}
-                                </span>
-                                @foreach ($terminarz_notatki as $terminarz_notatka)
-                                    <span class="px-2" style="border-right: 1px solid #aaa">
-                                        {{ $terminarz_notatka->temat }}
-                                    </span>
-                                @endforeach
-                            </div>
-                        @endif
+						<div class="mb-3" style="border: 1px solid #aaa">
+							<span class="px-2" style="border-right: 1px solid #aaa">
+								<span class="font-w700">Samochód:</span> {{ $samochod['value'][0] }}
+							</span>
+							@foreach ($terminarz_notatki as $terminarz_notatka)
+								<span class="px-2" style="border-right: 1px solid #aaa">
+									{{ $terminarz_notatka->temat }}
+								</span>
+							@endforeach
+						</div>
 
                         @foreach ($terminy as $terminarz)
                             @php
@@ -76,6 +74,22 @@
                                 }
                             @endphp
                             <div class="mb-4">
+                                @if (! $is_technik and $zlecenie->status->id != App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
+                                    <div class="d-none d-lg-block mb-1">
+                                        @php
+                                            $UMOWIONO_ID = App\Models\Zlecenie\Terminarz::UMOWIONO_ID;
+                                            $DZWONIC_WCZESNIEJ_ID = App\Models\Zlecenie\Terminarz::DZWONIC_WCZESNIEJ_ID;
+                                            $is_umowiono = ($zlecenie->status->id == App\Models\Zlecenie\Status::UMOWIONO_ID);
+                                        @endphp
+                                        @if ($terminarz->status_id == $UMOWIONO_ID or !in_array($terminarz->status_id, [$UMOWIONO_ID, $DZWONIC_WCZESNIEJ_ID]))
+                                            <b-button @if(!$is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 0)" @endif size="sm" variant="{{ $is_umowiono ? 'danger' : 'outline-danger' }}">Umówiono klienta</b-button>
+                                        @endif
+                                        @if ($terminarz->status_id == $DZWONIC_WCZESNIEJ_ID or !in_array($terminarz->status_id, [$UMOWIONO_ID, $DZWONIC_WCZESNIEJ_ID]))
+                                            <b-button @if(!$is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 1)" @endif size="sm" variant="{{ $is_umowiono ? 'primary' : 'outline-primary' }}">Umówiono klienta i dzwonić wcześniej</b-button>
+                                        @endif
+                                    </div>
+                                @endif
+
                                 @if ($terminarz->temat)
                                     <div class="font-w700 bg-gray">
                                         <span class="{{ (strlen($terminarz->temat) <= 40) ? 'bg-dark text-white' : '' }} px-1">{{ $terminarz->temat }}</span>
@@ -158,7 +172,7 @@
                                                     <tr>
                                                         <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
                                                         <td nowrap>{{ $pozycja->symbol }}</td>
-                                                        <td nowrap>{{ $pozycja->nazwa }}</td>
+                                                        <td nowrap>{{ str_limit($pozycja->nazwa, 15) }}</td>
                                                         <td nowrap>{{ $pozycja->opis }}</td>
                                                         <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
                                                         <td class="text-center" nowrap>{!! $pozycja->ilosc != 1 ? ('<span class="bg-gray font-w700 px-1">' . $pozycja->ilosc . '</span>') : $pozycja->ilosc !!}</td>
@@ -198,6 +212,16 @@ function updateUrl(_this, type) {
         technik_id: {{ $technik_id }},
         timestamp: Date.parse(value) / 1000,
     }));
+}
+
+function umowKlienta(zlecenie_id, dzwonic_wczesniej = 0) {
+    $.post(route('zlecenia.api.umow_klienta', { id: zlecenie_id }), {
+        '_token': '{{ csrf_token() }}',
+        dzwonic_wczesniej: dzwonic_wczesniej
+    })
+        .done(function (data) {
+            location.reload();
+        });
 }
 
 </script>@endsection
