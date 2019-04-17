@@ -69,6 +69,7 @@
                         @foreach ($terminy as $terminarz)
                             @php
                                 $zlecenie = $terminarz->zlecenie;
+                                $is_umowiono = ($zlecenie->status->id == App\Models\Zlecenie\Status::UMOWIONO_ID);
                                 if (! $zlecenie->id) {
                                     continue;
                                 }
@@ -79,7 +80,6 @@
                                         @php
                                             $UMOWIONO_ID = App\Models\Zlecenie\Terminarz::UMOWIONO_ID;
                                             $DZWONIC_WCZESNIEJ_ID = App\Models\Zlecenie\Terminarz::DZWONIC_WCZESNIEJ_ID;
-                                            $is_umowiono = ($zlecenie->status->id == App\Models\Zlecenie\Status::UMOWIONO_ID);
                                         @endphp
                                         @if ($terminarz->status_id == $UMOWIONO_ID or !in_array($terminarz->status_id, [$UMOWIONO_ID, $DZWONIC_WCZESNIEJ_ID]))
                                             <b-button @if(!$is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 0)" @endif size="sm" variant="{{ $is_umowiono ? 'danger' : 'outline-danger' }}">Umówiono klienta</b-button>
@@ -114,7 +114,7 @@
                                 <div>
                                     <b-row>
                                         <b-col cols="6">
-                                            <span class="font-w700">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span><br>
+                                            @if($zlecenie->status->id != App\Models\Zlecenie\Status::NA_WARSZTACIE_ID) <i class="{{ $is_umowiono ? 'fa fa-check-circle' : 'far fa-circle' }}"></i> @endif <span class="font-w700">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span><br>
                                             {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
                                             {{ $zlecenie->klient->telefony_formatted }}
                                         </b-col>
