@@ -143,7 +143,7 @@ class Terminarz extends Model
 
         if ($termin_samochod) {
             $termin_temat = substr(str_replace(self::SAMOCHOD_KEYS, '', strtolower($termin_samochod->temat)), 1);
-            foreach (Zlecenie::$SYMBOLE_KOSZTORYSU['DOJAZDY'] as $symbol => $value) {
+            foreach (Zlecenie::SYMBOLE_KOSZTORYSU['DOJAZDY'] as $symbol => $value) {
                 if (Str::contains( strtolower($symbol), $termin_temat )) {
                     return [
                         'symbol' => $symbol,
@@ -152,7 +152,7 @@ class Terminarz extends Model
                 }
             }
         } else {
-            foreach (Zlecenie::$SYMBOLE_KOSZTORYSU['DOJAZDY'] as $symbol => $value) {
+            foreach (Zlecenie::SYMBOLE_KOSZTORYSU['DOJAZDY'] as $symbol => $value) {
                 if ($value[1] == $technik_id) {
                     return [
                         'symbol' => $symbol,

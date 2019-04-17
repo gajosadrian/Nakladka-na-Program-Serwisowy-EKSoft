@@ -13,7 +13,7 @@ class Zlecenie extends Model
     protected $with = ['kosztorys_opis'];
     public $timestamps = false;
 
-    public static $SYMBOLE_KOSZTORYSU = [
+    public const SYMBOLE_KOSZTORYSU = [
         // MOŻNA EDYTOWAĆ IMIONA
         'ROBOCIZNY' => ['SZEF-R' => ['Szef', -1], 'MICHAL-R' => ['Michał', 2], 'FILIP-R' => ['Filip', 13], 'MARCIN-R' => ['Marcin', 16], 'BOGUS-R' => ['Bogdan', 17], 'ROBERT-R' => ['Robert', 15], 'DAMIAN-R' => ['Damian', 18]],
         'DOJAZDY' => ['SZEF-D' => ['Szef', -1], 'MICHAL-D' => ['Michał', 2], 'FILIP-D' => ['Filip', 13], 'MARCIN-D' => ['Marcin', 16], 'BOGUS-D' => ['Bogdan', 17], 'ROBERT-D' => ['Robert', 15], 'DAMIAN-D' => ['Damian', 18]],
@@ -24,7 +24,7 @@ class Zlecenie extends Model
     public const GWARANCJA_NAME = 'Gwarancja';
     public const SPRZEDAZ_CZESCI_NAME = 'Sprzedaż części';
 	public const MONTAZ_URZADZENIA_NAME = 'Montaż urządzenia';
-    public static $ZLECENIODAWCY = [
+    public const ZLECENIODAWCY = [
         // NIE EDYTOWAĆ INDEX'ÓW
         'Odpłatne' => ['', 'odplatne', 'odpłatne', 'odplatnie', 'odpłatnie'],
         'Termet' => ['termet'],
@@ -161,7 +161,7 @@ class Zlecenie extends Model
 
     public function getZleceniodawcaAttribute(): string
     {
-        $zleceniodawcy = self::$ZLECENIODAWCY;
+        $zleceniodawcy = self::ZLECENIODAWCY;
         $zleceniodawca_type = trim(strtolower($this->kosztorys_opis->opis ?? ''));
         $zleceniodawca = '';
 
@@ -506,7 +506,7 @@ HTML;
 
     private function getCalcKosztorys(string $type): array
     {
-        $symbole_robocizn = self::$SYMBOLE_KOSZTORYSU[$type];
+        $symbole_robocizn = self::SYMBOLE_KOSZTORYSU[$type];
         $array = [];
 
         foreach ($this->kosztorys_pozycje as $kosztorys_pozycja) {
@@ -525,7 +525,7 @@ HTML;
 
     public static function getHtmlKosztorys(string $type, array $pozycje): string
     {
-        $symbole_pocyzji = self::$SYMBOLE_KOSZTORYSU[$type];
+        $symbole_pocyzji = self::SYMBOLE_KOSZTORYSU[$type];
         $str = '';
 
         foreach ($pozycje as $symbol => $kwota) {

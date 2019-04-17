@@ -55,15 +55,18 @@
                             </div>
                         </div>
 
-                        {{-- <div class="">
-                            <span class="font-w700">Samochód:</span> {{ $samochod['value'][0] }}
-                        </div>
-
-                        <div class="">
-                            @foreach ($terminarz_notatki as $terminarz_notatka)
-                                {{ $terminarz_notatka->temat }}
-                            @endforeach
-                        </div> --}}
+                        @if ($terminarz_notatki->count() > 0)
+                            <div class="mb-3" style="border: 1px solid #aaa">
+                                <span class="px-2" style="border-right: 1px solid #aaa">
+                                    <span class="font-w700">Samochód:</span> {{ $samochod['value'][0] }}
+                                </span>
+                                @foreach ($terminarz_notatki as $terminarz_notatka)
+                                    <span class="px-2" style="border-right: 1px solid #aaa">
+                                        {{ $terminarz_notatka->temat }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        @endif
 
                         @foreach ($terminy as $terminarz)
                             @php
