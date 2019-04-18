@@ -160,7 +160,7 @@ class ZlecenieController extends Controller
         $user = auth()->user();
         $zlecenie = Zlecenie::find($id);
 
-        $zlecenie->appendOpis($request->opis, $user->short_name);
+        $zlecenie->appendOpis($request->opis, $user->short_name, ($user->technik_id == 0));
         $zlecenie->save();
 
         return response()->json($zlecenie->opis, 200);

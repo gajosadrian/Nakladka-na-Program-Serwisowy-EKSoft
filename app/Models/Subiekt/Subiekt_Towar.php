@@ -34,4 +34,9 @@ class Subiekt_Towar extends Model
     {
         return $this->attributes['tw_DostSymbol'];
     }
+
+    public function getPolkaAttribute(): string
+    {
+        return $this->attributes['tw_PKWiU'] ?? false;
+    }
 }

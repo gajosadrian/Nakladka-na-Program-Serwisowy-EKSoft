@@ -44,12 +44,12 @@ class KosztorysPozycja extends Model
     {
         return number_format($this->cena, 2, '.', ' ') . ' zł'; // &nbsp;
     }
-	
+
     public function getCenaBruttoAttribute(): float
     {
         return round($this->cena * ($this->vat + 1), 4);
     }
-	
+
 	public function getCenaBruttoFormattedAttribute(): string
     {
         return number_format($this->cena_brutto, 2, '.', ' ') . ' zł'; // &nbsp;
@@ -85,6 +85,11 @@ class KosztorysPozycja extends Model
         return is_numeric($this->symbol) or $this->opis;
     }
 
+    public function getPolkaAttribute(): string
+    {
+        return $this->towar->polka;
+    }
+
     /**
     * Relations
     *
@@ -96,7 +101,8 @@ class KosztorysPozycja extends Model
             'tw_Nazwa' => '-',
             'tw_Opis' => '',
             'tw_Symbol' => '-',
-            'tw_DostSymbol' => '-',
+            'tw_DostSymbol' => '',
+            'tw_PKWiU' => '',
         ]);
     }
 }

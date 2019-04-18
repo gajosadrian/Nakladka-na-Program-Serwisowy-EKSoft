@@ -114,6 +114,21 @@ class Terminarz extends Model
         return Str::contains($this->temat, self::SAMOCHOD_KEYS);
     }
 
+    public function getIsUmowionoAttribute(): bool
+    {
+        return ($this->status_id == self::UMOWIONO_ID);
+    }
+
+    public function getIsDzwonicAttribute(): bool
+    {
+        return ($this->status_id == self::DZWONIC_WCZESNIEJ_ID);
+    }
+
+    public function getIsUmowionoOrDzwonicAttribute(): bool
+    {
+        return ($this->is_umowiono or $this->is_dzwonic);
+    }
+
     /**
     * Relations
     *

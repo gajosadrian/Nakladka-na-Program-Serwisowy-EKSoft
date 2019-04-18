@@ -69,23 +69,18 @@
                         @foreach ($terminy as $terminarz)
                             @php
                                 $zlecenie = $terminarz->zlecenie;
-                                $is_umowiono = ($zlecenie->status->id == App\Models\Zlecenie\Status::UMOWIONO_ID);
                                 if (! $zlecenie->id) {
                                     continue;
                                 }
                             @endphp
                             <div class="mb-4">
-                                @if (! $is_technik and $zlecenie->status->id != App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
+                                @if (!$is_technik and !$zlecenie->is_zakonczone and !$zlecenie->is_warsztat)
                                     <div class="d-none d-lg-block mb-1">
-                                        @php
-                                            $UMOWIONO_ID = App\Models\Zlecenie\Terminarz::UMOWIONO_ID;
-                                            $DZWONIC_WCZESNIEJ_ID = App\Models\Zlecenie\Terminarz::DZWONIC_WCZESNIEJ_ID;
-                                        @endphp
-                                        @if ($terminarz->status_id == $UMOWIONO_ID or !in_array($terminarz->status_id, [$UMOWIONO_ID, $DZWONIC_WCZESNIEJ_ID]))
-                                            <b-button @if(!$is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 0)" @endif size="sm" variant="{{ $is_umowiono ? 'danger' : 'outline-danger' }}">Umówiono klienta</b-button>
+                                        @if ($terminarz->is_umowiono or !$terminarz->is_umowiono_or_dzwonic)
+                                            <b-button @if(!$zlecenie->is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 0)" @endif size="sm" variant="{{ $zlecenie->is_umowiono ? 'danger' : 'outline-danger' }}">Umówiono klienta</b-button>
                                         @endif
-                                        @if ($terminarz->status_id == $DZWONIC_WCZESNIEJ_ID or !in_array($terminarz->status_id, [$UMOWIONO_ID, $DZWONIC_WCZESNIEJ_ID]))
-                                            <b-button @if(!$is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 1)" @endif size="sm" variant="{{ $is_umowiono ? 'primary' : 'outline-primary' }}">Umówiono klienta i dzwonić wcześniej</b-button>
+                                        @if ($terminarz->is_dzwonic or !$terminarz->is_umowiono_or_dzwonic)
+                                            <b-button @if(!$zlecenie->is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 1)" @endif size="sm" variant="{{ $zlecenie->is_umowiono ? 'primary' : 'outline-primary' }}">Umówiono klienta i dzwonić wcześniej</b-button>
                                         @endif
                                     </div>
                                 @endif
@@ -104,7 +99,7 @@
                                             <i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }} {{ $zlecenie->nr_obcy ? ('| ' . $zlecenie->nr_obcy) : '' }}
                                         </b-col>
                                         <b-col cols="4" class="text-right">
-                                            @if ($zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
+                                            @if ($zlecenie->is_warsztat)
                                                 <span class="bg-dark text-white px-1">warsztat</span>
                                             @endif
                                             {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
@@ -114,7 +109,12 @@
                                 <div>
                                     <b-row>
                                         <b-col cols="6">
-                                            @if($zlecenie->status->id != App\Models\Zlecenie\Status::NA_WARSZTACIE_ID) <i class="{{ $is_umowiono ? 'fa fa-check-circle' : 'far fa-circle' }}"></i> @endif <span class="font-w700">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span><br>
+                                            @if(! $zlecenie->is_warsztat)
+                                                <i class="{{ $zlecenie->is_umowiono ? 'fa fa-check-circle' : 'far fa-circle' }}"></i>
+                                            @endif
+                                            <span class="font-w700 d-lg-none">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span>
+                                            <a class="font-w700 d-none d-lg-inline" href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}">{{ $zlecenie->klient->symbol }} {{ $zlecenie->klient->nazwa }}</a>
+                                            <br>
                                             {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
                                             {{ $zlecenie->klient->telefony_formatted }}
                                         </b-col>
@@ -152,6 +152,7 @@
                                         <table class="table table-sm table-striped table-vcenter font-size-sm">
                                             <thead>
                                                 <tr>
+                                                    <th class="font-w700" nowrap>Półka</th>
                                                     <th class="font-w700" nowrap>Symbol dost.</th>
                                                     <th class="font-w700" nowrap>Symbol</th>
                                                     <th class="font-w700" nowrap>Nazwa</th>
@@ -170,10 +171,11 @@
                                                         $wartosc_brutto += $pozycja->wartosc_brutto;
                                                     @endphp
                                                     <tr>
+                                                        <td nowrap>{{ $pozycja->polka }}</td>
                                                         <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
                                                         <td nowrap>{{ $pozycja->symbol }}</td>
-                                                        <td nowrap>{{ str_limit($pozycja->nazwa, 15) }}</td>
-                                                        <td nowrap>{{ $pozycja->opis }}</td>
+                                                        <td nowrap>{{ str_limit($pozycja->nazwa, 30) }}</td>
+                                                        <td nowrap>{{ str_limit($pozycja->opis, 15) }}</td>
                                                         <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
                                                         <td class="text-center" nowrap>{!! $pozycja->ilosc != 1 ? ('<span class="bg-gray font-w700 px-1">' . $pozycja->ilosc . '</span>') : $pozycja->ilosc !!}</td>
                                                         <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
@@ -182,6 +184,7 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
+                                                    <th></th>
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>

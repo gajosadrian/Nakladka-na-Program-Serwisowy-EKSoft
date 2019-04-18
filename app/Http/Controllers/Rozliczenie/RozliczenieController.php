@@ -128,4 +128,22 @@ class RozliczenieController extends Controller
 
         return redirect()->back();
     }
+
+    public function hardReload(int $id)
+    {
+        $rozliczenie = Rozliczenie::with('rozliczone_zlecenia', 'rozliczone_zlecenia.zlecenie')->findOrFail($id);
+        $robocizny = [];
+        $dojazdy = [];
+
+        foreach ($rozliczenie->rozliczone_zlecenia as $rozliczone_zlecenie) {
+            $robocizny = array_sum_identical_keys($robocizny, $rozliczone_zlecenie->zlecenie->robocizny);
+            $dojazdy = array_sum_identical_keys($dojazdy, $rozliczone_zlecenie->zlecenie->dojazdy);
+        }
+
+        $rozliczenie->robocizny = $robocizny;
+        $rozliczenie->dojazdy = $dojazdy;
+        $rozliczenie->save();
+
+        return back();
+    }
 }

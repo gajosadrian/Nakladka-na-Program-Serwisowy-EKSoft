@@ -127,7 +127,7 @@
             </b-col>
         </b-row>
         <b-row class="row-deck">
-            <b-col lg="3">
+            <b-col lg="4">
                 <b-block title="Urządzenie" theme="bg-primary-light">
                     <template slot="content">
                         <table class="table table-sm table-borderless">
@@ -155,7 +155,7 @@
                     </template>
                 </b-block>
             </b-col>
-            <b-col lg="9">
+            <b-col lg="8">
                 <div class="block block-rounded shadow-sm">
                     <ul class="nav nav-tabs nav-tabs-alt align-items-center js-tabs bg-primary-light" data-toggle="tabs" role="tablist">
                         <li class="nav-item">

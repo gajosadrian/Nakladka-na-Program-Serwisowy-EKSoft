@@ -16,7 +16,7 @@ class Status extends Model
     public const UPIERDLIWY_KL_ID = 32; public const NIE_OBSLUGIWAC_ID = 33; public const ZALICZKA_ID = 34; public const UZUPELNIENIE_DANYCH_ID = 35;
     public const CZESCI_DO_WYSLANIA_ID = 36; public const DO_ROZLICZENIA_ID = 37; public const INFO_O_KOSZTACH_ID = 38; public const DO_ZAMOWIENIA_ID = 39;
     public const DO_WYCENY_ID = 40; public const PREAUTORYZACJA_ID = 41; public const DO_POINFORMOWANIA_ID = 42;
-    public static $ZAKONCZONE_IDS = [26, 29];
+    public const ZAKONCZONE_IDS = [26, 29];
     private static $PROPERTIES = [
         11 => [ 'icon' => 'zlec_wpisane', 'color' => false ], 12 => [ 'icon' => 'fa fa-calendar-check', 'color' => 'danger' ], 13 => [ 'icon' => 'fa fa-shopping-cart', 'color' => 'info' ],
         14 => [ 'icon' => 'fa fa-car-side', 'color' => 'danger' ], 16 => [ 'icon' => 'fa fa-home', 'color' => 'warning' ], 17 => [ 'icon' => 'nie_odbiera_tel', 'color' => false ],

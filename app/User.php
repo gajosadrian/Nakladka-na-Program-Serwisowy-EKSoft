@@ -45,6 +45,17 @@ class User extends Authenticatable
         return explode(' ', $this->name)[1];
     }
 
+    public function getInitialsAttribute(): string
+    {
+        $words = explode(' ', $this->name);
+        $initials = '';
+        $index = count($words);
+        while($index) {
+            $initials .= $words[--$index][0];
+        }
+        return $initials;
+    }
+
     /**
     * Relations
     *

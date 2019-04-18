@@ -15,11 +15,23 @@
     <div class="content">
         <b-block full>
             <template slot="content">
-                @foreach ($rozliczenie->robocizny as $symbol => $kwota)
-                    <div>
-                        <span class="font-w700">{{ $symbol }}:</span> {{ $kwota }}
-                    </div>
-                @endforeach
+                <b-row>
+                    <b-col cols="6">
+                        @foreach ($rozliczenie->robocizny as $symbol => $kwota)
+                            <div>
+                                <span class="font-w700">{{ $symbol }}:</span> {{ $kwota }}
+                            </div>
+                        @endforeach
+                        @if (! $rozliczenie->is_closed)
+                            <b-link href="{{ route('rozliczenia.hardreload', [ 'id' => $rozliczenie->id ]) }}" size="sm" class="btn btn-sm btn-primary">
+                                <i class="fa fa-sync-alt mr-1"></i>
+                                Przeładuj wszystkie zlecenia
+                            </b-link>
+                        @endif
+                    </b-col>
+                    <b-col cols="6">
+                    </b-col>
+                </b-row>
             </template>
         </b-block>
 

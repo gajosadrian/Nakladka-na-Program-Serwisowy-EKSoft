@@ -66,22 +66,21 @@ class RozliczoneZlecenieController extends Controller
         return response()->json('success', 200);
     }
 
-   public function apiDestory(Request $request)
-   {
-       if (! $request->id) {
-           return response()->json('error', 500);
-       }
+    public function apiDestory(Request $request)
+    {
+        if (! $request->id) {
+            return response()->json('error', 500);
+        }
 
-       $rozliczone_zlecenie = RozliczoneZlecenie::findOrFail($request->id);
-       $rozliczenie = $rozliczone_zlecenie->rozliczenie;
-       $zlecenie = $rozliczone_zlecenie->zlecenie;
+        $rozliczone_zlecenie = RozliczoneZlecenie::findOrFail($request->id);
+        $rozliczenie = $rozliczone_zlecenie->rozliczenie;
 
-       $rozliczenie->robocizny = array_sub_identical_keys($rozliczenie->robocizny, $zlecenie->robocizny);
-       $rozliczenie->dojazdy = array_sub_identical_keys($rozliczenie->dojazdy, $zlecenie->dojazdy);
-       $rozliczenie->save();
+        $rozliczenie->robocizny = array_sub_identical_keys($rozliczenie->robocizny, $rozliczone_zlecenie->robocizny);
+        $rozliczenie->dojazdy = array_sub_identical_keys($rozliczenie->dojazdy, $rozliczone_zlecenie->dojazdy);
+        $rozliczenie->save();
 
-       $rozliczone_zlecenie->delete();
+        $rozliczone_zlecenie->delete();
 
-       return response()->json('success', 200);
-   }
+        return response()->json('success', 200);
+    }
 }

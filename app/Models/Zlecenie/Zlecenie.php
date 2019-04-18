@@ -231,7 +231,17 @@ class Zlecenie extends Model
 
     public function getIsZakonczoneAttribute(): bool
     {
-        return in_array($this->status_id, Status::$ZAKONCZONE_IDS) or $this->archiwalny or $this->anulowany;
+        return in_array($this->status_id, Status::ZAKONCZONE_IDS) or $this->archiwalny or $this->anulowany;
+    }
+
+    public function getIsUmowionoAttribute()
+    {
+        return ($this->status_id == Status::UMOWIONO_ID);
+    }
+
+    public function getIsWarsztatAttribute()
+    {
+        return ($this->status_id == Status::NA_WARSZTACIE_ID);
     }
 
     public function getIsDataPrzyjeciaAttribute(): bool
@@ -394,13 +404,12 @@ HTML;
 
     public function getTableCellNrHTMLAttribute(): string
     {
-        $route_zleceniaPokaz = route('zlecenia.pokaz', $this->id);
         $copy_nr = $this->nr_obcy ?: $this->nr;
 
         return <<<HTML
             <td class="font-w600" nowrap>
 				{$this->znacznik_formatted}<br>
-                <a href="javascript:void(0)" onclick="PopupCenter('{$route_zleceniaPokaz}', 'zlecenie{$this->id}', 1500, 700)">
+                <a href="javascript:void(0)" onclick="{$this->popup_link}">
                     <i class="{$this->znacznik->icon} mr-1"></i>
                     {$this->nr_or_obcy}
                 </a>
@@ -409,6 +418,11 @@ HTML;
                 </a>
             </td>
 HTML;
+    }
+
+    public function getPopupLinkAttribute(): string
+    {
+        return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', 1500, 700)";
     }
 
     // public function getStatusyAttribute()
@@ -423,7 +437,7 @@ HTML;
 
     public function scopeNiezakonczone($query)
     {
-        foreach (Status::$ZAKONCZONE_IDS as $status_id) {
+        foreach (Status::ZAKONCZONE_IDS as $status_id) {
             $query->where('id_status', '!=', $status_id);
         }
         return $query->where('Archiwalny', false)->where('Anulowany', null);
@@ -578,9 +592,15 @@ HTML;
         }
     }
 
-    public function appendOpis(string $opis, string $name): void
+    public function appendOpis(string $opis, string $name, bool $minified = false): void
     {
-        $this->opis .= "\r\n** " . $name . " " . date('d.m H:i') . ": „" . $opis . "”";
+        if (! $minified) {
+            $this->opis .= "\r\n** " . $name . " " . date('d.m H:i') . ": „" . $opis . "”";
+        } else {
+            // TODO: przerobić funkcję
+            $user = auth()->user();
+            $this->opis .= "\r\n" . date('d.m H:i') . ' ' . $user->short_name . ': ' . $opis;
+        }
     }
 
     public function getNiezakonczone(array $data = [])
