@@ -23,9 +23,24 @@ class StatusHistoria extends Model
         return $this->attributes['id_hist'];
     }
 
-    public function getDataAttribute(): string
+    public function getStatusIdAttribute(): string
+    {
+        return $this->status->id;
+    }
+
+    public function getNazwaAttribute(): string
+    {
+        return $this->status->nazwa;
+    }
+
+    public function getDataAttribute(): Carbon
     {
         return Carbon::parse($this->attributes['data']);
+    }
+
+    public function getDataFormattedAttribute(): String
+    {
+        return $this->data->format('Y-m-d H:i');
     }
 
     public function setPracownikIdAttribute(int $value): void
@@ -50,7 +65,7 @@ class StatusHistoria extends Model
 
     public function status()
     {
-        return $this->hasOne('App\Zlecenie_Status', 'id_stat', 'id_status')->withDefault([
+        return $this->hasOne('App\Models\Zlecenie\Status', 'id_stat', 'id_status')->withDefault([
             'status' => 'Brak statusu',
         ]);
     }

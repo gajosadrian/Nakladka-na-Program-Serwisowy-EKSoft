@@ -27,12 +27,29 @@ class KosztorysPozycja extends Model
 
     public function getSymbolDostawcyAttribute(): string
     {
-        return $this->towar->symbol_dostawcy;
+        $str = $this->zamiennik ?: $this->towar->symbol_dostawcy;
+        if ($this->zamiennik) {
+            $str = '*' . $str;
+        }
+        return $str;
+    }
+
+    public function getSymbolDostawcy2Attribute(): string
+    {
+        return $this->towar->symbol_dostawcy2;
     }
 
 	public function getOpisAttribute(): string
     {
         return $this->attributes['opis_dodatkowy'] ?? false;
+    }
+
+	public function getOpisFixedAttribute(): string
+    {
+        $opis = $this->opis;
+        if ($opis == '') return false;
+        $opis = preg_replace("/\[[^)]+\]/", '', $opis);
+        return $opis;
     }
 
     public function getCenaAttribute(): float
@@ -88,6 +105,15 @@ class KosztorysPozycja extends Model
     public function getPolkaAttribute(): string
     {
         return $this->towar->polka;
+    }
+
+    public function getZamiennikAttribute(): string
+    {
+        preg_match('#\[(.*?)\]#', $this->opis, $match);
+        if (@isset( $match[1] )) {
+            return $match[1];
+        }
+        return false;
     }
 
     /**

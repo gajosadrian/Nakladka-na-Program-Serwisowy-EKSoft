@@ -96,15 +96,17 @@ class ZlecenieController extends Controller
         $technik = Technik::find($technik_id);
 
         $now = now();
+        $now_startOfDay = $now->copy()->startOfDay();
         if ($timestamp) {
             $date = Carbon::createFromTimestamp($timestamp);
-        } elseif ($now->copy()->startOfDay()->addHours(10)->lt($now)) {
+        } elseif ($now_startOfDay->copy()->addHours(10)->lt($now)) {
             $date = $now->copy()->addDay();
         } else {
             $date = $now;
         }
         $date_string = $date->toDateString();
         $date_formatted = $date->format('d-m-Y');
+        $is_up_to_date = $now_startOfDay->lte($date->copy()->endOfDay());
 
         // $zlecenia = null;
         $terminy = null;
@@ -116,7 +118,7 @@ class ZlecenieController extends Controller
             //     $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
             //     $query->where('id_techn_term', $technik->id);
             // })->get()->sortBy('terminarz.data_rozpoczecia');
-            $terminy = Terminarz::with('zlecenie.klient', 'zlecenie.urzadzenie', 'zlecenie.kosztorys_pozycje', 'zlecenie.status')
+            $terminy = Terminarz::with('zlecenie.klient', 'zlecenie.urzadzenie', 'zlecenie.kosztorys_pozycje', 'zlecenie.status_historia')
                 ->where('STARTDATE', '>=', $date_string . ' 00:00:01')
                 ->where('ENDDATE', '<=', $date_string . ' 23:59:59')
                 ->where('id_techn_term', $technik->id)
@@ -142,6 +144,7 @@ class ZlecenieController extends Controller
             'date',
             'date_string',
             'date_formatted',
+            'is_up_to_date',
             'terminy',
             'terminarz_notatki',
             'samochod'
@@ -191,6 +194,18 @@ class ZlecenieController extends Controller
             $zlecenie->terminarz->temat = Terminarz::DZWONIC_WCZESNIEJ_STR;
         }
         $zlecenie->terminarz->save();
+
+        return response()->json('success', 200);
+    }
+
+    public function apiNieOdbiera(Request $request, int $id)
+    {
+        $user = auth()->user();
+        $zlecenie = Zlecenie::find($id);
+
+        $zlecenie->changeStatus(Status::NIE_ODBIERA_ID, $user->pracownik->id, false);
+        $zlecenie->changeStatus(Status::GOTOWE_DO_WYJAZDU_ID, $user->pracownik->id, false);
+        $zlecenie->save();
 
         return response()->json('success', 200);
     }

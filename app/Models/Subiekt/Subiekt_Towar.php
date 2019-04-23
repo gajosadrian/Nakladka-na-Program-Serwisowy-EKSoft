@@ -22,7 +22,7 @@ class Subiekt_Towar extends Model
 
     public function getOpisAttribute(): string
     {
-        return $this->attributes['tw_Opis'];
+        return $this->attributes['tw_Opis'] ?? false;
     }
 
     public function getSymbolAttribute(): string
@@ -32,7 +32,12 @@ class Subiekt_Towar extends Model
 
     public function getSymbolDostawcyAttribute(): string
     {
-        return $this->attributes['tw_DostSymbol'];
+        return $this->attributes['tw_DostSymbol'] ?? false;
+    }
+
+    public function getSymbolDostawcy2Attribute(): string
+    {
+        return $this->attributes['tw_Pole3'] ?? false;
     }
 
     public function getPolkaAttribute(): string

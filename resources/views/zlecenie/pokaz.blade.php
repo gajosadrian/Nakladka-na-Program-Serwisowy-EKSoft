@@ -215,7 +215,7 @@
                                             <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
                                             <td nowrap>{{ $pozycja->symbol }}</td>
                                             <td nowrap>{{ $pozycja->nazwa }}</td>
-                                            <td class="small" nowrap>{{ $pozycja->opis }}</td>
+                                            <td class="small" nowrap>{{ $pozycja->opis_fixed }}</td>
                                             <td class="text-right" nowrap>{{ $pozycja->cena_formatted }}</td>
                                             <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}" nowrap>{{ $pozycja->ilosc }}</td>
                                             <td class="text-right" nowrap>{{ $pozycja->wartosc_formatted }}</td>

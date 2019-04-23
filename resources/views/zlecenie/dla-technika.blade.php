@@ -69,132 +69,150 @@
                         @foreach ($terminy as $terminarz)
                             @php
                                 $zlecenie = $terminarz->zlecenie;
-                                if (! $zlecenie->id) {
-                                    continue;
-                                }
                             @endphp
                             <div class="mb-4">
-                                @if (!$is_technik and !$zlecenie->is_zakonczone and !$zlecenie->is_warsztat)
-                                    <div class="d-none d-lg-block mb-1">
-                                        @if ($terminarz->is_umowiono or !$terminarz->is_umowiono_or_dzwonic)
-                                            <b-button @if(!$zlecenie->is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 0)" @endif size="sm" variant="{{ $zlecenie->is_umowiono ? 'danger' : 'outline-danger' }}">Umówiono klienta</b-button>
-                                        @endif
-                                        @if ($terminarz->is_dzwonic or !$terminarz->is_umowiono_or_dzwonic)
-                                            <b-button @if(!$zlecenie->is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 1)" @endif size="sm" variant="{{ $zlecenie->is_umowiono ? 'primary' : 'outline-primary' }}">Umówiono klienta i dzwonić wcześniej</b-button>
-                                        @endif
-                                    </div>
-                                @endif
+                                @if ($zlecenie->id)
+                                    @if (!$is_technik and !$zlecenie->is_zakonczone and !$zlecenie->is_warsztat and $is_up_to_date)
+                                        <div class="d-none d-lg-block mb-1">
+                                            @if ($terminarz->is_umowiono or !$terminarz->is_umowiono_or_dzwonic)
+                                                <b-button @if(!$zlecenie->is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 0)" @endif size="sm" variant="{{ $zlecenie->is_umowiono ? 'danger' : 'outline-danger' }}">Umówiono klienta</b-button>
+                                            @endif
+                                            @if ($terminarz->is_dzwonic or !$terminarz->is_umowiono_or_dzwonic)
+                                                <b-button @if(!$zlecenie->is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 1)" @endif size="sm" variant="{{ $zlecenie->is_umowiono ? 'primary' : 'outline-primary' }}">Umówiono klienta i dzwonić wcześniej</b-button>
+                                            @endif
+                                            @if ($zlecenie->is_gotowe)
+                                                <b-button onclick="nieOdbiera({{ $zlecenie->id }})" size="sm" variant="{{ $zlecenie->is_recently_nie_odbiera ? 'warning' : 'outline-warning' }}">
+                                                    Nie odbiera
+                                                    @if ($zlecenie->last_status_nie_odbiera)
+                                                        {{ $zlecenie->last_status_nie_odbiera->data_formatted }}
+                                                    @endif
+                                                </b-button>
+                                            @endif
+                                        </div>
+                                    @endif
 
-                                @if ($terminarz->temat)
-                                    <div class="font-w700 bg-gray">
-                                        <span class="{{ (strlen($terminarz->temat) <= 40) ? 'bg-dark text-white' : '' }} px-1">{{ $terminarz->temat }}</span>
+                                    @if ($terminarz->temat)
+                                        <div class="font-w700 bg-gray">
+                                            <span class="{{ (strlen($terminarz->temat) <= 40) ? 'bg-dark text-white' : '' }} px-1">{{ $terminarz->temat }}</span>
+                                        </div>
+                                    @endif
+                                    <div class="font-w700 bg-gray p-1">
+                                        <b-row class="gutters-tiny">
+                                            <b-col cols="2">
+                                                {{ $zlecenie->nr }}
+                                            </b-col>
+                                            <b-col cols="6">
+                                                <i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }} {{ $zlecenie->nr_obcy ? ('| ' . $zlecenie->nr_obcy) : '' }}
+                                            </b-col>
+                                            <b-col cols="4" class="text-right">
+                                                @if ($zlecenie->is_warsztat)
+                                                    <span class="bg-dark text-white px-1">warsztat</span>
+                                                @endif
+                                                {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
+                                            </b-col>
+                                        </b-row>
                                     </div>
-                                @endif
-                                <div class="font-w700 bg-gray p-1">
-                                    <b-row>
-                                        <b-col cols="2">
-                                            {{ $zlecenie->nr }}
-                                        </b-col>
-                                        <b-col cols="6">
-                                            <i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }} {{ $zlecenie->nr_obcy ? ('| ' . $zlecenie->nr_obcy) : '' }}
-                                        </b-col>
-                                        <b-col cols="4" class="text-right">
-                                            @if ($zlecenie->is_warsztat)
-                                                <span class="bg-dark text-white px-1">warsztat</span>
-                                            @endif
-                                            {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
-                                        </b-col>
-                                    </b-row>
-                                </div>
-                                <div>
-                                    <b-row>
-                                        <b-col cols="6">
-                                            @if(! $zlecenie->is_warsztat)
-                                                <i class="{{ $zlecenie->is_umowiono ? 'fa fa-check-circle' : 'far fa-circle' }}"></i>
-                                            @endif
-                                            <span class="font-w700 d-lg-none">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span>
-                                            <a class="font-w700 d-none d-lg-inline" href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}">{{ $zlecenie->klient->symbol }} {{ $zlecenie->klient->nazwa }}</a>
-                                            <br>
-                                            {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
-                                            {{ $zlecenie->klient->telefony_formatted }}
-                                        </b-col>
-                                        <b-col cols="4">
-                                            <span class="font-w700">{{ $zlecenie->urzadzenie->nazwa }}, {{ $zlecenie->urzadzenie->producent }}<br></span>
-                                            <span class="font-w700">Model:</span> {!! $zlecenie->urzadzenie->model ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}<br>
-                                            <span class="font-w700">Nr ser.:</span> {!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}
-                                        </b-col>
-                                        <b-col cols="2">
-											<div class="text-right">
-												Zabudowa: [   ]<br>
-												Trudna: [   ]
-											</div>
-										</b-col>
-                                    </b-row>
-                                </div>
-                                <div class="mt-3">
-                                    <b-row>
-                                        <b-col cols="7" style="border-right: 1px solid #aaa">
-											{{-- <div class="font-w700">OPIS ZLECENIA:</div> --}}
-											<hr class="m-0" style="border-top-color: #aaa">
-                                            <div class="py-2">
-                                                {!! $zlecenie->opis_formatted !!}
-                                            </div>
-                                        </b-col>
-                                        <b-col cols="5">
-                                            <div class="clearfix" style="min-height: 170px">
-                                                <div class="font-w700">UWAGI TECHNIKA:</div>
-                                            </div>
-                                        </b-col>
-                                    </b-row>
-                                </div>
-                                @if ($zlecenie->kosztorys_pozycje->count() > 0)
-                                    <div class="mt-2">
-                                        <table class="table table-sm table-striped table-vcenter font-size-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th class="font-w700" nowrap>Półka</th>
-                                                    <th class="font-w700" nowrap>Symbol dost.</th>
-                                                    <th class="font-w700" nowrap>Symbol</th>
-                                                    <th class="font-w700" nowrap>Nazwa</th>
-                                                    <th class="font-w700" nowrap>Opis</th>
-                                                    <th class="font-w700 text-right" nowrap>Cena brutto</th>
-                                                    <th class="font-w700 text-center" nowrap>Ilość</th>
-                                                    <th class="font-w700 text-right" nowrap>Wartość brutto</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @php
-                                                    $wartosc_brutto = 0.00;
-                                                @endphp
-                                                @foreach ($zlecenie->kosztorys_pozycje as $pozycja)
-                                                    @php
-                                                        $wartosc_brutto += $pozycja->wartosc_brutto;
-                                                    @endphp
+                                    <div>
+                                        <b-row>
+                                            <b-col cols="6">
+                                                @if(! $zlecenie->is_warsztat)
+                                                    <i class="{{ $zlecenie->is_umowiono ? 'fa fa-check-circle' : 'far fa-circle' }}"></i>
+                                                @endif
+                                                <span class="font-w700 d-lg-none">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span>
+                                                <a class="font-w700 d-none d-lg-inline" href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}">{{ $zlecenie->klient->symbol }} {{ $zlecenie->klient->nazwa }}</a>
+                                                <br>
+                                                {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
+                                                {{ $zlecenie->klient->telefony_formatted }}
+                                            </b-col>
+                                            <b-col cols="4">
+                                                <span class="font-w700">{{ $zlecenie->urzadzenie->nazwa }}, {{ $zlecenie->urzadzenie->producent }}<br></span>
+                                                <span class="font-w700">Model:</span> {!! $zlecenie->urzadzenie->model ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}<br>
+                                                <span class="font-w700">Nr ser.:</span> {!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}
+                                            </b-col>
+                                            <b-col cols="2">
+    											<div class="text-right">
+    												Zabudowa: [   ]<br>
+    												Trudna: [   ]
+    											</div>
+    										</b-col>
+                                        </b-row>
+                                    </div>
+                                    <div class="mt-3">
+                                        <b-row>
+                                            <b-col cols="7" style="border-right: 1px solid #aaa">
+    											{{-- <div class="font-w700">OPIS ZLECENIA:</div> --}}
+    											<hr class="m-0" style="border-top-color: #aaa">
+                                                <div class="py-2">
+                                                    {!! $zlecenie->opis_formatted !!}
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="5">
+                                                <div class="clearfix" style="min-height: 170px">
+                                                    <div class="font-w700">UWAGI TECHNIKA:</div>
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                    </div>
+                                    @if ($zlecenie->kosztorys_pozycje->count() > 0)
+                                        <div class="mt-2">
+                                            <table class="table table-sm table-striped table-vcenter font-size-sm">
+                                                <thead>
                                                     <tr>
-                                                        <td nowrap>{{ $pozycja->polka }}</td>
-                                                        <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
-                                                        <td nowrap>{{ $pozycja->symbol }}</td>
-                                                        <td nowrap>{{ str_limit($pozycja->nazwa, 30) }}</td>
-                                                        <td nowrap>{{ str_limit($pozycja->opis, 15) }}</td>
-                                                        <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
-                                                        <td class="text-center" nowrap>{!! $pozycja->ilosc != 1 ? ('<span class="bg-gray font-w700 px-1">' . $pozycja->ilosc . '</span>') : $pozycja->ilosc !!}</td>
-                                                        <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
+                                                        <th class="font-w700" nowrap>Półka</th>
+                                                        <th class="font-w700" nowrap>Symbol dost.</th>
+                                                        <th class="font-w700" nowrap>Symbol</th>
+                                                        <th class="font-w700" nowrap>Nazwa</th>
+                                                        <th class="font-w700" nowrap>Opis</th>
+                                                        <th class="font-w700 text-right" nowrap>Cena brutto</th>
+                                                        <th class="font-w700 text-center" nowrap>Ilość</th>
+                                                        <th class="font-w700 text-right" nowrap>Wartość brutto</th>
                                                     </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th class="text-right">{{ number_format($wartosc_brutto, 2, '.', ' ') }} zł</th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $wartosc_brutto = 0.00;
+                                                    @endphp
+                                                    @foreach ($zlecenie->kosztorys_pozycje as $pozycja)
+                                                        @php
+                                                            $wartosc_brutto += $pozycja->wartosc_brutto;
+                                                        @endphp
+                                                        <tr>
+                                                            <td nowrap>{{ $pozycja->polka }}</td>
+                                                            <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
+                                                            <td nowrap>{{ $pozycja->symbol }}</td>
+                                                            <td nowrap>{{ str_limit($pozycja->nazwa, 30) }}</td>
+                                                            <td nowrap>{{ str_limit($pozycja->opis_fixed, 15) }}</td>
+                                                            <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
+                                                            <td class="text-center" nowrap>{!! $pozycja->ilosc != 1 ? ('<span class="bg-gray font-w700 px-1">' . $pozycja->ilosc . '</span>') : $pozycja->ilosc !!}</td>
+                                                            <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th class="text-right">{{ number_format($wartosc_brutto, 2, '.', ' ') }} zł</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="font-w700 bg-gray p-1">
+                                        <b-row class="gutters-tiny">
+                                            <b-col cols="9">
+                                                {{ $terminarz->temat }}
+                                            </b-col>
+                                            <b-col cols="3" class="text-right">
+                                                {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
+                                            </b-col>
+                                        </b-row>
                                     </div>
                                 @endif
                             </div>
@@ -221,6 +239,15 @@ function umowKlienta(zlecenie_id, dzwonic_wczesniej = 0) {
     $.post(route('zlecenia.api.umow_klienta', { id: zlecenie_id }), {
         '_token': '{{ csrf_token() }}',
         dzwonic_wczesniej: dzwonic_wczesniej
+    })
+        .done(function (data) {
+            location.reload();
+        });
+}
+
+function nieOdbiera(zlecenie_id) {
+    $.post(route('zlecenia.api.nie_odbiera', { id: zlecenie_id }), {
+        '_token': '{{ csrf_token() }}'
     })
         .done(function (data) {
             location.reload();

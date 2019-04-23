@@ -234,14 +234,40 @@ class Zlecenie extends Model
         return in_array($this->status_id, Status::ZAKONCZONE_IDS) or $this->archiwalny or $this->anulowany;
     }
 
-    public function getIsUmowionoAttribute()
+    public function getIsUmowionoAttribute(): bool
     {
         return ($this->status_id == Status::UMOWIONO_ID);
     }
 
-    public function getIsWarsztatAttribute()
+    public function getIsWarsztatAttribute(): bool
     {
         return ($this->status_id == Status::NA_WARSZTACIE_ID);
+    }
+
+    public function getIsGotoweAttribute(): bool
+    {
+        return ($this->status_id == Status::GOTOWE_DO_WYJAZDU_ID);
+    }
+
+    public function getLastStatusNieOdbieraAttribute(): ?object
+    {
+        $status_historia = $this->status_historia->sortByDesc('data');
+        foreach ($status_historia as $status) {
+            if ($status->status_id == Status::NIE_ODBIERA_ID) {
+                return $status;
+            }
+        }
+        return null;
+    }
+
+    public function getIsRecentlyNieOdbieraAttribute(): bool
+    {
+        $status = $this->last_status_nie_odbiera;
+        if (! $status) return false;
+        if ($status->data->gte( now()->copy()->subHours(1) )) {
+            return true;
+        }
+        return false;
     }
 
     public function getIsDataPrzyjeciaAttribute(): bool
@@ -337,7 +363,7 @@ class Zlecenie extends Model
     {
         $array = [];
 
-        if ($this->dni_od_zakonczenia > 2 and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_TEL_ID, Status::PONOWNA_WIZYTA_ID]))
+        if ($this->dni_od_zakonczenia > 2 and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID]))
             $array[] = 'Zlecenie niezamknięte';
 
         return $array;
@@ -425,10 +451,10 @@ HTML;
         return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', 1500, 700)";
     }
 
-    // public function getStatusyAttribute()
-    // {
-    //     return $this->status_historia;
-    // }
+    public function getStatusyAttribute()
+    {
+        return $this->status_historia;
+    }
 
     /**
     * Scopes
