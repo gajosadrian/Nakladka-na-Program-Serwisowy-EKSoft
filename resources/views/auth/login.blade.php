@@ -20,10 +20,16 @@
                             <form class="js-validation-signin" action="{{ route('login') }}" method="post">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-alt" name="email" placeholder="Login">
+                                    <input type="text" class="form-control form-control-alt" name="email" value="{{ old('email') }}" placeholder="Login">
                                 </div>
                                 <div class="form-group">
                                     <input type="password" class="form-control form-control-alt" name="password" placeholder="Hasło">
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox custom-control-primary mb-1">
+                                        <input type="checkbox" class="custom-control-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                        <label class="custom-control-label" for="remember">Zapamiętaj to urządzenie</label>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-block btn-hero-primary">
