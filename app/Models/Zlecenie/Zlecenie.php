@@ -54,6 +54,7 @@ class Zlecenie extends Model
         'Haier' => ['haier', 'hajer'],
         'Formaster' => ['formaster'],
         'MPM' => ['mpm'],
+        'Euroterm' => ['euroterm'],
     ];
 
     /**
@@ -337,7 +338,7 @@ class Zlecenie extends Model
 
     public function getDniOdZakonczeniaAttribute(): int
     {
-        return $this->data_zakonczenia->diffInDays(Carbon::now()->endOfDay(), false);
+        return $this->data_zakonczenia->copy()->startOfDay()->diffInDays(Carbon::now()->startOfDay(), false);
     }
 
     public function getDniOdPrzyjeciaAttribute(): int
