@@ -27,8 +27,8 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="custom-control custom-checkbox custom-control-primary mb-1">
-                                        <input type="checkbox" class="custom-control-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="remember">Zapamiętaj to urządzenie</label>
+                                        <input type="checkbox" class="custom-control-input" id="remember" name="remember" {{ old('remember') ? 'checked' : 'checked' }}>
+                                        <label class="custom-control-label" for="remember">Nie wylogowywuj mnie</label>
                                     </div>
                                 </div>
                                 <div class="form-group">

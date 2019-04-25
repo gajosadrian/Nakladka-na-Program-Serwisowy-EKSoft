@@ -45,7 +45,7 @@ class Zlecenie extends Model
         'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
         'Arconet' => ['arconet', 'arkonet', 'arqonet'],
         'Ferroli' => ['ferroli', 'feroli'],
-        'Mondial' => ['mondial'],
+        'Mondial' => ['mondial', 'mondial assistance'],
         'Enpol' => ['enpol'],
         'Akpo' => ['akpo'],
         'Ferro' => ['ferro', 'fero'],
