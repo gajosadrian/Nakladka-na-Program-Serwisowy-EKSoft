@@ -39,7 +39,7 @@ class Technik extends Model
 
     public function getNazwiskoAttribute(): string
     {
-        return $this->attributes['Nazwisko'];
+        return str_replace('.', '', $this->attributes['Nazwisko']);
     }
 
     /**
@@ -50,6 +50,6 @@ class Technik extends Model
     public static function getLast()
     {
         $technik_ids = Terminarz::with('technik')->orderByDesc('STARTDATE')->limit(50)->get()->pluck('technik.id')->unique()->values();
-        return self::whereIn('id_technika', $technik_ids)->get()->sortBy('nazwisko'); // nazwa
+        return self::whereIn('id_technika', $technik_ids)->get()->sortBy('imie')->sortBy('nazwisko'); // nazwa
     }
 }

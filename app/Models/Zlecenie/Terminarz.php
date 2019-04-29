@@ -27,25 +27,30 @@ class Terminarz extends Model
      *
      */
 
-     public function getZlecenieIdAttribute(): int
-     {
-         return $this->attributes['ID_ZLECENIA'];
-     }
+    public function getIdAttribute(): int
+    {
+        return $this->attributes['ID_TERMINU'];
+    }
 
-     public function setZlecenieIdAttribute(int $value = null): void
-     {
-         $this->attributes['ID_ZLECENIA'] = $value;
-     }
+    public function getZlecenieIdAttribute(): int
+    {
+        return $this->attributes['ID_ZLECENIA'];
+    }
 
-     public function getStatusIdAttribute(): string
-     {
-         return $this->attributes['label'] ?? self::BRAK_ID;
-     }
+    public function setZlecenieIdAttribute(int $value = null): void
+    {
+        $this->attributes['ID_ZLECENIA'] = $value;
+    }
 
-     public function setStatusIdAttribute(string $value): void
-     {
-         $this->attributes['label'] = $value;
-     }
+    public function getStatusIdAttribute(): string
+    {
+        return $this->attributes['label'] ?? self::BRAK_ID;
+    }
+
+    public function setStatusIdAttribute(string $value): void
+    {
+        $this->attributes['label'] = $value;
+    }
 
     public function getIsDataRozpoczeciaAttribute($value): bool
     {

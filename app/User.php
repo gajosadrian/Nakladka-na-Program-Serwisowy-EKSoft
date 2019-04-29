@@ -57,9 +57,9 @@ class User extends Authenticatable
     }
 
     /**
-    * Relations
-    *
-    */
+     * Relations
+     *
+     */
 
     public function pracownik()
     {

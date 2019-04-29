@@ -230,7 +230,7 @@ function updateUrl(_this, type) {
     let value = $(_this).val();
 
     window.location.replace(route('zlecenia.dla-technika', {
-        technik_id: {{ $technik_id }},
+        technik_id: @json($technik_id),
         timestamp: Date.parse(value) / 1000,
     }));
 }
@@ -253,5 +253,24 @@ function nieOdbiera(zlecenie_id) {
             location.reload();
         });
 }
+
+@if ($technik)
+    var last_terminarz_statusy = null;
+    function refreshIfNew()
+    {
+        $.get(route('zlecenia.api.terminarz_statusy', { technik_id: @json($technik->id), date_string: @json($date_string) }), {
+            '_token': '{{ csrf_token() }}'
+        })
+            .done(function (data) {
+                if (last_terminarz_statusy) {
+                    if (! isEqual(last_terminarz_statusy, data)) {
+                        location.reload();
+                    }
+                }
+                last_terminarz_statusy = data;
+            });
+    }
+    setInterval(refreshIfNew, 5000);
+@endif
 
 </script>@endsection

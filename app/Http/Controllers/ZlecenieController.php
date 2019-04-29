@@ -99,7 +99,7 @@ class ZlecenieController extends Controller
         $now_startOfDay = $now->copy()->startOfDay();
         if ($timestamp) {
             $date = Carbon::createFromTimestamp($timestamp);
-        } elseif ($now_startOfDay->copy()->addHours(10)->lt($now)) {
+        } elseif (!$is_technik and $now_startOfDay->copy()->addHours(10)->lt($now)) {
             $date = $now->copy()->addDay();
         } else {
             $date = $now;
@@ -149,6 +149,35 @@ class ZlecenieController extends Controller
             'terminarz_notatki',
             'samochod'
         ));
+    }
+
+    public function apiGetTerminarzStatusy(Request $request, int $technik_id, string $date_string = null)
+    {
+        $user = $request->user();
+
+        $technik_id = ($user->technik_id > 0) ? $user->technik_id : $technik_id;
+        $technik = Technik::find($technik_id);
+
+        $date_string = $date_string ?? now()->toDateString();
+
+        $terminy = Terminarz::where('STARTDATE', '>=', $date_string . ' 00:00:01')->where('ENDDATE', '<=', $date_string . ' 23:59:59')
+            ->where('id_techn_term', $technik->id)
+            ->orderBy('STARTDATE')
+            ->get();
+        $terminarz_notatki = Terminarz::where('STARTDATE', $date_string . ' 00:00:00:000')
+            ->where('id_techn_term', $technik->id)
+            ->get();
+        $terminy = $terminy->merge($terminarz_notatki);
+
+        $array = [];
+        foreach ($terminy as $termin) {
+            $array[] = [
+                'id' => $termin->id,
+                'status_id' => $termin->status_id,
+            ];
+        }
+
+        return response()->json($array, 200);
     }
 
     public function apiGetOpis(Request $request, int $id)
