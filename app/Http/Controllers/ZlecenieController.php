@@ -160,7 +160,7 @@ class ZlecenieController extends Controller
 
         $date_string = $date_string ?? now()->toDateString();
 
-        $terminy = Terminarz::where('STARTDATE', '>=', $date_string . ' 00:00:01')->where('ENDDATE', '<=', $date_string . ' 23:59:59')
+        $terminy = Terminarz::with('zlecenie.status_historia')->where('STARTDATE', '>=', $date_string . ' 00:00:01')->where('ENDDATE', '<=', $date_string . ' 23:59:59')
             ->where('id_techn_term', $technik->id)
             ->orderBy('STARTDATE')
             ->get();
@@ -174,6 +174,7 @@ class ZlecenieController extends Controller
             $array[] = [
                 'id' => $termin->id,
                 'status_id' => $termin->status_id,
+                'last_status_nie_odbiera' => $termin->zlecenie->last_status_nie_odbiera->data_formatted ?? null,
             ];
         }
 
