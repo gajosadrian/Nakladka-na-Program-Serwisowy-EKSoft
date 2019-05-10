@@ -88,7 +88,6 @@ class ZlecenieController extends Controller
     public function dlaTechnika(int $technik_id = null, int $timestamp = null)
     {
         $user = auth()->user();
-
         $is_technik = (bool) ($user->technik_id != 0);
 
         $technicy = Technik::getLast();
@@ -102,7 +101,7 @@ class ZlecenieController extends Controller
         } elseif (!$is_technik and $now_startOfDay->copy()->addHours(10)->lt($now)) {
             $date = $now->copy()->addDay();
         } else {
-            $date = $now;
+            $date = $now->copy();
         }
         $date_string = $date->toDateString();
         $date_formatted = $date->format('d-m-Y');
@@ -149,6 +148,40 @@ class ZlecenieController extends Controller
             'terminarz_notatki',
             'samochod'
         ));
+    }
+
+    public function kilometrowka(int $technik_id = null, int $month_id = null)
+    {
+        $user = auth()->user();
+        $is_technik = (bool) ($user->technik_id != 0);
+        $months = getMonths();
+
+        $technicy = Technik::getLast();
+        $technik_id = ($user->technik_id > 0) ? $user->technik_id : $technik_id;
+        $technik = Technik::find($technik_id);
+
+        $now = now();
+        if (! $month_id) {
+            $date_from = Carbon::create($now->year, $now->month, 1)->subMonth()->startOfDay();
+            $month_id = $date_from->month;
+        } else {
+            $date_from = Carbon::create($now->year, $month_id, 1)->startOfDay();
+        }
+        $date_to = $date_from->copy()->endOfMonth()->endOfDay();
+
+        $terminy = Terminarz::with('technik', 'zlecenie', 'zlecenie.klient', 'zlecenie.status_historia')
+            ->where('STARTDATE', '>=', $date_from->toDateString() . ' 00:00:00')
+            ->where('ENDDATE', '<=', $date_to->toDateString() . ' 23:59:59')
+            ->orderBy('STARTDATE')
+            ->get()
+            // ->filter(function ($termin) {
+            //     return ! $termin->zlecenie->is_warsztat;
+            // })
+            ->groupBy(function ($termin) {
+                return $termin->samochod['value'][1];
+            })[$technik->id];
+
+        return view('rozliczenia.kilometrowka', compact('months', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'terminy'));
     }
 
     public function apiGetTerminarzStatusy(Request $request, int $technik_id, string $date_string = null)

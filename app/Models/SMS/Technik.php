@@ -49,7 +49,7 @@ class Technik extends Model
 
     public static function getLast()
     {
-        $technik_ids = Terminarz::with('technik')->orderByDesc('STARTDATE')->limit(50)->get()->pluck('technik.id')->unique()->values();
+        $technik_ids = Terminarz::with('technik')->orderByDesc('STARTDATE')->limit(100)->get()->pluck('technik.id')->unique()->values();
         return self::whereIn('id_technika', $technik_ids)->get()->sortBy('imie')->sortBy('nazwisko'); // nazwa
     }
 }

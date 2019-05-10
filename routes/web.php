@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
         Route::get('lista', 'ZlecenieController@index')->name('lista');
         Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');
         Route::get('dla-technika/{technik_id?}/{timestamp?}', 'ZlecenieController@dlaTechnika')->name('dla-technika');
+        Route::get('kilometrowka/{technik_id?}/{month_id?}', 'ZlecenieController@kilometrowka')->name('kilometrowka');
 
         Route::get('api/get_opis/{id}', 'ZlecenieController@apiGetOpis')->name('api.get_opis');
         Route::post('api/append_notatka/{id}', 'ZlecenieController@apiAppendNotatka')->name('api.append_opis');

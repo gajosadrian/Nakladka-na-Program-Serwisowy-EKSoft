@@ -13,7 +13,7 @@ class Terminarz extends Model
     protected $primaryKey = 'ID_TERMINU';
     public $timestamps = false;
 
-    public const SAMOCHOD_KEYS = ['samochod', 'samochód'];
+    public const SAMOCHOD_KEYS = ['samochod-', 'samochód-'];
 
     public const BRAK_ID = '536870912'; public const UMOWIONO_ID = '8689404';
     public const DZWONIC_WCZESNIEJ_ID = '14982788'; public const ZAKONCZONE_ID = '6610596';
@@ -21,6 +21,8 @@ class Terminarz extends Model
     public const ZAMOWIONO_CZESC_ID = '16033476'; public const NA_WARSZTACIE_ID = '7661308';
 
     public const DZWONIC_WCZESNIEJ_STR = 'Dzwonić 30 min wcześniej';
+
+    private static $samochody_cache = [];
 
     /**
      * Attributes
@@ -82,6 +84,11 @@ class Terminarz extends Model
         return $this->is_data_zakonczenia ? $this->data_zakonczenia->format('Y-m-d H:i') : 'Brak daty zakończenia';
     }
 
+    public function getDateStringAttribute(): string
+    {
+        return $this->data_rozpoczecia->toDateString();
+    }
+
     public function getIsTerminAttribute(): bool
     {
         return $this->is_data_rozpoczecia;
@@ -117,6 +124,14 @@ class Terminarz extends Model
     public function getIsSamochodAttribute(): bool
     {
         return Str::contains($this->temat, self::SAMOCHOD_KEYS);
+    }
+
+    public function getSamochodAttribute()
+    {
+        if (! $this->is_data_rozpoczecia) {
+            return false;
+        }
+        return self::getSamochod($this->technik->id, $this->data_rozpoczecia->toDateString());
     }
 
     public function getIsUmowionoAttribute(): bool
@@ -158,6 +173,10 @@ class Terminarz extends Model
 
     public static function getSamochod($technik_id, $date_string)
     {
+        if (isset(self::$samochody_cache[$technik_id . '#' . $date_string])) {
+            return self::$samochody_cache[$technik_id . '#' . $date_string];
+        }
+
         $termin_samochod = self::where('STARTDATE', $date_string . ' 00:00:00:000')->where('id_techn_term', $technik_id)->get()
         ->filter(function ($v) {
             return $v->is_samochod;
@@ -167,19 +186,23 @@ class Terminarz extends Model
             $termin_temat = substr(str_replace(self::SAMOCHOD_KEYS, '', strtolower($termin_samochod->temat)), 1);
             foreach (Zlecenie::SYMBOLE_KOSZTORYSU['DOJAZDY'] as $symbol => $value) {
                 if (Str::contains( strtolower($symbol), $termin_temat )) {
-                    return [
+                    $samochod = [
                         'symbol' => $symbol,
                         'value' => $value,
                     ];
+                    self::$samochody_cache[$technik_id . '#' . $date_string] = $samochod;
+                    return $samochod;
                 }
             }
         } else {
             foreach (Zlecenie::SYMBOLE_KOSZTORYSU['DOJAZDY'] as $symbol => $value) {
                 if ($value[1] == $technik_id) {
-                    return [
+                    $samochod = [
                         'symbol' => $symbol,
                         'value' => $value,
                     ];
+                    self::$samochody_cache[$technik_id . '#' . $date_string] = $samochod;
+                    return $samochod;
                 }
             }
         }

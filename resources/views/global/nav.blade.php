@@ -13,8 +13,14 @@
         ],
         [
             'name' => 'Zlecenia dla technika',
-            'icon' => 'si si-list',
+            'icon' => 'si si-docs',
             'route' => 'zlecenia.dla-technika',
+            'routeOptions' => [],
+        ],
+        [
+            'name' => 'Kilometrówka',
+            'icon' => 'si si-disc',
+            'route' => 'zlecenia.kilometrowka',
             'routeOptions' => [],
         ],
         [
@@ -23,7 +29,7 @@
         ],
         [
             'name' => 'Rozliczenia',
-            'icon' => 'si si-calculator',
+            'icon' => 'si si-bar-chart',
             'route' => 'rozliczenia.lista',
             'routeOptions' => [],
             'role' => 'super-admin',

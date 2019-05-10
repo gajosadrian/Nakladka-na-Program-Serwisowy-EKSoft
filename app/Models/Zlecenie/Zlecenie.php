@@ -370,6 +370,12 @@ class Zlecenie extends Model
         return $array;
     }
 
+    public function getSamochodAttribute()
+    {
+        if (! $this->is_termin) return false;
+        return $this->terminarz->samochod;
+    }
+
     public function getIsTerminAttribute(): bool
     {
         return $this->terminarz->is_termin;
@@ -511,7 +517,7 @@ HTML;
 
     public function terminarz()
     {
-        return $this->hasOne('App\Models\Zlecenie\Terminarz', 'ID_ZLECENIA', 'id_zlecenia')->withDefault([
+        return $this->belongsTo('App\Models\Zlecenie\Terminarz', 'id_zlecenia', 'ID_ZLECENIA')->withDefault([
             'STARTDATE' => false,
             'ENDDATE' => false,
         ]);

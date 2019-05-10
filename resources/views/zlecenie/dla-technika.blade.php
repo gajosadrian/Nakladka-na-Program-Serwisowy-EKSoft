@@ -11,13 +11,6 @@
 
     <div class="content">
         <b-block title="Parametry" full class="d-print-none">
-            {{-- <template slot="options">
-                @if ($technik)
-                    <b-button class="btn-rounded shadow" variant="info" size="sm" onclick="Dashmix.helpers('print')">
-                        <i class="fa fa-print"></i> Drukuj
-                    </b-button>
-                @endif
-            </template> --}}
             <template slot="content">
                 @if (! $is_technik)
                     <div class="mb-3">
