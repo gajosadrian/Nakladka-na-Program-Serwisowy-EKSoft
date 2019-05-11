@@ -169,19 +169,24 @@ class ZlecenieController extends Controller
         }
         $date_to = $date_from->copy()->endOfMonth()->endOfDay();
 
-        $terminy = Terminarz::with('technik', 'zlecenie', 'zlecenie.klient', 'zlecenie.status_historia')
-            ->where('STARTDATE', '>=', $date_from->toDateString() . ' 00:00:00')
-            ->where('ENDDATE', '<=', $date_to->toDateString() . ' 23:59:59')
-            ->orderBy('STARTDATE')
-            ->get()
-            // ->filter(function ($termin) {
-            //     return ! $termin->zlecenie->is_warsztat;
-            // })
-            ->groupBy(function ($termin) {
-                return $termin->samochod['value'][1];
-            })[$technik->id];
+        $terminy = null;
+        if ($technik) {
+            $terminy = Terminarz::with('technik', 'zlecenie', 'zlecenie.klient', 'zlecenie.status_historia')
+                ->where('STARTDATE', '>=', $date_from->toDateString() . ' 00:00:00')
+                ->where('ENDDATE', '<=', $date_to->toDateString() . ' 23:59:59')
+                ->orderBy('STARTDATE')
+                ->get()
+                ->filter(function ($termin) {
+                    return !$termin->is_samochod and !$termin->has_dzwonic and !$termin->zlecenie->was_warsztat;
+                })
+                ->groupBy(function ($termin) {
+                    return $termin->samochod['value'][1];
+                })[$technik->id];
 
-        return view('rozliczenia.kilometrowka', compact('months', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'terminy'));
+            $grouped_terminy = $terminy->groupBy('date_string');
+        }
+
+        return view('rozliczenia.kilometrowka', compact('months', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'terminy', 'grouped_terminy'));
     }
 
     public function apiGetTerminarzStatusy(Request $request, int $technik_id, string $date_string = null)

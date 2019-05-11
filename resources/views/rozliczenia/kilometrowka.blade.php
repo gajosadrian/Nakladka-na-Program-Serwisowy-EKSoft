@@ -1,10 +1,7 @@
 @extends('global.app')
-@php
-    $room = rand();
-@endphp
 
 @section('content')
-    <div class="bg-body-light">
+    <div class="bg-body-light d-print-none">
         <div class="content content-full">
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
                 <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Kilometrówka</h1>
@@ -47,13 +44,18 @@
             <b-block title="Zlecenia" noprint>
                 <template slot="content">
                     <ol>
-                        @foreach ($terminy as $termin)
-                            @php
-                                $zlecenie = $termin->zlecenie;
-                            @endphp
-                            @if ($zlecenie->id)
-                                <li><a href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}">{{ $zlecenie->nr }}</a>, {{ $termin->samochod['value'][0] }}</li>
-                            @endif
+                        @foreach ($grouped_terminy as $date_string => $grouped_termin)
+                            <li class="text-danger font-w600">{{ $date_string }}</li>
+                            @foreach ($grouped_termin as $termin)
+                                @php
+                                    $zlecenie = $termin->zlecenie;
+                                @endphp
+                                @if ($zlecenie->id)
+                                    <li><a href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}">{{ $zlecenie->nr }}</a>, {{ $termin->samochod['value'][0] }}</li>
+                                @elseif ($termin->temat)
+                                    <li>{{ $termin->temat }}</li>
+                                @endif
+                            @endforeach
                         @endforeach
                     </ol>
                 </template>

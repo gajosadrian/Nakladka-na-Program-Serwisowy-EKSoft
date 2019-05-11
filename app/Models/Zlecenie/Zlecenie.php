@@ -648,7 +648,7 @@ HTML;
 
     public static function getDoRozliczenia()
     {
-        return $query = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->limit(6000)->get()
+        return $query = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->limit(2000)->get()
             ->filter(function ($zlecenie) {
                 // return !$zlecenie->is_rozliczone and $zlecenie->data_zakonczenia <= Carbon::create(2019, 1, 31)->endOfDay() and $zlecenie->status->id == 26;
                 return !$zlecenie->is_rozliczone;

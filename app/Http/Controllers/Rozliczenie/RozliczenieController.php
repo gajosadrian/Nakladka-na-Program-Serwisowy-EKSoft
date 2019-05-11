@@ -61,6 +61,7 @@ class RozliczenieController extends Controller
         $rozliczone_zlecenia = $rozliczenie->rozliczone_zlecenia->sortBy('zleceniodawca');
         $zleceniodawcy = $rozliczenie->zleceniodawcy;
 
+        $zlecenia_nierozliczone = null;
         if (! $rozliczenie->is_closed) {
             $zlecenia_nierozliczone = Zlecenie::getDoRozliczenia();
             $zleceniodawcy = $zleceniodawcy->merge($zlecenia_nierozliczone->unique('zleceniodawca')->pluck('zleceniodawca')->values())->unique()->sort()->values();

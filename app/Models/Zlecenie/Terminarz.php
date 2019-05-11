@@ -126,6 +126,11 @@ class Terminarz extends Model
         return Str::contains($this->temat, self::SAMOCHOD_KEYS);
     }
 
+    public function getHasDzwonicAttribute()
+    {
+        return Str::contains($this->temat, self::DZWONIC_WCZESNIEJ_STR);
+    }
+
     public function getSamochodAttribute()
     {
         if (! $this->is_data_rozpoczecia) {
