@@ -10,6 +10,7 @@
         <meta name="description" content="{{ program()->description }}">
         <meta name="author" content="{{ author()->name }}">
         <meta name="robots" content="noindex, nofollow">
+        <meta name="mobile-web-app-capable" content="yes">
 
         {{-- CSRF Token --}}
         <meta name="csrf-token" content="{{ csrf_token() }}">

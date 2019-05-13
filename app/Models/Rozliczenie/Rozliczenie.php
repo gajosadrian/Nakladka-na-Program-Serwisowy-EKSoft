@@ -30,6 +30,11 @@ class Rozliczenie extends Model
         return $this->nr;
     }
 
+    public function getMonthAttribute(): int
+    {
+        return $this->data->format('n');
+    }
+
     public function getDataAttribute(): Carbon
     {
         return Carbon::create($this->rok, $this->miesiac, 1)->endOfMonth()->endOfDay();

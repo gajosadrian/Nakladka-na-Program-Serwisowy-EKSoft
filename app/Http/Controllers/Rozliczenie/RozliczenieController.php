@@ -32,6 +32,7 @@ class RozliczenieController extends Controller
         // return response()->json('success', 200);
 
         $rozliczenia = Rozliczenie::limit(12)->with('rozliczone_zlecenia')->orderByDesc('id')->get();
+        $months = getMonths();
 
         $now = now();
         $end_of_month = now()->endOfMonth();
@@ -47,7 +48,9 @@ class RozliczenieController extends Controller
         return view('rozliczenia.lista', compact(
             'is_creatable',
             'creatable_date',
-            'rozliczenia'
+            'rozliczenia',
+            'months',
+            'now'
         ));
     }
 
@@ -132,13 +135,19 @@ class RozliczenieController extends Controller
 
     public function hardReload(int $id)
     {
-        $rozliczenie = Rozliczenie::with('rozliczone_zlecenia', 'rozliczone_zlecenia.zlecenie')->findOrFail($id);
+        $rozliczenie = Rozliczenie::with('rozliczone_zlecenia', 'rozliczone_zlecenia.zlecenie.kosztorys_pozycje.towar', 'rozliczone_zlecenia.zlecenie.urzadzenie')->findOrFail($id);
         $robocizny = [];
         $dojazdy = [];
 
-        foreach ($rozliczenie->rozliczone_zlecenia as $rozliczone_zlecenie) {
-            $robocizny = array_sum_identical_keys($robocizny, $rozliczone_zlecenie->zlecenie->robocizny);
-            $dojazdy = array_sum_identical_keys($dojazdy, $rozliczone_zlecenie->zlecenie->dojazdy);
+        foreach ($rozliczenie->rozliczone_zlecenia ?? [] as $rozliczone_zlecenie) {
+            $zlecenie = $rozliczone_zlecenie->zlecenie;
+            $robocizny = array_sum_identical_keys($robocizny, $zlecenie->robocizny);
+            $dojazdy = array_sum_identical_keys($dojazdy, $zlecenie->dojazdy);
+
+            $rozliczone_zlecenie->zleceniodawca = $zlecenie->zleceniodawca;
+            $rozliczone_zlecenie->robocizny = $zlecenie->robocizny;
+            $rozliczone_zlecenie->dojazdy = $zlecenie->dojazdy;
+            $rozliczone_zlecenie->save();
         }
 
         $rozliczenie->robocizny = $robocizny;

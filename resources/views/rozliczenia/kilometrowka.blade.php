@@ -10,6 +10,12 @@
     </div>
 
     <div class="content">
+        <b-block full class="d-print-none">
+            <template slot="content">
+                <button type="button" class="btn btn-sm btn-rounded btn-primary" onclick="toggleFullScreen()">Pełny ekran</button>
+            </template>
+        </b-block>
+
         <b-block title="Parametry" full class="d-print-none">
             <template slot="content">
                 @if (! $is_technik)
