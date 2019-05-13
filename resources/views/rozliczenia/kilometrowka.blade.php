@@ -10,11 +10,11 @@
     </div>
 
     <div class="content">
-        <b-block full class="d-print-none">
+		{{-- <b-block full class="d-print-none">
             <template slot="content">
                 <button type="button" class="btn btn-sm btn-rounded btn-primary" onclick="toggleFullScreen()">Pełny ekran</button>
             </template>
-        </b-block>
+        </b-block> --}}
 
         <b-block title="Parametry" full class="d-print-none">
             <template slot="content">
@@ -49,21 +49,55 @@
         @if ($technik)
             <b-block title="Zlecenia" noprint>
                 <template slot="content">
-                    <ol>
-                        @foreach ($grouped_terminy as $date_string => $grouped_termin)
-                            <li class="text-danger font-w600">{{ $date_string }}</li>
-                            @foreach ($grouped_termin as $termin)
-                                @php
-                                    $zlecenie = $termin->zlecenie;
-                                @endphp
-                                @if ($zlecenie->id)
-                                    <li><a href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}">{{ $zlecenie->nr }}</a>, {{ $termin->samochod['value'][0] }}</li>
-                                @elseif ($termin->temat)
-                                    <li>{{ $termin->temat }}</li>
-                                @endif
-                            @endforeach
-                        @endforeach
-                    </ol>
+					<div class="mx-3">
+                        <div class="mb-3 clearfix" style="font-size: 2.3em">
+                            <div class="float-left">
+                                {{ $technik->nazwa }} - {{ $month->name }}
+                            </div>
+                            <div class="float-right">
+                                <b-img src="{{ asset('media/dargaz-logo.png') }}" alt="logo"></b-img>
+                            </div>
+                        </div>
+
+						<table class="table table-sm table-vcenter">
+							<thead>
+								<tr class="text-uppercase">
+									<th class="font-w700">Data</th>
+									<th class="font-w700">Zlecenie</th>
+									<th class="font-w700">Miasto</th>
+									<th class="font-w700">Adres</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach ($grouped_terminy as $date_string => $grouped_termin)
+
+									<tr>
+										<td class="text-danger font-w600">{{ $date_string }}</td>
+										<td colspan="3"></td>
+									</tr>
+
+									@foreach ($grouped_termin as $termin)
+										@php
+											$zlecenie = $termin->zlecenie;
+										@endphp
+										@if ($zlecenie->id and !$zlecenie->was_warsztat)
+											<tr>
+												<td></td>
+												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
+												<td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
+												<td>{{ $zlecenie->klient->adres }}</td>
+											</tr>
+										@elseif ($termin->temat)
+											<tr>
+												<td></td>
+												<td colspan="3"><i>{{ $termin->temat }}</i></td>
+											</tr>
+										@endif
+									@endforeach
+								@endforeach
+							</tbody>
+						</table>
+					</div>
                 </template>
             </b-block>
         @endif

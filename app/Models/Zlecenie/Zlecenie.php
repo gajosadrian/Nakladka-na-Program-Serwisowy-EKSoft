@@ -245,6 +245,18 @@ class Zlecenie extends Model
         return ($this->status_id == Status::NA_WARSZTACIE_ID);
     }
 
+    public function getWasWarsztatAttribute(): bool
+    {
+        foreach ($this->statusy as $status) {
+            if ($status->status_id == Status::NA_WARSZTACIE_ID) {
+                return true;
+            } elseif (in_array($status->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::UMOWIONO_ID])) {
+                return false;
+            }
+        }
+        return false;
+    }
+
     public function getIsGotoweAttribute(): bool
     {
         return ($this->status_id == Status::GOTOWE_DO_WYJAZDU_ID);
@@ -252,8 +264,7 @@ class Zlecenie extends Model
 
     public function getLastStatusNieOdbieraAttribute(): ?object
     {
-        $status_historia = $this->status_historia->sortByDesc('data');
-        foreach ($status_historia as $status) {
+        foreach ($this->statusy as $status) {
             if ($status->status_id == Status::NIE_ODBIERA_ID) {
                 return $status;
             }
@@ -460,7 +471,7 @@ HTML;
 
     public function getStatusyAttribute()
     {
-        return $this->status_historia;
+        return $this->status_historia->sortByDesc('data');
     }
 
     /**

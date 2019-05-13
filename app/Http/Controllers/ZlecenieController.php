@@ -177,7 +177,7 @@ class ZlecenieController extends Controller
                 ->orderBy('STARTDATE')
                 ->get()
                 ->filter(function ($termin) {
-                    return !$termin->is_samochod and !$termin->has_dzwonic and !$termin->zlecenie->was_warsztat;
+                    return !$termin->is_samochod and !$termin->has_dzwonic;
                 })
                 ->groupBy(function ($termin) {
                     return $termin->samochod['value'][1];
@@ -186,7 +186,7 @@ class ZlecenieController extends Controller
             $grouped_terminy = $terminy->groupBy('date_string');
         }
 
-        return view('rozliczenia.kilometrowka', compact('months', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'terminy', 'grouped_terminy'));
+        return view('rozliczenia.kilometrowka', compact('months', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'grouped_terminy'));
     }
 
     public function apiGetTerminarzStatusy(Request $request, int $technik_id, string $date_string = null)
