@@ -55,6 +55,7 @@ class Zlecenie extends Model
         'Formaster' => ['formaster'],
         'MPM' => ['mpm'],
         'Euroterm' => ['euroterm'],
+        'Agdom' => ['agdom'],
     ];
 
     /**

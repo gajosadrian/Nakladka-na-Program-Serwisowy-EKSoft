@@ -50,9 +50,10 @@
             <b-block title="Zlecenia" noprint>
                 <template slot="content">
 					<div class="mx-3">
-                        <div class="mb-3 clearfix" style="font-size: 2.3em">
+                        <div class="mb-3 clearfix" style="font-size: 2em">
                             <div class="float-left">
                                 {{ $technik->nazwa }} - {{ $month->name }}
+                                <span class="font-size-sm text-muted">(<span id="zlecenia_n"></span> zlec.)</span>
                             </div>
                             <div class="float-right">
                                 <b-img src="{{ asset('media/dargaz-logo.png') }}" alt="logo"></b-img>
@@ -69,11 +70,13 @@
 								</tr>
 							</thead>
 							<tbody>
+                                @php
+                                    $zlecenia_n = 0;
+                                @endphp
 								@foreach ($grouped_terminy as $date_string => $grouped_termin)
 
 									<tr>
-										<td class="text-danger font-w600">{{ $date_string }}</td>
-										<td colspan="3"></td>
+										<td class="bg-gray font-w700" colspan="4">{{ $date_string }}</td>
 									</tr>
 
 									@foreach ($grouped_termin as $termin)
@@ -81,11 +84,20 @@
 											$zlecenie = $termin->zlecenie;
 										@endphp
 										@if ($zlecenie->id and !$zlecenie->was_warsztat)
+                                            @php
+                                                $zlecenia_n++;
+                                            @endphp
 											<tr>
-												<td></td>
+												<th class="text-right">{{ $zlecenia_n }}.</th>
 												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
 												<td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
 												<td>{{ $zlecenie->klient->adres }}</td>
+											</tr>
+										@elseif ($zlecenie->id and $zlecenie->was_warsztat)
+											<tr>
+												<td></td>
+												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
+												<td colspan="2"><i>Warsztat</i></td>
 											</tr>
 										@elseif ($termin->temat)
 											<tr>
@@ -105,6 +117,12 @@
 @endsection
 
 @section('js_after')<script>
+
+@if ($technik)
+	$(function(){
+		$('#zlecenia_n').text({{ $zlecenia_n }});
+	})
+@endif
 
 function updateUrl(_this, type) {
     let value = $(_this).val();
