@@ -12,7 +12,7 @@ class Status extends Model
 
     public const ZLECENIE_WPISANE_ID = 11; public const UMOWIONO_ID = 12; public const ZAMOWIONO_CZESC_ID = 13; public const GOTOWE_DO_WYJAZDU_ID = 14;
     public const NA_WARSZTACIE_ID = 16; public const NIE_ODBIERA_ID = 17; public const PONOWNA_WIZYTA_ID = 18; public const DO_WYJASNIENIA_ID = 25;
-    public const ZAKONCZONE_ID = 26; public const ODWOLANE_ID = 29; public const WNIOSEK_O_WYMIANE_ID = 30; public const DO_ODBIORU_ID = 31;
+    public const ZAKONCZONE_ID = 26; public const ODWOLANO_ID = 29; public const WNIOSEK_O_WYMIANE_ID = 30; public const DO_ODBIORU_ID = 31;
     public const UPIERDLIWY_KL_ID = 32; public const NIE_OBSLUGIWAC_ID = 33; public const ZALICZKA_ID = 34; public const UZUPELNIENIE_DANYCH_ID = 35;
     public const CZESCI_DO_WYSLANIA_ID = 36; public const DO_ROZLICZENIA_ID = 37; public const INFO_O_KOSZTACH_ID = 38; public const DO_ZAMOWIENIA_ID = 39;
     public const DO_WYCENY_ID = 40; public const PREAUTORYZACJA_ID = 41; public const DO_POINFORMOWANIA_ID = 42;

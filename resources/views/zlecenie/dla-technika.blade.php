@@ -29,7 +29,7 @@
                             <b-button class="btn-rounded shadow" variant="info" size="sm" onclick="Dashmix.helpers('print')">
                                 <i class="fa fa-print"></i> Drukuj
                             </b-button>
-                        </b-cols>
+                        </b-col>
                     @endif
                 </b-row>
             </template>

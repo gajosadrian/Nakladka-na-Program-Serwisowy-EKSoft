@@ -40,7 +40,7 @@
                             <b-button class="btn-rounded shadow" variant="info" size="sm" onclick="Dashmix.helpers('print')">
                                 <i class="fa fa-print"></i> Drukuj
                             </b-button>
-                        </b-cols>
+                        </b-col>
                     @endif
                 </b-row>
             </template>
@@ -83,20 +83,20 @@
 										@php
 											$zlecenie = $termin->zlecenie;
 										@endphp
-										@if ($zlecenie->id and !$zlecenie->was_warsztat)
+										@if ($zlecenie->id and !$zlecenie->was_warsztat and !$zlecenie->is_odwolano)
                                             @php
                                                 $zlecenia_n++;
                                             @endphp
 											<tr>
 												<th class="text-right">{{ $zlecenia_n }}.</th>
-												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
+												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span> {{ $zlecenie->status_id }}</td>
 												<td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
 												<td>{{ $zlecenie->klient->adres }}</td>
 											</tr>
 										@elseif ($zlecenie->id and $zlecenie->was_warsztat)
 											<tr>
 												<td></td>
-												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
+												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span> {{ $zlecenie->status_id }}</td>
 												<td colspan="2"><i>Warsztat</i></td>
 											</tr>
 										@elseif ($termin->temat)
