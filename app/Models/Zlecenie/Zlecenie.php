@@ -231,6 +231,11 @@ class Zlecenie extends Model
         return $this->attributes['Anulowany'] ?? false;
     }
 
+    public function getIsOdplatneAttribute(): bool
+    {
+        return $this->zleceniodawca == self::ODPLATNE_NAME;
+    }
+
     public function getIsOdwolanoAttribute(): bool
     {
         return $this->anulowany or $this->status_id == Status::ODWOLANO_ID;

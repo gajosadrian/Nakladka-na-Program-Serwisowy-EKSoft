@@ -107,27 +107,34 @@
                                     </div>
                                     <div>
                                         <b-row>
-                                            <b-col cols="6">
-                                                @if(! $zlecenie->is_warsztat)
-                                                    <i class="{{ $zlecenie->is_umowiono ? 'fa fa-check-circle' : 'far fa-circle' }}"></i>
-                                                @endif
-                                                <span class="font-w700 d-lg-none">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span>
-                                                <a class="font-w700 d-none d-lg-inline" href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}">{{ $zlecenie->klient->symbol }} {{ $zlecenie->klient->nazwa }}</a>
-                                                <br>
-                                                {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
-                                                {{ $zlecenie->klient->telefony_formatted }}
+                                            <b-col cols="7">
+                                                <div class="clearfix">
+                                                    <div class="float-left">
+                                                        @if(! $zlecenie->is_warsztat)
+                                                            <i class="{{ $zlecenie->is_umowiono ? 'fa fa-check-circle' : 'far fa-circle' }}"></i>
+                                                        @endif
+                                                        <span class="font-w700 d-lg-none">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span>
+                                                        <a class="font-w700 d-none d-lg-inline" href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}">{{ $zlecenie->klient->symbol }} {{ $zlecenie->klient->nazwa }}</a>
+                                                        <br>
+                                                        {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
+                                                        {{ $zlecenie->klient->telefony_formatted }}
+                                                    </div>
+                                                    <div class="float-right text-right">
+                                                        @if (! $zlecenie->is_warsztat)
+                                                            @php
+                                                                $google_maps_route_link = 'https://www.google.com/maps/dir//' . urlencode(explode('/', $zlecenie->klient->adres)[0]) . ',+' . urlencode($zlecenie->klient->kod_pocztowy) . '+' . urlencode($zlecenie->klient->miasto) . ',+Polska/';
+                                                            @endphp
+                                                            {{-- <a href="{{ $google_maps_route_link }}" target="_blank">test link</a> --}}
+                                                            <b-img src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data={{ urlencode($google_maps_route_link) }}" fuild></b-img>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                             </b-col>
-                                            <b-col cols="4">
+                                            <b-col cols="5">
                                                 <span class="font-w700">{{ $zlecenie->urzadzenie->nazwa }}, {{ $zlecenie->urzadzenie->producent }}<br></span>
                                                 <span class="font-w700">Model:</span> {!! $zlecenie->urzadzenie->model ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}<br>
                                                 <span class="font-w700">Nr ser.:</span> {!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}
                                             </b-col>
-                                            <b-col cols="2">
-    											<div class="text-right">
-    												Zabudowa: [   ]<br>
-    												Trudna: [   ]
-    											</div>
-    										</b-col>
                                         </b-row>
                                     </div>
                                     <div class="mt-3">
@@ -141,7 +148,15 @@
                                             </b-col>
                                             <b-col cols="5">
                                                 <div class="clearfix" style="min-height: 170px">
-                                                    <div class="font-w700">UWAGI TECHNIKA:</div>
+                                                    <div class="float-left">
+                                                        <div class="font-w700">UWAGI TECHNIKA:</div>
+                                                    </div>
+        											<div class="float-right text-right">
+                                                        @if (! $zlecenie->is_odplatne)
+            												Zabudowa: [   ]<br>
+            												Trudna: [   ]
+                                                        @endif
+        											</div>
                                                 </div>
                                             </b-col>
                                         </b-row>
