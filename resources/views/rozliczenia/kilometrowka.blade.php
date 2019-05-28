@@ -31,8 +31,8 @@
                         <b-col cols="2">
                             <select class="form-control" onchange="updateUrl(this)">
                                 <option value="0">Poprzedni miesiąc</option>
-                                @foreach ($months as $month)
-                                    <option value="{{ $month->id }}" {{ ($month->id == $month_id) ? 'selected' : '' }}>{{ $month->name }}</option>
+                                @foreach ($months as $_month)
+                                    <option value="{{ $_month->id }}" {{ ($_month->id == $month_id) ? 'selected' : '' }}>{{ $_month->name }}</option>
                                 @endforeach
                             </select>
                         </b-col>
@@ -73,7 +73,7 @@
                                 @php
                                     $zlecenia_n = 0;
                                 @endphp
-								@foreach ($grouped_terminy as $date_string => $grouped_termin)
+								{{-- @foreach ($grouped_terminy as $date_string => $grouped_termin)
 
 									<tr>
 										<td class="bg-gray font-w700" colspan="4">{{ $date_string }}</td>
@@ -106,7 +106,7 @@
 											</tr>
 										@endif
 									@endforeach
-								@endforeach
+								@endforeach --}}
 							</tbody>
 						</table>
 					</div>

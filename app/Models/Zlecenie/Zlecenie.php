@@ -650,7 +650,9 @@ HTML;
     public function appendOpis(string $opis, string $name, bool $minified = false): void
     {
         if (! $minified) {
-            $this->opis .= "\r\n** " . $name . " " . date('d.m H:i') . ": „" . $opis . "”";
+            $opis = preg_replace("/(\r?\n)/", ' ', $opis);
+            $opis = str_replace(' .', '. ', $opis);
+            $this->opis .= "\r\n# " . $name . ' ' . date('d.m H:i') . ':  ' . $opis;
         } else {
             // TODO: przerobić funkcję
             $user = auth()->user();

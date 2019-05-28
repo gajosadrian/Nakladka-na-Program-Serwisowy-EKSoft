@@ -79,7 +79,11 @@
 									<td class="d-none">
 										{{ $zlecenie->nr }} {{ $zlecenie->nr_obcy }}
 										@foreach ($zlecenie->kosztorys_pozycje as $pozycja)
-											{{ $pozycja->opis }} {{ $pozycja->towar->symbol }} {{ $pozycja->towar->symbol_dostawcy }} {{ $pozycja->towar->symbol_dostawcy2 }}
+											{{ $pozycja->opis }}
+                                            {{ $pozycja->towar->symbol }}
+                                            {{ $pozycja->towar->symbol_dostawcy }}
+                                            {{ $pozycja->towar->symbol_dostawcy2 }}
+                                            {{ $pozycja->towar->opis }}
 										@endforeach
 									</td>
 								</tr>

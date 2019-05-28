@@ -169,6 +169,8 @@ class ZlecenieController extends Controller
         }
         $date_to = $date_from->copy()->endOfMonth()->endOfDay();
 
+        $month = $months->where('id', $month_id)->first();
+
         $terminy = null;
         if ($technik) {
             $terminy = Terminarz::with('technik', 'zlecenie', 'zlecenie.klient', 'zlecenie.status_historia')
@@ -181,12 +183,15 @@ class ZlecenieController extends Controller
                 })
                 ->groupBy(function ($termin) {
                     return $termin->samochod['value'][1];
-                })[$technik->id];
+                });
 
-            $grouped_terminy = $terminy->groupBy('date_string');
+            if (isset($terminy[$technik->id])) {
+                $terminy = $terminy[$technik->id];
+                $grouped_terminy = $terminy->groupBy('date_string');
+            }
         }
 
-        return view('rozliczenia.kilometrowka', compact('months', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'grouped_terminy'));
+        return view('rozliczenia.kilometrowka', compact('months', 'month', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'grouped_terminy'));
     }
 
     public function apiGetTerminarzStatusy(Request $request, int $technik_id, string $date_string = null)
