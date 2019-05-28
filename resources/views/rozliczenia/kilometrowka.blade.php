@@ -73,7 +73,7 @@
                                 @php
                                     $zlecenia_n = 0;
                                 @endphp
-								{{-- @foreach ($grouped_terminy as $date_string => $grouped_termin)
+								@foreach ($grouped_terminy ?? [] as $date_string => $grouped_termin)
 
 									<tr>
 										<td class="bg-gray font-w700" colspan="4">{{ $date_string }}</td>
@@ -106,7 +106,7 @@
 											</tr>
 										@endif
 									@endforeach
-								@endforeach --}}
+								@endforeach
 							</tbody>
 						</table>
 					</div>
