@@ -166,14 +166,33 @@
                         </li>
                         <li class="nav-item ml-auto">
                             <b-button-group size="sm" class="mr-2">
-                                @if ($user->is_technik and $zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
-                                    <zlecenie-change-status
-                                        zlecenie_id=@json($zlecenie->id)
-                                        status_id=@json(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID)
-                                        remove_termin="0"
-                                        name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID))
-                                        icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID))
-                                        color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::PREAUTORYZACJA_ID))></zlecenie-change-status>
+                                @if ($user->is_technik)
+                                    @if ($zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
+                                        <zlecenie-change-status
+                                            zlecenie_id=@json($zlecenie->id)
+                                            status_id=@json(App\Models\Zlecenie\Status::DO_WYCENY_ID)
+                                            remove_termin="0"
+                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                        ></zlecenie-change-status>
+                                        <zlecenie-change-status class="ml-1"
+                                            zlecenie_id=@json($zlecenie->id)
+                                            status_id=@json(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID)
+                                            remove_termin="0"
+                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                        ></zlecenie-change-status>
+                                        <zlecenie-change-status class="ml-1"
+                                            zlecenie_id=@json($zlecenie->id)
+                                            status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
+                                            remove_termin="0"
+                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                        ></zlecenie-change-status>
+                                    @endif
                                 @elseif (!$user->is_technik and $zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
                                     {{-- <zlecenie-change-status
                                         zlecenie_id=@json($zlecenie->id)

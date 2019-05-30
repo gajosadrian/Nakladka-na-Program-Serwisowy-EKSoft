@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-button size="sm" variant="light" @click="changeStatus"><i :class="[icon, color_formatted]" class="mr-1"></i> {{ name }}</b-button>
+        <b-button size="sm" variant="light" @click="changeStatus"><i :class="[icon, color_formatted]" class="mr-1"></i> {{ name_formatted }}</b-button>
     </div>
 </template>
 
@@ -18,7 +18,10 @@ export default {
     computed: {
         color_formatted() {
             return 'text-' + this.color;
-        }
+        },
+        name_formatted() {
+            return JSON.parse('"' + this.name + '"');
+        },
     },
 
     methods: {

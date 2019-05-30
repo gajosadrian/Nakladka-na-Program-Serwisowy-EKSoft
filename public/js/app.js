@@ -2191,6 +2191,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     color_formatted: function color_formatted() {
       return 'text-' + this.color;
+    },
+    name_formatted: function name_formatted() {
+      return JSON.parse('"' + this.name + '"');
     }
   },
   methods: {
@@ -44269,7 +44272,7 @@ var render = function() {
             staticClass: "mr-1",
             class: [_vm.icon, _vm.color_formatted]
           }),
-          _vm._v(" " + _vm._s(_vm.name))
+          _vm._v(" " + _vm._s(_vm.name_formatted))
         ]
       )
     ],
