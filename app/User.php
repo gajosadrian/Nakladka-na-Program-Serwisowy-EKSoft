@@ -11,6 +11,9 @@ class User extends Authenticatable
 {
     use Notifiable;
     use HasRoles;
+    protected $casts = [
+        'saved_fields' => 'array',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -54,6 +57,27 @@ class User extends Authenticatable
             $initials .= $words[--$index][0];
         }
         return $initials;
+    }
+
+    /**
+     * Methods
+     *
+     */
+    public function getSavedField($field_name)
+    {
+        if (empty($this->saved_fields[$field_name])) {
+            return false;
+        }
+        return $this->saved_fields[$field_name];
+    }
+
+    public function setSaveField($field_name, $field_value, $save = true)
+    {
+        $saved_field[$field_name] = $field_value;
+        $this->saved_fields = array_merge($this->saved_fields, $saved_field);
+        if ($save) {
+            $this->save();
+        }
     }
 
     /**

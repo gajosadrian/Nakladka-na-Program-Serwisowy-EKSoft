@@ -19,6 +19,8 @@ Route::middleware('auth')->group(function () {
     Route::view('/', 'empty')->name('home');
     Route::view('szukaj', 'empty')->name('szukaj');
 
+    Route::put('save-field', 'SavedFieldController@update')->name('api.save_field');
+
     Route::prefix('zlecenia')->name('zlecenia.')->group(function () {
         Route::get('lista', 'ZlecenieController@index')->name('lista');
         Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');

@@ -21,9 +21,11 @@ class ZlecenieController extends Controller
         $zlecenia_niezakonczone = Zlecenie::getNiezakonczone([
             'technik_id' => $user->technik_id,
         ]);
+        $search_value = $user->getSavedField('zlecenia.search');
 
         return view('zlecenie.lista', [
             'zlecenia' => $zlecenia_niezakonczone,
+            'search_value' => $search_value,
         ]);
     }
 

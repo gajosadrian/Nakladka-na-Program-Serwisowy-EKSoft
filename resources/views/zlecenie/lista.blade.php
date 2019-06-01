@@ -2,7 +2,7 @@
 @php
     $room = rand();
 @endphp
-
+@section('autorefresh', 60)
 
 @section('content')
     <div class="bg-body-light">
@@ -108,4 +108,24 @@
 
         $lastRow = $row;
     });
+
+    var $searchInput = $('div#zlecenia{{ $room }}_filter input[type=search]');
+    setInterval(function() {
+        let value = $searchInput.val();
+
+        $.post(route('api.save_field'), {
+            _token: '{{ csrf_token() }}',
+            _method: 'put',
+            name: 'zlecenia.search',
+            value: value
+        })
+        .done(function (data) {
+            // OK
+        });
+    }, 5000)
+
+    let searchValue = @json($search_value);
+    if (searchValue) {
+        $('table#zlecenia{{ $room }}').DataTable().data().search(searchValue).draw();
+    }
 })</script>@endsection

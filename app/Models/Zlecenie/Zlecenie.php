@@ -31,7 +31,7 @@ class Zlecenie extends Model
         'Amica' => ['amica', 'amika'],
         'Gorenje' => ['gorenje', 'gorenie', 'gorenja', 'gorenia'],
         'ERGO Hestia' => ['efficient', 'logisfera', 'logiswera', 'ergo-hestia', 'ergohestia', 'ergo', 'hestia', 'ergo hestia'],
-        'Quadra-Net' => ['quadra', 'quadra-net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
+        'Quadra-Net' => ['quadra', 'quadra-net', 'quadra - net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
         'IBC' => ['ibc'],
         'Kromet' => ['kromet', 'kromed', 'cromet', 'cromed'],
         'Kernau' => ['kernau', 'kernał', 'galicja'],
