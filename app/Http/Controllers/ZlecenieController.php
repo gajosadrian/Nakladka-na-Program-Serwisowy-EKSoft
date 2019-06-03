@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Facades\App\Models\Zlecenie\Zlecenie;
 use App\Models\Zlecenie\Terminarz;
 use App\Models\Zlecenie\Status;
+use App\Models\Zlecenie\KosztorysPozycja;
 use App\Models\SMS\Technik;
+use App\Models\Subiekt\Subiekt_Towar;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -194,6 +196,16 @@ class ZlecenieController extends Controller
         }
 
         return view('rozliczenia.kilometrowka', compact('months', 'month', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'grouped_terminy'));
+    }
+
+    public function wyszukiwanieCzesci(Request $request, string $symbol = null)
+    {
+        $towar = Subiekt_Towar::where('tw_Symbol', $request->symbol ?? $symbol)->first();
+        $towar_id = @$towar->id ?? null;
+
+        $kosztorys_pozycje = KosztorysPozycja::with('zlecenie')->where('id_o_tw', $towar_id)->orderByDesc('id')->limit(20)->get();
+
+        return view('zlecenie.wyszukiwanie-czesci', compact('towar', 'towar_id', 'kosztorys_pozycje'));
     }
 
     public function apiGetTerminarzStatusy(Request $request, int $technik_id, string $date_string = null)

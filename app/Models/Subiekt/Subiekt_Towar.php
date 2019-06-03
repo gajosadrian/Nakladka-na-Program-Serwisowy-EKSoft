@@ -15,6 +15,11 @@ class Subiekt_Towar extends Model
     *
     */
 
+    public function getIdAttribute(): int
+    {
+        return $this->attributes['tw_Id'];
+    }
+
     public function getNazwaAttribute(): string
     {
         return $this->attributes['tw_Nazwa'];

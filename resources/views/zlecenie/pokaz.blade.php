@@ -42,20 +42,30 @@
                     <template slot="content">
                         <table class="table table-sm table-borderless">
                             <tr>
-                                <th style="width:1%">Nazwa:</th>
+                                <th class="text-right" style="width:1%">Nazwa:</th>
                                 <td>{{ $zlecenie->klient->nazwa }} <span class="small text-muted">({{ $zlecenie->klient->symbol }})</span></td>
                             </tr>
                             <tr>
-                                <th>Ulica:</th>
+                                <th class="text-right">Ulica:</th>
                                 <td>{{ $zlecenie->klient->adres }}</td>
                             </tr>
                             <tr>
-                                <th>Miasto:</th>
+                                <th class="text-right">Miasto:</th>
                                 <td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
                             </tr>
                             <tr>
-                                <th>Telefony:</th>
+                                <th class="text-right">Telefony:</th>
                                 <td>{{ $zlecenie->klient->telefony_formatted }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-right" nowrap>Akc. kosztów:</th>
+                                <td nowrap>
+                                    @if ($zlecenie->is_akc_kosztow)
+                                        <span class="text-success font-w600">{{ $zlecenie->data_akc_kosztow }}</span>
+                                    @else
+                                        <span class="text-muted"><i>Brak informacji</i></span>
+                                    @endif
+                                </td>
                             </tr>
                         </table>
                     </template>

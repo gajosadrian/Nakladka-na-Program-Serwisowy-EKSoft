@@ -328,6 +328,16 @@ class Zlecenie extends Model
         return $this->terminarz->godzina_zakonczenia;
     }
 
+    public function getIsAkcKosztowAttribute(): bool
+    {
+        return $this->attributes['data_akc_koszt'] ? true : false;
+    }
+
+    public function getDataAkcKosztowAttribute(): Carbon
+    {
+        return Carbon::parse($this->attributes['data_akc_koszt']);
+    }
+
     public function getOpisAttribute(): string
     {
         return $this->attributes['OpisZlec'] ?? false;
@@ -651,7 +661,7 @@ HTML;
     {
         if (! $minified) {
             $opis = preg_replace("/(\r?\n)/", ' ', $opis);
-            $opis = str_replace(' .', '. ', $opis);
+            $opis = str_replace([' .', ' ,'], ['. ', ', '], $opis);
             $this->opis .= "\r\n# " . $name . ' ' . date('d.m H:i') . ':  ' . $opis;
         } else {
             // TODO: przerobić funkcję

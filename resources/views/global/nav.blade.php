@@ -24,6 +24,12 @@
             'routeOptions' => [],
         ],
         [
+            'name' => 'Wyszukiwanie części',
+            'icon' => 'si si-wrench',
+            'route' => 'zlecenia.wyszukiwanieCzesci',
+            'routeOptions' => [],
+        ],
+        [
             'name' => 'Admin',
             'role' => 'super-admin',
         ],

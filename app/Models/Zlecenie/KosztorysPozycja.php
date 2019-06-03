@@ -15,6 +15,16 @@ class KosztorysPozycja extends Model
     *
     */
 
+    public function getTowarIdAttribute(): int
+    {
+        return $this->attributes['id_o_tw'];
+    }
+
+    public function getZlecenieIdAttribute(): int
+    {
+        return $this->attributes['id_zs'];
+    }
+
     public function getNazwaAttribute(): string
     {
         return $this->towar->nazwa;
@@ -120,6 +130,11 @@ class KosztorysPozycja extends Model
     * Relations
     *
     */
+
+    public function zlecenie()
+    {
+        return $this->belongsTo('App\Models\Zlecenie\Zlecenie', 'id_zs', 'id_zlecenia');
+    }
 
     public function towar()
     {

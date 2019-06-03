@@ -2,7 +2,7 @@
 @php
     $room = rand();
 @endphp
-@section('autorefresh', 60)
+@section('autorefresh', 90)
 
 @section('content')
     <div class="bg-body-light">
@@ -37,6 +37,9 @@
 								<tr>
 									<th class="text-muted">{{ ++$counter }}</th>
 									<td nowrap>
+                                        @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
+                                            <i class="fa fa-check-circle text-success"></i>
+                                        @endif
 										{{ str_limit($zlecenie->klient->nazwa, 30) }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
 									</td>
@@ -51,6 +54,9 @@
 									<td nowrap>
 										{{ $zlecenie->urzadzenie->nazwa }}<br>
 										{{ $zlecenie->urzadzenie->producent }}
+                                        @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
+                                            <i class="fa fa-check-circle text-success"></i>
+                                        @endif
 									</td>
 
                                     {!! $zlecenie->tableCellStatusHTML !!}
@@ -110,8 +116,12 @@
     });
 
     var $searchInput = $('div#zlecenia{{ $room }}_filter input[type=search]');
+    let searchValue = @json($search_value);
+    var searchValue_last = @json($search_value);
     setInterval(function() {
         let value = $searchInput.val();
+
+        if (searchValue_last == value) return;
 
         $.post(route('api.save_field'), {
             _token: '{{ csrf_token() }}',
@@ -120,11 +130,11 @@
             value: value
         })
         .done(function (data) {
-            // OK
+            console.log(value);
+            searchValue_last = value;
         });
     }, 5000)
 
-    let searchValue = @json($search_value);
     if (searchValue) {
         $('table#zlecenia{{ $room }}').DataTable().data().search(searchValue).draw();
     }
