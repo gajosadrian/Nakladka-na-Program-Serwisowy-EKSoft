@@ -22,7 +22,7 @@
                                 <i class="fa fa-search"></i> Szukaj
                             </b-button>
                         </b-col>
-                        <b-col cols="3">
+                        <b-col cols="12" lg="3">
                             <div class="font-w600">{{ $towar ? $towar->nazwa : '' }}</div>
                             <div>{{ $towar ? $towar->symbol_dostawcy : '' }}</div>
                         </b-col>
@@ -31,43 +31,45 @@
             </template>
         </b-block>
 
-        <b-block full>
-            <template slot="content">
-                <div class="table-responsive">
-                    <table class="table table-sm table-striped table-hover table-vcenter font-size-sm">
-                        <thead>
-                            <tr class="text-uppercase">
-                                <th class="font-w700">Lp.</th>
-                                <th class="font-w700">Nr zlecenia</th>
-                                <th class="font-w700">Symbol</th>
-                                <th class="font-w700">Symbol dost.</th>
-                                <th class="font-w700">Opis</th>
-                                <th class="font-w700">Cena</th>
-                                <th class="font-w700">Ilość</th>
-                                <th class="font-w700">Wartość netto</th>
-                                <th class="font-w700">Wartość brutto</th>
-                                <th class="font-w700">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($kosztorys_pozycje as $key => $kosztorys_pozycja)
-                                <tr>
-                                    <th>{{ $key + 1 }}</th>
-                                    {!! $kosztorys_pozycja->zlecenie->table_cell_nr_html !!}
-                                    <td>{{ $kosztorys_pozycja->symbol }}</td>
-                                    <td nowrap>{{ $kosztorys_pozycja->symbol_dostawcy }}</td>
-                                    <td class="text-danger" nowrap>{{ $kosztorys_pozycja->opis }}</td>
-                                    <td nowrap>{{ $kosztorys_pozycja->cena_formatted }}</td>
-                                    <td>{{ $kosztorys_pozycja->ilosc }}</td>
-                                    <td nowrap>{{ $kosztorys_pozycja->wartosc_formatted }}</td>
-                                    <td nowrap>{{ $kosztorys_pozycja->wartosc_brutto_formatted }}</td>
-                                    {!! $kosztorys_pozycja->zlecenie->table_cell_status_html !!}
+        @if ($towar_id)
+            <b-block full>
+                <template slot="content">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover table-vcenter font-size-sm">
+                            <thead>
+                                <tr class="text-uppercase">
+                                    <th class="font-w700">Lp.</th>
+                                    <th class="font-w700">Nr zlecenia</th>
+                                    <th class="font-w700">Symbol</th>
+                                    <th class="font-w700">Symbol dost.</th>
+                                    <th class="font-w700">Opis</th>
+                                    <th class="font-w700">Cena</th>
+                                    <th class="font-w700">Ilość</th>
+                                    <th class="font-w700">Wartość netto</th>
+                                    <th class="font-w700">Wartość brutto</th>
+                                    <th class="font-w700">Status</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </template>
-        </b-block>
+                            </thead>
+                            <tbody>
+                                @foreach ($kosztorys_pozycje as $key => $kosztorys_pozycja)
+                                    <tr>
+                                        <th>{{ $key + 1 }}</th>
+                                        {!! $kosztorys_pozycja->zlecenie->table_cell_nr_html !!}
+                                        <td>{{ $kosztorys_pozycja->symbol }}</td>
+                                        <td nowrap>{{ $kosztorys_pozycja->symbol_dostawcy }}</td>
+                                        <td class="text-danger" nowrap>{{ $kosztorys_pozycja->opis }}</td>
+                                        <td nowrap>{{ $kosztorys_pozycja->cena_formatted }}</td>
+                                        <td>{{ $kosztorys_pozycja->ilosc }}</td>
+                                        <td nowrap>{{ $kosztorys_pozycja->wartosc_formatted }}</td>
+                                        <td nowrap>{{ $kosztorys_pozycja->wartosc_brutto_formatted }}</td>
+                                        {!! $kosztorys_pozycja->zlecenie->table_cell_status_html !!}
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+            </b-block>
+        @endif
     </div>
 @endsection
