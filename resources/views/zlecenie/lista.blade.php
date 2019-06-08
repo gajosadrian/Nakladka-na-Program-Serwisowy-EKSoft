@@ -34,7 +34,7 @@
 						<tbody>
 							@php $counter = 0 @endphp
 							@foreach ($zlecenia as $zlecenie)
-								<tr>
+								<tr class="{{ ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat) ? 'table-warning' : '' }}">
 									<th class="text-muted">{{ ++$counter }}</th>
 									<td nowrap>
                                         @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
@@ -54,29 +54,45 @@
 									<td nowrap>
 										{{ $zlecenie->urzadzenie->nazwa }}<br>
 										{{ $zlecenie->urzadzenie->producent }}
-                                        @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
-                                            <i class="fa fa-check-circle text-success"></i>
-                                        @endif
 									</td>
 
                                     {!! $zlecenie->tableCellStatusHTML !!}
 
-									<td class="text-danger font-small">
-										@foreach ($zlecenie->errors as $error)
-											{{ $error }}
-										@endforeach
+									<td class="{{ (count($zlecenie->errors) > 0) ? 'table-danger' : '' }} font-small">
+                                        <ul class="list-unstyled mb-0">
+    										@foreach ($zlecenie->errors as $error)
+                                                <li>
+                                                    <i class="fa fa-exclamation-triangle text-danger"></i>
+        											{{ $error }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
 									</td>
 
 									<td nowrap>
-										{{ $zlecenie->data_zakonczenia_formatted }}<br>
+                                        @if ($zlecenie->is_termin)
+                                            {{ $zlecenie->data_zakonczenia_formatted }}
+                                        @else
+                                            {{ $zlecenie->data_statusu_formatted }}
+                                        @endif
+                                        <br>
                                         <small class="text-muted">
-    										@if ($zlecenie->dni_od_zakonczenia > 0)
-    											@if ($zlecenie->dni_od_zakonczenia >= 2)
-    												({{ $zlecenie->dni_od_zakonczenia }} dni temu)
+                                            @php
+                                                if ($zlecenie->is_termin) {
+                                                    $dni_od_zakonczenia = $zlecenie->dni_od_zakonczenia;
+                                                    $is_termin = true;
+                                                } else {
+                                                    $dni_od_zakonczenia = $zlecenie->dni_od_statusu;
+                                                    $is_termin = false;
+                                                }
+                                            @endphp
+    										@if ($dni_od_zakonczenia > 0)
+    											@if ($dni_od_zakonczenia >= 2)
+    												({{ $dni_od_zakonczenia }} dni temu)
     											@else
     												(wczoraj)
     											@endif
-                                            @elseif ($zlecenie->dni_od_zakonczenia == 0 and $zlecenie->is_termin)
+                                            @elseif ($dni_od_zakonczenia == 0 and $is_termin)
                                                 (dzisiaj)
     										@endif
                                         </small>

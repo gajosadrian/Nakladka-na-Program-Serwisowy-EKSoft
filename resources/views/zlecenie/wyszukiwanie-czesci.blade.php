@@ -48,6 +48,7 @@
                                     <th class="font-w700">Wartość netto</th>
                                     <th class="font-w700">Wartość brutto</th>
                                     <th class="font-w700">Status</th>
+                                    <th class="font-w700">Ostatnia data</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -63,6 +64,7 @@
                                         <td nowrap>{{ $kosztorys_pozycja->wartosc_formatted }}</td>
                                         <td nowrap>{{ $kosztorys_pozycja->wartosc_brutto_formatted }}</td>
                                         {!! $kosztorys_pozycja->zlecenie->table_cell_status_html !!}
+                                        <td>{{ $kosztorys_pozycja->zlecenie->data_zakonczenia_formatted }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

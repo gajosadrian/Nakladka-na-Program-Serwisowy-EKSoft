@@ -174,6 +174,9 @@
                         <li class="nav-item">
                             <a href="#opis" class="nav-link active show" style="color: rgba(255, 255, 255, 0.9)">Opis</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="#statusy" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Statusy</a>
+                        </li>
                         <li class="nav-item ml-auto">
                             <b-button-group size="sm" class="mr-2">
                                 @if ($user->is_technik)
@@ -268,6 +271,36 @@
                         </div>
                         <div class="tab-pane fade active show" id="opis" role="tabpanel">
                             <zlecenie-opis zlecenie_id=@json($zlecenie->id) />
+                        </div>
+                        <div class="tab-pane fade" id="statusy" role="tabpanel">
+                            <b-row>
+                                <b-col cols="12" xl="8">
+                                    <table class="table table-sm table-striped table-vcenter font-size-sm">
+                                        <thead>
+                                            <tr>
+                                                <th class="font-w700" nowrap>Status</th>
+                                                <th class="font-w700" nowrap>Data</th>
+                                                <th class="font-w700" nowrap>Użytkownik</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($zlecenie->statusy as $status_pozycja)
+                                                @php
+                                                    $status = $status_pozycja->status;
+                                                @endphp
+                                                <tr>
+                                                    <td nowrap class="align-middle {{ $status->color ? 'table-' . $status->color : '' }}">
+                                                        <i class="{{ $status->icon }} {{ $status->color ? 'text-' . $status->color : '' }} mx-2"></i>
+                                                        {{ $status->nazwa }}
+                                                    </td>
+                                                    <td nowrap>{{ $status_pozycja->data }}</td>
+                                                    <td nowrap>{{ $status_pozycja->pracownik->nazwa }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </b-col>
+                            </b-row>
                         </div>
                     </div>
                 </div>

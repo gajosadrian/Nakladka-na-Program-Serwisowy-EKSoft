@@ -328,6 +328,16 @@ class Zlecenie extends Model
         return $this->terminarz->godzina_zakonczenia;
     }
 
+    public function getDataStatusuAttribute(): Carbon
+    {
+        return $this->statusy->first()->data;
+    }
+
+    public function getDataStatusuFormattedAttribute(): String
+    {
+        return $this->data_statusu->format('Y-m-d H:i');
+    }
+
     public function getIsAkcKosztowAttribute(): bool
     {
         return $this->attributes['data_akc_koszt'] ? true : false;
@@ -368,19 +378,24 @@ class Zlecenie extends Model
         return nl2br($this->opis);
     }
 
+    public function getDniOdStatusuAttribute(): int
+    {
+        return $this->statusy->first()->data->copy()->startOfDay()->diffInDays(now()->startOfDay(), false);
+    }
+
     public function getDniOdZakonczeniaAttribute(): int
     {
-        return $this->data_zakonczenia->copy()->startOfDay()->diffInDays(Carbon::now()->startOfDay(), false);
+        return $this->data_zakonczenia->copy()->startOfDay()->diffInDays(now()->startOfDay(), false);
     }
 
     public function getDniOdPrzyjeciaAttribute(): int
     {
-        return $this->data_przyjecia->diffInDays(Carbon::now()->endOfDay(), false);
+        return $this->data_przyjecia->diffInDays(now()->endOfDay(), false);
     }
 
     public function getCzasTrwaniaAttribute(): int
     {
-        $data = Carbon::now();
+        $data = now();
         if ($this->is_zakonczone) $data = $this->data_zakonczenia;
         return $this->data_przyjecia->startOfDay()->diffInDays($data->startOfDay());
     }
@@ -396,8 +411,32 @@ class Zlecenie extends Model
     {
         $array = [];
 
-        if ($this->dni_od_zakonczenia > 2 and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID]))
+        if (! $this->is_termin and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID]))
+            $array[] = 'Ustal termin';
+
+        if ($this->dni_od_zakonczenia >= 2 and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID]))
             $array[] = 'Zlecenie niezamknięte';
+
+        if (!$this->is_termin and $this->dni_od_statusu >= 2 and in_array($this->status_id, [Status::NA_WARSZTACIE_ID]))
+            $array[] = 'Zlecenie niezamknięte';
+
+        if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::DZWONIC_PO_ODBIOR_ID, Status::INFO_O_KOSZTACH_ID]))
+            $array[] = 'Dzwonić do klienta';
+
+        if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::DO_ZAMOWIENIA_ID, Status::DO_WYCENY_ID, Status::DO_WYJASNIENIA_ID]))
+            $array[] = 'Brak reakcji';
+
+        if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::ZALICZKA_ID]))
+            $array[] = 'Czy jest zaliczka?';
+
+        if ($this->dni_od_statusu >= 3 and in_array($this->status_id, [Status::DO_ODBIORU_ID]))
+            $array[] = 'Dzwonić do klienta';
+
+        if ($this->dni_od_statusu >= 3 and in_array($this->status_id, [Status::DO_ROZLICZENIA_ID]))
+            $array[] = 'Brak reakcji';
+
+        if ($this->dni_od_statusu >= 4 and in_array($this->status_id, [Status::ZAMOWIONO_CZESC_ID]))
+            $array[] = 'Czy dotarła część?';
 
         return $array;
     }
@@ -487,7 +526,7 @@ HTML;
 
     public function getPopupLinkAttribute(): string
     {
-        return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', 1500, 700)";
+        return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', 1500, 800)";
     }
 
     public function getStatusyAttribute()
@@ -645,7 +684,7 @@ HTML;
         $status_historia = new StatusHistoria;
         $status_historia->pracownik_id = $pracownik_id;
         $status_historia->status_id = $status_id;
-        $status_historia->data = Carbon::now()->format('Y-m-d H:i:s.000');
+        $status_historia->data = now()->format('Y-m-d H:i:s.000');
         $status_historia->nr_o_zlecenia = null;
 
         $this->status_historia()->save($status_historia);
@@ -673,7 +712,7 @@ HTML;
     public function getNiezakonczone(array $data = [])
     {
         $data = (object) $data;
-        $query = $this->withRelations()->niezakonczone()->oldest('DataKoniec');
+        $query = $this->withRelations()->with('status_historia')->niezakonczone()->oldest('DataKoniec');
         if (@$data->technik_id) {
             $query->technik($data->technik_id);
         }
