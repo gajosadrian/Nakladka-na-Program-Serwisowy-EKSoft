@@ -6,6 +6,7 @@ use Facades\App\Models\Zlecenie\Zlecenie;
 use App\Models\Zlecenie\Terminarz;
 use App\Models\Zlecenie\Status;
 use App\Models\Zlecenie\KosztorysPozycja;
+use App\Models\Zlecenie\ZatwierdzonyBlad;
 use App\Models\SMS\Technik;
 use App\Models\Subiekt\Subiekt_Towar;
 use Illuminate\Http\Request;
@@ -55,7 +56,7 @@ class ZlecenieController extends Controller
      */
     public function show($id)
     {
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie::findOrFail($id);
 
         return view('zlecenie.pokaz', compact(
             'zlecenie'
@@ -206,6 +207,20 @@ class ZlecenieController extends Controller
         $kosztorys_pozycje = KosztorysPozycja::with('zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie')->where('id_o_tw', $towar_id)->orderByDesc('id')->limit(20)->get();
 
         return view('zlecenie.wyszukiwanie-czesci', compact('towar', 'towar_id', 'kosztorys_pozycje'));
+    }
+
+    public function apiZatwierdzBlad(Request $request, int $id)
+    {
+        $user = $request->user();
+        $zlecenie = Zlecenie::findOrFail($id);
+
+        $zlecenie->zatwierdzony_blad()->delete();
+
+        $zatwierdzony_blad = new ZatwierdzonyBlad;
+        $zatwierdzony_blad->status_id = $zlecenie->status_id;
+        $zlecenie->zatwierdzony_blad()->save($zatwierdzony_blad);
+
+        return response()->json('success', 200);
     }
 
     public function apiGetTerminarzStatusy(Request $request, int $technik_id, string $date_string = null)

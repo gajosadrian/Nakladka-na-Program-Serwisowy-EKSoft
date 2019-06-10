@@ -414,28 +414,28 @@ class Zlecenie extends Model
         if (!$this->is_termin and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID]))
             $array[] = 'Ustal termin';
 
-        if ($this->dni_od_zakonczenia >= 2 and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID]))
+        if ($this->dni_od_zakonczenia >= 2 and $this->isAktywnyBlad(2) and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID]))
             $array[] = 'Zlecenie niezamknięte';
 
-        if (!$this->is_termin and $this->dni_od_statusu >= 2 and in_array($this->status_id, [Status::NA_WARSZTACIE_ID]))
+        if (!$this->is_termin and $this->dni_od_statusu >= 2 and $this->isAktywnyBlad(2) and in_array($this->status_id, [Status::NA_WARSZTACIE_ID]))
             $array[] = 'Zlecenie niezamknięte';
 
-        if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::DZWONIC_PO_ODBIOR_ID, Status::INFO_O_KOSZTACH_ID]))
+        if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::INFO_O_KOSZTACH_ID]))
             $array[] = 'Dzwonić do klienta';
 
-        if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::DO_ZAMOWIENIA_ID, Status::DO_WYCENY_ID, Status::DO_WYJASNIENIA_ID]))
+        if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::DO_ZAMOWIENIA_ID, Status::DO_WYCENY_ID, Status::DO_WYJASNIENIA_ID]))
             $array[] = 'Brak reakcji';
 
-        if ($this->dni_od_statusu >= 3 and in_array($this->status_id, [Status::ZALICZKA_ID]))
+        if ($this->dni_od_statusu >= 3 and $this->isAktywnyBlad(3) and in_array($this->status_id, [Status::ZALICZKA_ID]))
             $array[] = 'Czy jest zaliczka?';
 
-        if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::DO_ODBIORU_ID]))
-            $array[] = 'Dzwonić do klienta';
+        if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::DZWONIC_PO_ODBIOR_ID, Status::DO_ODBIORU_ID]))
+            $array[] = 'Dzwonić po odbiór';
 
-        if ($this->dni_od_statusu >= 3 and in_array($this->status_id, [Status::DO_ROZLICZENIA_ID]))
-            $array[] = 'Brak reakcji';
+        if ($this->dni_od_statusu >= 5 and $this->isAktywnyBlad(5) and in_array($this->status_id, [Status::DO_ROZLICZENIA_ID]))
+            $array[] = 'Nie rozliczone';
 
-        if ($this->dni_od_statusu >= 4 and in_array($this->status_id, [Status::ZAMOWIONO_CZESC_ID]))
+        if ($this->dni_od_statusu >= 4 and $this->isAktywnyBlad(4) and in_array($this->status_id, [Status::ZAMOWIONO_CZESC_ID]))
             $array[] = 'Czy dotarła część?';
 
         return $array;
@@ -617,10 +617,25 @@ HTML;
         return $this->hasOne('App\Models\Rozliczenie\RozliczoneZlecenie', 'zlecenie_id', 'id_zlecenia');
     }
 
+    public function zatwierdzony_blad()
+    {
+        return $this->hasOne('App\Models\Zlecenie\ZatwierdzonyBlad', 'zlecenie_id', 'id_zlecenia');
+    }
+
     /**
     * Methods
     *
     */
+
+    public function isAktywnyBlad(int $dni): bool
+    {
+        if (! $this->zatwierdzony_blad) return true;
+        if ($this->zatwierdzony_blad->status_id != $this->status_id) return true;
+        if ($this->zatwierdzony_blad->created_at->copy()->startOfDay()->gt(now()->startOfDay()->subDays($dni))) {
+            return false;
+        }
+        return true;
+    }
 
     private function getCalcKosztorys(string $type): array
     {
@@ -712,7 +727,7 @@ HTML;
     public function getNiezakonczone(array $data = [])
     {
         $data = (object) $data;
-        $query = $this->withRelations()->with('status_historia')->niezakonczone()->oldest('DataKoniec');
+        $query = $this->withRelations()->with(['status_historia', 'zatwierdzony_blad'])->niezakonczone()->oldest('DataKoniec');
         if (@$data->technik_id) {
             $query->technik($data->technik_id);
         }

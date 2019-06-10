@@ -9,7 +9,7 @@
     <div class="content">
 		<b-row>
 			@if ($zlecenie->errors)
-                <b-col>
+                <b-col cols="12">
                     <div class="alert alert-danger d-flex align-items-center">
                         <div class="flex-00-auto">
                             <i class="fa fa-exclamation-triangle"></i>
@@ -21,7 +21,7 @@
                 </b-col>
 			@endif
 			@if ($zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
-                <b-col>
+                <b-col cols="12">
                     <div class="alert alert-warning d-flex align-items-center">
                         <div class="flex-00-auto">
                             <i class="fa fa-exclamation-triangle"></i>
@@ -206,14 +206,20 @@
                                             color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
                                         ></zlecenie-change-status>
                                     @endif
-                                @elseif (!$user->is_technik and $zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
-                                    {{-- <zlecenie-change-status
-                                        zlecenie_id=@json($zlecenie->id)
-                                        status_id=@json(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID)
-                                        remove_termin="1"
-                                        name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
-                                        icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
-										color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status> --}}
+                                @elseif (!$user->is_technik)
+                                    @if (count($zlecenie->errors) > 0)
+                                        <b-button onclick="zatwierdzBlad()" size="sm" variant="light"><i class="fa fa-exclamation-triangle text-danger" class="ml-1"></i> Usuń błąd</b-button>
+                                    @endif
+
+                                    {{-- @if ($zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
+                                        <zlecenie-change-status class="ml-1"
+                                            zlecenie_id=@json($zlecenie->id)
+                                            status_id=@json(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID)
+                                            remove_termin="1"
+                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+    										color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status>
+                                    @endif --}}
                                 @endif
                             </b-button-group>
                         </li>
@@ -316,5 +322,12 @@ $(document).keydown(function (e) {
 		window.close();
 	}
 });
+
+function zatwierdzBlad() {
+    axios.post(route('zlecenia.api.zatwierdz_blad', { id: @json($zlecenie->id) }))
+        .then(function (response) {
+            window.close();
+        });
+}
 
 </script>@endsection
