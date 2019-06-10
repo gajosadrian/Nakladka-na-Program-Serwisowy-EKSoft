@@ -96,7 +96,7 @@
 										@elseif ($zlecenie->id and $zlecenie->was_warsztat)
 											<tr>
 												<td></td>
-												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span> {{ $zlecenie->status_id }}</td>
+												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
 												<td colspan="2"><i>Warsztat</i></td>
 											</tr>
 										@elseif ($termin->temat)
