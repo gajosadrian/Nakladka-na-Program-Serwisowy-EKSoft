@@ -89,7 +89,7 @@
                                             @endphp
 											<tr>
 												<th class="text-right">{{ $zlecenia_n }}.</th>
-												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span> {{ $zlecenie->status_id }}</td>
+												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
 												<td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
 												<td>{{ $zlecenie->klient->adres }}</td>
 											</tr>

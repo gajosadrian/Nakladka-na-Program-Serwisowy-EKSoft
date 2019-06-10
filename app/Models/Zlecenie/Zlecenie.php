@@ -411,7 +411,7 @@ class Zlecenie extends Model
     {
         $array = [];
 
-        if (! $this->is_termin and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID]))
+        if (!$this->is_termin and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID]))
             $array[] = 'Ustal termin';
 
         if ($this->dni_od_zakonczenia >= 2 and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID]))
@@ -426,10 +426,10 @@ class Zlecenie extends Model
         if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::DO_ZAMOWIENIA_ID, Status::DO_WYCENY_ID, Status::DO_WYJASNIENIA_ID]))
             $array[] = 'Brak reakcji';
 
-        if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::ZALICZKA_ID]))
+        if ($this->dni_od_statusu >= 3 and in_array($this->status_id, [Status::ZALICZKA_ID]))
             $array[] = 'Czy jest zaliczka?';
 
-        if ($this->dni_od_statusu >= 3 and in_array($this->status_id, [Status::DO_ODBIORU_ID]))
+        if ($this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::DO_ODBIORU_ID]))
             $array[] = 'Dzwonić do klienta';
 
         if ($this->dni_od_statusu >= 3 and in_array($this->status_id, [Status::DO_ROZLICZENIA_ID]))
