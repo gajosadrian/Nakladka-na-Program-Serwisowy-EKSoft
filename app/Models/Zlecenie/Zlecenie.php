@@ -56,6 +56,7 @@ class Zlecenie extends Model
         'MPM' => ['mpm'],
         'Euroterm' => ['euroterm'],
         'Agdom' => ['agdom'],
+        'Makiano' => ['makiano'],
     ];
 
     /**
