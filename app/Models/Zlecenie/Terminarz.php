@@ -14,6 +14,7 @@ class Terminarz extends Model
     public $timestamps = false;
 
     public const SAMOCHOD_KEYS = ['samochod-', 'samochód-'];
+    public const ZLECENIE_DO_WYJASNIENIA_KEY = ['zlec:'];
 
     public const BRAK_ID = '536870912'; public const UMOWIONO_ID = '8689404';
     public const DZWONIC_WCZESNIEJ_ID = '14982788'; public const ZAKONCZONE_ID = '6610596';
@@ -126,6 +127,11 @@ class Terminarz extends Model
         return Str::contains($this->temat, self::SAMOCHOD_KEYS);
     }
 
+    public function getIsZlecenieDoWyjasnieniaAttribute(): bool
+    {
+        return Str::contains($this->temat, self::ZLECENIE_DO_WYJASNIENIA_KEY);
+    }
+
     public function getHasDzwonicAttribute()
     {
         return Str::contains($this->temat, self::DZWONIC_WCZESNIEJ_STR);
@@ -211,6 +217,23 @@ class Terminarz extends Model
                 }
             }
         }
+    }
+
+    public static function getZleceniaDoWyjasnieniaSymbole($technik_id, $date_string)
+    {
+        $symbole = [];
+
+        $terminy = self::where('STARTDATE', $date_string . ' 00:00:00:000')->where('id_techn_term', $technik_id)->get()
+        ->filter(function ($v) {
+            return $v->is_zlecenie_do_wyjasnienia;
+        });
+
+        foreach ($terminy as $termin) {
+            $temat = strtoupper(trim(str_replace(self::ZLECENIE_DO_WYJASNIENIA_KEY, '', strtolower($termin->temat))));
+            $symbole[] = $temat;
+        }
+
+        return $symbole;
     }
 
     public function removeTermin(bool $delete = false): void

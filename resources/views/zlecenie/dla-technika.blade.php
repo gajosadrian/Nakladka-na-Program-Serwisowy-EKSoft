@@ -59,13 +59,13 @@
 							@endforeach
 						</div>
 
-                        @foreach ($terminy as $terminarz)
+                        @foreach ($terminy->sortByDesc('zlecenie._do_wyjasnienia') as $terminarz)
                             @php
                                 $zlecenie = $terminarz->zlecenie;
                             @endphp
                             <div class="mb-4">
                                 @if ($zlecenie->id)
-                                    @if (!$is_technik and !$zlecenie->is_zakonczone and !$zlecenie->is_warsztat and $is_up_to_date)
+                                    @if (!$is_technik and !$zlecenie->is_zakonczone and !$zlecenie->is_warsztat and !$zlecenie->_do_wyjasnienia and $is_up_to_date)
                                         <div class="d-none d-lg-block mb-1">
                                             @if ($terminarz->is_umowiono or !$terminarz->is_umowiono_or_dzwonic)
                                                 <b-button @if(!$zlecenie->is_umowiono) onclick="umowKlienta({{ $zlecenie->id }}, 0)" @endif size="sm" variant="{{ $zlecenie->is_umowiono ? 'danger' : 'outline-danger' }}">Umówiono klienta</b-button>
@@ -84,7 +84,11 @@
                                         </div>
                                     @endif
 
-                                    @if ($terminarz->temat)
+                                    @if ($zlecenie->_do_wyjasnienia)
+                                        <div class="font-w700 bg-dark text-white">
+                                            <span class="px-1">DO WYJAŚNIENIA</span>
+                                        </div>
+                                    @elseif ($terminarz->temat)
                                         <div class="font-w700 bg-gray">
                                             <span class="{{ (strlen($terminarz->temat) <= 40) ? 'bg-dark text-white' : '' }} px-1">{{ $terminarz->temat }}</span>
                                         </div>
@@ -97,12 +101,14 @@
                                             <b-col cols="6">
                                                 <i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }} {{ $zlecenie->nr_obcy ? ('| ' . $zlecenie->nr_obcy) : '' }}
                                             </b-col>
-                                            <b-col cols="4" class="text-right">
-                                                @if ($zlecenie->is_warsztat)
-                                                    <span class="bg-dark text-white px-1">warsztat</span>
-                                                @endif
-                                                {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
-                                            </b-col>
+                                            @if (!$zlecenie->_do_wyjasnienia)
+                                                <b-col cols="4" class="text-right">
+                                                    @if ($zlecenie->is_warsztat)
+                                                        <span class="bg-dark text-white px-1">warsztat</span>
+                                                    @endif
+                                                    {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
+                                                </b-col>
+                                            @endif
                                         </b-row>
                                     </div>
                                     <div>
@@ -110,7 +116,7 @@
                                             <b-col cols="7">
                                                 <div class="clearfix">
                                                     <div class="float-left">
-                                                        @if(! $zlecenie->is_warsztat)
+                                                        @if(!$zlecenie->is_warsztat and !$zlecenie->_do_wyjasnienia)
                                                             <i class="{{ $zlecenie->is_umowiono ? 'fa fa-check-circle' : 'far fa-circle' }}"></i>
                                                         @endif
                                                         <span class="font-w700 d-lg-none">{{ $zlecenie->klient->symbol }} <u>{{ $zlecenie->klient->nazwa }}</u></span>
@@ -120,7 +126,7 @@
                                                         {{ $zlecenie->klient->telefony_formatted }}
                                                     </div>
                                                     <div class="float-right text-right">
-                                                        @if (! $zlecenie->is_warsztat)
+                                                        @if (!$zlecenie->is_warsztat and !$zlecenie->_do_wyjasnienia)
                                                             @php
                                                                 $google_maps_route_link = 'https://www.google.com/maps/dir//' . urlencode(explode('/', $zlecenie->klient->adres)[0]) . ',+' . urlencode($zlecenie->klient->kod_pocztowy) . '+' . urlencode($zlecenie->klient->miasto) . ',+Polska/';
                                                             @endphp
@@ -152,7 +158,7 @@
                                                         <div class="font-w700">UWAGI TECHNIKA:</div>
                                                     </div>
         											<div class="float-right text-right">
-                                                        @if (! $zlecenie->is_odplatne)
+                                                        @if (!$zlecenie->is_odplatne and !$zlecenie->_do_wyjasnienia)
             												Zabudowa: [   ]<br>
             												Trudna: [   ]
                                                         @endif

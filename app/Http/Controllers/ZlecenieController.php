@@ -117,22 +117,35 @@ class ZlecenieController extends Controller
         $terminarz_notatki = null;
         $kierowca = null;
         if ($technik) {
+            $zlecenia_do_wyjasnienia_symbole = Terminarz::getZleceniaDoWyjasnieniaSymbole($technik->id, $date_string);
+
             // $zlecenia = Zlecenie::withRelations()->whereHas('terminarz', function ($query) use ($date_string, $technik) {
             //     $query->where('STARTDATE', '>=', $date_string . ' 00:00:01');
             //     $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
             //     $query->where('id_techn_term', $technik->id);
             // })->get()->sortBy('terminarz.data_rozpoczecia');
             $terminy = Terminarz::with('zlecenie.klient', 'zlecenie.urzadzenie', 'zlecenie.kosztorys_pozycje', 'zlecenie.status_historia')
-                ->where('STARTDATE', '>=', $date_string . ' 00:00:01')
-                ->where('ENDDATE', '<=', $date_string . ' 23:59:59')
-                ->where('id_techn_term', $technik->id)
+                ->where(function ($query) use ($date_string, $technik) {
+                    $query->where('STARTDATE', '>=', $date_string . ' 00:00:01');
+                    $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
+                    $query->where('id_techn_term', $technik->id);
+                })
+                ->orWhereHas('zlecenie', function ($query) use ($zlecenia_do_wyjasnienia_symbole) {
+                    $query->whereIn('NrZlecenia', $zlecenia_do_wyjasnienia_symbole);
+                })
                 ->orderBy('STARTDATE')
                 ->get();
+
+            $terminy->each(function ($termin) use ($zlecenia_do_wyjasnienia_symbole) {
+                if (in_array($termin->zlecenie->nr, $zlecenia_do_wyjasnienia_symbole)) {
+                    $termin->zlecenie->_do_wyjasnienia = true;
+                }
+            });
 
             $terminarz_notatki = Terminarz::where('STARTDATE', $date_string . ' 00:00:00:000')
                 ->where('id_techn_term', $technik->id)
                 ->get()->filter(function ($v) {
-                    return ! $v->is_samochod;
+                    return !$v->is_samochod and !$v->is_zlecenie_do_wyjasnienia;
                 });
 
             $samochod = Terminarz::getSamochod($technik->id, $date_string);
