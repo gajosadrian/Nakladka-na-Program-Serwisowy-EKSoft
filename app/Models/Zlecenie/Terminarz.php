@@ -13,7 +13,7 @@ class Terminarz extends Model
     protected $primaryKey = 'ID_TERMINU';
     public $timestamps = false;
 
-    public const SAMOCHOD_KEYS = ['samochod-', 'samochód-'];
+    public const SAMOCHOD_KEYS = ['samochod-', 'samochód-', 'Samochod-', 'Samochód-'];
     public const ZLECENIE_DO_WYJASNIENIA_KEY = ['zlec:'];
 
     public const BRAK_ID = '536870912'; public const UMOWIONO_ID = '8689404';

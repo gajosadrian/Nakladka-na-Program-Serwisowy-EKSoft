@@ -31,7 +31,7 @@ class Zlecenie extends Model
         'Amica' => ['amica', 'amika'],
         'Gorenje' => ['gorenje', 'gorenie', 'gorenja', 'gorenia'],
         'ERGO Hestia' => ['efficient', 'logisfera', 'logiswera', 'ergo-hestia', 'ergohestia', 'ergo', 'hestia', 'ergo hestia'],
-        'Quadra-Net' => ['quadra', 'quadra-net', 'quadra - net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
+        'Quadra-Net' => ['quadra', 'quadra-net', 'quadra net', 'quadra - net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
         'IBC' => ['ibc'],
         'Kromet' => ['kromet', 'kromed', 'cromet', 'cromed'],
         'Kernau' => ['kernau', 'kernał', 'galicja'],
@@ -57,6 +57,9 @@ class Zlecenie extends Model
         'Euroterm' => ['euroterm'],
         'Agdom' => ['agdom'],
         'Makiano' => ['makiano'],
+		'STIEBEL ELTRON' => ['stiebel eltron', 'stiebel', 'eltron'],
+		'Euro-Serwis 24' => ['euro serwis24', 'euro serwis 24', 'euro serwis', 'euroserwis', 'euroserwis24', 'euro-serwis', 'euro-serwis24', 'euro-serwis 24'],
+        'Ravanson' => ['ravanson'],
     ];
 
     /**
@@ -199,7 +202,7 @@ class Zlecenie extends Model
 
     public function getNrAttribute(): string
     {
-        return $this->attributes['NrZlecenia'];
+        return $this->attributes['NrZlecenia'] ?? false;
     }
 
     public function getNrObcyAttribute(): string
