@@ -43,7 +43,7 @@ class Zlecenie extends Model
         'RTV Euro AGD' => ['euro-net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
         'Mentax' => ['mentax', 'mentaks'],
         'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
-        'Arconet' => ['arconet', 'arkonet', 'arqonet'],
+        'Arconet' => ['arconet', 'arco net', 'arco-net', 'arkonet', 'arqonet'],
         'Ferroli' => ['ferroli', 'feroli'],
         'Mondial' => ['mondial', 'mondial assistance'],
         'Enpol' => ['enpol'],
@@ -60,6 +60,7 @@ class Zlecenie extends Model
 		'STIEBEL ELTRON' => ['stiebel eltron', 'stiebel', 'eltron'],
 		'Euro-Serwis 24' => ['euro serwis24', 'euro serwis 24', 'euro serwis', 'euroserwis', 'euroserwis24', 'euro-serwis', 'euro-serwis24', 'euro-serwis 24'],
         'Ravanson' => ['ravanson'],
+		'Eldom' => ['eldom'],
     ];
 
     /**
