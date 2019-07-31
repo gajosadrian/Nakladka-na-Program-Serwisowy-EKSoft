@@ -13,6 +13,8 @@ class Zlecenie extends Model
     protected $with = ['kosztorys_opis'];
     public $timestamps = false;
 
+    private $_czas_oczekiwania;
+
     public const SYMBOLE_KOSZTORYSU = [
         // MOŻNA EDYTOWAĆ IMIONA
         'ROBOCIZNY' => ['SZEF-R' => ['Szef', -1], 'SZYMEK-R' => ['Szymek', 19], 'MICHAL-R' => ['Michał', 2], 'FILIP-R' => ['Filip', 13], 'MARCIN-R' => ['Marcin', 16], 'BOGUS-R' => ['Bogdan', 17], 'ROBERT-R' => ['Robert', 15], 'DAMIAN-R' => ['Damian', 18]],
@@ -30,7 +32,7 @@ class Zlecenie extends Model
         'Termet' => ['termet'],
         'Amica' => ['amica', 'amika'],
         'Gorenje' => ['gorenje', 'gorenie', 'gorenja', 'gorenia'],
-        'ERGO Hestia' => ['efficient', 'logisfera', 'logiswera', 'ergo-hestia', 'ergohestia', 'ergo', 'hestia', 'ergo hestia'],
+        'ERGO Hestia' => ['efficient', 'logisfera', 'logiswera', 'ergo-hestia', 'ergohestia', 'ergo', 'hestia', 'ergo hestia', 'euro hestia'],
         'Quadra-Net' => ['quadra', 'quadra-net', 'quadra net', 'quadra - net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
         'IBC' => ['ibc'],
         'Kromet' => ['kromet', 'kromed', 'cromet', 'cromed'],
@@ -288,6 +290,26 @@ class Zlecenie extends Model
         return null;
     }
 
+    public function getLastStatusUmowionoAttribute(): ?object
+    {
+        foreach ($this->statusy as $status) {
+            if ($status->status_id == Status::UMOWIONO_ID) {
+                return $status;
+            }
+        }
+        return null;
+    }
+
+    public function getFirstStatusUmowionoAttribute(): ?object
+    {
+        foreach ($this->statusy->sortBy('data') as $status) {
+            if ($status->status_id == Status::UMOWIONO_ID) {
+                return $status;
+            }
+        }
+        return null;
+    }
+
     public function getIsRecentlyNieOdbieraAttribute(): bool
     {
         $status = $this->last_status_nie_odbiera;
@@ -395,20 +417,52 @@ class Zlecenie extends Model
 
     public function getDniOdPrzyjeciaAttribute(): int
     {
-        return $this->data_przyjecia->diffInDays(now()->endOfDay(), false);
+        return $this->data_przyjecia->copy()->startOfDay()->diffInDays(now()->endOfDay(), false);
     }
 
     public function getCzasTrwaniaAttribute(): int
     {
         $data = now();
         if ($this->is_zakonczone) $data = $this->data_zakonczenia;
-        return $this->data_przyjecia->startOfDay()->diffInDays($data->startOfDay());
+        return $this->data_przyjecia->copy()->startOfDay()->diffInDays($data->startOfDay());
     }
 
     public function getCzasTrwaniaFormattedAttribute(): string
     {
         $str = $this->czas_trwania;
         $str .= ($this->czas_trwania == 1) ? ' dzień' : ' dni';
+        return $str;
+    }
+
+    public function getCzasOczekiwaniaAttribute(): int
+    {
+        if (isset($this->_czas_oczekiwania)) {
+            return $this->_czas_oczekiwania;
+        }
+        $data = now();
+        if ($this->is_zakonczone) $data = $this->data_zakonczenia;
+        if ($status_umowiono = $this->first_status_umowiono) {
+            $dni = $status_umowiono->data->copy()->startOfDay()->diffInDays($data->startOfDay());
+            if ($status_umowiono->data->isFriday()) {
+                $dni -= 3;
+            } else {
+                $dni -= 1;
+            }
+            if ($dni < 0) {
+                $this->_czas_oczekiwania = 0;
+                return 0;
+            }
+            $this->_czas_oczekiwania = $dni;
+            return $dni;
+        }
+        $this->_czas_oczekiwania = 0;
+        return 0;
+    }
+
+    public function getCzasOczekiwaniaFormattedAttribute(): string
+    {
+        $str = $this->czas_oczekiwania;
+        $str .= ($this->czas_oczekiwania === 1) ? ' dzień' : ' dni';
         return $str;
     }
 
@@ -573,6 +627,11 @@ HTML;
     * Relations
     *
     */
+
+    public function przyjmujacy()
+    {
+        return $this->hasOne('App\Models\SMS\Pracownik', 'ID_PRACOWNIKA', 'id_przyjal');
+    }
 
     public function klient()
     {

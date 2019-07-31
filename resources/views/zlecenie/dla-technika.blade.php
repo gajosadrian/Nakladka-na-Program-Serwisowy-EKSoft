@@ -138,8 +138,8 @@
                                             </b-col>
                                             <b-col cols="5">
                                                 <span class="font-w700">{{ $zlecenie->urzadzenie->nazwa }}, {{ $zlecenie->urzadzenie->producent }}<br></span>
-                                                <span class="font-w700">Model:</span> {!! $zlecenie->urzadzenie->model ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}<br>
-                                                <span class="font-w700">Nr ser.:</span> {!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}
+                                                <span class="font-w700">Model:</span> <span style="font-family: consolas;">{!! $zlecenie->urzadzenie->model ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}</span><br>
+                                                <span class="font-w700">Nr ser.:</span> <span style="font-family: consolas;">{!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="bg-gray font-w700 px-1">uzupełnić:</span>' !!}</span>
                                             </b-col>
                                         </b-row>
                                     </div>
@@ -166,6 +166,22 @@
                                                 </div>
                                             </b-col>
                                         </b-row>
+                                    </div>
+                                    <div style="font-size:0.7em">
+                                        <div class="d-none">
+                                            Nie odbiera tel.:
+                                        </div>
+                                        <div>
+                                            <span style="border-top: 1px solid #aaa;">
+                                                Przyjął: {{ $zlecenie->przyjmujacy->nazwa }}
+                                                @if ($zlecenie->last_status_umowiono)
+                                                    ◦ Umówił: {{ $zlecenie->last_status_umowiono->pracownik->nazwa }} {{ $zlecenie->last_status_umowiono->godzina_formatted }}
+                                                @endif
+                                                @if (true)
+                                                    ◦ Trwanie zlecenia: {{ $zlecenie->czas_oczekiwania_formatted }}
+                                                @endif
+                                            </span>
+                                        </div>
                                     </div>
                                     @if ($zlecenie->kosztorys_pozycje->count() > 0)
                                         <div class="mt-2">

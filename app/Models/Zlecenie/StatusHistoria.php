@@ -43,6 +43,11 @@ class StatusHistoria extends Model
         return $this->data->format('Y-m-d H:i');
     }
 
+    public function getGodzinaFormattedAttribute(): String
+    {
+        return $this->data->format('H:i');
+    }
+
     public function setPracownikIdAttribute(int $value): void
     {
         $this->attributes['id_user'] = $value;

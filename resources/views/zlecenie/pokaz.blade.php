@@ -105,6 +105,10 @@
     										{{ $zlecenie->status->nazwa }}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th>Przyjmujący:</th>
+                                        <td>{{ $zlecenie->przyjmujacy->nazwa }}</td>
+                                    </tr>
                                 </table>
                             </b-col>
                             <b-col lg="6">

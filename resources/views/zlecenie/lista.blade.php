@@ -2,7 +2,9 @@
 @php
     $room = rand();
 @endphp
-@section('autorefresh', 90)
+@if ($autorefresh)
+    @section('autorefresh', 300)
+@endif
 
 @section('content')
     <div class="bg-body-light">

@@ -25,10 +25,12 @@ class ZlecenieController extends Controller
             'technik_id' => $user->technik_id,
         ]);
         $search_value = $user->getSavedField('zlecenia.search');
+        $autorefresh = (bool) $user->technik_id;
 
         return view('zlecenie.lista', [
             'zlecenia' => $zlecenia_niezakonczone,
             'search_value' => $search_value,
+            'autorefresh' => $autorefresh,
         ]);
     }
 
@@ -217,7 +219,7 @@ class ZlecenieController extends Controller
         $towar = Subiekt_Towar::where('tw_Symbol', $request->symbol ?? $symbol)->first();
         $towar_id = @$towar->id ?? null;
 
-        $kosztorys_pozycje = KosztorysPozycja::with('zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie')->where('id_o_tw', $towar_id)->orderByDesc('id')->limit(20)->get();
+        $kosztorys_pozycje = KosztorysPozycja::with('zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie', 'zlecenie.terminarz')->where('id_o_tw', $towar_id)->orderByDesc('id')->limit(20)->get();
 
         return view('zlecenie.wyszukiwanie-czesci', compact('towar', 'towar_id', 'kosztorys_pozycje'));
     }
