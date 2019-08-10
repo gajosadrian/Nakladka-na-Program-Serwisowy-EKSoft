@@ -326,9 +326,27 @@ class ZlecenieController extends Controller
         $array = [];
         $terminy = Terminarz::getTerminy($user->technik_id, $date_string);
         foreach ($terminy as $termin) {
-            $array[] = [
-                'test' => 123,
+            $item = [
+                'temat' => $termin->temat,
+                'godzina_rozpoczecia' => $termin->godzina_rozpoczecia,
+                'przeznaczony_czas_formatted' => $termin->przeznaczony_czas_formatted,
             ];
+            if ($termin->zlecenie->klient) {
+                $item['zlecenie'] = [
+                    'nr' => $termin->zlecenie->nr,
+                    'nr_obcy' => $termin->zlecenie->nr_obcy,
+                    'klient' => [
+                        'symbol' => $termin->zlecenie->klient->symbol,
+                        'nazwa' => $termin->zlecenie->klient->nazwa,
+                        'kod_pocztowy' => $termin->zlecenie->klient->kod_pocztowy,
+                        'miasto' => $termin->zlecenie->klient->miasto,
+                        'adres' => $termin->zlecenie->klient->adres,
+                        'telefony' => $termin->zlecenie->klient->telefony_array,
+                    ],
+                    'urzadzenie' => [],
+                ];
+            }
+            $array[] = $item;
         }
 
         return response()->json([

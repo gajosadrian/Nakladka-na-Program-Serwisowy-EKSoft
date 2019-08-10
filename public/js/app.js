@@ -2244,11 +2244,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       zlecenie_id: 0,
-      terminy: [true, true]
+      terminy: []
     };
   },
   computed: {},
@@ -44366,23 +44382,90 @@ var render = function() {
     [
       _c("h1", [_vm._v("Mobile App")]),
       _vm._v(" "),
-      _vm._l(_vm.terminy, function(termin, index) {
-        return _c(
-          "div",
-          {
-            directives: [
+      _vm.terminy.length == 0
+        ? _c("div", [_vm._v("\n        Ładowanie zleceń...\n    ")])
+        : _vm._l(_vm.terminy, function(termin, index) {
+            return _c(
+              "div",
               {
-                name: "show",
-                rawName: "v-show",
-                value: !_vm.zlecenie_id,
-                expression: "! zlecenie_id"
-              }
-            ],
-            staticClass: "block block-rounded block-fx-shadow"
-          },
-          [_vm._m(0, true)]
-        )
-      }),
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: !_vm.zlecenie_id,
+                    expression: "! zlecenie_id"
+                  }
+                ],
+                staticClass: "block block-rounded block-fx-shadow"
+              },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass: "block-content block-content-full",
+                    class: { "bg-gray": !termin.zlecenie },
+                    staticStyle: { cursor: "pointer" }
+                  },
+                  [
+                    _c("div", { staticClass: "clearfix" }, [
+                      _c("div", { staticClass: "float-left" }, [
+                        termin.zlecenie
+                          ? _c("div", [
+                              _c("div", { staticClass: "font-w700" }, [
+                                _vm._v(_vm._s(termin.zlecenie.klient.nazwa))
+                              ]),
+                              _vm._v(" "),
+                              _c("div", [
+                                _vm._v(
+                                  _vm._s(termin.zlecenie.klient.kod_pocztowy) +
+                                    " " +
+                                    _vm._s(termin.zlecenie.klient.miasto)
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("div", [
+                                _vm._v(_vm._s(termin.zlecenie.klient.adres))
+                              ])
+                            ])
+                          : _c("div", [
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(
+                                    termin.temat ||
+                                      "Zlecenie usunięte z terminarza"
+                                  ) +
+                                  "\n                    "
+                              )
+                            ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "float-right text-right" }, [
+                        _c("div", [_vm._v(_vm._s(termin.godzina_rozpoczecia))]),
+                        _vm._v(" "),
+                        termin.zlecenie
+                          ? _c(
+                              "div",
+                              { staticClass: "text-muted font-size-sm" },
+                              [
+                                _vm._v(
+                                  _vm._s(termin.przeznaczony_czas_formatted)
+                                )
+                              ]
+                            )
+                          : _vm._e()
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    termin.zlecenie
+                      ? _c("div", { staticClass: "clearfix" }, [
+                          _vm._m(0, true)
+                        ])
+                      : _vm._e()
+                  ]
+                )
+              ]
+            )
+          }),
       _vm._v(" "),
       _c(
         "div",
@@ -44407,20 +44490,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "block-content block-content-full" }, [
-      _c("div", { staticClass: "clearfix" }, [
-        _c("div", { staticClass: "float-left" }, [
-          _c("div", { staticClass: "font-w700" }, [_vm._v("Kontrahent")]),
-          _vm._v(" "),
-          _c("div", [_vm._v("miasto, adres")]),
-          _vm._v(" "),
-          _c("div", [_vm._v("urządzenie, marka")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "float-right" }, [
-          _c("div", [_vm._v("godzina")])
-        ])
-      ])
+    return _c("div", { staticClass: "float-right" }, [
+      _c("div", [_vm._v("marka, urządzenie")]),
+      _vm._v(" "),
+      _c("div", [_vm._v("model")]),
+      _vm._v(" "),
+      _c("div", [_vm._v("nr seryjny")])
     ])
   }
 ]
