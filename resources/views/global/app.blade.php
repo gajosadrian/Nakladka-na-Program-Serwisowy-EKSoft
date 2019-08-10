@@ -92,7 +92,7 @@
         --}}
         @routes
 
-        <div id="page-container" class="@empty($window) sidebar-o page-header-fixed @endempty enable-page-overlay side-scroll page-header-dark">
+        <div id="page-container" class="@empty($window) sidebar-o @empty($static) page-header-fixed @endempty @endempty enable-page-overlay side-scroll page-header-dark">
             @empty($window)
                 @include('global.sidebar')
                 @include('global.header')

@@ -14,6 +14,15 @@ use Carbon\Carbon;
 
 class ZlecenieController extends Controller
 {
+    public function mobileApp()
+    {
+        $user = auth()->user();
+        if (! $user->technik_id) {
+            return abort(403);
+        }
+        return view('zlecenie.mobile-app');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -119,30 +128,7 @@ class ZlecenieController extends Controller
         $terminarz_notatki = null;
         $kierowca = null;
         if ($technik) {
-            $zlecenia_do_wyjasnienia_symbole = Terminarz::getZleceniaDoWyjasnieniaSymbole($technik->id, $date_string);
-
-            // $zlecenia = Zlecenie::withRelations()->whereHas('terminarz', function ($query) use ($date_string, $technik) {
-            //     $query->where('STARTDATE', '>=', $date_string . ' 00:00:01');
-            //     $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
-            //     $query->where('id_techn_term', $technik->id);
-            // })->get()->sortBy('terminarz.data_rozpoczecia');
-            $terminy = Terminarz::with('zlecenie.klient', 'zlecenie.urzadzenie', 'zlecenie.kosztorys_pozycje', 'zlecenie.status_historia')
-                ->where(function ($query) use ($date_string, $technik) {
-                    $query->where('STARTDATE', '>=', $date_string . ' 00:00:01');
-                    $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
-                    $query->where('id_techn_term', $technik->id);
-                })
-                ->orWhereHas('zlecenie', function ($query) use ($zlecenia_do_wyjasnienia_symbole) {
-                    $query->whereIn('NrZlecenia', $zlecenia_do_wyjasnienia_symbole);
-                })
-                ->orderBy('STARTDATE')
-                ->get();
-
-            $terminy->each(function ($termin) use ($zlecenia_do_wyjasnienia_symbole) {
-                if (in_array($termin->zlecenie->nr, $zlecenia_do_wyjasnienia_symbole)) {
-                    $termin->zlecenie->_do_wyjasnienia = true;
-                }
-            });
+            $terminy = Terminarz::getTerminy($technik->id, $date_string);
 
             $terminarz_notatki = Terminarz::where('STARTDATE', $date_string . ' 00:00:00:000')
                 ->where('id_techn_term', $technik->id)
@@ -270,7 +256,7 @@ class ZlecenieController extends Controller
 
     public function apiGetOpis(Request $request, int $id)
     {
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie::findOrFail($id);
 
         return response()->json($zlecenie->opis, 200);
     }
@@ -278,7 +264,7 @@ class ZlecenieController extends Controller
     public function apiAppendNotatka(Request $request, int $id)
     {
         $user = auth()->user();
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->appendOpis($request->opis, $user->short_name, ($user->technik_id == 0));
         $zlecenie->save();
@@ -289,7 +275,7 @@ class ZlecenieController extends Controller
     public function apiChangeStatus(Request $request, int $id)
     {
         $user = auth()->user();
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false);
         $zlecenie->save();
@@ -300,7 +286,7 @@ class ZlecenieController extends Controller
     public function apiUmowKlienta(Request $request, int $id)
     {
         $user = auth()->user();
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->changeStatus(Status::UMOWIONO_ID, $user->pracownik->id, false);
         $zlecenie->save();
@@ -318,12 +304,35 @@ class ZlecenieController extends Controller
     public function apiNieOdbiera(Request $request, int $id)
     {
         $user = auth()->user();
-        $zlecenie = Zlecenie::find($id);
+        $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->changeStatus(Status::NIE_ODBIERA_ID, $user->pracownik->id, false);
         $zlecenie->changeStatus(Status::GOTOWE_DO_WYJAZDU_ID, $user->pracownik->id, false);
         $zlecenie->save();
 
         return response()->json('success', 200);
+    }
+
+    public function apiGetFromTerminarz(string $date_string = null)
+    {
+        $user = auth()->user();
+        if (! $user->technik_id) {
+            abort(403);
+        }
+        if (! $date_string) {
+            $date_string = now()->toDateString();
+        }
+
+        $array = [];
+        $terminy = Terminarz::getTerminy($user->technik_id, $date_string);
+        foreach ($terminy as $termin) {
+            $array[] = [
+                'test' => 123,
+            ];
+        }
+
+        return response()->json([
+            'terminy' => $array,
+        ], 200);
     }
 }

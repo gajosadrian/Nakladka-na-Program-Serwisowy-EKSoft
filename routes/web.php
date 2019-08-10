@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::put('save-field', 'SavedFieldController@update')->name('api.save_field');
 
     Route::prefix('zlecenia')->name('zlecenia.')->group(function () {
+        Route::get('mobile-app', 'ZlecenieController@mobileApp')->name('mobileApp');
         Route::get('lista', 'ZlecenieController@index')->name('lista');
         Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');
         Route::get('dla-technika/{technik_id?}/{timestamp?}', 'ZlecenieController@dlaTechnika')->name('dla-technika');
@@ -35,6 +36,8 @@ Route::middleware('auth')->group(function () {
         Route::post('api/nie_odbiera/{id}', 'ZlecenieController@apiNieOdbiera')->name('api.nie_odbiera');
         Route::post('api/zatwierdz_blad/{id}', 'ZlecenieController@apiZatwierdzBlad')->name('api.zatwierdz_blad');
         Route::get('api/terminarz_statusy/{technik_id}/{date_string?}', 'ZlecenieController@apiGetTerminarzStatusy')->name('api.terminarz_statusy');
+        Route::get('api/get-from-terminarz/{date_string?}', 'ZlecenieController@apiGetFromTerminarz')->name('api.getFromTerminarz');
+
     });
 
     Route::prefix('admin')->middleware('role:super-admin')->group(function () {

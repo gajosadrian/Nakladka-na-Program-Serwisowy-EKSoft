@@ -236,6 +236,31 @@ class Terminarz extends Model
         return $symbole;
     }
 
+    public static function getTerminy($technik_id, $date_string)
+    {
+        $zlecenia_do_wyjasnienia_symbole = self::getZleceniaDoWyjasnieniaSymbole($technik_id, $date_string);
+
+        $terminy = self::with('zlecenie.klient', 'zlecenie.urzadzenie', 'zlecenie.kosztorys_pozycje', 'zlecenie.status_historia')
+            ->where(function ($query) use ($date_string, $technik_id) {
+                $query->where('STARTDATE', '>=', $date_string . ' 00:00:01');
+                $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
+                $query->where('id_techn_term', $technik_id);
+            })
+            ->orWhereHas('zlecenie', function ($query) use ($zlecenia_do_wyjasnienia_symbole) {
+                $query->whereIn('NrZlecenia', $zlecenia_do_wyjasnienia_symbole);
+            })
+            ->orderBy('STARTDATE')
+            ->get();
+
+        $terminy->each(function ($termin) use ($zlecenia_do_wyjasnienia_symbole) {
+            if (in_array($termin->zlecenie->nr, $zlecenia_do_wyjasnienia_symbole)) {
+                $termin->zlecenie->_do_wyjasnienia = true;
+            }
+        });
+
+        return $terminy;
+    }
+
     public function removeTermin(bool $delete = false): void
     {
         if ($delete) {

@@ -21,6 +21,7 @@ Vue.component('nl2br', Nl2br);
 Vue.component('b-block', require('./components/Dashmix/Block/b-block.vue').default);
 Vue.component('zlecenie-opis', require('./components/Zlecenie/opis.vue').default);
 Vue.component('zlecenie-change-status', require('./components/Zlecenie/change-status.vue').default);
+Vue.component('zlecenie-mobile-app', require('./components/Zlecenie/mobile-app.vue').default);
 
 
 
