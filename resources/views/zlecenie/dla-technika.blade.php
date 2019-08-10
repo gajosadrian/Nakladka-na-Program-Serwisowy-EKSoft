@@ -38,7 +38,7 @@
         @if ($technik)
             <b-block title="Zlecenia" noprint>
                 <template slot="content">
-                    <div class="mx-3" style="font-size: 1.1em">
+                    <div class="" style="font-size: 1.1em">
                         <div class="mb-3 clearfix" style="font-size: 2.3em">
                             <div class="float-left">
                                 {{ $technik->nazwa }} {{ $date_formatted }}
@@ -167,18 +167,18 @@
                                             </b-col>
                                         </b-row>
                                     </div>
-                                    <div style="font-size:0.7em">
+                                    <div style="font-size:0.6em">
                                         <div class="d-none">
                                             Nie odbiera tel.:
                                         </div>
                                         <div>
                                             <span style="border-top: 1px solid #aaa;">
                                                 Przyjął: {{ $zlecenie->przyjmujacy->nazwa }}
-                                                @if ($zlecenie->last_status_umowiono)
-                                                    ◦ Umówił: {{ $zlecenie->last_status_umowiono->pracownik->nazwa }} {{ $zlecenie->last_status_umowiono->godzina_formatted }}
+                                                @if ($zlecenie->is_umowiono)
+                                                    ◦◦ Umówił: {{ $zlecenie->last_status_umowiono->pracownik->nazwa }} {{ $zlecenie->last_status_umowiono->data->format('m.d H:i') }}
                                                 @endif
                                                 @if (true)
-                                                    ◦ Trwanie zlecenia: {{ $zlecenie->czas_oczekiwania_formatted }}
+                                                    ◦◦ Trwanie zlecenia: {{ $zlecenie->czas_oczekiwania_formatted }}
                                                 @endif
                                             </span>
                                         </div>

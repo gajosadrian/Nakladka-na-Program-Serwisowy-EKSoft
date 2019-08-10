@@ -55,4 +55,5 @@ Route::middleware('auth')->group(function () {
             Route::post('destroy', 'Rozliczenie\RozliczoneZlecenieController@apiDestory')->name('destroy');
         });
     });
+
 });

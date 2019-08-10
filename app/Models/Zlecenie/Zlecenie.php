@@ -63,6 +63,7 @@ class Zlecenie extends Model
 		'Euro-Serwis 24' => ['euro serwis24', 'euro serwis 24', 'euro serwis', 'euroserwis', 'euroserwis24', 'euro-serwis', 'euro-serwis24', 'euro-serwis 24'],
         'Ravanson' => ['ravanson'],
 		'Eldom' => ['eldom'],
+		'LG' => ['lg'],
     ];
 
     /**
