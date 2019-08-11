@@ -204,6 +204,11 @@ class Zlecenie extends Model
         return '<span class="font-w700 text-danger">' . $this->zleceniodawca . '</span>';
     }
 
+    public function getGoogleMapsRouteLinkAttribute(): string
+    {
+        return 'https://www.google.com/maps/dir//' . urlencode(explode('/', $this->klient->adres)[0]) . ',+' . urlencode($this->klient->kod_pocztowy) . '+' . urlencode($this->klient->miasto) . ',+Polska/';
+    }
+
     public function getNrAttribute(): string
     {
         return $this->attributes['NrZlecenia'] ?? false;

@@ -127,11 +127,7 @@
                                                     </div>
                                                     <div class="float-right text-right">
                                                         @if (!$zlecenie->is_warsztat and !$zlecenie->_do_wyjasnienia)
-                                                            @php
-                                                                $google_maps_route_link = 'https://www.google.com/maps/dir//' . urlencode(explode('/', $zlecenie->klient->adres)[0]) . ',+' . urlencode($zlecenie->klient->kod_pocztowy) . '+' . urlencode($zlecenie->klient->miasto) . ',+Polska/';
-                                                            @endphp
-                                                            {{-- <a href="{{ $google_maps_route_link }}" target="_blank">test link</a> --}}
-                                                            <b-img src="https://chart.googleapis.com/chart?chs=80x80&cht=qr&chld=L|1&choe=UTF-8&chl={{ urlencode($google_maps_route_link) }}" fuild></b-img>
+                                                            <b-img src="https://chart.googleapis.com/chart?chs=80x80&cht=qr&chld=L|1&choe=UTF-8&chl={{ urlencode($zlecenie->google_maps_route_link) }}" fuild></b-img>
                                                         @endif
                                                     </div>
                                                 </div>

@@ -330,11 +330,15 @@ class ZlecenieController extends Controller
                 'temat' => $termin->temat,
                 'godzina_rozpoczecia' => $termin->godzina_rozpoczecia,
                 'przeznaczony_czas_formatted' => $termin->przeznaczony_czas_formatted,
+                'zlecenie' => null,
             ];
             if ($termin->zlecenie->klient) {
                 $item['zlecenie'] = [
+                    'id' => $termin->zlecenie->id,
                     'nr' => $termin->zlecenie->nr,
                     'nr_obcy' => $termin->zlecenie->nr_obcy,
+                    'opis' => $termin->zlecenie->opis,
+                    'google_maps_route_link' => $termin->zlecenie->google_maps_route_link,
                     'klient' => [
                         'symbol' => $termin->zlecenie->klient->symbol,
                         'nazwa' => $termin->zlecenie->klient->nazwa,
@@ -343,8 +347,17 @@ class ZlecenieController extends Controller
                         'adres' => $termin->zlecenie->klient->adres,
                         'telefony' => $termin->zlecenie->klient->telefony_array,
                     ],
-                    'urzadzenie' => [],
+                    'urzadzenie' => null,
                 ];
+                if ($termin->zlecenie->urzadzenie) {
+                    $item['zlecenie']['urzadzenie'] = [
+                        'producent' => $termin->zlecenie->urzadzenie->producent,
+                        'nazwa' => $termin->zlecenie->urzadzenie->nazwa,
+                        'model' => $termin->zlecenie->urzadzenie->model,
+                        'nr_seryjny' => $termin->zlecenie->urzadzenie->nr_seryjny,
+                        'kod_wyrobu' => $termin->zlecenie->urzadzenie->kod_wyrobu,
+                    ];
+                }
             }
             $array[] = $item;
         }

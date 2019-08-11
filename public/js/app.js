@@ -2260,10 +2260,60 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+history.pushState(null, null, location.href);
+
+window.onpopstate = function () {
+  history.go(1);
+};
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      zlecenie_id: 0,
+      zlecenie: null,
       terminy: []
     };
   },
@@ -2281,7 +2331,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.fetchZlecenia('2019-02-01');
+    this.fetchZlecenia('2019-02-05');
   }
 });
 
@@ -44377,128 +44427,264 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h1", [_vm._v("Mobile App")]),
-      _vm._v(" "),
-      _vm.terminy.length == 0
-        ? _c("div", [_vm._v("\n        Ładowanie zleceń...\n    ")])
-        : _vm._l(_vm.terminy, function(termin, index) {
-            return _c(
-              "div",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: !_vm.zlecenie_id,
-                    expression: "! zlecenie_id"
-                  }
-                ],
-                staticClass: "block block-rounded block-fx-shadow"
-              },
-              [
-                _c(
-                  "div",
-                  {
-                    staticClass: "block-content block-content-full",
-                    class: { "bg-gray": !termin.zlecenie },
-                    staticStyle: { cursor: "pointer" }
-                  },
-                  [
-                    _c("div", { staticClass: "clearfix" }, [
-                      _c("div", { staticClass: "float-left" }, [
-                        termin.zlecenie
-                          ? _c("div", [
-                              _c("div", { staticClass: "font-w700" }, [
-                                _vm._v(_vm._s(termin.zlecenie.klient.nazwa))
-                              ]),
-                              _vm._v(" "),
-                              _c("div", [
-                                _vm._v(
-                                  _vm._s(termin.zlecenie.klient.kod_pocztowy) +
-                                    " " +
-                                    _vm._s(termin.zlecenie.klient.miasto)
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("div", [
-                                _vm._v(_vm._s(termin.zlecenie.klient.adres))
+  return _c("div", [
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: !_vm.zlecenie,
+            expression: "!zlecenie"
+          }
+        ]
+      },
+      [
+        _c("h1", [_vm._v("Mobile App")]),
+        _vm._v(" "),
+        _vm.terminy.length == 0
+          ? _c("div", [_vm._v("\n            Ładowanie zleceń...\n        ")])
+          : _vm._l(_vm.terminy, function(termin, index) {
+              return _c(
+                "div",
+                { staticClass: "block block-rounded shadow-sm" },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "block-content block-content-full p-2",
+                      class: { "bg-gray": !termin.zlecenie },
+                      staticStyle: { cursor: "pointer" },
+                      on: {
+                        click: function($event) {
+                          _vm.zlecenie = termin.zlecenie
+                        }
+                      }
+                    },
+                    [
+                      _c("div", { staticClass: "clearfix" }, [
+                        _c("div", { staticClass: "float-left" }, [
+                          termin.zlecenie
+                            ? _c("div", [
+                                _c("div", { staticClass: "font-w700" }, [
+                                  _vm._v(_vm._s(termin.zlecenie.klient.nazwa))
+                                ]),
+                                _vm._v(" "),
+                                _c("div", [
+                                  _vm._v(
+                                    _vm._s(
+                                      termin.zlecenie.klient.kod_pocztowy
+                                    ) +
+                                      " " +
+                                      _vm._s(termin.zlecenie.klient.miasto)
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", [
+                                  _vm._v(_vm._s(termin.zlecenie.klient.adres))
+                                ])
                               ])
-                            ])
-                          : _c("div", [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(
-                                    termin.temat ||
-                                      "Zlecenie usunięte z terminarza"
-                                  ) +
-                                  "\n                    "
+                            : _c("div", [
+                                _vm._v(
+                                  "\n                            " +
+                                    _vm._s(
+                                      termin.temat ||
+                                        "Zlecenie usunięte z terminarza"
+                                    ) +
+                                    "\n                        "
+                                )
+                              ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "float-right text-right" }, [
+                          _c("div", [
+                            _vm._v(_vm._s(termin.godzina_rozpoczecia))
+                          ]),
+                          _vm._v(" "),
+                          termin.zlecenie
+                            ? _c(
+                                "div",
+                                { staticClass: "text-muted font-size-sm" },
+                                [
+                                  _vm._v(
+                                    _vm._s(termin.przeznaczony_czas_formatted)
+                                  )
+                                ]
                               )
-                            ])
+                            : _vm._e()
+                        ])
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "float-right text-right" }, [
-                        _c("div", [_vm._v(_vm._s(termin.godzina_rozpoczecia))]),
-                        _vm._v(" "),
-                        termin.zlecenie
-                          ? _c(
-                              "div",
-                              { staticClass: "text-muted font-size-sm" },
-                              [
+                      termin.zlecenie
+                        ? _c("div", { staticClass: "clearfix" }, [
+                            _c("div", { staticClass: "float-left" }, [
+                              _c("div", { staticClass: "font-w600" }, [
+                                false
+                                  ? undefined
+                                  : false
+                                  ? undefined
+                                  : false
+                                  ? undefined
+                                  : _c("span", [_c("br")])
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "a",
+                                {
+                                  staticClass: "btn btn-sm btn-light",
+                                  attrs: {
+                                    href: termin.zlecenie.google_maps_route_link
+                                  }
+                                },
+                                [
+                                  _c("i", {
+                                    staticClass: "fa fa-map-marker-alt"
+                                  }),
+                                  _vm._v(
+                                    "\n                            Mapa\n                        "
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "float-right" }, [
+                              _c("div", [
                                 _vm._v(
-                                  _vm._s(termin.przeznaczony_czas_formatted)
+                                  _vm._s(termin.zlecenie.urzadzenie.producent) +
+                                    ", " +
+                                    _vm._s(termin.zlecenie.urzadzenie.nazwa)
                                 )
-                              ]
+                              ]),
+                              _vm._v(" "),
+                              _c("div", [
+                                _vm._v(_vm._s(termin.zlecenie.urzadzenie.model))
+                              ])
+                            ])
+                          ])
+                        : _vm._e()
+                    ]
+                  )
+                ]
+              )
+            })
+      ],
+      2
+    ),
+    _vm._v(" "),
+    _vm.zlecenie
+      ? _c("div", [
+          _c("div", { staticClass: "block block-rounded" }, [
+            _c(
+              "div",
+              { staticClass: "block-content block-content-full" },
+              [
+                _c("div", { staticClass: "font-w700" }, [
+                  _vm._v("Kontrahent:")
+                ]),
+                _vm._v(" "),
+                _c("div", [_vm._v(_vm._s(_vm.zlecenie.klient.nazwa))]),
+                _vm._v(" "),
+                _c("div", [
+                  _vm._v(
+                    _vm._s(_vm.zlecenie.klient.kod_pocztowy) +
+                      " " +
+                      _vm._s(_vm.zlecenie.klient.miasto) +
+                      ", " +
+                      _vm._s(_vm.zlecenie.klient.adres)
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "mt-1" },
+                  [
+                    _vm._l(_vm.zlecenie.klient.telefony, function(
+                      telefon,
+                      t_index
+                    ) {
+                      return _c("div", { staticClass: "mt-2" }, [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-light",
+                            attrs: { href: "tel:" + telefon }
+                          },
+                          [
+                            _c("i", {
+                              staticClass: "fa fa-phone text-success"
+                            }),
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(telefon) +
+                                "\n                        "
                             )
-                          : _vm._e()
+                          ]
+                        )
                       ])
-                    ]),
+                    }),
                     _vm._v(" "),
-                    termin.zlecenie
-                      ? _c("div", { staticClass: "clearfix" }, [
-                          _vm._m(0, true)
-                        ])
-                      : _vm._e()
-                  ]
-                )
-              ]
+                    _c("div", { staticClass: "mt-2" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-light",
+                          attrs: { href: _vm.zlecenie.google_maps_route_link }
+                        },
+                        [
+                          _c("i", {
+                            staticClass: "fa fa-map-marker-alt text-info"
+                          }),
+                          _vm._v(
+                            "\n                            Mapa\n                        "
+                          )
+                        ]
+                      )
+                    ])
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c("hr"),
+                _vm._v(" "),
+                _c("div", { staticClass: "font-w700" }, [_vm._v("Opis:")]),
+                _vm._v(" "),
+                _c("nl2br", { attrs: { tag: "div", text: _vm.zlecenie.opis } })
+              ],
+              1
             )
-          }),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          directives: [
+          ]),
+          _vm._v(" "),
+          _c(
+            "nav",
             {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.zlecenie_id,
-              expression: "zlecenie_id"
-            }
-          ]
-        },
-        [_vm._v("\n        zlecenie_id\n    ")]
-      )
-    ],
-    2
-  )
+              staticClass: "fixed-bottom bg-white p-2 text-right",
+              staticStyle: { "box-shadow": "0px 6px 2px 8px rgba(0,0,0,.08)" }
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn bg-white text-muted",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.zlecenie = null
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fa fa-reply" }),
+                  _vm._v("\n                Cofnij\n            ")
+                ]
+              )
+            ]
+          )
+        ])
+      : _vm._e()
+  ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "float-right" }, [
-      _c("div", [_vm._v("marka, urządzenie")]),
-      _vm._v(" "),
-      _c("div", [_vm._v("model")]),
-      _vm._v(" "),
-      _c("div", [_vm._v("nr seryjny")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
