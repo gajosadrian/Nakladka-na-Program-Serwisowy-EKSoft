@@ -1,7 +1,9 @@
 <template>
     <div>
         <div v-show="!zlecenie">
-            <h1>Mobile App</h1>
+            <div v-if="technik">
+                <h2>{{ technik.nazwa }} {{ date_string }}</h2>
+            </div>
 
             <div v-if="terminy.length == 0">
                 Ładowanie zleceń...
@@ -38,7 +40,7 @@
                                 Mapa
                             </a>
                         </div>
-                        <div class="float-right">
+                        <div class="float-right text-right">
                             <div>{{ termin.zlecenie.urzadzenie.producent }}, {{ termin.zlecenie.urzadzenie.nazwa }}</div>
                             <div>{{ termin.zlecenie.urzadzenie.model }}</div>
                         </div>
@@ -69,6 +71,12 @@
                     <hr>
                     <div class="font-w700">Opis:</div>
                     <nl2br tag="div" :text="zlecenie.opis" />
+                    <hr>
+                    <div class="font-w700">Uwagi technika:</div>
+                    <textarea v-model.trim="new_opis" class="form-control form-control-alt my-2" placeholder="Dodaj opis.." rows="3"></textarea>
+                    <div class="text-right">
+                        <button :disabled="disable_OpisButton" type="button" class="btn btn-light">Dodaj opis</button>
+                    </div>
                 </div>
             </div>
 
@@ -91,8 +99,11 @@ window.onpopstate = function () {
 export default {
     data() {
         return {
+            technik: null,
             zlecenie: null,
             terminy: [],
+            disable_OpisButton: false,
+            new_opis: null,
         }
     },
 
@@ -106,6 +117,8 @@ export default {
                 date_string: date,
             })).then(response => {
                 let data = response.data;
+                self.date_string = data.date_string;
+                self.technik = data.technik;
                 self.terminy = data.terminy;
             });
         },

@@ -2304,6 +2304,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 history.pushState(null, null, location.href);
 
 window.onpopstate = function () {
@@ -2313,8 +2321,11 @@ window.onpopstate = function () {
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      technik: null,
       zlecenie: null,
-      terminy: []
+      terminy: [],
+      disable_OpisButton: false,
+      new_opis: null
     };
   },
   computed: {},
@@ -2326,6 +2337,8 @@ window.onpopstate = function () {
         date_string: date
       })).then(function (response) {
         var data = response.data;
+        self.date_string = data.date_string;
+        self.technik = data.technik;
         self.terminy = data.terminy;
       });
     }
@@ -44441,7 +44454,15 @@ var render = function() {
         ]
       },
       [
-        _c("h1", [_vm._v("Mobile App")]),
+        _vm.technik
+          ? _c("div", [
+              _c("h2", [
+                _vm._v(
+                  _vm._s(_vm.technik.nazwa) + " " + _vm._s(_vm.date_string)
+                )
+              ])
+            ])
+          : _vm._e(),
         _vm._v(" "),
         _vm.terminy.length == 0
           ? _c("div", [_vm._v("\n            Ładowanie zleceń...\n        ")])
@@ -44548,19 +44569,27 @@ var render = function() {
                               )
                             ]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "float-right" }, [
-                              _c("div", [
-                                _vm._v(
-                                  _vm._s(termin.zlecenie.urzadzenie.producent) +
-                                    ", " +
-                                    _vm._s(termin.zlecenie.urzadzenie.nazwa)
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("div", [
-                                _vm._v(_vm._s(termin.zlecenie.urzadzenie.model))
-                              ])
-                            ])
+                            _c(
+                              "div",
+                              { staticClass: "float-right text-right" },
+                              [
+                                _c("div", [
+                                  _vm._v(
+                                    _vm._s(
+                                      termin.zlecenie.urzadzenie.producent
+                                    ) +
+                                      ", " +
+                                      _vm._s(termin.zlecenie.urzadzenie.nazwa)
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", [
+                                  _vm._v(
+                                    _vm._s(termin.zlecenie.urzadzenie.model)
+                                  )
+                                ])
+                              ]
+                            )
                           ])
                         : _vm._e()
                     ]
@@ -44649,7 +44678,53 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "font-w700" }, [_vm._v("Opis:")]),
                 _vm._v(" "),
-                _c("nl2br", { attrs: { tag: "div", text: _vm.zlecenie.opis } })
+                _c("nl2br", { attrs: { tag: "div", text: _vm.zlecenie.opis } }),
+                _vm._v(" "),
+                _c("hr"),
+                _vm._v(" "),
+                _c("div", { staticClass: "font-w700" }, [
+                  _vm._v("Uwagi technika:")
+                ]),
+                _vm._v(" "),
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model.trim",
+                      value: _vm.new_opis,
+                      expression: "new_opis",
+                      modifiers: { trim: true }
+                    }
+                  ],
+                  staticClass: "form-control form-control-alt my-2",
+                  attrs: { placeholder: "Dodaj opis..", rows: "3" },
+                  domProps: { value: _vm.new_opis },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.new_opis = $event.target.value.trim()
+                    },
+                    blur: function($event) {
+                      return _vm.$forceUpdate()
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "text-right" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-light",
+                      attrs: {
+                        disabled: _vm.disable_OpisButton,
+                        type: "button"
+                      }
+                    },
+                    [_vm._v("Dodaj opis")]
+                  )
+                ])
               ],
               1
             )

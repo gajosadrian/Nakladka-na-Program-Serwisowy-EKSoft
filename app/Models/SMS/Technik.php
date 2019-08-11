@@ -47,6 +47,13 @@ class Technik extends Model
      *
      */
 
+    public function getArray(): array
+    {
+        return [
+            'nazwa' => $this->nazwa,
+        ];
+    }
+
     public static function getLast()
     {
         $technik_ids = Terminarz::with('technik')->orderByDesc('STARTDATE')->limit(100)->get()->pluck('technik.id')->unique()->values();

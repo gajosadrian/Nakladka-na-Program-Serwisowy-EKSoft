@@ -89,4 +89,9 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Models\SMS\Pracownik', 'LOGIN', 'email');
     }
+
+    public function technik()
+    {
+        return $this->hasOne('App\Models\SMS\Technik', 'id_technika', 'technik_id');
+    }
 }

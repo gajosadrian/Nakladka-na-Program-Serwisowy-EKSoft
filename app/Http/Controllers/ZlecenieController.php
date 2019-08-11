@@ -363,6 +363,8 @@ class ZlecenieController extends Controller
         }
 
         return response()->json([
+            'date_string' => $date_string,
+            'technik' => $user->technik->getArray(),
             'terminy' => $array,
         ], 200);
     }
