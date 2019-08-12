@@ -333,11 +333,21 @@ class ZlecenieController extends Controller
                 'zlecenie' => null,
             ];
             if ($termin->zlecenie->klient) {
+                $status_historia_preautoryzacja = $termin->zlecenie->getStatusHistoriaAt($date_string, Status::PREAUTORYZACJA_ID);
                 $item['zlecenie'] = [
                     'id' => $termin->zlecenie->id,
                     'nr' => $termin->zlecenie->nr,
                     'nr_obcy' => $termin->zlecenie->nr_obcy,
                     'opis' => $termin->zlecenie->opis,
+                    'checkable_umowiono' => $termin->data_rozpoczecia->isToday(),
+                    'is_umowiono' => $termin->zlecenie->terminarz->is_umowiono,
+                    'is_dzwonic' => $termin->zlecenie->is_dzwonic,
+                    'is_zakonczone' => $termin->zlecenie->is_zakonczone,
+                    'is_soft_zakonczone' => (bool) ($termin->zlecenie->is_zakonczone or $status_historia_preautoryzacja),
+                    'is_preautoryzacja' => (bool) $status_historia_preautoryzacja,
+                    'preautoryzacja_at' => $status_historia_preautoryzacja ? $status_historia_preautoryzacja->data->format('Y-m-d H:i') : null,
+                    'znacznik_formatted' => $termin->zlecenie->znacznik_formatted,
+                    'znacznik_icon' => $termin->zlecenie->znacznik->icon,
                     'google_maps_route_link' => $termin->zlecenie->google_maps_route_link,
                     'klient' => [
                         'symbol' => $termin->zlecenie->klient->symbol,

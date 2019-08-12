@@ -259,6 +259,11 @@ class Zlecenie extends Model
         return in_array($this->status_id, Status::ZAKONCZONE_IDS) or $this->archiwalny or $this->anulowany;
     }
 
+    public function getIsDzwonicAttribute(): bool
+    {
+        return $this->terminarz->is_dzwonic;
+    }
+
     public function getIsUmowionoAttribute(): bool
     {
         return ($this->status_id == Status::UMOWIONO_ID);
@@ -705,6 +710,16 @@ HTML;
             return false;
         }
         return true;
+    }
+
+    public function getStatusHistoriaAt($date_string, $status_id)
+    {
+        foreach ($this->statusy as $status) {
+            if ($status->status_id == $status_id and \Illuminate\Support\Str::contains($status->data->toDateString(), $date_string)) {
+                return $status;
+            }
+        }
+        return null;
     }
 
     private function getCalcKosztorys(string $type): array
