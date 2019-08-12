@@ -10,7 +10,7 @@
             </div>
 
             <div v-else v-for="(termin, index) in terminy" class="block block-rounded shadow-sm">
-                <div @click="zlecenie = termin.zlecenie" :class="{'bg-gray': !termin.zlecenie}" class="block-content block-content-full p-2" style="cursor:pointer;">
+                <div @click="setZlecenie(termin.zlecenie)" :class="{'bg-gray': !termin.zlecenie}" class="block-content block-content-full p-2" style="cursor:pointer;">
                     <div class="clearfix">
                         <div class="float-left">
                             <div v-if="termin.zlecenie">
@@ -80,8 +80,9 @@
                 </div>
             </div>
 
+			<div class="pt-5"></div>
             <nav class="fixed-bottom bg-white p-2 text-right" style="box-shadow: 0px 6px 2px 8px rgba(0,0,0,.08);">
-                <button @click="zlecenie = null" type="button" class="btn bg-white text-muted">
+                <button @click="setZlecenie(null)" type="button" class="btn bg-white text-muted">
                     <i class="fa fa-reply"></i>
                     Cofnij
                 </button>
@@ -111,7 +112,7 @@ export default {
     },
 
     methods: {
-        fetchZlecenia(date = false) {
+        fetchZlecenia(date = 0) {
             let self = this;
             axios.get(route('zlecenia.api.getFromTerminarz', {
                 date_string: date,
@@ -122,10 +123,15 @@ export default {
                 self.terminy = data.terminy;
             });
         },
+		
+		setZlecenie(zlecenie) {
+			this.zlecenie = zlecenie;
+			window.scrollTo(0, 0);
+		}
     },
 
     mounted() {
-        this.fetchZlecenia('2019-02-05');
+        this.fetchZlecenia();
     }
 }
 </script>

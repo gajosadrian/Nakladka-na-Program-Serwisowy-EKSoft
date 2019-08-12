@@ -2312,6 +2312,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 history.pushState(null, null, location.href);
 
 window.onpopstate = function () {
@@ -2331,7 +2332,7 @@ window.onpopstate = function () {
   computed: {},
   methods: {
     fetchZlecenia: function fetchZlecenia() {
-      var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       var self = this;
       axios.get(route('zlecenia.api.getFromTerminarz', {
         date_string: date
@@ -2341,10 +2342,14 @@ window.onpopstate = function () {
         self.technik = data.technik;
         self.terminy = data.terminy;
       });
+    },
+    setZlecenie: function setZlecenie(zlecenie) {
+      this.zlecenie = zlecenie;
+      window.scrollTo(0, 0);
     }
   },
   mounted: function mounted() {
-    this.fetchZlecenia('2019-02-05');
+    this.fetchZlecenia();
   }
 });
 
@@ -44465,7 +44470,9 @@ var render = function() {
           : _vm._e(),
         _vm._v(" "),
         _vm.terminy.length == 0
-          ? _c("div", [_vm._v("\n            Ładowanie zleceń...\n        ")])
+          ? _c("div", [
+              _vm._v("\n                Ładowanie zleceń...\n            ")
+            ])
           : _vm._l(_vm.terminy, function(termin, index) {
               return _c(
                 "div",
@@ -44479,7 +44486,7 @@ var render = function() {
                       staticStyle: { cursor: "pointer" },
                       on: {
                         click: function($event) {
-                          _vm.zlecenie = termin.zlecenie
+                          return _vm.setZlecenie(termin.zlecenie)
                         }
                       }
                     },
@@ -44508,12 +44515,12 @@ var render = function() {
                               ])
                             : _c("div", [
                                 _vm._v(
-                                  "\n                            " +
+                                  "\n                                " +
                                     _vm._s(
                                       termin.temat ||
                                         "Zlecenie usunięte z terminarza"
                                     ) +
-                                    "\n                        "
+                                    "\n                            "
                                 )
                               ])
                         ]),
@@ -44563,7 +44570,7 @@ var render = function() {
                                     staticClass: "fa fa-map-marker-alt"
                                   }),
                                   _vm._v(
-                                    "\n                            Mapa\n                        "
+                                    "\n                                Mapa\n                            "
                                   )
                                 ]
                               )
@@ -44644,9 +44651,9 @@ var render = function() {
                               staticClass: "fa fa-phone text-success"
                             }),
                             _vm._v(
-                              "\n                            " +
+                              "\n                                " +
                                 _vm._s(telefon) +
-                                "\n                        "
+                                "\n                            "
                             )
                           ]
                         )
@@ -44665,7 +44672,7 @@ var render = function() {
                             staticClass: "fa fa-map-marker-alt text-info"
                           }),
                           _vm._v(
-                            "\n                            Mapa\n                        "
+                            "\n                                Mapa\n                            "
                           )
                         ]
                       )
@@ -44730,6 +44737,8 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
+          _c("div", { staticClass: "pt-5" }),
+          _vm._v(" "),
           _c(
             "nav",
             {
@@ -44744,13 +44753,13 @@ var render = function() {
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      _vm.zlecenie = null
+                      return _vm.setZlecenie(null)
                     }
                   }
                 },
                 [
                   _c("i", { staticClass: "fa fa-reply" }),
-                  _vm._v("\n                Cofnij\n            ")
+                  _vm._v("\n                    Cofnij\n                ")
                 ]
               )
             ]
