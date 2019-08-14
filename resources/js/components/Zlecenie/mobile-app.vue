@@ -76,10 +76,10 @@
                     <nl2br tag="div" :text="zlecenie.opis" />
                     <hr>
                     <div class="font-w700">Uwagi technika:</div>
-                    <!-- <textarea v-model.trim="new_opis" class="form-control form-control-alt my-2" placeholder="Dodaj opis.." rows="3"></textarea>
+                    <textarea v-model.trim="new_opis" :class="{'border border-danger': is_new_opis}" class="form-control form-control-alt my-2" placeholder="Dodaj opis.." rows="3"></textarea>
                     <div class="text-right">
-                        <button :disabled="disable_OpisButton" type="button" class="btn btn-light">Dodaj opis</button>
-                    </div> -->
+                        <button @click="addOpis" :disabled="disable_OpisButton" :class="{'btn-light': !is_new_opis, 'btn-danger': is_new_opis}" type="button" class="btn">Dodaj opis</button>
+                    </div>
                 </div>
             </div>
 
@@ -103,39 +103,93 @@ window.onpopstate = function () {
 export default {
     data() {
         return {
+            renderComponent: true,
+            timer: null,
+            date: 0,
             technik: null,
             zlecenie: null,
             terminy: [],
             disable_OpisButton: false,
-            new_opis: null,
+            new_opis: '',
         }
-    },
-
-    computed: {
-    },
-
-    methods: {
-        fetchZlecenia(date = 0) {
-            let self = this;
-            axios.get(route('zlecenia.api.getFromTerminarz', {
-                date_string: date,
-            })).then(response => {
-                let data = response.data;
-                self.date_string = data.date_string;
-                self.technik = data.technik;
-                self.terminy = data.terminy;
-            });
-        },
-
-		setZlecenie(zlecenie) {
-			this.zlecenie = zlecenie;
-			window.scrollTo(0, 0);
-		}
     },
 
     mounted() {
         this.fetchZlecenia();
-    }
+        this.timer = setInterval(this.fetchZlecenia, 120000); // 2 min
+    },
+
+    beforeDestroy() {
+        this.cancelAutoUpdate();
+    },
+
+    computed: {
+        is_new_opis() {
+            if (this.new_opis.length > 0) {
+                return true;
+            }
+            return false;
+        },
+    },
+
+    methods: {
+        fetchZlecenia() {
+            axios.get(route('zlecenia.api.getFromTerminarz', {
+                date_string: this.date,
+            })).then(response => {
+                let data = response.data;
+                this.date_string = data.date_string;
+                this.technik = data.technik;
+                this.terminy = data.terminy;
+            });
+            this.updateZlecenieInstance();
+        },
+
+        fetchZlecenie() {
+            if (! this.zlecenie) return false;
+        },
+
+        updateZlecenieInstance() {
+            if (! this.zlecenie) return false;
+            this.setZlecenie(this.getZlecenieById(this.zlecenie.id), false);
+            console.log('updated');
+        },
+
+        getZlecenieById(zlecenie_id) {
+            let new_zlecenie = false
+            this.terminy.forEach(function (termin, index) {
+                if (termin.zlecenie.id == zlecenie_id) {
+                    new_zlecenie = termin.zlecenie;
+                }
+            });
+            return new_zlecenie;
+        },
+
+		setZlecenie(zlecenie, scroll = true) {
+			this.zlecenie = zlecenie;
+            if (scroll) {
+                window.scrollTo(0, 0);
+            }
+		},
+
+        addOpis() {
+            if (this.new_opis == '') return false;
+            if (! this.zlecenie) return false;
+
+            this.disable_OpisButton = true;
+            axios.post(route('zlecenia.api.append_opis', {
+                id: this.zlecenie.id,
+                opis: this.new_opis,
+            })).then(response => {
+                this.disable_OpisButton = false;
+                this.new_opis = '';
+            });
+        },
+
+        cancelAutoUpdate() {
+            clearInterval(this.timer);
+        },
+    },
 }
 </script>
 

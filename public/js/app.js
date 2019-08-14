@@ -2325,34 +2325,88 @@ window.onpopstate = function () {
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      renderComponent: true,
+      timer: null,
+      date: 0,
       technik: null,
       zlecenie: null,
       terminy: [],
       disable_OpisButton: false,
-      new_opis: null
+      new_opis: ''
     };
-  },
-  computed: {},
-  methods: {
-    fetchZlecenia: function fetchZlecenia() {
-      var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-      var self = this;
-      axios.get(route('zlecenia.api.getFromTerminarz', {
-        date_string: date
-      })).then(function (response) {
-        var data = response.data;
-        self.date_string = data.date_string;
-        self.technik = data.technik;
-        self.terminy = data.terminy;
-      });
-    },
-    setZlecenie: function setZlecenie(zlecenie) {
-      this.zlecenie = zlecenie;
-      window.scrollTo(0, 0);
-    }
   },
   mounted: function mounted() {
     this.fetchZlecenia();
+    this.timer = setInterval(this.fetchZlecenia, 120000); // 2 min
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.cancelAutoUpdate();
+  },
+  computed: {
+    is_new_opis: function is_new_opis() {
+      if (this.new_opis.length > 0) {
+        return true;
+      }
+
+      return false;
+    }
+  },
+  methods: {
+    fetchZlecenia: function fetchZlecenia() {
+      var _this = this;
+
+      axios.get(route('zlecenia.api.getFromTerminarz', {
+        date_string: this.date
+      })).then(function (response) {
+        var data = response.data;
+        _this.date_string = data.date_string;
+        _this.technik = data.technik;
+        _this.terminy = data.terminy;
+      });
+      this.updateZlecenieInstance();
+    },
+    fetchZlecenie: function fetchZlecenie() {
+      if (!this.zlecenie) return false;
+    },
+    updateZlecenieInstance: function updateZlecenieInstance() {
+      if (!this.zlecenie) return false;
+      this.setZlecenie(this.getZlecenieById(this.zlecenie.id), false);
+      console.log('updated');
+    },
+    getZlecenieById: function getZlecenieById(zlecenie_id) {
+      var new_zlecenie = false;
+      this.terminy.forEach(function (termin, index) {
+        if (termin.zlecenie.id == zlecenie_id) {
+          new_zlecenie = termin.zlecenie;
+        }
+      });
+      return new_zlecenie;
+    },
+    setZlecenie: function setZlecenie(zlecenie) {
+      var scroll = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      this.zlecenie = zlecenie;
+
+      if (scroll) {
+        window.scrollTo(0, 0);
+      }
+    },
+    addOpis: function addOpis() {
+      var _this2 = this;
+
+      if (this.new_opis == '') return false;
+      if (!this.zlecenie) return false;
+      this.disable_OpisButton = true;
+      axios.post(route('zlecenia.api.append_opis', {
+        id: this.zlecenie.id,
+        opis: this.new_opis
+      })).then(function (response) {
+        _this2.disable_OpisButton = false;
+        _this2.new_opis = '';
+      });
+    },
+    cancelAutoUpdate: function cancelAutoUpdate() {
+      clearInterval(this.timer);
+    }
   }
 });
 
@@ -44795,6 +44849,52 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "font-w700" }, [
                   _vm._v("Uwagi technika:")
+                ]),
+                _vm._v(" "),
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model.trim",
+                      value: _vm.new_opis,
+                      expression: "new_opis",
+                      modifiers: { trim: true }
+                    }
+                  ],
+                  staticClass: "form-control form-control-alt my-2",
+                  class: { "border border-danger": _vm.is_new_opis },
+                  attrs: { placeholder: "Dodaj opis..", rows: "3" },
+                  domProps: { value: _vm.new_opis },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.new_opis = $event.target.value.trim()
+                    },
+                    blur: function($event) {
+                      return _vm.$forceUpdate()
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "text-right" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn",
+                      class: {
+                        "btn-light": !_vm.is_new_opis,
+                        "btn-danger": _vm.is_new_opis
+                      },
+                      attrs: {
+                        disabled: _vm.disable_OpisButton,
+                        type: "button"
+                      },
+                      on: { click: _vm.addOpis }
+                    },
+                    [_vm._v("Dodaj opis")]
+                  )
                 ])
               ],
               1
