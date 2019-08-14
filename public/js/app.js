@@ -2316,6 +2316,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 history.pushState(null, null, location.href);
 
 window.onpopstate = function () {
@@ -2403,6 +2408,17 @@ window.onpopstate = function () {
         _this2.disable_OpisButton = false;
         _this2.new_opis = '';
       });
+      this.changeStatus(41);
+      this.fetchZlecenia();
+    },
+    changeStatus: function changeStatus(status_id) {
+      if (!this.zlecenie) return false;
+      axios.post(route('zlecenia.api.change_status', {
+        id: this.zlecenie.id,
+        status_id: status_id,
+        remove_termin: 0,
+        terminarz_status_id: '16744448'
+      }));
     },
     cancelAutoUpdate: function cancelAutoUpdate() {
       clearInterval(this.timer);
@@ -44851,51 +44867,59 @@ var render = function() {
                   _vm._v("Uwagi technika:")
                 ]),
                 _vm._v(" "),
-                _c("textarea", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model.trim",
-                      value: _vm.new_opis,
-                      expression: "new_opis",
-                      modifiers: { trim: true }
-                    }
-                  ],
-                  staticClass: "form-control form-control-alt my-2",
-                  class: { "border border-danger": _vm.is_new_opis },
-                  attrs: { placeholder: "Dodaj opis..", rows: "3" },
-                  domProps: { value: _vm.new_opis },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.new_opis = $event.target.value.trim()
-                    },
-                    blur: function($event) {
-                      return _vm.$forceUpdate()
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c("div", { staticClass: "text-right" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn",
-                      class: {
-                        "btn-light": !_vm.is_new_opis,
-                        "btn-danger": _vm.is_new_opis
-                      },
-                      attrs: {
-                        disabled: _vm.disable_OpisButton,
-                        type: "button"
-                      },
-                      on: { click: _vm.addOpis }
-                    },
-                    [_vm._v("Dodaj opis")]
-                  )
-                ])
+                !_vm.zlecenie.is_zakonczone
+                  ? _c("div", [
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model.trim",
+                            value: _vm.new_opis,
+                            expression: "new_opis",
+                            modifiers: { trim: true }
+                          }
+                        ],
+                        staticClass: "form-control form-control-alt my-2",
+                        class: { "border border-danger": _vm.is_new_opis },
+                        attrs: { placeholder: "Dodaj opis..", rows: "3" },
+                        domProps: { value: _vm.new_opis },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.new_opis = $event.target.value.trim()
+                          },
+                          blur: function($event) {
+                            return _vm.$forceUpdate()
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "text-right" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn",
+                            class: {
+                              "btn-light": !_vm.is_new_opis,
+                              "btn-danger": _vm.is_new_opis
+                            },
+                            attrs: {
+                              disabled: _vm.disable_OpisButton,
+                              type: "button"
+                            },
+                            on: { click: _vm.addOpis }
+                          },
+                          [_vm._v("Dodaj opis")]
+                        )
+                      ])
+                    ])
+                  : _c("div", [
+                      _c("p", [
+                        _vm._v("Nie można już edytować opisu zlecenia.")
+                      ])
+                    ])
               ],
               1
             )

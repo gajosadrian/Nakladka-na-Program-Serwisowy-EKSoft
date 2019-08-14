@@ -280,6 +280,11 @@ class ZlecenieController extends Controller
         $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false);
         $zlecenie->save();
 
+        if ($terminarz_status_id = $request->terminarz_status_id) {
+            $zlecenie->terminarz->status_id = $terminarz_status_id;
+            $zlecenie->terminarz->save();
+        }
+
         return response()->json('success', 200);
     }
 
@@ -334,16 +339,17 @@ class ZlecenieController extends Controller
             ];
             if ($termin->zlecenie->klient) {
                 $status_historia_preautoryzacja = $termin->zlecenie->getStatusHistoriaAt($date_string, Status::PREAUTORYZACJA_ID);
+                $is_soft_zakonczone = (bool) ($termin->zlecenie->is_zakonczone or $status_historia_preautoryzacja);
                 $item['zlecenie'] = [
                     'id' => $termin->zlecenie->id,
                     'nr' => $termin->zlecenie->nr,
                     'nr_obcy' => $termin->zlecenie->nr_obcy,
                     'opis' => $termin->zlecenie->opis,
-                    'checkable_umowiono' => $termin->data_rozpoczecia->isToday(),
+                    'checkable_umowiono' => $termin->data_rozpoczecia->isToday() and !$is_soft_zakonczone,
                     'is_umowiono' => $termin->zlecenie->terminarz->is_umowiono,
                     'is_dzwonic' => $termin->zlecenie->is_dzwonic,
                     'is_zakonczone' => $termin->zlecenie->is_zakonczone,
-                    'is_soft_zakonczone' => (bool) ($termin->zlecenie->is_zakonczone or $status_historia_preautoryzacja),
+                    'is_soft_zakonczone' => $is_soft_zakonczone,
                     'is_preautoryzacja' => (bool) $status_historia_preautoryzacja,
                     'preautoryzacja_at' => $status_historia_preautoryzacja ? $status_historia_preautoryzacja->data->format('Y-m-d H:i') : null,
                     'znacznik_formatted' => $termin->zlecenie->znacznik_formatted,

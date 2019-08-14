@@ -76,9 +76,14 @@
                     <nl2br tag="div" :text="zlecenie.opis" />
                     <hr>
                     <div class="font-w700">Uwagi technika:</div>
-                    <textarea v-model.trim="new_opis" :class="{'border border-danger': is_new_opis}" class="form-control form-control-alt my-2" placeholder="Dodaj opis.." rows="3"></textarea>
-                    <div class="text-right">
-                        <button @click="addOpis" :disabled="disable_OpisButton" :class="{'btn-light': !is_new_opis, 'btn-danger': is_new_opis}" type="button" class="btn">Dodaj opis</button>
+                    <div v-if="!zlecenie.is_zakonczone">
+                        <textarea v-model.trim="new_opis" :class="{'border border-danger': is_new_opis}" class="form-control form-control-alt my-2" placeholder="Dodaj opis.." rows="3"></textarea>
+                        <div class="text-right">
+                            <button @click="addOpis" :disabled="disable_OpisButton" :class="{'btn-light': !is_new_opis, 'btn-danger': is_new_opis}" type="button" class="btn">Dodaj opis</button>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <p>Nie można już edytować opisu zlecenia.</p>
                     </div>
                 </div>
             </div>
@@ -184,6 +189,19 @@ export default {
                 this.disable_OpisButton = false;
                 this.new_opis = '';
             });
+
+            this.changeStatus(41);
+            this.fetchZlecenia();
+        },
+
+        changeStatus(status_id) {
+            if (! this.zlecenie) return false;
+            axios.post(route('zlecenia.api.change_status', {
+                id: this.zlecenie.id,
+                status_id: status_id,
+                remove_termin: 0,
+                terminarz_status_id: '16744448',
+            }));
         },
 
         cancelAutoUpdate() {
