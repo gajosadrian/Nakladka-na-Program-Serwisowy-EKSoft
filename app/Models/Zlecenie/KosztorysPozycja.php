@@ -112,6 +112,16 @@ class KosztorysPozycja extends Model
         return is_numeric($this->symbol) or $this->opis;
     }
 
+    public function getIsTowarAttribute(): bool
+    {
+        return $this->towar->rodzaj == 1;
+    }
+
+    public function getIsUslugaAttribute(): bool
+    {
+        return $this->towar->rodzaj == 2;
+    }
+
     public function getPolkaAttribute(): string
     {
         return $this->towar->polka;
@@ -145,5 +155,30 @@ class KosztorysPozycja extends Model
             'tw_DostSymbol' => '',
             'tw_PKWiU' => '',
         ]);
+    }
+
+    /**
+    * Methods
+    *
+    */
+
+    public function getArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'polka' => $this->polka,
+            'symbol_dostawcy' => $this->symbol_dostawcy,
+            'symbol' => $this->symbol,
+            'nazwa' => $this->nazwa,
+            'opis' => $this->opis_fixed,
+            'cena' => $this->cena,
+            'cena_brutto' => $this->cena_brutto,
+            'ilosc' => $this->ilosc,
+            'wartosc' => $this->wartosc,
+            'wartosc_brutto' => $this->wartosc_brutto,
+            'is_czesc' => $this->is_czesc,
+            'is_towar' => $this->is_towar,
+            'is_usluga' => $this->is_usluga,
+        ];
     }
 }

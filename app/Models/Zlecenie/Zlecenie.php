@@ -756,6 +756,15 @@ HTML;
         return $str;
     }
 
+    public function getKosztorysArray(): array
+    {
+        $array = [];
+        foreach ($this->kosztorys_pozycje as $kosztorys_pozycja) {
+            $array[] = $kosztorys_pozycja->getArray();
+        }
+        return $array;
+    }
+
     // public function getSumOf(string $type, string $pozycja_type = null): int
     // {
     //     $type_lower = strtolower($type);

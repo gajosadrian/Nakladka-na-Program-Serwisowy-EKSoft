@@ -20,7 +20,7 @@ class Terminarz extends Model
     public const DZWONIC_WCZESNIEJ_ID = '14982788'; public const ZAKONCZONE_ID = '6610596';
     public const TERMIN_WSTEPNIE_USTALONY_ID = '7649020'; public const DO_ODWIEZIENIA_ID = '16051844';
     public const ZAMOWIONO_CZESC_ID = '16033476'; public const NA_WARSZTACIE_ID = '7661308';	
-	public const SPECIAL_ID = '16744448';
+	public const SPECIAL_ID = '16744448'; public const light_green = '12897956';
 
     public const DZWONIC_WCZESNIEJ_STR = 'Dzwonić 30 min wcześniej';
 

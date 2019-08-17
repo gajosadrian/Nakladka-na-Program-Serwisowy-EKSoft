@@ -4,10 +4,10 @@
             <div v-if="technik">
                 <h3>{{ technik.nazwa }} {{ date_string }}</h3>
             </div>
+
             <div v-if="terminy.length == 0">
                 Ładowanie zleceń...
             </div>
-
             <div v-else v-for="(termin, index) in terminy" :class="{'bg-success-light': termin.zlecenie && termin.zlecenie.is_soft_zakonczone, 'border border-bold border-top-0 border-bottom-0 border-right-0 border-danger': termin.zlecenie && !termin.zlecenie.is_soft_zakonczone}" class="block block-rounded shadow-sm">
                 <div @click="setZlecenie(termin.zlecenie)" :class="{'bg-gray': !termin.zlecenie}" class="block-content block-content-full p-2" style="cursor:pointer;">
                     <div class="clearfix">
@@ -30,11 +30,12 @@
                     <div v-if="termin.zlecenie" class="clearfix">
                         <div class="float-left">
                             <div class="font-w700">
-                                <span v-if="termin.zlecenie.is_dzwonic" class="text-info">Dzwonić</span>
+                                <span v-if="termin.zlecenie.is_warsztat" class="text-warning">Warsztat</span>
+                                <span v-else-if="termin.zlecenie.is_dzwonic" class="text-info">Dzwonić</span>
                                 <span v-else-if="termin.zlecenie.checkable_umowiono && !termin.zlecenie.is_umowiono" class="text-danger">Nieumówione</span>
                                 <span v-else><br></span>
                             </div>
-                            <a v-if="!termin.zlecenie.is_soft_zakonczone" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
+                            <a v-if="!termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_warsztat" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
                                 <i class="fa fa-map-marker-alt"></i>
                                 Mapa
                             </a>
@@ -50,11 +51,11 @@
         <div v-if="zlecenie">
             <div class="block block-rounded">
                 <div :class="{'border-success': zlecenie.is_soft_zakonczone, 'border-danger': !zlecenie.is_soft_zakonczone}" class="block-content block-content-full border border-bold border-left-0 border-bottom-0 border-right-0">
-                    <h4 class="mb-2 text-center">{{ zlecenie.nr }} - {{ zlecenie.nr_obcy }}</h4>
-                    <div class="clearfix">
-                        <div class="float-left font-w700">Kontrahent:</div>
-                        <div class="float-right"><i :class="zlecenie.znacznik_icon"></i> {{ zlecenie.znacznik_formatted }}</div>
+                    <div class="mb-2 text-center">
+                        <h4 class="mb-0">{{ zlecenie.nr }} <span v-if="zlecenie.nr_obcy">- {{ zlecenie.nr_obcy }}</span></h4>
+                        <div><i :class="zlecenie.znacznik_icon"></i> {{ zlecenie.znacznik_formatted }}</div>
                     </div>
+                    <div class="font-w700">Kontrahent:</div>
                     <div>{{ zlecenie.klient.nazwa }}</div>
                     <div>{{ zlecenie.klient.kod_pocztowy }} {{ zlecenie.klient.miasto }}, {{ zlecenie.klient.adres }}</div>
                     <div class="mt-1">
@@ -74,6 +75,44 @@
                     <hr>
                     <div class="font-w700">Opis:</div>
                     <nl2br tag="div" :text="zlecenie.opis" />
+                    <div class="font-w700 mt-2">Kosztorys:</div>
+                    <div class="font-size-sm">
+                        <div v-for="(pozycja, index2) in zlecenie.kosztorys_pozycje" v-if="pozycja.ilosc > 0" class="mt-2">
+                            <div class="clearfix border border-left-0 border-right-0 border-bottom-0">
+                                <div class="float-left">
+                                    <div class="font-w700">{{ pozycja.nazwa }}</div>
+                                    <div>Symbol: <span class="font-w600">{{ pozycja.symbol }}</span></div>
+                                    <div v-if="pozycja.symbol_dostawcy">Symbol dost.: <span class="font-w600">{{ pozycja.symbol_dostawcy }}</span></div>
+                                    <div v-if="pozycja.opis">Opis: <span class="font-w600">{{ pozycja.opis }}</span></div>
+                                    <div>
+                                        Cena:
+                                        <span class="font-w600">
+                                            <template v-if="pozycja.ilosc === 1">
+                                                {{ pozycja.cena_brutto.toFixed(2) }}
+                                            </template>
+                                            <template v-else>
+                                                {{ pozycja.ilosc }} x {{ pozycja.cena_brutto.toFixed(2) }} = {{ pozycja.wartosc_brutto }}
+                                            </template>
+                                            zł
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="float-right text-right">
+                                    <select v-if="pozycja.is_towar" v-model="parts[pozycja.id]" :class="{
+                                        'bg-success': parts[pozycja.id] == 'mounted',
+                                        'bg-danger': parts[pozycja.id] == 'unmounted',
+                                        'bg-warning': parts[pozycja.id] == 'written'
+                                    }" class="form-control form-control-sm mt-1" style="width:30px;">
+                                        <option value="" disabled>{{ pozycja.nazwa }}</option>
+                                        <option value="">---</option>
+                                        <option v-for="n in pozycja.ilosc" :key="n" value="mounted">Zamontowane - {{ n }} szt.</option>
+                                        <option value="unmounted">Niezamontowane</option>
+                                        <option value="written">Rozpisane</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <hr>
                     <div class="font-w700">Uwagi technika:</div>
                     <div v-if="!zlecenie.is_zakonczone">
@@ -116,6 +155,7 @@ export default {
             terminy: [],
             disable_OpisButton: false,
             new_opis: '',
+            parts: [],
         }
     },
 
@@ -200,7 +240,7 @@ export default {
                 id: this.zlecenie.id,
                 status_id: status_id,
                 remove_termin: 0,
-                terminarz_status_id: '16744448',
+                terminarz_status_id: '12897956',
             }));
         },
 

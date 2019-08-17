@@ -49,4 +49,9 @@ class Subiekt_Towar extends Model
     {
         return $this->attributes['tw_PKWiU'] ?? false;
     }
+
+    public function getRodzajAttribute(): int
+    {
+        return $this->attributes['tw_Rodzaj'] ?? false;
+    }
 }
