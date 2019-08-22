@@ -74,7 +74,7 @@ class KosztorysPozycja extends Model
 
     public function getCenaBruttoAttribute(): float
     {
-        return round($this->cena * ($this->vat + 1), 4);
+        return self::getFixedValue(round($this->cena * ($this->vat + 1), 4));
     }
 
 	public function getCenaBruttoFormattedAttribute(): string
@@ -99,7 +99,7 @@ class KosztorysPozycja extends Model
 
     public function getWartoscBruttoAttribute(): float
     {
-        return round($this->wartosc * ($this->vat + 1), 4);
+        return self::getFixedValue(round($this->wartosc * ($this->vat + 1), 4));
     }
 
     public function getWartoscBruttoFormattedAttribute(): string
@@ -180,5 +180,17 @@ class KosztorysPozycja extends Model
             'is_towar' => $this->is_towar,
             'is_usluga' => $this->is_usluga,
         ];
+    }
+
+    public static function getFixedValue($value)
+    {
+        $value_str = (string) $value;
+        if (strpos($value_str, '.') !== false) {
+            $digits = str_split(explode('.', $value_str)[1]);
+            if (isset($digits[0]) and isset($digits[1]) and $digits[0] == '9' and ($digits[1] == '9' or $digits[1] == '8')) {
+                return (int) $value + 1;
+            }
+        }
+        return $value;
     }
 }

@@ -54,4 +54,29 @@ class Subiekt_Towar extends Model
     {
         return $this->attributes['tw_Rodzaj'] ?? false;
     }
+
+    public function getIsZdjecieAttribute(): bool
+    {
+        return count($this->zdjecia) > 0;
+    }
+
+    public function getZdjecieBinaryAttribute()
+    {
+        return $this->zdjecia[0]->zdjecie_binary;
+    }
+
+    public function getZdjecieUrlAttribute(): string
+    {
+        return route('zdjecie_towaru', ['id' => $this->id]);
+    }
+
+    /**
+     * Relations
+     *
+     */
+
+    public function zdjecia()
+    {
+        return $this->hasMany('App\Models\Subiekt\TowarZdjecie', 'zd_IdTowar', 'tw_Id')->orderByDesc('zd_Glowne');
+    }
 }

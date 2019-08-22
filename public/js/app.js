@@ -2360,6 +2360,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 history.pushState(null, null, location.href);
 
 window.onpopstate = function () {
@@ -2369,7 +2380,7 @@ window.onpopstate = function () {
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      renderComponent: true,
+      scroll_pos: 0,
       timer: null,
       date: 0,
       technik: null,
@@ -2429,11 +2440,29 @@ window.onpopstate = function () {
     },
     setZlecenie: function setZlecenie(zlecenie) {
       var scroll = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      var scroll_reset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
+      if (zlecenie) {
+        this.rememberScroll();
+      }
+
       this.zlecenie = zlecenie;
 
       if (scroll) {
-        window.scrollTo(0, 0);
+        this.doScroll(scroll_reset);
       }
+    },
+    doScroll: function doScroll() {
+      var reset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      if (reset) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, this.scroll_pos);
+      }
+    },
+    rememberScroll: function rememberScroll() {
+      this.scroll_pos = window.scrollY;
     },
     addOpis: function addOpis() {
       var _this2 = this;
@@ -44681,8 +44710,17 @@ var render = function() {
                                   ]
                                 ),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "font-w700" }, [
-                                  _vm._v(_vm._s(termin.zlecenie.klient.nazwa))
+                                _c("div", [
+                                  _c("span", { staticClass: "font-w700" }, [
+                                    _vm._v(_vm._s(termin.zlecenie.klient.nazwa))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("span", { staticClass: "font-size-sm" }, [
+                                    _vm._v(
+                                      "- " +
+                                        _vm._s(termin.zlecenie.klient.symbol)
+                                    )
+                                  ])
                                 ]),
                                 _vm._v(" "),
                                 _c("div", [
@@ -44841,7 +44879,12 @@ var render = function() {
                   _vm._v("Kontrahent:")
                 ]),
                 _vm._v(" "),
-                _c("div", [_vm._v(_vm._s(_vm.zlecenie.klient.nazwa))]),
+                _c("div", [
+                  _vm._v(_vm._s(_vm.zlecenie.klient.nazwa) + " "),
+                  _c("span", { staticClass: "font-size-sm" }, [
+                    _vm._v("- " + _vm._s(_vm.zlecenie.klient.symbol))
+                  ])
+                ]),
                 _vm._v(" "),
                 _c("div", [
                   _vm._v(
@@ -44903,213 +44946,274 @@ var render = function() {
                   2
                 ),
                 _vm._v(" "),
+                _c("div", { staticClass: "text-right" }, [
+                  _c("div", { staticClass: "font-w700" }, [
+                    _vm._v(
+                      _vm._s(_vm.zlecenie.urzadzenie.producent) +
+                        ", " +
+                        _vm._s(_vm.zlecenie.urzadzenie.nazwa)
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", [_vm._v(_vm._s(_vm.zlecenie.urzadzenie.model))]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "font-size-sm",
+                      staticStyle: { "font-family": "consolas" }
+                    },
+                    [_vm._v(_vm._s(_vm.zlecenie.urzadzenie.nr_seryjny))]
+                  )
+                ]),
+                _vm._v(" "),
                 _c("hr"),
                 _vm._v(" "),
                 _c("div", { staticClass: "font-w700" }, [_vm._v("Opis:")]),
                 _vm._v(" "),
                 _c("nl2br", { attrs: { tag: "div", text: _vm.zlecenie.opis } }),
                 _vm._v(" "),
-                _c("div", { staticClass: "font-w700 mt-2" }, [
-                  _vm._v("Kosztorys:")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "font-size-sm" },
-                  _vm._l(_vm.zlecenie.kosztorys_pozycje, function(
-                    pozycja,
-                    index2
-                  ) {
-                    return pozycja.ilosc > 0
-                      ? _c("div", { staticClass: "mt-2" }, [
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "clearfix border border-left-0 border-right-0 border-bottom-0"
-                            },
-                            [
-                              _c("div", { staticClass: "float-left" }, [
-                                _c("div", { staticClass: "font-w700" }, [
-                                  _vm._v(_vm._s(pozycja.nazwa))
-                                ]),
-                                _vm._v(" "),
-                                _c("div", [
-                                  _vm._v("Symbol: "),
-                                  _c("span", { staticClass: "font-w600" }, [
-                                    _vm._v(_vm._s(pozycja.symbol))
-                                  ])
-                                ]),
-                                _vm._v(" "),
-                                pozycja.symbol_dostawcy
-                                  ? _c("div", [
-                                      _vm._v("Symbol dost.: "),
-                                      _c("span", { staticClass: "font-w600" }, [
-                                        _vm._v(_vm._s(pozycja.symbol_dostawcy))
-                                      ])
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                pozycja.opis
-                                  ? _c("div", [
-                                      _vm._v("Opis: "),
-                                      _c("span", { staticClass: "font-w600" }, [
-                                        _vm._v(_vm._s(pozycja.opis))
-                                      ])
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _c("div", [
-                                  _vm._v(
-                                    "\n                                        Cena:\n                                        "
-                                  ),
-                                  _c(
-                                    "span",
-                                    { staticClass: "font-w600" },
-                                    [
-                                      pozycja.ilosc === 1
-                                        ? [
-                                            _vm._v(
-                                              "\n                                                " +
-                                                _vm._s(
-                                                  pozycja.cena_brutto.toFixed(2)
-                                                ) +
-                                                "\n                                            "
-                                            )
-                                          ]
-                                        : [
-                                            _vm._v(
-                                              "\n                                                " +
-                                                _vm._s(pozycja.ilosc) +
-                                                " x " +
-                                                _vm._s(
-                                                  pozycja.cena_brutto.toFixed(2)
-                                                ) +
-                                                " = " +
-                                                _vm._s(pozycja.wartosc_brutto) +
-                                                "\n                                            "
-                                            )
-                                          ],
-                                      _vm._v(
-                                        "\n                                            zł\n                                        "
-                                      )
-                                    ],
-                                    2
-                                  )
-                                ])
-                              ]),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "float-right text-right" },
-                                [
-                                  pozycja.is_towar
-                                    ? _c(
-                                        "select",
-                                        {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.parts[pozycja.id],
-                                              expression: "parts[pozycja.id]"
-                                            }
-                                          ],
-                                          staticClass:
-                                            "form-control form-control-sm mt-1",
-                                          class: {
-                                            "bg-success":
-                                              _vm.parts[pozycja.id] ==
-                                              "mounted",
-                                            "bg-danger":
-                                              _vm.parts[pozycja.id] ==
-                                              "unmounted",
-                                            "bg-warning":
-                                              _vm.parts[pozycja.id] == "written"
-                                          },
-                                          staticStyle: { width: "30px" },
-                                          on: {
-                                            change: function($event) {
-                                              var $$selectedVal = Array.prototype.filter
-                                                .call(
-                                                  $event.target.options,
-                                                  function(o) {
-                                                    return o.selected
-                                                  }
-                                                )
-                                                .map(function(o) {
-                                                  var val =
-                                                    "_value" in o
-                                                      ? o._value
-                                                      : o.value
-                                                  return val
-                                                })
-                                              _vm.$set(
-                                                _vm.parts,
-                                                pozycja.id,
-                                                $event.target.multiple
-                                                  ? $$selectedVal
-                                                  : $$selectedVal[0]
-                                              )
-                                            }
-                                          }
-                                        },
-                                        [
-                                          _c(
-                                            "option",
-                                            {
-                                              attrs: { value: "", disabled: "" }
-                                            },
-                                            [_vm._v(_vm._s(pozycja.nazwa))]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "option",
-                                            { attrs: { value: "" } },
-                                            [_vm._v("---")]
-                                          ),
-                                          _vm._v(" "),
-                                          _vm._l(pozycja.ilosc, function(n) {
-                                            return _c(
-                                              "option",
-                                              {
-                                                key: n,
-                                                attrs: { value: "mounted" }
-                                              },
+                _vm.zlecenie.kosztorys_pozycje.length > 0
+                  ? [
+                      _c(
+                        "div",
+                        { staticClass: "font-size-sm" },
+                        _vm._l(_vm.zlecenie.kosztorys_pozycje, function(
+                          pozycja,
+                          index2
+                        ) {
+                          return pozycja.ilosc > 0
+                            ? _c("div", { staticClass: "mt-2" }, [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      "clearfix border border-left-0 border-right-0 border-bottom-0"
+                                  },
+                                  [
+                                    _c("div", { staticClass: "float-left" }, [
+                                      _c("div", { staticClass: "font-w700" }, [
+                                        _vm._v(_vm._s(pozycja.nazwa))
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", [
+                                        _vm._v("Symbol: "),
+                                        _c(
+                                          "span",
+                                          { staticClass: "font-w600" },
+                                          [_vm._v(_vm._s(pozycja.symbol))]
+                                        )
+                                      ]),
+                                      _vm._v(" "),
+                                      pozycja.symbol_dostawcy
+                                        ? _c("div", [
+                                            _vm._v("Symbol dost.: "),
+                                            _c(
+                                              "span",
+                                              { staticClass: "font-w600" },
                                               [
                                                 _vm._v(
-                                                  "Zamontowane - " +
-                                                    _vm._s(n) +
-                                                    " szt."
+                                                  _vm._s(
+                                                    pozycja.symbol_dostawcy
+                                                  )
                                                 )
                                               ]
                                             )
-                                          }),
-                                          _vm._v(" "),
-                                          _c(
-                                            "option",
-                                            { attrs: { value: "unmounted" } },
-                                            [_vm._v("Niezamontowane")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "option",
-                                            { attrs: { value: "written" } },
-                                            [_vm._v("Rozpisane")]
-                                          )
-                                        ],
-                                        2
-                                      )
-                                    : _vm._e()
-                                ]
-                              )
-                            ]
-                          )
-                        ])
-                      : _vm._e()
-                  }),
-                  0
-                ),
+                                          ])
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      pozycja.opis
+                                        ? _c("div", [
+                                            _vm._v("Opis: "),
+                                            _c(
+                                              "span",
+                                              { staticClass: "font-w600" },
+                                              [_vm._v(_vm._s(pozycja.opis))]
+                                            )
+                                          ])
+                                        : _vm._e(),
+                                      _vm._v(" "),
+                                      _c("div", [
+                                        _vm._v(
+                                          "\n                                            Cena:\n                                            "
+                                        ),
+                                        _c(
+                                          "span",
+                                          { staticClass: "font-w600" },
+                                          [
+                                            pozycja.ilosc === 1
+                                              ? [
+                                                  _vm._v(
+                                                    "\n                                                    " +
+                                                      _vm._s(
+                                                        pozycja.cena_brutto.toFixed(
+                                                          2
+                                                        )
+                                                      ) +
+                                                      "\n                                                "
+                                                  )
+                                                ]
+                                              : [
+                                                  _vm._v(
+                                                    "\n                                                    " +
+                                                      _vm._s(pozycja.ilosc) +
+                                                      " x " +
+                                                      _vm._s(
+                                                        pozycja.cena_brutto.toFixed(
+                                                          2
+                                                        )
+                                                      ) +
+                                                      " = " +
+                                                      _vm._s(
+                                                        pozycja.wartosc_brutto.toFixed(
+                                                          2
+                                                        )
+                                                      ) +
+                                                      "\n                                                "
+                                                  )
+                                                ],
+                                            _vm._v(
+                                              "\n                                                zł\n                                            "
+                                            )
+                                          ],
+                                          2
+                                        )
+                                      ])
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "float-right text-right" },
+                                      [
+                                        pozycja.is_towar
+                                          ? _c(
+                                              "select",
+                                              {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model",
+                                                    value:
+                                                      _vm.parts[pozycja.id],
+                                                    expression:
+                                                      "parts[pozycja.id]"
+                                                  }
+                                                ],
+                                                staticClass:
+                                                  "form-control form-control-sm mt-1",
+                                                class: {
+                                                  "bg-success":
+                                                    _vm.parts[pozycja.id] ==
+                                                    "mounted",
+                                                  "bg-danger":
+                                                    _vm.parts[pozycja.id] ==
+                                                    "unmounted",
+                                                  "bg-warning":
+                                                    _vm.parts[pozycja.id] ==
+                                                    "written"
+                                                },
+                                                staticStyle: { width: "30px" },
+                                                on: {
+                                                  change: function($event) {
+                                                    var $$selectedVal = Array.prototype.filter
+                                                      .call(
+                                                        $event.target.options,
+                                                        function(o) {
+                                                          return o.selected
+                                                        }
+                                                      )
+                                                      .map(function(o) {
+                                                        var val =
+                                                          "_value" in o
+                                                            ? o._value
+                                                            : o.value
+                                                        return val
+                                                      })
+                                                    _vm.$set(
+                                                      _vm.parts,
+                                                      pozycja.id,
+                                                      $event.target.multiple
+                                                        ? $$selectedVal
+                                                        : $$selectedVal[0]
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _c(
+                                                  "option",
+                                                  {
+                                                    attrs: {
+                                                      value: "",
+                                                      disabled: ""
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      _vm._s(pozycja.nazwa)
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "option",
+                                                  { attrs: { value: "" } },
+                                                  [_vm._v("---")]
+                                                ),
+                                                _vm._v(" "),
+                                                _vm._l(pozycja.ilosc, function(
+                                                  n
+                                                ) {
+                                                  return _c(
+                                                    "option",
+                                                    {
+                                                      key: n,
+                                                      attrs: {
+                                                        value: "mounted"
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "Zamontowane - " +
+                                                          _vm._s(n) +
+                                                          " szt."
+                                                      )
+                                                    ]
+                                                  )
+                                                }),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "option",
+                                                  {
+                                                    attrs: {
+                                                      value: "unmounted"
+                                                    }
+                                                  },
+                                                  [_vm._v("Niezamontowane")]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "option",
+                                                  {
+                                                    attrs: { value: "written" }
+                                                  },
+                                                  [_vm._v("Rozpisane")]
+                                                )
+                                              ],
+                                              2
+                                            )
+                                          : _vm._e()
+                                      ]
+                                    )
+                                  ]
+                                )
+                              ])
+                            : _vm._e()
+                        }),
+                        0
+                      )
+                    ]
+                  : _vm._e(),
                 _vm._v(" "),
                 _c("hr"),
                 _vm._v(" "),
@@ -45171,7 +45275,7 @@ var render = function() {
                       ])
                     ])
               ],
-              1
+              2
             )
           ]),
           _vm._v(" "),
@@ -45191,7 +45295,7 @@ var render = function() {
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      return _vm.setZlecenie(null)
+                      return _vm.setZlecenie(null, true, false)
                     }
                   }
                 },
@@ -45203,10 +45307,22 @@ var render = function() {
             ]
           )
         ])
-      : _vm._e()
+      : _vm._e(),
+    _vm._v(" "),
+    _vm._m(0)
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "pb-3 text-center" }, [
+      _c("hr"),
+      _vm._v("\n            © Adrian Gajos 2019\n        ")
+    ])
+  }
+]
 render._withStripped = true
 
 

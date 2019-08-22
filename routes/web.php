@@ -60,3 +60,9 @@ Route::middleware('auth')->group(function () {
     });
 
 });
+
+Route::get('zdjecie-towaru/{id}', function (string $id) {
+    app('debugbar')->disable();
+    $towar = App\Models\Subiekt\Subiekt_Towar::findOrFail($id);
+    return response()->make($towar->zdjecie_binary)->header('Content-Type', 'image/png');
+})->name('zdjecie_towaru');

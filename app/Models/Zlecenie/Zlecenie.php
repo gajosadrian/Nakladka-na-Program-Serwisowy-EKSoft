@@ -64,6 +64,7 @@ class Zlecenie extends Model
         'Ravanson' => ['ravanson'],
 		'Eldom' => ['eldom'],
 		'LG' => ['lg'],
+		'Compensa' => ['compensa'],
     ];
 
     /**

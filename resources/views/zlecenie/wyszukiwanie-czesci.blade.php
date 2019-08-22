@@ -14,15 +14,18 @@
             <template slot="content">
                 <form action="{{ route('zlecenia.wyszukiwanieCzesci') }}" method="get">
                     <b-row>
-                        <b-col cols="2">
+                        <b-col cols="7" lg="2">
                             <input name="symbol" type="text" class="form-control" value="{{ $towar ? $towar->symbol : '' }}">
                         </b-col>
-                        <b-col cols="2" lg="1">
+                        <b-col cols="5" lg="1">
                             <b-button type="submit" class="btn-rounded shadow" variant="info" size="sm">
                                 <i class="fa fa-search"></i> Szukaj
                             </b-button>
                         </b-col>
-                        <b-col cols="12" lg="3">
+                        <b-col cols="12" lg="3" class="mt-3">
+                            @if ($towar and $towar->is_zdjecie)
+                                <img src="{{ $towar->zdjecie_url }}" alt="zdjęcie" class="img-fluid">
+                            @endif
                             <div class="font-w600">{{ $towar ? $towar->nazwa : '' }}</div>
                             <div>{{ $towar ? $towar->symbol_dostawcy : '' }}</div>
                         </b-col>

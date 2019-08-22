@@ -14,7 +14,7 @@
                         <div class="float-left">
                             <div v-if="termin.zlecenie">
                                 <div class="font-size-sm text-muted"><i :class="termin.zlecenie.znacznik_icon"></i> {{ termin.zlecenie.znacznik_formatted }}</div>
-                                <div class="font-w700">{{ termin.zlecenie.klient.nazwa }}</div>
+                                <div><span class="font-w700">{{ termin.zlecenie.klient.nazwa }}</span> <span class="font-size-sm">- {{ termin.zlecenie.klient.symbol }}</span></div>
                                 <div>{{ termin.zlecenie.klient.kod_pocztowy }} {{ termin.zlecenie.klient.miasto }}</div>
                                 <div>{{ termin.zlecenie.klient.adres }}</div>
                             </div>
@@ -56,7 +56,7 @@
                         <div><i :class="zlecenie.znacznik_icon"></i> {{ zlecenie.znacznik_formatted }}</div>
                     </div>
                     <div class="font-w700">Kontrahent:</div>
-                    <div>{{ zlecenie.klient.nazwa }}</div>
+                    <div>{{ zlecenie.klient.nazwa }} <span class="font-size-sm">- {{ zlecenie.klient.symbol }}</span></div>
                     <div>{{ zlecenie.klient.kod_pocztowy }} {{ zlecenie.klient.miasto }}, {{ zlecenie.klient.adres }}</div>
                     <div class="mt-1">
                         <div v-for="(telefon, t_index) in zlecenie.klient.telefony" class="mt-2">
@@ -72,47 +72,54 @@
                             </a>
                         </div>
                     </div>
+                    <div class="text-right">
+                        <div class="font-w700">{{ zlecenie.urzadzenie.producent }}, {{ zlecenie.urzadzenie.nazwa }}</div>
+                        <div>{{ zlecenie.urzadzenie.model }}</div>
+                        <div class="font-size-sm" style="font-family:consolas;">{{ zlecenie.urzadzenie.nr_seryjny }}</div>
+                    </div>
                     <hr>
                     <div class="font-w700">Opis:</div>
                     <nl2br tag="div" :text="zlecenie.opis" />
-                    <div class="font-w700 mt-2">Kosztorys:</div>
-                    <div class="font-size-sm">
-                        <div v-for="(pozycja, index2) in zlecenie.kosztorys_pozycje" v-if="pozycja.ilosc > 0" class="mt-2">
-                            <div class="clearfix border border-left-0 border-right-0 border-bottom-0">
-                                <div class="float-left">
-                                    <div class="font-w700">{{ pozycja.nazwa }}</div>
-                                    <div>Symbol: <span class="font-w600">{{ pozycja.symbol }}</span></div>
-                                    <div v-if="pozycja.symbol_dostawcy">Symbol dost.: <span class="font-w600">{{ pozycja.symbol_dostawcy }}</span></div>
-                                    <div v-if="pozycja.opis">Opis: <span class="font-w600">{{ pozycja.opis }}</span></div>
-                                    <div>
-                                        Cena:
-                                        <span class="font-w600">
-                                            <template v-if="pozycja.ilosc === 1">
-                                                {{ pozycja.cena_brutto.toFixed(2) }}
-                                            </template>
-                                            <template v-else>
-                                                {{ pozycja.ilosc }} x {{ pozycja.cena_brutto.toFixed(2) }} = {{ pozycja.wartosc_brutto }}
-                                            </template>
-                                            zł
-                                        </span>
+                    <template v-if="zlecenie.kosztorys_pozycje.length > 0">
+                        <!-- <div class="font-w700 mt-2">Kosztorys:</div> -->
+                        <div class="font-size-sm">
+                            <div v-for="(pozycja, index2) in zlecenie.kosztorys_pozycje" v-if="pozycja.ilosc > 0" class="mt-2">
+                                <div class="clearfix border border-left-0 border-right-0 border-bottom-0">
+                                    <div class="float-left">
+                                        <div class="font-w700">{{ pozycja.nazwa }}</div>
+                                        <div>Symbol: <span class="font-w600">{{ pozycja.symbol }}</span></div>
+                                        <div v-if="pozycja.symbol_dostawcy">Symbol dost.: <span class="font-w600">{{ pozycja.symbol_dostawcy }}</span></div>
+                                        <div v-if="pozycja.opis">Opis: <span class="font-w600">{{ pozycja.opis }}</span></div>
+                                        <div>
+                                            Cena:
+                                            <span class="font-w600">
+                                                <template v-if="pozycja.ilosc === 1">
+                                                    {{ pozycja.cena_brutto.toFixed(2) }}
+                                                </template>
+                                                <template v-else>
+                                                    {{ pozycja.ilosc }} x {{ pozycja.cena_brutto.toFixed(2) }} = {{ pozycja.wartosc_brutto.toFixed(2) }}
+                                                </template>
+                                                zł
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="float-right text-right">
-                                    <select v-if="pozycja.is_towar" v-model="parts[pozycja.id]" :class="{
-                                        'bg-success': parts[pozycja.id] == 'mounted',
-                                        'bg-danger': parts[pozycja.id] == 'unmounted',
-                                        'bg-warning': parts[pozycja.id] == 'written'
-                                    }" class="form-control form-control-sm mt-1" style="width:30px;">
-                                        <option value="" disabled>{{ pozycja.nazwa }}</option>
-                                        <option value="">---</option>
-                                        <option v-for="n in pozycja.ilosc" :key="n" value="mounted">Zamontowane - {{ n }} szt.</option>
-                                        <option value="unmounted">Niezamontowane</option>
-                                        <option value="written">Rozpisane</option>
-                                    </select>
+                                    <div class="float-right text-right">
+                                        <select v-if="pozycja.is_towar" v-model="parts[pozycja.id]" :class="{
+                                            'bg-success': parts[pozycja.id] == 'mounted',
+                                            'bg-danger': parts[pozycja.id] == 'unmounted',
+                                            'bg-warning': parts[pozycja.id] == 'written'
+                                        }" class="form-control form-control-sm mt-1" style="width:30px;">
+                                            <option value="" disabled>{{ pozycja.nazwa }}</option>
+                                            <option value="">---</option>
+                                            <option v-for="n in pozycja.ilosc" :key="n" value="mounted">Zamontowane - {{ n }} szt.</option>
+                                            <option value="unmounted">Niezamontowane</option>
+                                            <option value="written">Rozpisane</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
                     <hr>
                     <div class="font-w700">Uwagi technika:</div>
                     <div v-if="!zlecenie.is_zakonczone">
@@ -129,11 +136,15 @@
 
 			<div class="pt-5"></div>
             <nav class="fixed-bottom bg-white p-2 text-right" style="box-shadow: 0px 6px 2px 8px rgba(0,0,0,.08);">
-                <button @click="setZlecenie(null)" type="button" class="btn bg-white text-muted">
+                <button @click="setZlecenie(null, true, false)" type="button" class="btn bg-white text-muted">
                     <i class="fa fa-reply"></i>
                     Cofnij
                 </button>
             </nav>
+        </div>
+        <div class="pb-3 text-center">
+            <hr>
+            © Adrian Gajos 2019
         </div>
     </div>
 </template>
@@ -147,7 +158,7 @@ window.onpopstate = function () {
 export default {
     data() {
         return {
-            renderComponent: true,
+            scroll_pos: 0,
             timer: null,
             date: 0,
             technik: null,
@@ -210,12 +221,27 @@ export default {
             return new_zlecenie;
         },
 
-		setZlecenie(zlecenie, scroll = true) {
+		setZlecenie(zlecenie, scroll = true, scroll_reset = true) {
+            if (zlecenie) {
+                this.rememberScroll();
+            }
 			this.zlecenie = zlecenie;
             if (scroll) {
-                window.scrollTo(0, 0);
+                this.doScroll(scroll_reset);
             }
 		},
+
+        doScroll(reset = false) {
+            if (reset) {
+                window.scrollTo(0, 0);
+            } else {
+                window.scrollTo(0, this.scroll_pos);
+            }
+        },
+
+        rememberScroll() {
+            this.scroll_pos = window.scrollY;
+        },
 
         addOpis() {
             if (this.new_opis == '') return false;
