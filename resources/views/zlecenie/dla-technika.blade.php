@@ -59,7 +59,7 @@
 							@endforeach
 						</div>
 
-                        @foreach ($terminy->sortByDesc('zlecenie._do_wyjasnienia') as $terminarz)
+                        @foreach ($terminy as $terminarz)
                             @php
                                 $zlecenie = $terminarz->zlecenie;
                             @endphp

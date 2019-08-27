@@ -1,8 +1,9 @@
 <template>
     <div>
         <div v-show="!zlecenie">
-            <div v-if="technik">
-                <h3>{{ technik.nazwa }} {{ date_string }}</h3>
+            <div v-if="technik" class="row mb-3">
+                <h3 class="col-7">{{ technik.nazwa }}</h3>
+                <date-picker class="col-5" @input="terminy=[];fetchZlecenia()" v-model="date" lang="en" valueType="format" :first-day-of-week="1"></date-picker>
             </div>
 
             <div v-if="terminy.length == 0">
@@ -160,7 +161,7 @@ export default {
         return {
             scroll_pos: 0,
             timer: null,
-            date: 0,
+            date: new Date().toJSON().slice(0,10),
             technik: null,
             zlecenie: null,
             terminy: [],
@@ -208,7 +209,7 @@ export default {
         updateZlecenieInstance() {
             if (! this.zlecenie) return false;
             this.setZlecenie(this.getZlecenieById(this.zlecenie.id), false);
-            console.log('updated');
+            // console.log('updated');
         },
 
         getZlecenieById(zlecenie_id) {

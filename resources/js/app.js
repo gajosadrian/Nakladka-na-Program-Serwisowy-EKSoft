@@ -12,6 +12,7 @@ import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'; import 'bootstrap-vue/dist/bootstrap-vue.min.css'
 import VueClipboard from 'vue-clipboard2'
 import Nl2br from 'vue-nl2br'
+import DatePicker from 'vue2-datepicker'
 
 
 
@@ -22,6 +23,7 @@ Vue.component('b-block', require('./components/Dashmix/Block/b-block.vue').defau
 Vue.component('zlecenie-opis', require('./components/Zlecenie/opis.vue').default);
 Vue.component('zlecenie-change-status', require('./components/Zlecenie/change-status.vue').default);
 Vue.component('zlecenie-mobile-app', require('./components/Zlecenie/mobile-app.vue').default);
+Vue.component('date-picker', DatePicker);
 
 
 
