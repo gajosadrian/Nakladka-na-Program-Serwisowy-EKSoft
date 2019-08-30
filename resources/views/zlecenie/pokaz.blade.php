@@ -291,6 +291,9 @@
                                                 <th class="font-w700" nowrap>Status</th>
                                                 <th class="font-w700" nowrap>Data</th>
                                                 <th class="font-w700" nowrap>Użytkownik</th>
+                                                @role('super-admin')
+                                                    <th class="font-w700"></th>
+                                                @endrole
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -305,6 +308,13 @@
                                                     </td>
                                                     <td nowrap>{{ $status_pozycja->data }}</td>
                                                     <td nowrap>{{ $status_pozycja->pracownik->nazwa }}</td>
+                                                    @role('super-admin')
+                                                        <td nowrap>
+                                                            <button onclick="removeStatus(this,{{ $status_pozycja->id }})" type="button" class="btn btn-sm btn-rounded btn-danger">
+                                                                <i class="fa fa-times"></i>
+                                                            </button>
+                                                        </td>
+                                                    @endrole
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -332,6 +342,20 @@ function zatwierdzBlad() {
         .then(function (response) {
             window.close();
         });
+}
+
+function removeStatus(el, id) {
+    let $this = $(el).parent().closest('tr');
+
+    $.post(route('zlecenia.api.removeStatus', {
+        status_id: id
+    }), {
+        _token: '{{ csrf_token() }}',
+        _method: 'delete'
+    })
+    .done(function (data) {
+        $this.addClass('table-danger');
+    });
 }
 
 </script>@endsection

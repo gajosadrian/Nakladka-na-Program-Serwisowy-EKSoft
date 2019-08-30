@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Facades\App\Models\Zlecenie\Zlecenie;
 use App\Models\Zlecenie\Terminarz;
 use App\Models\Zlecenie\Status;
+use App\Models\Zlecenie\StatusHistoria;
 use App\Models\Zlecenie\KosztorysPozycja;
 use App\Models\Zlecenie\ZatwierdzonyBlad;
 use App\Models\SMS\Technik;
@@ -224,6 +225,16 @@ class ZlecenieController extends Controller
         return response()->json('success', 200);
     }
 
+    public function apiRemoveStatus(Request $request, int $status_id)
+    {
+        $user = $request->user();
+        $status = StatusHistoria::findOrFail($status_id);
+
+        $status->delete();
+
+        return response()->json('success', 200);
+    }
+
     public function apiGetTerminarzStatusy(Request $request, int $technik_id, string $date_string = null)
     {
         $user = $request->user();
@@ -371,8 +382,8 @@ class ZlecenieController extends Controller
                     $item['zlecenie']['urzadzenie'] = [
                         'producent' => $termin->zlecenie->urzadzenie->producent,
                         'nazwa' => $termin->zlecenie->urzadzenie->nazwa,
-                        'model' => $termin->zlecenie->urzadzenie->model,
-                        'nr_seryjny' => $termin->zlecenie->urzadzenie->nr_seryjny,
+                        'model' => $termin->zlecenie->urzadzenie->model ?: 'Brak modelu',
+                        'nr_seryjny' => $termin->zlecenie->urzadzenie->nr_seryjny ?: 'Brak nr ser.',
                         'kod_wyrobu' => $termin->zlecenie->urzadzenie->kod_wyrobu,
                     ];
                 }

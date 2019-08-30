@@ -31,9 +31,9 @@
                     <div v-if="termin.zlecenie" class="clearfix">
                         <div class="float-left">
                             <div class="font-w700">
-                                <span v-if="termin.zlecenie.is_warsztat" class="text-warning">Warsztat</span>
-                                <span v-else-if="termin.zlecenie.is_dzwonic" class="text-info">Dzwonić</span>
-                                <span v-else-if="termin.zlecenie.checkable_umowiono && !termin.zlecenie.is_umowiono" class="text-danger">Nieumówione</span>
+                                <span v-if="termin.zlecenie.is_warsztat" class="bg-warning px-1">Warsztat</span>
+                                <span v-else-if="termin.zlecenie.is_dzwonic" class="bg-info text-white px-1">Dzwonić</span>
+                                <span v-else-if="termin.zlecenie.checkable_umowiono && !termin.zlecenie.is_umowiono" class="bg-danger text-white px-1">Nieumówione</span>
                                 <span v-else><br></span>
                             </div>
                             <a v-if="!termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_warsztat" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
@@ -208,14 +208,17 @@ export default {
 
         updateZlecenieInstance() {
             if (! this.zlecenie) return false;
-            this.setZlecenie(this.getZlecenieById(this.zlecenie.id), false);
-            // console.log('updated');
+            let zlecenie_id = this.getZlecenieById(this.zlecenie.id);
+            if (zlecenie_id) {
+                this.setZlecenie(zlecenie_id, false);
+                // console.log('updated');
+            }
         },
 
         getZlecenieById(zlecenie_id) {
             let new_zlecenie = false
             this.terminy.forEach(function (termin, index) {
-                if (termin.zlecenie.id == zlecenie_id) {
+                if (termin.zlecenie && termin.zlecenie.id == zlecenie_id) {
                     new_zlecenie = termin.zlecenie;
                 }
             });
@@ -230,6 +233,7 @@ export default {
             if (scroll) {
                 this.doScroll(scroll_reset);
             }
+            navigator.vibrate(50);
 		},
 
         doScroll(reset = false) {
@@ -252,9 +256,27 @@ export default {
             axios.post(route('zlecenia.api.append_opis', {
                 id: this.zlecenie.id,
                 opis: this.new_opis,
-            })).then(response => {
+            }))
+            .then(response => {
                 this.disable_OpisButton = false;
                 this.new_opis = '';
+                swal({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Dodano opis',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            })
+            .catch((error) => {
+                this.disable_OpisButton = false;
+                swal({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Spróbuj jeszcze raz',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             });
 
             this.changeStatus(41);

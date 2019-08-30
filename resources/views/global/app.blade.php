@@ -32,6 +32,7 @@
         <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('js/plugins/datatables/dataTables.bootstrap4.css') }}">
         <link rel="stylesheet" href="{{ asset('js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('js/plugins/sweetalert2/sweetalert2.min.css') }}">
 
         {{-- Theme --}}
         <link rel="stylesheet" href="{{ asset('css/themes/xmodern.css') }}">
@@ -114,6 +115,8 @@
         <script src="{{ asset('js/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
         <script src="{{ asset('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ asset('js/plugins/chart.js/Chart.bundle.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/es6-promise/es6-promise.auto.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
         {{-- <script src="{{ asset('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.pl.min.js') }}"></script> --}}
 
         {{-- Laravel Scaffolding JS --}}

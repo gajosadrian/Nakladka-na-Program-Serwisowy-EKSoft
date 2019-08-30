@@ -2383,12 +2383,16 @@ window.onpopstate = function () {
     },
     updateZlecenieInstance: function updateZlecenieInstance() {
       if (!this.zlecenie) return false;
-      this.setZlecenie(this.getZlecenieById(this.zlecenie.id), false); // console.log('updated');
+      var zlecenie_id = this.getZlecenieById(this.zlecenie.id);
+
+      if (zlecenie_id) {
+        this.setZlecenie(zlecenie_id, false); // console.log('updated');
+      }
     },
     getZlecenieById: function getZlecenieById(zlecenie_id) {
       var new_zlecenie = false;
       this.terminy.forEach(function (termin, index) {
-        if (termin.zlecenie.id == zlecenie_id) {
+        if (termin.zlecenie && termin.zlecenie.id == zlecenie_id) {
           new_zlecenie = termin.zlecenie;
         }
       });
@@ -2407,6 +2411,8 @@ window.onpopstate = function () {
       if (scroll) {
         this.doScroll(scroll_reset);
       }
+
+      navigator.vibrate(50);
     },
     doScroll: function doScroll() {
       var reset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
@@ -2432,6 +2438,22 @@ window.onpopstate = function () {
       })).then(function (response) {
         _this2.disable_OpisButton = false;
         _this2.new_opis = '';
+        swal({
+          position: 'center',
+          type: 'success',
+          title: 'Dodano opis',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }).catch(function (error) {
+        _this2.disable_OpisButton = false;
+        swal({
+          position: 'center',
+          type: 'error',
+          title: 'Spróbuj jeszcze raz',
+          showConfirmButton: false,
+          timer: 1500
+        });
       });
       this.changeStatus(41);
       this.fetchZlecenia();
@@ -44729,18 +44751,26 @@ var render = function() {
                                 termin.zlecenie.is_warsztat
                                   ? _c(
                                       "span",
-                                      { staticClass: "text-warning" },
+                                      { staticClass: "bg-warning px-1" },
                                       [_vm._v("Warsztat")]
                                     )
                                   : termin.zlecenie.is_dzwonic
-                                  ? _c("span", { staticClass: "text-info" }, [
-                                      _vm._v("Dzwonić")
-                                    ])
+                                  ? _c(
+                                      "span",
+                                      {
+                                        staticClass: "bg-info text-white px-1"
+                                      },
+                                      [_vm._v("Dzwonić")]
+                                    )
                                   : termin.zlecenie.checkable_umowiono &&
                                     !termin.zlecenie.is_umowiono
-                                  ? _c("span", { staticClass: "text-danger" }, [
-                                      _vm._v("Nieumówione")
-                                    ])
+                                  ? _c(
+                                      "span",
+                                      {
+                                        staticClass: "bg-danger text-white px-1"
+                                      },
+                                      [_vm._v("Nieumówione")]
+                                    )
                                   : _c("span", [_c("br")])
                               ]),
                               _vm._v(" "),

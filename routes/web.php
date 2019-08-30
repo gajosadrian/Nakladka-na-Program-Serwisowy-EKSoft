@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
         Route::post('api/nie_odbiera/{id}', 'ZlecenieController@apiNieOdbiera')->name('api.nie_odbiera');
         Route::post('api/zatwierdz_blad/{id}', 'ZlecenieController@apiZatwierdzBlad')->name('api.zatwierdz_blad');
         Route::get('api/terminarz_statusy/{technik_id}/{date_string?}', 'ZlecenieController@apiGetTerminarzStatusy')->name('api.terminarz_statusy');
+        Route::delete('api/remove-status/{status_id}', 'ZlecenieController@apiRemoveStatus')->name('api.removeStatus');
         Route::get('api/get-from-terminarz/{date_string?}', 'ZlecenieController@apiGetFromTerminarz')->name('api.getFromTerminarz');
 
     });

@@ -148,7 +148,6 @@
             value: value
         })
         .done(function (data) {
-            console.log(value);
             searchValue_last = value;
         });
     }, 5000)
