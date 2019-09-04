@@ -42,7 +42,7 @@
                                         <td nowrap>{{ str_limit($zlecenie->klient->nazwa, 30) }}</td>
                                         <td nowrap>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
                                         <td class="font-w600" nowrap><a href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</a></td>
-                                        <td nowrap>{{ $zlecenie->nr_obcy }}</td>
+                                        <td class="font-w700 text-danger" nowrap>{{ $zlecenie->nr_obcy }}</td>
                                         <td nowrap>{{ $zlecenie->urzadzenie->producent }}, {{ $zlecenie->urzadzenie->nazwa }}</td>
                                         <td nowrap>{{ $zlecenie->urzadzenie->nr_seryjny }}</td>
                                     </tr>

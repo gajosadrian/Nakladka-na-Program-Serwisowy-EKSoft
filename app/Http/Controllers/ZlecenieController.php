@@ -38,9 +38,14 @@ class ZlecenieController extends Controller
         $autorefresh = (bool) $user->technik_id;
 
         $zlecenia_unique = $zlecenia_niezakonczone->unique('nr_obcy');
-        $zlecenia_duplicate = $zlecenia_niezakonczone->where('nr_obcy')->diff($zlecenia_unique)->groupBy('nr_obcy')->filter(function ($zlecenie_duplicate) {
-            return $zlecenie_duplicate->count() == 2;
-        });
+        $zlecenia_duplicate_nr_obce = [];
+        foreach ($zlecenia_niezakonczone->where('nr_obcy')->diff($zlecenia_unique)->groupBy('nr_obcy') as $zlecenie_duplicate) {
+            if ($zlecenie_duplicate->count() == 1) {
+                $zlecenie = $zlecenie_duplicate[0];
+                $zlecenia_duplicate_nr_obce[] = $zlecenie->nr_obcy;
+            }
+        }
+        $zlecenia_duplicate = $zlecenia_niezakonczone->whereIn('nr_obcy', $zlecenia_duplicate_nr_obce)->groupBy('nr_obcy');
 
         return view('zlecenie.lista', [
             'zlecenia' => $zlecenia_niezakonczone,
