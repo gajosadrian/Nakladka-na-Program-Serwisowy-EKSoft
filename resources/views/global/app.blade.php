@@ -36,6 +36,7 @@
 
         {{-- Theme --}}
         <link rel="stylesheet" href="{{ asset('css/themes/xmodern.css') }}">
+        <meta name="theme-color" content="#3b5998">
         @yield('css_after')
 
         {{-- Scripts --}}

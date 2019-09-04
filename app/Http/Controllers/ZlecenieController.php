@@ -37,8 +37,14 @@ class ZlecenieController extends Controller
         $search_value = $user->getSavedField('zlecenia.search');
         $autorefresh = (bool) $user->technik_id;
 
+        $zlecenia_unique = $zlecenia_niezakonczone->unique('nr_obcy');
+        $zlecenia_duplicate = $zlecenia_niezakonczone->where('nr_obcy')->diff($zlecenia_unique)->groupBy('nr_obcy')->filter(function ($zlecenie_duplicate) {
+            return $zlecenie_duplicate->count() == 2;
+        });
+
         return view('zlecenie.lista', [
             'zlecenia' => $zlecenia_niezakonczone,
+            'zlecenia_duplicate' => $zlecenia_duplicate,
             'search_value' => $search_value,
             'autorefresh' => $autorefresh,
         ]);
