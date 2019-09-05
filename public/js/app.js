@@ -44959,6 +44959,10 @@ var render = function() {
                 _vm._v(" "),
                 _vm.zlecenie.kosztorys_pozycje.length > 0
                   ? [
+                      _c("div", { staticClass: "font-w700 mt-2" }, [
+                        _vm._v("Kosztorys:")
+                      ]),
+                      _vm._v(" "),
                       _c(
                         "div",
                         { staticClass: "font-size-sm" },
@@ -45065,12 +45069,16 @@ var render = function() {
                                       ])
                                     ]),
                                     _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      { staticClass: "float-right text-right" },
-                                      [
-                                        pozycja.is_towar
-                                          ? _c(
+                                    pozycja.is_towar &&
+                                    Number.isInteger(pozycja.ilosc)
+                                      ? _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "float-right text-right"
+                                          },
+                                          [
+                                            _c(
                                               "select",
                                               {
                                                 directives: [
@@ -45186,9 +45194,9 @@ var render = function() {
                                               ],
                                               2
                                             )
-                                          : _vm._e()
-                                      ]
-                                    )
+                                          ]
+                                        )
+                                      : _vm._e()
                                   ]
                                 )
                               ])

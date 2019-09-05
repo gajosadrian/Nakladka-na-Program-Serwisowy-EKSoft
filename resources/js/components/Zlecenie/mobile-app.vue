@@ -82,7 +82,7 @@
                     <div class="font-w700">Opis:</div>
                     <nl2br tag="div" :text="zlecenie.opis" />
                     <template v-if="zlecenie.kosztorys_pozycje.length > 0">
-                        <!-- <div class="font-w700 mt-2">Kosztorys:</div> -->
+                        <div class="font-w700 mt-2">Kosztorys:</div>
                         <div class="font-size-sm">
                             <div v-for="(pozycja, index2) in zlecenie.kosztorys_pozycje" v-if="pozycja.ilosc > 0" class="mt-2">
                                 <div class="clearfix border border-left-0 border-right-0 border-bottom-0">
@@ -104,8 +104,8 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="float-right text-right">
-                                        <select v-if="pozycja.is_towar" v-model="parts[pozycja.id]" :class="{
+                                    <div v-if="pozycja.is_towar && Number.isInteger(pozycja.ilosc)" class="float-right text-right">
+                                        <select v-model="parts[pozycja.id]" :class="{
                                             'bg-success': parts[pozycja.id] == 'mounted',
                                             'bg-danger': parts[pozycja.id] == 'unmounted',
                                             'bg-warning': parts[pozycja.id] == 'written'
