@@ -38,7 +38,7 @@ class RozliczenieController extends Controller
         $end_of_month = now()->endOfMonth();
         $diff = $now->diffInDays($end_of_month);
         $creatable_date = now()->startOfMonth();
-        if ($diff >= 15) {
+        if ($diff >= 30) {
             $creatable_date->subMonth();
         }
 
