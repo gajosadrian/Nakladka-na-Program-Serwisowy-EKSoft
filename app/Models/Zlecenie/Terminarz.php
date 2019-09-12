@@ -253,15 +253,10 @@ class Terminarz extends Model
             ->orderBy('STARTDATE')
             ->get();
 
-        $_order = 0;
-        $terminy->each(function ($termin) use ($zlecenia_do_wyjasnienia_symbole, $_order) {
+        $terminy->each(function ($termin) use ($zlecenia_do_wyjasnienia_symbole) {
             if (in_array($termin->zlecenie->nr, $zlecenia_do_wyjasnienia_symbole)) {
                 $termin->zlecenie->_do_wyjasnienia = true;
-                $termin->_order = -$_order;
-            } else {
-                $termin->_order = $_order;
             }
-            $_order++;
         });
 
         // $terminy = $terminy->sortBy(function ($termin) {

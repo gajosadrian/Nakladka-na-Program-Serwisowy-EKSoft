@@ -9,12 +9,12 @@
             <div v-if="terminy.length == 0">
                 Ładowanie zleceń...
             </div>
-            <div v-else v-for="(termin, index) in terminy" :class="{'bg-success-light': termin.zlecenie && termin.zlecenie.is_soft_zakonczone, 'border border-bold border-top-0 border-bottom-0 border-right-0 border-danger': termin.zlecenie && !termin.zlecenie.is_soft_zakonczone}" class="block block-rounded shadow-sm">
+            <div v-else v-for="(termin, index) in terminy" :class="{'bg-success-light': termin.zlecenie && termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_do_wyjasnienia, 'bg-danger-light': termin.zlecenie && termin.zlecenie.is_do_wyjasnienia && !termin.zlecenie.is_soft_zakonczone, 'bg-info-light': termin.zlecenie && termin.zlecenie.is_do_wyjasnienia && termin.zlecenie.is_soft_zakonczone, 'border border-bold border-top-0 border-bottom-0 border-right-0 border-danger': termin.zlecenie && !termin.zlecenie.is_soft_zakonczone}" class="block block-rounded shadow-sm">
                 <div @click="setZlecenie(termin.zlecenie)" :class="{'bg-gray': !termin.zlecenie}" class="block-content block-content-full p-2" style="cursor:pointer;">
                     <div class="clearfix">
                         <div class="float-left">
                             <div v-if="termin.zlecenie">
-                                <div class="font-size-sm text-muted"><i :class="termin.zlecenie.znacznik_icon"></i> {{ termin.zlecenie.znacznik_formatted }}</div>
+                                <div v-if="!termin.zlecenie.is_do_wyjasnienia" class="font-size-sm text-muted"><i :class="termin.zlecenie.znacznik_icon"></i> {{ termin.zlecenie.znacznik_formatted }}</div>
                                 <div><span class="font-w700">{{ termin.zlecenie.klient.nazwa }}</span> <span class="font-size-sm">- {{ termin.zlecenie.klient.symbol }}</span></div>
                                 <div>{{ termin.zlecenie.klient.kod_pocztowy }} {{ termin.zlecenie.klient.miasto }}</div>
                                 <div>{{ termin.zlecenie.klient.adres }}</div>
@@ -24,8 +24,13 @@
                             </div>
                         </div>
                         <div class="float-right text-right">
-                            <div>{{ termin.godzina_rozpoczecia }}</div>
-                            <div v-if="termin.zlecenie" class="text-muted font-size-sm">{{ termin.przeznaczony_czas_formatted }}</div>
+                            <template v-if="termin.zlecenie && !termin.zlecenie.is_do_wyjasnienia">
+                                <div>{{ termin.godzina_rozpoczecia }}</div>
+                                <div v-if="termin.zlecenie" class="text-muted font-size-sm">{{ termin.przeznaczony_czas_formatted }}</div>
+                            </template>
+                            <template v-else-if="termin.zlecenie && termin.zlecenie.is_do_wyjasnienia">
+                                <div class="bg-danger text-white font-size-sm font-w600 shadow rounded p-1">Do wyjaśnienia</div>
+                            </template>
                         </div>
                     </div>
                     <div v-if="termin.zlecenie" class="clearfix">
@@ -36,7 +41,7 @@
                                 <span v-else-if="termin.zlecenie.checkable_umowiono && !termin.zlecenie.is_umowiono" class="bg-danger text-white px-1">Nieumówione</span>
                                 <span v-else><br></span>
                             </div>
-                            <a v-if="!termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_warsztat" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
+                            <a v-if="!termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_warsztat && !termin.zlecenie.is_do_wyjasnienia" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
                                 <i class="fa fa-map-marker-alt"></i>
                                 Mapa
                             </a>

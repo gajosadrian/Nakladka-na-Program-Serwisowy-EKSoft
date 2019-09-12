@@ -2328,6 +2328,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 history.pushState(null, null, location.href);
 
 window.onpopstate = function () {
@@ -44647,7 +44652,17 @@ var render = function() {
                   staticClass: "block block-rounded shadow-sm",
                   class: {
                     "bg-success-light":
-                      termin.zlecenie && termin.zlecenie.is_soft_zakonczone,
+                      termin.zlecenie &&
+                      termin.zlecenie.is_soft_zakonczone &&
+                      !termin.zlecenie.is_do_wyjasnienia,
+                    "bg-danger-light":
+                      termin.zlecenie &&
+                      termin.zlecenie.is_do_wyjasnienia &&
+                      !termin.zlecenie.is_soft_zakonczone,
+                    "bg-info-light":
+                      termin.zlecenie &&
+                      termin.zlecenie.is_do_wyjasnienia &&
+                      termin.zlecenie.is_soft_zakonczone,
                     "border border-bold border-top-0 border-bottom-0 border-right-0 border-danger":
                       termin.zlecenie && !termin.zlecenie.is_soft_zakonczone
                   }
@@ -44670,21 +44685,25 @@ var render = function() {
                         _c("div", { staticClass: "float-left" }, [
                           termin.zlecenie
                             ? _c("div", [
-                                _c(
-                                  "div",
-                                  { staticClass: "font-size-sm text-muted" },
-                                  [
-                                    _c("i", {
-                                      class: termin.zlecenie.znacznik_icon
-                                    }),
-                                    _vm._v(
-                                      " " +
-                                        _vm._s(
-                                          termin.zlecenie.znacznik_formatted
+                                !termin.zlecenie.is_do_wyjasnienia
+                                  ? _c(
+                                      "div",
+                                      {
+                                        staticClass: "font-size-sm text-muted"
+                                      },
+                                      [
+                                        _c("i", {
+                                          class: termin.zlecenie.znacznik_icon
+                                        }),
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              termin.zlecenie.znacznik_formatted
+                                            )
                                         )
+                                      ]
                                     )
-                                  ]
-                                ),
+                                  : _vm._e(),
                                 _vm._v(" "),
                                 _c("div", [
                                   _c("span", { staticClass: "font-w700" }, [
@@ -44725,23 +44744,49 @@ var render = function() {
                               ])
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "float-right text-right" }, [
-                          _c("div", [
-                            _vm._v(_vm._s(termin.godzina_rozpoczecia))
-                          ]),
-                          _vm._v(" "),
-                          termin.zlecenie
-                            ? _c(
-                                "div",
-                                { staticClass: "text-muted font-size-sm" },
-                                [
-                                  _vm._v(
-                                    _vm._s(termin.przeznaczony_czas_formatted)
+                        _c(
+                          "div",
+                          { staticClass: "float-right text-right" },
+                          [
+                            termin.zlecenie &&
+                            !termin.zlecenie.is_do_wyjasnienia
+                              ? [
+                                  _c("div", [
+                                    _vm._v(_vm._s(termin.godzina_rozpoczecia))
+                                  ]),
+                                  _vm._v(" "),
+                                  termin.zlecenie
+                                    ? _c(
+                                        "div",
+                                        {
+                                          staticClass: "text-muted font-size-sm"
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              termin.przeznaczony_czas_formatted
+                                            )
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e()
+                                ]
+                              : termin.zlecenie &&
+                                termin.zlecenie.is_do_wyjasnienia
+                              ? [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "bg-danger text-white font-size-sm font-w600 shadow rounded p-1"
+                                    },
+                                    [_vm._v("Do wyjaśnienia")]
                                   )
                                 ]
-                              )
-                            : _vm._e()
-                        ])
+                              : _vm._e()
+                          ],
+                          2
+                        )
                       ]),
                       _vm._v(" "),
                       termin.zlecenie
@@ -44775,7 +44820,8 @@ var render = function() {
                               ]),
                               _vm._v(" "),
                               !termin.zlecenie.is_soft_zakonczone &&
-                              !termin.zlecenie.is_warsztat
+                              !termin.zlecenie.is_warsztat &&
+                              !termin.zlecenie.is_do_wyjasnienia
                                 ? _c(
                                     "a",
                                     {

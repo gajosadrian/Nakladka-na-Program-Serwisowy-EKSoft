@@ -14,6 +14,7 @@ class Zlecenie extends Model
     public $timestamps = false;
 
     private $_czas_oczekiwania;
+    private $_do_wyjasnienia;
 
     public const SYMBOLE_KOSZTORYSU = [
         // MOŻNA EDYTOWAĆ IMIONA
@@ -253,6 +254,11 @@ class Zlecenie extends Model
     public function getIsOdwolanoAttribute(): bool
     {
         return $this->anulowany or $this->status_id == Status::ODWOLANO_ID;
+    }
+
+    public function getIsDoWyjasnieniaAttribute(): bool
+    {
+        return $this->_do_wyjasnienia ?? false;
     }
 
     public function getIsZakonczoneAttribute(): bool
