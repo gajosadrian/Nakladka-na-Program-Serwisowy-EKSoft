@@ -29,27 +29,27 @@
             'route' => 'zlecenia.wyszukiwanieCzesci',
             'routeOptions' => [],
         ],
-        [
-            'name' => 'Części',
-        ],
-        [
-            'name' => 'Szykowanie części',
-            'icon' => 'si si-briefcase',
-            'route' => 'home',
-            'routeOptions' => [],
-        ],
-        [
-            'name' => 'Weryfikacja części',
-            'icon' => 'si si-check',
-            'route' => 'home',
-            'routeOptions' => [],
-        ],
-        [
-            'name' => 'Dodawanie części',
-            'icon' => 'si si-plus',
-            'route' => 'home',
-            'routeOptions' => [],
-        ],
+        // [
+        //     'name' => 'Części',
+        // ],
+        // [
+        //     'name' => 'Szykowanie części',
+        //     'icon' => 'si si-briefcase',
+        //     'route' => 'zlecenia.szykowanieCzesci',
+        //     'routeOptions' => [],
+        // ],
+        // [
+        //     'name' => 'Odbiór części',
+        //     'icon' => 'si si-check',
+        //     'route' => 'zlecenia.odbiorCzesci',
+        //     'routeOptions' => [],
+        // ],
+        // [
+        //     'name' => 'Dodawanie części',
+        //     'icon' => 'si si-plus',
+        //     'route' => 'zlecenia.dodawanieCzesci',
+        //     'routeOptions' => [],
+        // ],
         [
             'name' => 'Admin',
             'role' => 'super-admin',

@@ -156,10 +156,12 @@
 </template>
 
 <script>
-history.pushState(null, null, location.href);
-window.onpopstate = function () {
-    history.go(1);
-};
+if (window.location.href == route('zlecenia.mobileApp')) {
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+}
 
 export default {
     data() {

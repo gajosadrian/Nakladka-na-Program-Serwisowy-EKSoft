@@ -2333,11 +2333,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-history.pushState(null, null, location.href);
+if (window.location.href == route('zlecenia.mobileApp')) {
+  history.pushState(null, null, location.href);
 
-window.onpopstate = function () {
-  history.go(1);
-};
+  window.onpopstate = function () {
+    history.go(1);
+  };
+}
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {

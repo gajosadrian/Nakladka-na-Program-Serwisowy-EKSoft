@@ -145,12 +145,20 @@
 
             Dashmix.helpers(['table-tools-checkable', 'datepicker']);
 
-            // fixing printing background
+            {{-- fixing printing background --}}
             window.onbeforeprint = function() {
                 $('body').css('background', '#fff');
             }
             window.onafterprint = function() {
                 $('body').css('background', '');
+            }
+
+            {{-- page preloader --}}
+            $(window).on('beforeunload', function(e) {
+                Dashmix.layout('header_loader_on');
+            });
+            window.onload = function() {
+                Dashmix.layout('header_loader_off');
             }
 		})</script>
 

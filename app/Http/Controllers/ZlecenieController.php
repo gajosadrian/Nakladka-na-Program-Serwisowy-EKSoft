@@ -135,7 +135,6 @@ class ZlecenieController extends Controller
         $date_formatted = $date->format('d-m-Y');
         $is_up_to_date = $now_startOfDay->lte($date->copy()->endOfDay());
 
-        // $zlecenia = null;
         $terminy = null;
         $terminarz_notatki = null;
         $kierowca = null;
@@ -220,6 +219,32 @@ class ZlecenieController extends Controller
         $kosztorys_pozycje = KosztorysPozycja::with('zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie', 'zlecenie.terminarz')->where('id_o_tw', $towar_id)->orderByDesc('id')->limit(20)->get();
 
         return view('zlecenie.wyszukiwanie-czesci', compact('towar', 'towar_id', 'kosztorys_pozycje'));
+    }
+
+    public function menuCzesci()
+    {
+        return view('zlecenie.menu-czesci');
+    }
+
+    public function szykowanieCzesci(int $technik_id = null, string $date_string = null)
+    {
+        if (! $date_string) {
+            $today = today();
+            $date = $today->copy();
+            if ($today->copy()->addHours(10)->lt(now())) {
+                $date->addDay();
+            }
+            $date_string = $date->toDateString();
+        } else {
+            $date = Carbon::parse($date_string)->startOfDay();
+        }
+
+        $technicy = Technik::getLast();
+        $technik = Technik::find($technik_id);
+
+        $is_today = $date->isToday();
+
+        return view('zlecenie.szykowanie-czesci', compact('date', 'date_string', 'technik', 'technicy'));
     }
 
     public function apiZatwierdzBlad(Request $request, int $id)
