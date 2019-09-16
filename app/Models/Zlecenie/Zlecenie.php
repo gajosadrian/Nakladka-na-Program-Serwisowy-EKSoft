@@ -246,6 +246,17 @@ class Zlecenie extends Model
         return $this->attributes['Anulowany'] ?? false;
     }
 
+    public function getIsRozliczenieAttribute(): bool
+    {
+        if (!$this->rozliczenie or !$this->rozliczenie->rozliczenie) return false;
+        return true;
+    }
+
+    public function getIsTechnikAttribute(): bool
+    {
+        return (bool) $this->attributes['id_o_technika'];
+    }
+
     public function getIsOdplatneAttribute(): bool
     {
         return $this->zleceniodawca == self::ODPLATNE_NAME;
@@ -638,7 +649,7 @@ HTML;
 
     public function scopeWithRelations($query)
     {
-        return $query->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje', 'rozliczenie');
+        return $query->with('klient', 'status', 'terminarz', 'urzadzenie', 'kosztorys_pozycje', 'rozliczenie', 'technik');
     }
 
     /**
@@ -681,6 +692,15 @@ HTML;
         return $this->hasOne('App\Models\Zlecenie\Urzadzenie', 'ID_MASZYNY', 'id_maszyny')->withDefault([
             'NAZWA_MASZ' => 'Brak urządzenia',
             'KATEGORIA' => false,
+        ]);
+    }
+
+    public function technik()
+    {
+        return $this->hasOne('App\Models\SMS\Technik', 'id_technika', 'id_o_technika')->withDefault([
+            'Imie' => '-',
+            'Nazwisko' => '',
+            'akronim' => '',
         ]);
     }
 

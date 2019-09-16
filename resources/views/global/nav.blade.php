@@ -29,6 +29,12 @@
             'route' => 'zlecenia.wyszukiwanieCzesci',
             'routeOptions' => [],
         ],
+        [
+            'name' => 'Wyszukiwanie zlecenia',
+            'icon' => 'si si-doc',
+            'route' => 'zlecenia.wyszukiwanieZlecenia',
+            'routeOptions' => [],
+        ],
         // [
         //     'name' => 'Części',
         // ],

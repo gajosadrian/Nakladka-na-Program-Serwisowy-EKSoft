@@ -42,6 +42,16 @@ class Technik extends Model
         return str_replace('.', '', $this->attributes['Nazwisko']);
     }
 
+    public function getAkronimAttribute(): string
+    {
+        $words = explode(' ', $this->nazwa);
+        $acronym = '';
+        foreach ($words as $w) {
+            $acronym .= $w[0];
+        }
+        return $acronym;
+    }
+
     /**
      * Methods
      *

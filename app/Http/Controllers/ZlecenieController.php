@@ -211,6 +211,14 @@ class ZlecenieController extends Controller
         return view('rozliczenia.kilometrowka', compact('months', 'month', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'grouped_terminy'));
     }
 
+    public function wyszukiwanieZlecenia(Request $request, string $nr_zlec = null)
+    {
+        $zlecenie = Zlecenie::where('NrZlecenia', $request->nr_zlec ?? $nr_zlec)->first();
+        $zlecenie_id = @$zlecenie->id ?? null;
+
+        return view('zlecenie.wyszukiwanie-zlecenia', compact('zlecenie', 'zlecenie_id'));
+    }
+
     public function wyszukiwanieCzesci(Request $request, string $symbol = null)
     {
         $towar = Subiekt_Towar::where('tw_Symbol', $request->symbol ?? $symbol)->first();

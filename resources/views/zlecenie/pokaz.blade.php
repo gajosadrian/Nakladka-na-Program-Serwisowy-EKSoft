@@ -67,6 +67,10 @@
                                     @endif
                                 </td>
                             </tr>
+                            <tr>
+                                <th class="text-right">Rozliczenie:</th>
+                                <td class="text-success font-w600">{{ $zlecenie->is_rozliczenie ? $zlecenie->rozliczenie->rozliczenie->nr : '-' }}</td>
+                            </tr>
                         </table>
                     </template>
                 </b-block>
@@ -132,6 +136,10 @@
                                     <tr>
                                         <th>Termin&nbsp;do:</th>
                                         <td>{{ $zlecenie->terminarz->data_zakonczenia_formatted }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Technik:</th>
+                                        <td>{{ $zlecenie->technik->nazwa }}</td>
                                     </tr>
                                 </table>
                             </b-col>

@@ -139,7 +139,10 @@
 									</td>
 
 									<td class="d-none">
-										{{ $zlecenie->nr }} {{ $zlecenie->nr_obcy }}
+                                        {{ $zlecenie->nr }} {{ $zlecenie->nr_obcy }}
+                                        @if ($zlecenie->is_technik)
+                                            technik:{{ $zlecenie->technik->akronim }}
+                                        @endif
 										@foreach ($zlecenie->kosztorys_pozycje as $pozycja)
 											{{ $pozycja->opis }}
                                             {{ $pozycja->towar->symbol }}

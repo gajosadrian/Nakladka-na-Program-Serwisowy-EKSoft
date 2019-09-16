@@ -157,9 +157,9 @@
             $(window).on('beforeunload', function(e) {
                 Dashmix.layout('header_loader_on');
             });
-            window.onload = function() {
+            $(function() {
                 Dashmix.layout('header_loader_off');
-            }
+            });
 		})</script>
 
         @yield('js_after')

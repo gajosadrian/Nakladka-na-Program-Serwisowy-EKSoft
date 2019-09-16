@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
         Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');
         Route::get('dla-technika/{technik_id?}/{timestamp?}', 'ZlecenieController@dlaTechnika')->name('dla-technika');
         Route::get('kilometrowka/{technik_id?}/{month_id?}', 'ZlecenieController@kilometrowka')->name('kilometrowka');
+        Route::get('wyszukiwanie-zlecenia/{nr_zlec?}', 'ZlecenieController@wyszukiwanieZlecenia')->name('wyszukiwanieZlecenia');
         Route::get('wyszukiwanie-czesci/{symbol?}', 'ZlecenieController@wyszukiwanieCzesci')->name('wyszukiwanieCzesci');
         Route::get('menu-czesci', 'ZlecenieController@menuCzesci')->name('menuCzesci');
         Route::get('szykowanie-czesci/{technik_id?}/{date_string?}', 'ZlecenieController@szykowanieCzesci')->name('szykowanieCzesci');
