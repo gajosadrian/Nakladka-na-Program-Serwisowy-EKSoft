@@ -247,12 +247,20 @@ class ZlecenieController extends Controller
             $date = Carbon::parse($date_string)->startOfDay();
         }
 
+        $is_today = $date->isToday();
+
         $technicy = Technik::getLast();
         $technik = Technik::find($technik_id);
 
-        $is_today = $date->isToday();
+        $terminy = [];
+        if ($technik) {
+            $terminy = Terminarz::getTerminy($technik->id, $date_string, [
+                'do_wyjasnienia' => false,
+                'has_zlecenie' => true,
+            ]);
+        }
 
-        return view('zlecenie.szykowanie-czesci', compact('date', 'date_string', 'technik', 'technicy'));
+        return view('zlecenie.szykowanie-czesci', compact('date', 'date_string', 'technik', 'technicy', 'terminy'));
     }
 
     public function apiZatwierdzBlad(Request $request, int $id)

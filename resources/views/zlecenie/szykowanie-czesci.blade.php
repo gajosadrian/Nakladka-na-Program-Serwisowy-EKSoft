@@ -14,7 +14,7 @@
             <template slot="content">
                 <b-row>
                     <b-col>
-                        <select class="form-control" onchange="updateUrl(this, 'technik_id')">
+                        <select class="form-control form-control-alt" onchange="updateUrl(this, 'technik_id')">
                             <option value="0">-- Technik --</option>
                             @foreach ($technicy as $_technik)
                                 <option value="{{ $_technik->id }}" {{ ($_technik->id == @$technik->id) ? 'selected' : '' }}>
@@ -24,11 +24,66 @@
                         </select>
                     </b-col>
                     <b-col>
-                        <input type="text" class="js-datepicker form-control" value="{{ $date_string }}" onchange="updateUrl(this, 'date_string')">
+                        <input type="text" class="js-datepicker form-control form-control-alt" value="{{ $date_string }}" onchange="updateUrl(this, 'date_string')">
                     </b-col>
                 </b-row>
             </template>
         </b-block>
+        @foreach ($terminy as $termin)
+            @foreach ($termin->zlecenie->kosztorys_pozycje as $towar)
+                @continue(!$towar->is_towar)
+
+                <b-block class="mb-2">
+                    <template slot="content">
+                        <div>
+                            <div>{{ $termin->zlecenie->nr }}, <span class="font-w600">{{ $termin->zlecenie->klient->nazwa }}</span></div>
+                        </div>
+                        <div class="ribbon ribbon-{{ false ? 'success' : 'danger' }}">
+                            <div class="ribbon-box">{{ $towar->state_formatted }}</div>
+                            @if ($towar->is_zdjecie)
+                                <div>
+                                    <img src="{{ $towar->zdjecie_url }}" alt="zdjęcie" class="img-fluid">
+                                </div>
+                            @else
+                                <div class="py-5 text-center border">
+                                    <span class="font-w600"><i class="fa fa-camera fa-2x"></i> Brak zdjęcia</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="bg-danger text-white p-1 mb-1">
+                            <div class="clearfix">
+                                <div class="float-left font-w700">
+                                    @if ($towar->is_czesc_symbol)
+                                        {{ $towar->opis_fixed }}
+                                    @else
+                                        {{ str_limit($towar->nazwa, 30) }}
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row gutters-tiny">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input class="form-control {{ false ? 'form-control-alt is-valid' : '' }}" type="number" value="{{ $towar->ilosc }}" onclick="select()">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-{{ false ? '' : 'outline-' }}success"><i class="fa fa-check"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-8 text-right">
+                                <div>
+                                    <span class="mr-2">{{ $towar->symbol_dostawcy }}</span>
+                                    <span class="font-w600 bg-info text-white px-1">{{ $towar->symbol }}</span>
+                                </div>
+                                <div class="font-w700 text-success">{{ $towar->polka }}</div>
+                            </div>
+                        </div>
+                    </template>
+                </b-block>
+            @endforeach
+        @endforeach
     </div>
 @endsection
 

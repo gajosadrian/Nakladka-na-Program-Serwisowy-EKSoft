@@ -237,27 +237,42 @@ class Terminarz extends Model
         return $symbole;
     }
 
-    public static function getTerminy($technik_id, $date_string)
+    public static function getTerminy($technik_id, $date_string, array $options = [])
     {
-        $zlecenia_do_wyjasnienia_symbole = self::getZleceniaDoWyjasnieniaSymbole($technik_id, $date_string);
+        $opt_do_wyjasnienia = !isset($options['do_wyjasnienia']) or $options['do_wyjasnienia'];
+        $opt_has_zlecenie = $options['has_zlecenie'] ?? false;
+
+        if ($opt_do_wyjasnienia) {
+            $zlecenia_do_wyjasnienia_symbole = self::getZleceniaDoWyjasnieniaSymbole($technik_id, $date_string);
+        }
 
         $terminy = self::with('zlecenie.klient', 'zlecenie.urzadzenie', 'zlecenie.kosztorys_pozycje', 'zlecenie.status_historia')
             ->where(function ($query) use ($date_string, $technik_id) {
                 $query->where('STARTDATE', '>=', $date_string . ' 00:00:01');
                 $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');
                 $query->where('id_techn_term', $technik_id);
-            })
-            ->orWhereHas('zlecenie', function ($query) use ($zlecenia_do_wyjasnienia_symbole) {
+            });
+        if ($opt_do_wyjasnienia) {
+            $terminy = $terminy->orWhereHas('zlecenie', function ($query) use ($zlecenia_do_wyjasnienia_symbole) {
                 $query->whereIn('NrZlecenia', $zlecenia_do_wyjasnienia_symbole);
-            })
-            ->orderBy('STARTDATE')
+            });
+        }
+        $terminy = $terminy->orderBy('STARTDATE')
             ->get();
 
-        $terminy->each(function ($termin) use ($zlecenia_do_wyjasnienia_symbole) {
-            if (in_array($termin->zlecenie->nr, $zlecenia_do_wyjasnienia_symbole)) {
-                $termin->zlecenie->_do_wyjasnienia = true;
-            }
-        });
+        if ($opt_do_wyjasnienia) {
+            $terminy->each(function ($termin) use ($zlecenia_do_wyjasnienia_symbole) {
+                if (in_array($termin->zlecenie->nr, $zlecenia_do_wyjasnienia_symbole)) {
+                    $termin->zlecenie->_do_wyjasnienia = true;
+                }
+            });
+        }
+
+        if ($opt_has_zlecenie) {
+            $terminy = $terminy->filter(function ($termin) {
+                return (bool) $termin->zlecenie and $termin->zlecenie->id;
+            });
+        }
 
         // $terminy = $terminy->sortBy(function ($termin) {
         //     return $termin->data_rozpoczecia;

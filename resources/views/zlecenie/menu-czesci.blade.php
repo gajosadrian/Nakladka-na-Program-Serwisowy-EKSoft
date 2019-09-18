@@ -30,7 +30,7 @@
         <div class="row row-deck">
             @foreach ($items as $item)
                 <div class="col-md-6 col-xl-3">
-                    <a class="block block-rounded block-link-shadow d-flex justify-content-center align-items-start text-center bg-{{ $item['style'] }}" href="{{ $item['url'] }}">
+                    <a class="block block-rounded d-flex justify-content-center align-items-start text-center bg-{{ $item['style'] }}" href="{{ $item['url'] }}">
                         <div class="block-content block-content-full bg-white mt-1 align-self-stretch">
                             <div class="py-4">
                                 <i class="{{ $item['icon'] }} text-{{ $item['style'] }}"></i>

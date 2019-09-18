@@ -10,6 +10,11 @@ class KosztorysPozycja extends Model
     protected $table = 'ser_ZlecKosztPoz';
     protected $with = ['towar'];
 
+    private const ZAMONTOWANE_KEYS = ['zamontowan', 'zalozon'];
+    private const ODLOZONE_KEYS = ['odlozon'];
+    private const ROZPISANE_KEYS = ['rozpisan'];
+    private const ZAMOWIONE_KEYS = ['zamowion', 'zamowien'];
+
     /**
     * Attributes
     *
@@ -60,6 +65,11 @@ class KosztorysPozycja extends Model
         if ($opis == '') return false;
         $opis = preg_replace("/\[[^)]+\]/", '', $opis);
         return $opis;
+    }
+
+    public function getOpisAsciiAttribute(): string
+    {
+        return iconv('UTF-8', 'ascii//translit', $this->opis);
     }
 
     public function getCenaAttribute(): float
@@ -134,6 +144,67 @@ class KosztorysPozycja extends Model
             return $match[1];
         }
         return false;
+    }
+
+    public function getIsZdjecieAttribute(): bool
+    {
+        return $this->towar->is_zdjecie;
+    }
+
+    public function getZdjecieUrlAttribute(): string
+    {
+        return $this->towar->zdjecie_url;
+    }
+
+    public function getIsCzescSymbolAttribute(): bool
+    {
+        return $this->symbol == 'CZĘŚĆ';
+    }
+
+    public function getIsZamontowaneAttribute(): bool
+    {
+        return $this->hasKey(self::ZAMONTOWANE_KEYS);
+    }
+
+    public function getIsOdlozoneAttribute(): bool
+    {
+        return $this->hasKey(self::ODLOZONE_KEYS);
+    }
+
+    public function getIsRozpisaneAttribute(): bool
+    {
+        return $this->hasKey(self::ROZPISANE_KEYS);
+    }
+
+    public function getIsZamowioneAttribute(): bool
+    {
+        return $this->hasKey(self::ZAMOWIONE_KEYS);
+    }
+
+    public function getStateFormattedAttribute(): string
+    {
+        if ($this->is_zamontowane) {
+            return 'Zamontowane';
+        } elseif ($this->is_odlozone) {
+            return 'Odłożone';
+        } elseif ($this->is_rozpisane) {
+            return 'Rozpisane';
+        } elseif ($this->is_zamowione) {
+            return 'Zamówione';
+        } elseif (!$this->is_czesc_symbol and $this->opis) {
+            return $this->opis;
+        }
+        return '-';
+    }
+
+    /**
+    * Methods
+    *
+    */
+
+    public function hasKey(array $keys): bool
+    {
+        return str_contains($this->opis_ascii, $keys);
     }
 
     /**
