@@ -174,7 +174,7 @@
                                                     ◦◦ Umówił: {{ $zlecenie->last_status_umowiono->pracownik->nazwa }} {{ $zlecenie->last_status_umowiono->data->format('m.d H:i') }}
                                                 @endif
                                                 @if (true)
-                                                    ◦◦ Trwanie zlecenia: {{ $zlecenie->czas_oczekiwania_formatted }}
+                                                    ◦◦ Trwanie zlecenia: {{ $zlecenie->czas_trwania_formatted }}
                                                 @endif
                                             </span>
                                         </div>

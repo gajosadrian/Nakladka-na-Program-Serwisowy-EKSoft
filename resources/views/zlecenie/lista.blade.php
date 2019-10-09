@@ -56,6 +56,13 @@
 
         <b-block>
             <template slot="content">
+                <div class="">
+                    <b-button variant="success" size="sm" onclick="location.reload()">
+                        <i class="fa fa-sync-alt"></i>
+                        Odśwież
+                    </b-button>
+                </div>
+
                 <div class="table-responsive">
                     <table id="zlecenia{{ $room }}" class="table table-sm table-striped table-hover table-vcenter font-size-sm dataTable">
 						<thead>
@@ -147,6 +154,9 @@
 											{{ $pozycja->opis }}
                                             {{ $pozycja->towar->symbol }}
                                             {{ $pozycja->towar->symbol_dostawcy }}
+                                            @if ($pozycja->towar->symbol_dostawcy != $pozycja->towar->symbol_dostawcy_min)
+                                                {{ $pozycja->towar->symbol_dostawcy_min }}
+                                            @endif
                                             {{ $pozycja->towar->symbol_dostawcy2 }}
                                             {{ $pozycja->towar->opis }}
 										@endforeach

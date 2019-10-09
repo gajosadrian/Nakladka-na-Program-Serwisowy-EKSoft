@@ -80,9 +80,11 @@ class ZlecenieController extends Controller
     public function show($id)
     {
         $zlecenie = Zlecenie::findOrFail($id);
+        $statusy_aktywne = Status::getAktywne();
 
         return view('zlecenie.pokaz', compact(
-            'zlecenie'
+            'zlecenie',
+            'statusy_aktywne'
         ));
     }
 
@@ -227,40 +229,6 @@ class ZlecenieController extends Controller
         $kosztorys_pozycje = KosztorysPozycja::with('zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie', 'zlecenie.terminarz')->where('id_o_tw', $towar_id)->orderByDesc('id')->limit(20)->get();
 
         return view('zlecenie.wyszukiwanie-czesci', compact('towar', 'towar_id', 'kosztorys_pozycje'));
-    }
-
-    public function menuCzesci()
-    {
-        return view('zlecenie.menu-czesci');
-    }
-
-    public function szykowanieCzesci(int $technik_id = null, string $date_string = null)
-    {
-        if (! $date_string) {
-            $today = today();
-            $date = $today->copy();
-            if ($today->copy()->addHours(10)->lt(now())) {
-                $date->addDay();
-            }
-            $date_string = $date->toDateString();
-        } else {
-            $date = Carbon::parse($date_string)->startOfDay();
-        }
-
-        $is_today = $date->isToday();
-
-        $technicy = Technik::getLast();
-        $technik = Technik::find($technik_id);
-
-        $terminy = [];
-        if ($technik) {
-            $terminy = Terminarz::getTerminy($technik->id, $date_string, [
-                'do_wyjasnienia' => false,
-                'has_zlecenie' => true,
-            ]);
-        }
-
-        return view('zlecenie.szykowanie-czesci', compact('date', 'date_string', 'technik', 'technicy', 'terminy'));
     }
 
     public function apiZatwierdzBlad(Request $request, int $id)

@@ -2333,6 +2333,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 if (window.location.href == route('zlecenia.mobileApp')) {
   history.pushState(null, null, location.href);
 
@@ -2344,6 +2345,7 @@ if (window.location.href == route('zlecenia.mobileApp')) {
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      _token: '',
       scroll_pos: 0,
       timer: null,
       date: new Date().toJSON().slice(0, 10),
@@ -2369,6 +2371,13 @@ if (window.location.href == route('zlecenia.mobileApp')) {
       }
 
       return false;
+    },
+    opis_formatted: function opis_formatted() {
+      if (!this.zlecenie) return false;
+      var opis = this.zlecenie.opis.split("\n").join('<br>');
+      opis = opis.split('>>').join('<span class="font-w600 text-danger"><u>');
+      opis = opis.split('<<').join('</u></span>');
+      return opis;
     }
   },
   methods: {
@@ -2442,7 +2451,9 @@ if (window.location.href == route('zlecenia.mobileApp')) {
       axios.post(route('zlecenia.api.append_opis', {
         id: this.zlecenie.id,
         opis: this.new_opis
-      })).then(function (response) {
+      }), {
+        _token: this._token
+      }).then(function (response) {
         _this2.disable_OpisButton = false;
         _this2.new_opis = '';
         swal({
@@ -45003,7 +45014,9 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "font-w700" }, [_vm._v("Opis:")]),
                 _vm._v(" "),
-                _c("nl2br", { attrs: { tag: "div", text: _vm.zlecenie.opis } }),
+                _c("div", {
+                  domProps: { innerHTML: _vm._s(_vm.opis_formatted) }
+                }),
                 _vm._v(" "),
                 _vm.zlecenie.kosztorys_pozycje.length > 0
                   ? [

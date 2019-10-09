@@ -104,10 +104,20 @@
                                     </tr>
                                     <tr>
                                         <th>Status:</th>
-                                        <td class="align-middle {{ $zlecenie->status->color ? 'table-' . $zlecenie->status->color : '' }}">
-                                            <i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }} mx-2"></i>
-    										{{ $zlecenie->status->nazwa }}
-                                        </td>
+                                        @if ($user->is_technik)
+                                            <td class="align-middle {{ $zlecenie->status->color ? 'table-' . $zlecenie->status->color : '' }}">
+                                                <i class="{{ $zlecenie->status->icon }} {{ $zlecenie->status->color ? 'text-' . $zlecenie->status->color : '' }} mx-2"></i>
+        										{{ $zlecenie->status->nazwa }}
+                                            </td>
+                                        @else
+                                            <td>
+                                                <select class="form-control form-control-sm font-w700 {{ $zlecenie->status->color ? 'bg-'.$zlecenie->status->color.'-lighter' : '' }}">
+                                                    @foreach ($statusy_aktywne as $status)
+                                                        <option value="{{ $status->id }}" {{ ($status->id == $zlecenie->status->id) ? 'selected' : '' }}>{{ $status->nazwa }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <th>Przyjmujący:</th>
@@ -193,30 +203,54 @@
                             <b-button-group size="sm" class="mr-2">
                                 @if ($user->is_technik)
                                     @if ($zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
-                                        <zlecenie-change-status
-                                            zlecenie_id=@json($zlecenie->id)
-                                            status_id=@json(App\Models\Zlecenie\Status::DO_WYCENY_ID)
-                                            remove_termin="0"
-                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_WYCENY_ID))
-                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_WYCENY_ID))
-                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYCENY_ID))
-                                        ></zlecenie-change-status>
-                                        <zlecenie-change-status class="ml-1"
-                                            zlecenie_id=@json($zlecenie->id)
-                                            status_id=@json(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID)
-                                            remove_termin="0"
-                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
-                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
-                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
-                                        ></zlecenie-change-status>
-                                        <zlecenie-change-status class="ml-1"
-                                            zlecenie_id=@json($zlecenie->id)
-                                            status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
-                                            remove_termin="0"
-                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
-                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
-                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
-                                        ></zlecenie-change-status>
+                                        @if ($zlecenie->is_gwarancja)
+                                            <zlecenie-change-status
+                                                zlecenie_id=@json($zlecenie->id)
+                                                status_id=@json(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID)
+                                                remove_termin="0"
+                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
+                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
+                                            ></zlecenie-change-status>
+                                        @else
+                                            <zlecenie-change-status
+                                                zlecenie_id=@json($zlecenie->id)
+                                                status_id=@json(App\Models\Zlecenie\Status::DO_WYCENY_ID)
+                                                remove_termin="0"
+                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                            ></zlecenie-change-status>
+                                        @endif
+                                        @if ($zlecenie->is_odplatne)
+                                            <zlecenie-change-status class="ml-1"
+                                                zlecenie_id=@json($zlecenie->id)
+                                                status_id=@json(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID)
+                                                remove_termin="0"
+                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                            ></zlecenie-change-status>
+                                        @endif
+                                        @if ($zlecenie->was_warsztat)
+                                            <zlecenie-change-status class="ml-1"
+                                                zlecenie_id=@json($zlecenie->id)
+                                                status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
+                                                remove_termin="0"
+                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                            ></zlecenie-change-status>
+                                        @else
+                                            <zlecenie-change-status class="ml-1"
+                                                zlecenie_id=@json($zlecenie->id)
+                                                status_id=@json(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID)
+                                                remove_termin="1"
+                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                            ></zlecenie-change-status>
+                                        @endif
                                     @endif
                                 @elseif (!$user->is_technik)
                                     @if (count($zlecenie->errors) > 0)

@@ -29,10 +29,7 @@ Route::middleware('auth')->group(function () {
         Route::get('kilometrowka/{technik_id?}/{month_id?}', 'ZlecenieController@kilometrowka')->name('kilometrowka');
         Route::get('wyszukiwanie-zlecenia/{nr_zlec?}', 'ZlecenieController@wyszukiwanieZlecenia')->name('wyszukiwanieZlecenia');
         Route::get('wyszukiwanie-czesci/{symbol?}', 'ZlecenieController@wyszukiwanieCzesci')->name('wyszukiwanieCzesci');
-        Route::get('menu-czesci', 'ZlecenieController@menuCzesci')->name('menuCzesci');
-        Route::get('szykowanie-czesci/{technik_id?}/{date_string?}', 'ZlecenieController@szykowanieCzesci')->name('szykowanieCzesci');
-        Route::get('odbior-czesci/{technik_id?}', 'ZlecenieController@odbiorCzesci')->name('odbiorCzesci');
-        Route::get('dodawanie-czesci/{technik_id?}/{date_string?}', 'ZlecenieController@dodawanieCzesci')->name('dodawanieCzesci');
+        Route::get('menu-czesci', 'CzesciController@indexMenu')->name('indexMenu');
 
         Route::get('api/get_opis/{id}', 'ZlecenieController@apiGetOpis')->name('api.get_opis');
         Route::post('api/append_notatka/{id}', 'ZlecenieController@apiAppendNotatka')->name('api.append_opis');
@@ -43,7 +40,12 @@ Route::middleware('auth')->group(function () {
         Route::get('api/terminarz_statusy/{technik_id}/{date_string?}', 'ZlecenieController@apiGetTerminarzStatusy')->name('api.terminarz_statusy');
         Route::delete('api/remove-status/{status_id}', 'ZlecenieController@apiRemoveStatus')->name('api.removeStatus');
         Route::get('api/get-from-terminarz/{date_string?}', 'ZlecenieController@apiGetFromTerminarz')->name('api.getFromTerminarz');
+    });
 
+    Route::prefix('czesci')->name('czesci.')->group(function () {
+        Route::get('szykowanie/{technik_id?}/{date_string?}', 'CzesciController@indexSzykowanie')->name('indexSzykowanie');
+        Route::get('odbior/{technik_id?}', 'CzesciController@indexOdbior')->name('indexOdbior');
+        Route::get('dodawanie/{technik_id?}/{date_string?}', 'CzesciController@indexDodawanie')->name('indexDodawanie');
     });
 
     Route::prefix('admin')->middleware('role:super-admin')->group(function () {

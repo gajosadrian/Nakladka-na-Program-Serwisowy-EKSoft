@@ -95,7 +95,7 @@ let date_string = @json($date_string);
 function updateUrl(_this, type) {
     let value = $(_this).val();
 
-    window.location.replace(route('zlecenia.szykowanieCzesci', {
+    window.location.replace(route('czesci.indexSzykowanie', {
         technik_id: (type == 'technik_id') && value || technik_id,
         date_string: (type == 'date_string') && value || date_string,
     }));

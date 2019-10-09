@@ -85,7 +85,8 @@
                     </div>
                     <hr>
                     <div class="font-w700">Opis:</div>
-                    <nl2br tag="div" :text="zlecenie.opis" />
+                    <div v-html="opis_formatted"></div>
+                    <!-- <nl2br tag="div" :text="opis_formatted" /> -->
                     <template v-if="zlecenie.kosztorys_pozycje.length > 0">
                         <div class="font-w700 mt-2">Kosztorys:</div>
                         <div class="font-size-sm">
@@ -166,6 +167,7 @@ if (window.location.href == route('zlecenia.mobileApp')) {
 export default {
     data() {
         return {
+            _token: '',
             scroll_pos: 0,
             timer: null,
             date: new Date().toJSON().slice(0,10),
@@ -194,6 +196,14 @@ export default {
             }
             return false;
         },
+
+        opis_formatted() {
+            if ( ! this.zlecenie) return false;
+            let opis = this.zlecenie.opis.split("\n").join('<br>');
+            opis = opis.split('>>').join('<span class="font-w600 text-danger"><u>');
+            opis = opis.split('<<').join('</u></span>');
+            return opis;
+        }
     },
 
     methods: {
@@ -263,7 +273,9 @@ export default {
             axios.post(route('zlecenia.api.append_opis', {
                 id: this.zlecenie.id,
                 opis: this.new_opis,
-            }))
+            }), {
+                _token: this._token,
+            })
             .then(response => {
                 this.disable_OpisButton = false;
                 this.new_opis = '';

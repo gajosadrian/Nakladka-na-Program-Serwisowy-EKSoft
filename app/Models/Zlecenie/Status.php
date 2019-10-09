@@ -27,7 +27,27 @@ class Status extends Model
         38 => [ 'icon' => 'fa fa-comments', 'color' => 'info' ], 39 => [ 'icon' => 'fa fa-cart-plus', 'color' => 'secondary' ], 40 => [ 'icon' => 'fa fa-calculator', 'color' => 'secondary' ],
         41 => [ 'icon' => 'fa fa-question', 'color' => 'danger' ], 42 => [ 'icon' => 'fa fa-phone', 'color' => 'secondary' ], 43 => [ 'icon' => 'fa fa-flag', 'color' => 'success' ],
     ];
+    public const AKTYWNE_IDS = [
+        self::GOTOWE_DO_WYJAZDU_ID,
+        self::UMOWIONO_ID,
+        self::NA_WARSZTACIE_ID,
+        self::DO_WYJASNIENIA_ID,
+        self::DO_WYCENY_ID,
+        self::DO_ZAMOWIENIA_ID,
+        self::DO_POINFORMOWANIA_ID,
+        self::INFO_O_KOSZTACH_ID,
+        self::ZAMOWIONO_CZESC_ID,
+        self::DZWONIC_PO_ODBIOR_ID,
+        self::DO_ODBIORU_ID,
+        self::ZAKONCZONE_ID,
+        self::DO_ROZLICZENIA_ID,
+        self::ODWOLANO_ID,
+    ];
 
+    /**
+     * Attributes
+     *
+     */
     public function getIdAttribute(): int
     {
         return $this->attributes['id_stat'] ?? false;
@@ -40,12 +60,12 @@ class Status extends Model
 
     public function getIconAttribute(): string
     {
-        return self::$PROPERTIES[$this->id]['icon'] ?? 'fa fa-question';
+        return self::getIcon($this->id);
     }
 
     public function getColorAttribute(): string
     {
-        return self::$PROPERTIES[$this->id]['color'] ?? 'secondary';
+        return self::getColor($this->id);
     }
 
     public static function getName(int $id)
@@ -53,13 +73,30 @@ class Status extends Model
         return self::find($id)->nazwa;
     }
 
+    /**
+     * Methods
+     *
+     */
+    public static function getAktywne()
+    {
+        $statusy = self::whereIn('id_stat', self::AKTYWNE_IDS)->get();
+        $statusy_aktywne_ids = self::AKTYWNE_IDS;
+
+        foreach ($statusy_aktywne_ids as $key => $status_aktywny_id) {
+            $statusy->where('id_stat', $status_aktywny_id)->first()->order = $key;
+        }
+        $statusy = $statusy->sortBy('order');
+
+        return $statusy;
+    }
+
     public static function getIcon(int $id)
     {
-        return self::$PROPERTIES[$id]['icon'];
+        return self::$PROPERTIES[$id]['icon'] ?? 'fa fa-question';
     }
 
     public static function getColor(int $id)
     {
-        return self::$PROPERTIES[$id]['color'];
+        return self::$PROPERTIES[$id]['color'] ?? 'secondary';
     }
 }

@@ -262,6 +262,11 @@ class Zlecenie extends Model
         return $this->zleceniodawca == self::ODPLATNE_NAME;
     }
 
+    public function getIsGwarancjaAttribute(): bool
+    {
+        return $this->znacznik->nazwa == self::GWARANCJA_NAME;
+    }
+
     public function getIsOdwolanoAttribute(): bool
     {
         return $this->anulowany or $this->status_id == Status::ODWOLANO_ID;
@@ -294,7 +299,7 @@ class Zlecenie extends Model
 
     public function getWasWarsztatAttribute(): bool
     {
-        foreach ($this->statusy as $status) {
+        foreach ($this->statusy->sortBy('data') as $status) {
             if ($status->status_id == Status::NA_WARSZTACIE_ID) {
                 return true;
             } elseif (in_array($status->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::UMOWIONO_ID])) {

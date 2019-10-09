@@ -9,6 +9,7 @@ class Subiekt_Towar extends Model
     protected $connection = 'sqlsrv2';
     protected $table = 'tw__Towar';
     protected $primaryKey = 'tw_Id';
+    protected $with = ['zdjecia'];
 
     /**
     * Attributes
@@ -40,9 +41,19 @@ class Subiekt_Towar extends Model
         return $this->attributes['tw_DostSymbol'] ?? false;
     }
 
+    public function getSymbolDostawcyMinAttribute()
+    {
+        return str_replace(['-', '.'], '', $this->symbol_dostawcy);
+    }
+
     public function getSymbolDostawcy2Attribute(): string
     {
         return $this->attributes['tw_Pole3'] ?? false;
+    }
+
+    public function getSymbolDostawcy2MinAttribute()
+    {
+        return str_replace(['-', '.'], '', $this->symbol_dostawcy2);
     }
 
     public function getPolkaAttribute(): string

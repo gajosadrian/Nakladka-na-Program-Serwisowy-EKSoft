@@ -6,21 +6,21 @@
             'desc' => 'dla serwisanta na kolejny wyjazd',
             'icon' => 'fa fa-2x fa-briefcase',
             'style' => 'xplay',
-            'url' => route('zlecenia.szykowanieCzesci'),
+            'url' => route('czesci.indexSzykowanie'),
         ],
         [
             'title' => 'Odbiór części',
             'desc' => 'po wykonanych naprawach',
             'icon' => 'fa fa-2x fa-check-circle',
             'style' => 'xeco',
-            'url' => route('zlecenia.odbiorCzesci'),
+            'url' => route('czesci.indexOdbior'),
         ],
         [
             'title' => 'Dodawanie części',
             'desc' => 'do dzisiejszych zleceń na bieżąco',
             'icon' => 'fa fa-2x fa-plus-circle',
             'style' => 'xpro',
-            'url' => route('zlecenia.dodawanieCzesci'),
+            'url' => route('czesci.indexDodawanie'),
         ],
     ];
 @endphp
