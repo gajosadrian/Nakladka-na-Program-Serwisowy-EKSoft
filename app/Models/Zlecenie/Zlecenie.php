@@ -25,6 +25,7 @@ class Zlecenie extends Model
     public const ERROR_STR = '*Error*';
     public const ODPLATNE_NAME = 'Odpłatne';
     public const GWARANCJA_NAME = 'Gwarancja';
+    public const UBEZPIECZENIE_NAME = 'Ubezpieczenie';
     public const SPRZEDAZ_CZESCI_NAME = 'Sprzedaż części';
 	public const MONTAZ_URZADZENIA_NAME = 'Montaż urządzenia';
     public const ZLECENIODAWCY = [
@@ -42,7 +43,7 @@ class Zlecenie extends Model
         'Deante' => ['deante', 'deande'],
         'Ciarko' => ['ciarko', 'ciarco'],
         'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi'],
-        'Europ Assistance' => ['europ assistance', 'europ-assistance', 'europ', 'eap'],
+        'Europ Assistance' => ['europ assistance', 'europ-assistance', 'europ', 'eap', 'assistance'],
         'RTV Euro AGD' => ['euro-net', 'euro net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
         'Mentax' => ['mentax', 'mentaks'],
         'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
@@ -130,7 +131,7 @@ class Zlecenie extends Model
                 'color' => false,
             ],
             'H' => (object) [
-                'nazwa' => 'Ubezpieczenie',
+                'nazwa' => self::UBEZPIECZENIE_NAME,
                 'icon' => 'fa fa-hands-helping',
                 'color' => false,
             ],
@@ -265,6 +266,11 @@ class Zlecenie extends Model
     public function getIsGwarancjaAttribute(): bool
     {
         return $this->znacznik->nazwa == self::GWARANCJA_NAME;
+    }
+
+    public function getIsUbezpieczenieAttribute(): bool
+    {
+        return $this->znacznik->nazwa == self::UBEZPIECZENIE_NAME;
     }
 
     public function getIsOdwolanoAttribute(): bool
@@ -622,6 +628,11 @@ HTML;
         return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', 1500, 800)";
     }
 
+    public function getPopupZdjeciaLinkAttribute(): string
+    {
+        return "PopupCenter('" . route('zlecenia.pokazZdjecia', $this->id) . "', 'zlecenie_zdjecia" . $this->id . "', 1000, 500, -250)";
+    }
+
     public function getStatusyAttribute()
     {
         return $this->status_historia->sortByDesc('data');
@@ -729,6 +740,11 @@ HTML;
         return $this->hasOne('App\Models\Zlecenie\ZatwierdzonyBlad', 'zlecenie_id', 'id_zlecenia');
     }
 
+    public function zdjecia()
+    {
+        return $this->hasMany('App\Models\Zlecenie\Zdjecie', 'zlecenie_id', 'id_zlecenia');
+    }
+
     /**
     * Methods
     *
@@ -820,12 +836,12 @@ HTML;
     //     return $sum;
     // }
 
-    public function changeStatus(int $status_id, int $pracownik_id, bool $remove_termin = false): void
+    public function changeStatus(int $status_id, int $pracownik_id, bool $remove_termin = false, int $add_seconds = 0): void
     {
         $status_historia = new StatusHistoria;
         $status_historia->pracownik_id = $pracownik_id;
         $status_historia->status_id = $status_id;
-        $status_historia->data = now()->format('Y-m-d H:i:s.000');
+        $status_historia->data = now()->addSeconds($add_seconds)->format('Y-m-d H:i:s.000');
         $status_historia->nr_o_zlecenia = null;
 
         $this->status_historia()->save($status_historia);

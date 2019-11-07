@@ -47,11 +47,28 @@ class ZlecenieController extends Controller
         }
         $zlecenia_duplicate = $zlecenia_niezakonczone->whereIn('nr_obcy', $zlecenia_duplicate_nr_obce)->groupBy('nr_obcy');
 
+        $zlecenia_ukonczone = $zlecenia_niezakonczone->filter(function ($zlecenie) {
+            return in_array($zlecenie->status_id, [
+                Status::ZAKONCZONE_ID,
+                Status::ODWOLANO_ID,
+                Status::WNIOSEK_O_WYMIANE_ID,
+                Status::DO_ODBIORU_ID,
+                Status::CZESCI_DO_WYSLANIA_ID,
+                Status::DO_ROZLICZENIA_ID,
+                Status::DZWONIC_PO_ODBIOR_ID,
+            ]);
+        });
+        $zlecenia_ukonczone_n = $zlecenia_ukonczone->count();
+        $zlecenia_n = $zlecenia_niezakonczone->count();
+        $zlecenia_realizowane_n = $zlecenia_n - $zlecenia_ukonczone_n;
+
         return view('zlecenie.lista', [
             'zlecenia' => $zlecenia_niezakonczone,
             'zlecenia_duplicate' => $zlecenia_duplicate,
             'search_value' => $search_value,
             'autorefresh' => $autorefresh,
+            'zlecenia_ukonczone_n' => $zlecenia_ukonczone_n,
+            'zlecenia_realizowane_n' => $zlecenia_realizowane_n,
         ]);
     }
 
@@ -193,12 +210,12 @@ class ZlecenieController extends Controller
         $terminy = null;
         if ($technik) {
             $terminy = Terminarz::with('technik', 'zlecenie', 'zlecenie.klient', 'zlecenie.status_historia')
-                ->where('STARTDATE', '>=', $date_from->toDateString() . ' 00:00:00')
+                ->where('STARTDATE', '>=', $date_from->toDateString() . ' 00:00:01')
                 ->where('ENDDATE', '<=', $date_to->toDateString() . ' 23:59:59')
                 ->orderBy('STARTDATE')
                 ->get()
                 ->filter(function ($termin) {
-                    return !$termin->is_samochod and !$termin->has_dzwonic;
+                    return !$termin->is_samochod; // and !$termin->has_dzwonic
                 })
                 ->groupBy(function ($termin) {
                     return $termin->samochod['value'][1];
@@ -215,10 +232,20 @@ class ZlecenieController extends Controller
 
     public function wyszukiwanieZlecenia(Request $request, string $nr_zlec = null)
     {
-        $zlecenie = Zlecenie::where('NrZlecenia', $request->nr_zlec ?? $nr_zlec)->first();
-        $zlecenie_id = @$zlecenie->id ?? null;
+        $nr_zlec = $request->nr_zlec ?? $nr_zlec;
+        $zlecenia = null;
 
-        return view('zlecenie.wyszukiwanie-zlecenia', compact('zlecenie', 'zlecenie_id'));
+        if ($nr_zlec) {
+            if (str_contains($nr_zlec, ['zs', 'ZS'])) {
+                $where = ['NrZlecenia', '=', $nr_zlec];
+            } else {
+                $where = ['NrObcy', 'like', '%'.$nr_zlec.'%'];
+            }
+
+            $zlecenia = Zlecenie::with('status', 'terminarz')->where($where[0], $where[1], $where[2])->orderByDesc('id_zlecenia')->get();
+        }
+
+        return view('zlecenie.wyszukiwanie-zlecenia', compact('zlecenia', 'nr_zlec'));
     }
 
     public function wyszukiwanieCzesci(Request $request, string $symbol = null)
@@ -343,7 +370,7 @@ class ZlecenieController extends Controller
         $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->changeStatus(Status::NIE_ODBIERA_ID, $user->pracownik->id, false);
-        $zlecenie->changeStatus(Status::GOTOWE_DO_WYJAZDU_ID, $user->pracownik->id, false);
+        $zlecenie->changeStatus(Status::GOTOWE_DO_WYJAZDU_ID, $user->pracownik->id, false, 1);
         $zlecenie->save();
 
         return response()->json('success', 200);
@@ -379,7 +406,7 @@ class ZlecenieController extends Controller
                     'checkable_umowiono' => $termin->data_rozpoczecia->isToday() and !$is_soft_zakonczone,
                     'is_do_wyjasnienia' => $termin->zlecenie->_do_wyjasnienia ?? false,
                     'is_warsztat' => $termin->zlecenie->is_warsztat,
-                    'is_umowiono' => $termin->zlecenie->terminarz->is_umowiono,
+                    'is_umowiono' => $termin->is_umowiono and $termin->zlecenie->is_umowiono,
                     'is_dzwonic' => $termin->zlecenie->is_dzwonic,
                     'is_zakonczone' => $termin->zlecenie->is_zakonczone,
                     'is_soft_zakonczone' => $is_soft_zakonczone,
@@ -387,6 +414,10 @@ class ZlecenieController extends Controller
                     'preautoryzacja_at' => $status_historia_preautoryzacja ? $status_historia_preautoryzacja->data->format('Y-m-d H:i') : null,
                     'znacznik_formatted' => $termin->zlecenie->znacznik_formatted,
                     'znacznik_icon' => $termin->zlecenie->znacznik->icon,
+                    'czas_trwania' => $termin->zlecenie->czas_trwania,
+                    'przyjmujacy_nazwa' => $termin->zlecenie->przyjmujacy->nazwa,
+                    'umowiono_pracownik_nazwa' => $termin->zlecenie->last_status_umowiono->pracownik->nazwa ?? null,
+                    'umowiono_data' => ($termin->zlecenie->last_status_umowiono ? $termin->zlecenie->last_status_umowiono->data->format('m.d H:i') : null),
                     'google_maps_route_link' => $termin->zlecenie->google_maps_route_link,
                     'klient' => [
                         'symbol' => $termin->zlecenie->klient->symbol,

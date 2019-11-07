@@ -20,7 +20,7 @@ class CreateNaszykowaneCzesciTable extends Migration
             $table->timestamp('sprawdzone_at')->nullable();
             $table->unsignedInteger('technik_id');
             $table->unsignedInteger('zlecenie_id');
-            $table->timestamp('zlecenie_data');
+            $table->timestamp('zlecenie_data')->nullable();
             $table->unsignedInteger('towar_id');
             $table->unsignedInteger('ilosc');
             $table->unsignedInteger('ilosc_do_zwrotu');

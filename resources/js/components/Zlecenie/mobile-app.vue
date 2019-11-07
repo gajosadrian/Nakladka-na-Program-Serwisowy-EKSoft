@@ -27,6 +27,7 @@
                             <template v-if="termin.zlecenie && !termin.zlecenie.is_do_wyjasnienia">
                                 <div>{{ termin.godzina_rozpoczecia }}</div>
                                 <div v-if="termin.zlecenie" class="text-muted font-size-sm">{{ termin.przeznaczony_czas_formatted }}</div>
+                                <div v-if="termin.zlecenie" class="text-muted font-size-sm">{{ termin.zlecenie.czas_trwania }} dni temu</div>
                             </template>
                             <template v-else-if="termin.zlecenie && termin.zlecenie.is_do_wyjasnienia">
                                 <div class="bg-danger text-white font-size-sm font-w600 shadow rounded p-1">Do wyjaśnienia</div>
@@ -61,6 +62,11 @@
                         <h4 class="mb-0">{{ zlecenie.nr }} <span v-if="zlecenie.nr_obcy">- {{ zlecenie.nr_obcy }}</span></h4>
                         <div><i :class="zlecenie.znacznik_icon"></i> {{ zlecenie.znacznik_formatted }}</div>
                     </div>
+                    <div class="mb-3">
+                        <div><span class="font-w700">Przyjął:</span> {{ zlecenie.przyjmujacy_nazwa }}</div>
+                        <div><span class="font-w700">Trwanie zlecenia:</span> {{ zlecenie.czas_trwania }} dni</div>
+                        <div v-if="zlecenie.is_umowiono"><span class="font-w700">Umówił:</span> {{ zlecenie.umowiono_pracownik_nazwa }} {{ zlecenie.umowiono_data }}</div>
+                    </div>
                     <div class="font-w700">Kontrahent:</div>
                     <div>{{ zlecenie.klient.nazwa }} <span class="font-size-sm">- {{ zlecenie.klient.symbol }}</span></div>
                     <div>{{ zlecenie.klient.kod_pocztowy }} {{ zlecenie.klient.miasto }}, {{ zlecenie.klient.adres }}</div>
@@ -88,7 +94,11 @@
                     <div v-html="opis_formatted"></div>
                     <!-- <nl2br tag="div" :text="opis_formatted" /> -->
                     <template v-if="zlecenie.kosztorys_pozycje.length > 0">
-                        <div class="font-w700 mt-2">Kosztorys:</div>
+                        <div class="mt-2">
+                            <span class="font-w700">Suma kosztorysu:</span>
+                            <span>{{ suma_kosztorysu.toFixed(2) }} zł</span>
+                        </div>
+                        <div class="font-w700">Kosztorys:</div>
                         <div class="font-size-sm">
                             <div v-for="(pozycja, index2) in zlecenie.kosztorys_pozycje" v-if="pozycja.ilosc > 0" class="mt-2">
                                 <div class="clearfix border border-left-0 border-right-0 border-bottom-0">
@@ -111,7 +121,7 @@
                                         </div>
                                     </div>
                                     <div v-if="pozycja.is_towar && Number.isInteger(pozycja.ilosc)" class="float-right text-right">
-                                        <select v-model="parts[pozycja.id]" :class="{
+                                        <!-- <select v-model="parts[pozycja.id]" :class="{
                                             'bg-success': parts[pozycja.id] == 'mounted',
                                             'bg-danger': parts[pozycja.id] == 'unmounted',
                                             'bg-warning': parts[pozycja.id] == 'written'
@@ -121,7 +131,7 @@
                                             <option v-for="n in pozycja.ilosc" :key="n" value="mounted">Zamontowane - {{ n }} szt.</option>
                                             <option value="unmounted">Niezamontowane</option>
                                             <option value="written">Rozpisane</option>
-                                        </select>
+                                        </select> -->
                                     </div>
                                 </div>
                             </div>
@@ -199,11 +209,16 @@ export default {
 
         opis_formatted() {
             if ( ! this.zlecenie) return false;
-            let opis = this.zlecenie.opis.split("\n").join('<br>');
-            opis = opis.split('>>').join('<span class="font-w600 text-danger"><u>');
+            let opis = this.zlecenie.opis.split('>>').join('<span class="font-w600 text-danger"><u>');
             opis = opis.split('<<').join('</u></span>');
+            opis = opis.split("\n").join('<br>');
             return opis;
-        }
+        },
+
+        suma_kosztorysu() {
+            if ( ! this.zlecenie) return 0;
+            return this.zlecenie.kosztorys_pozycje.reduce((a, b) => a + (b.wartosc_brutto || 0), 0);
+        },
     },
 
     methods: {

@@ -2334,6 +2334,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 if (window.location.href == route('zlecenia.mobileApp')) {
   history.pushState(null, null, location.href);
 
@@ -2374,10 +2384,16 @@ if (window.location.href == route('zlecenia.mobileApp')) {
     },
     opis_formatted: function opis_formatted() {
       if (!this.zlecenie) return false;
-      var opis = this.zlecenie.opis.split("\n").join('<br>');
-      opis = opis.split('>>').join('<span class="font-w600 text-danger"><u>');
+      var opis = this.zlecenie.opis.split('>>').join('<span class="font-w600 text-danger"><u>');
       opis = opis.split('<<').join('</u></span>');
+      opis = opis.split("\n").join('<br>');
       return opis;
+    },
+    suma_kosztorysu: function suma_kosztorysu() {
+      if (!this.zlecenie) return 0;
+      return this.zlecenie.kosztorys_pozycje.reduce(function (a, b) {
+        return a + (b.wartosc_brutto || 0);
+      }, 0);
     }
   },
   methods: {
@@ -44782,6 +44798,22 @@ var render = function() {
                                           )
                                         ]
                                       )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  termin.zlecenie
+                                    ? _c(
+                                        "div",
+                                        {
+                                          staticClass: "text-muted font-size-sm"
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              termin.zlecenie.czas_trwania
+                                            ) + " dni temu"
+                                          )
+                                        ]
+                                      )
                                     : _vm._e()
                                 ]
                               : termin.zlecenie &&
@@ -44918,6 +44950,36 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
+                _c("div", { staticClass: "mb-3" }, [
+                  _c("div", [
+                    _c("span", { staticClass: "font-w700" }, [
+                      _vm._v("Przyjął:")
+                    ]),
+                    _vm._v(" " + _vm._s(_vm.zlecenie.przyjmujacy_nazwa))
+                  ]),
+                  _vm._v(" "),
+                  _c("div", [
+                    _c("span", { staticClass: "font-w700" }, [
+                      _vm._v("Trwanie zlecenia:")
+                    ]),
+                    _vm._v(" " + _vm._s(_vm.zlecenie.czas_trwania) + " dni")
+                  ]),
+                  _vm._v(" "),
+                  _vm.zlecenie.is_umowiono
+                    ? _c("div", [
+                        _c("span", { staticClass: "font-w700" }, [
+                          _vm._v("Umówił:")
+                        ]),
+                        _vm._v(
+                          " " +
+                            _vm._s(_vm.zlecenie.umowiono_pracownik_nazwa) +
+                            " " +
+                            _vm._s(_vm.zlecenie.umowiono_data)
+                        )
+                      ])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
                 _c("div", { staticClass: "font-w700" }, [
                   _vm._v("Kontrahent:")
                 ]),
@@ -45020,7 +45082,17 @@ var render = function() {
                 _vm._v(" "),
                 _vm.zlecenie.kosztorys_pozycje.length > 0
                   ? [
-                      _c("div", { staticClass: "font-w700 mt-2" }, [
+                      _c("div", { staticClass: "mt-2" }, [
+                        _c("span", { staticClass: "font-w700" }, [
+                          _vm._v("Suma kosztorysu:")
+                        ]),
+                        _vm._v(" "),
+                        _c("span", [
+                          _vm._v(_vm._s(_vm.suma_kosztorysu.toFixed(2)) + " zł")
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "font-w700" }, [
                         _vm._v("Kosztorys:")
                       ]),
                       _vm._v(" "),
@@ -45132,131 +45204,9 @@ var render = function() {
                                     _vm._v(" "),
                                     pozycja.is_towar &&
                                     Number.isInteger(pozycja.ilosc)
-                                      ? _c(
-                                          "div",
-                                          {
-                                            staticClass:
-                                              "float-right text-right"
-                                          },
-                                          [
-                                            _c(
-                                              "select",
-                                              {
-                                                directives: [
-                                                  {
-                                                    name: "model",
-                                                    rawName: "v-model",
-                                                    value:
-                                                      _vm.parts[pozycja.id],
-                                                    expression:
-                                                      "parts[pozycja.id]"
-                                                  }
-                                                ],
-                                                staticClass:
-                                                  "form-control form-control-sm mt-1",
-                                                class: {
-                                                  "bg-success":
-                                                    _vm.parts[pozycja.id] ==
-                                                    "mounted",
-                                                  "bg-danger":
-                                                    _vm.parts[pozycja.id] ==
-                                                    "unmounted",
-                                                  "bg-warning":
-                                                    _vm.parts[pozycja.id] ==
-                                                    "written"
-                                                },
-                                                staticStyle: { width: "30px" },
-                                                on: {
-                                                  change: function($event) {
-                                                    var $$selectedVal = Array.prototype.filter
-                                                      .call(
-                                                        $event.target.options,
-                                                        function(o) {
-                                                          return o.selected
-                                                        }
-                                                      )
-                                                      .map(function(o) {
-                                                        var val =
-                                                          "_value" in o
-                                                            ? o._value
-                                                            : o.value
-                                                        return val
-                                                      })
-                                                    _vm.$set(
-                                                      _vm.parts,
-                                                      pozycja.id,
-                                                      $event.target.multiple
-                                                        ? $$selectedVal
-                                                        : $$selectedVal[0]
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c(
-                                                  "option",
-                                                  {
-                                                    attrs: {
-                                                      value: "",
-                                                      disabled: ""
-                                                    }
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(pozycja.nazwa)
-                                                    )
-                                                  ]
-                                                ),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "option",
-                                                  { attrs: { value: "" } },
-                                                  [_vm._v("---")]
-                                                ),
-                                                _vm._v(" "),
-                                                _vm._l(pozycja.ilosc, function(
-                                                  n
-                                                ) {
-                                                  return _c(
-                                                    "option",
-                                                    {
-                                                      key: n,
-                                                      attrs: {
-                                                        value: "mounted"
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "Zamontowane - " +
-                                                          _vm._s(n) +
-                                                          " szt."
-                                                      )
-                                                    ]
-                                                  )
-                                                }),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "option",
-                                                  {
-                                                    attrs: {
-                                                      value: "unmounted"
-                                                    }
-                                                  },
-                                                  [_vm._v("Niezamontowane")]
-                                                ),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "option",
-                                                  {
-                                                    attrs: { value: "written" }
-                                                  },
-                                                  [_vm._v("Rozpisane")]
-                                                )
-                                              ],
-                                              2
-                                            )
-                                          ]
-                                        )
+                                      ? _c("div", {
+                                          staticClass: "float-right text-right"
+                                        })
                                       : _vm._e()
                                   ]
                                 )

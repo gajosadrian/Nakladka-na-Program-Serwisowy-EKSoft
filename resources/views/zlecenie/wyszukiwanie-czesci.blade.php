@@ -50,6 +50,7 @@
                                     <th class="font-w700">Ilość</th>
                                     <th class="font-w700">Wartość netto</th>
                                     <th class="font-w700">Wartość brutto</th>
+                                    <th class="font-w700">Przyjęcie</th>
                                     <th class="font-w700">Status</th>
                                     <th class="font-w700">Ostatnia data</th>
                                 </tr>
@@ -66,6 +67,7 @@
                                         <td>{{ $kosztorys_pozycja->ilosc }}</td>
                                         <td nowrap>{{ $kosztorys_pozycja->wartosc_formatted }}</td>
                                         <td nowrap>{{ $kosztorys_pozycja->wartosc_brutto_formatted }}</td>
+                                        <td>{{ $kosztorys_pozycja->zlecenie->data_przyjecia_formatted }}</td>
                                         {!! $kosztorys_pozycja->zlecenie->table_cell_status_html !!}
                                         <td>{{ $kosztorys_pozycja->zlecenie->data_zakonczenia_formatted }}</td>
                                     </tr>

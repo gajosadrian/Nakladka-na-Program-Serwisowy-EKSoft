@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
         Route::get('mobile-app', 'ZlecenieController@mobileApp')->name('mobileApp');
         Route::get('lista', 'ZlecenieController@index')->name('lista');
         Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');
+        Route::get('pokaz/{zlecenie_id}/zdjecia', 'ZlecenieZdjecieController@show')->name('pokazZdjecia');
         Route::get('dla-technika/{technik_id?}/{timestamp?}', 'ZlecenieController@dlaTechnika')->name('dla-technika');
         Route::get('kilometrowka/{technik_id?}/{month_id?}', 'ZlecenieController@kilometrowka')->name('kilometrowka');
         Route::get('wyszukiwanie-zlecenia/{nr_zlec?}', 'ZlecenieController@wyszukiwanieZlecenia')->name('wyszukiwanieZlecenia');
@@ -40,6 +41,11 @@ Route::middleware('auth')->group(function () {
         Route::get('api/terminarz_statusy/{technik_id}/{date_string?}', 'ZlecenieController@apiGetTerminarzStatusy')->name('api.terminarz_statusy');
         Route::delete('api/remove-status/{status_id}', 'ZlecenieController@apiRemoveStatus')->name('api.removeStatus');
         Route::get('api/get-from-terminarz/{date_string?}', 'ZlecenieController@apiGetFromTerminarz')->name('api.getFromTerminarz');
+    });
+
+    Route::prefix('zlecenie-zdjecie')->name('zlecenie-zdjecie.')->group(function () {
+        Route::get('{zdjecie}', 'ZlecenieZdjecieController@make')->name('make');
+        Route::post('/', 'ZlecenieZdjecieController@store')->name('store');
     });
 
     Route::prefix('czesci')->name('czesci.')->group(function () {

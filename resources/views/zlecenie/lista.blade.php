@@ -56,11 +56,18 @@
 
         <b-block>
             <template slot="content">
-                <div class="">
-                    <b-button variant="success" size="sm" onclick="location.reload()">
-                        <i class="fa fa-sync-alt"></i>
-                        Odśwież
-                    </b-button>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <b-button variant="success" size="sm" onclick="location.reload()">
+                            <i class="fa fa-sync-alt"></i>
+                            Odśwież
+                        </b-button>
+                    </div>
+                    <div class="col-lg-10">
+                        Zleceń realizowanych: <span class="font-w600 text-primary">{{ $zlecenia_realizowane_n }}</span>
+                        <br>
+                        Zleceń ukończonych: <span class="font-w600 text-primary">{{ $zlecenia_ukonczone_n }}</span>
+                    </div>
                 </div>
 
                 <div class="table-responsive">

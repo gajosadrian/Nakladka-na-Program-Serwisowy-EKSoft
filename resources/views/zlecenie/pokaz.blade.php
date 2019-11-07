@@ -199,6 +199,9 @@
                         <li class="nav-item">
                             <a href="#statusy" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Statusy</a>
                         </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" style="color: rgba(255, 255, 255, 0.9)" onclick="{{ $zlecenie->popup_zdjecia_link }}">Zdjęcia</button>
+                        </li>
                         <li class="nav-item ml-auto">
                             <b-button-group size="sm" class="mr-2">
                                 @if ($user->is_technik)
