@@ -15,7 +15,8 @@ class CreateZlecenieZdjeciaTable extends Migration
     {
         Schema::create('zlecenie_zdjecia', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('zlecenie_id');
+            $table->unsignedInteger('zlecenie_id')->nullable();
+            $table->unsignedInteger('urzadzenie_id')->nullable();
             $table->string('type')->nullable();
             $table->string('path');
             $table->timestamps();

@@ -8,6 +8,7 @@ use App\Models\Zlecenie\Status;
 use App\Models\Zlecenie\StatusHistoria;
 use App\Models\Zlecenie\KosztorysPozycja;
 use App\Models\Zlecenie\ZatwierdzonyBlad;
+use App\Models\Zlecenie\Log;
 use App\Models\SMS\Technik;
 use App\Models\Subiekt\Subiekt_Towar;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ class ZlecenieController extends Controller
         ]);
         $search_value = $user->getSavedField('zlecenia.search');
         $autorefresh = (bool) $user->technik_id;
+        $show_errors = (bool) ! $user->technik_id;
 
         $zlecenia_unique = $zlecenia_niezakonczone->unique('nr_obcy');
         $zlecenia_duplicate_nr_obce = [];
@@ -67,6 +69,7 @@ class ZlecenieController extends Controller
             'zlecenia_duplicate' => $zlecenia_duplicate,
             'search_value' => $search_value,
             'autorefresh' => $autorefresh,
+            'show_errors' => $show_errors,
             'zlecenia_ukonczone_n' => $zlecenia_ukonczone_n,
             'zlecenia_realizowane_n' => $zlecenia_realizowane_n,
         ]);
@@ -228,6 +231,32 @@ class ZlecenieController extends Controller
         }
 
         return view('rozliczenia.kilometrowka', compact('months', 'month', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'grouped_terminy'));
+    }
+
+    public function logs(int $technik_id = null, string $date_string = null)
+    {
+        if (auth()->user()->technik_id) abort(401);
+
+        if (! $date_string) {
+            $date = today()->copy();
+            $date_string = $date->toDateString();
+        } else {
+            $date = Carbon::parse($date_string)->startOfDay();
+        }
+
+        $is_today = $date->isToday();
+
+        $technicy = Technik::getLast();
+        $technik = Technik::find($technik_id);
+
+        $logs = [];
+        $grouped_logs = [];
+        if ($technik) {
+            $logs = Log::where('user_id', $technik->user->id)->whereDate('created_at', $date_string)->get();
+            $grouped_logs = $logs->groupBy('zlecenie_id');
+        }
+
+        return view('zlecenie-logs.pokaz', compact('date', 'date_string', 'technik', 'technicy', 'logs', 'grouped_logs'));
     }
 
     public function wyszukiwanieZlecenia(Request $request, string $nr_zlec = null)
@@ -403,7 +432,7 @@ class ZlecenieController extends Controller
                     'nr' => $termin->zlecenie->nr,
                     'nr_obcy' => $termin->zlecenie->nr_obcy,
                     'opis' => $termin->zlecenie->opis,
-                    'checkable_umowiono' => $termin->data_rozpoczecia->isToday() and !$is_soft_zakonczone,
+                    'checkable_umowiono' => $termin->data_rozpoczecia->gte(now()->startOfDay()) and !$is_soft_zakonczone,
                     'is_do_wyjasnienia' => $termin->zlecenie->_do_wyjasnienia ?? false,
                     'is_warsztat' => $termin->zlecenie->is_warsztat,
                     'is_umowiono' => $termin->is_umowiono and $termin->zlecenie->is_umowiono,

@@ -35,6 +35,12 @@
             'route' => 'zlecenia.wyszukiwanieZlecenia',
             'routeOptions' => [],
         ],
+        [
+            'name' => 'Logi',
+            'icon' => 'si si-flag',
+            'route' => 'zlecenia.logs',
+            'routeOptions' => [],
+        ],
         // [
         //     'name' => 'Części',
         // ],

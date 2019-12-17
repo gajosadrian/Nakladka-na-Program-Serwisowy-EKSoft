@@ -16,7 +16,7 @@
     </div>
 
     <div class="content">
-        @if ($zlecenia_duplicate->count() > 0)
+        @if ($show_errors and $zlecenia_duplicate->count() > 0)
             <b-block title="Zdublowane zlecenia" theme="bg-danger">
                 <template slot="content">
                     <table class="table table-sm table-striped table-hover table-vcenter font-size-sm">
@@ -80,7 +80,9 @@
 								<th class="font-w700">Nr zlecenia</th>
 								<th class="font-w700">Urządzenie</th>
 								<th class="font-w700">Status</th>
-								<th class="font-w700">Błędy</th>
+                                @if ($show_errors)
+                                    <th class="font-w700">Błędy</th>
+                                @endif
 								<th class="font-w700">Ostatnia data</th>
 								<th class="d-none"></th>
 							</tr>
@@ -112,16 +114,18 @@
 
                                     {!! $zlecenie->tableCellStatusHTML !!}
 
-									<td class="{{ (count($zlecenie->errors) > 0) ? 'table-danger' : '' }} font-small">
-                                        <ul class="list-unstyled mb-0">
-    										@foreach ($zlecenie->errors as $error)
-                                                <li>
-                                                    <i class="fa fa-exclamation-triangle text-danger"></i>
-        											{{ $error }}
-                                                </li>
-                                            @endforeach
-                                        </ul>
-									</td>
+                                    @if ($show_errors)
+    									<td class="{{ (count($zlecenie->errors) > 0) ? 'table-danger' : '' }} font-small">
+                                            <ul class="list-unstyled mb-0">
+        										@foreach ($zlecenie->errors as $error)
+                                                    <li>
+                                                        <i class="fa fa-exclamation-triangle text-danger"></i>
+            											{{ $error }}
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+    									</td>
+                                    @endif
 
 									<td nowrap>
                                         @if ($zlecenie->is_termin)

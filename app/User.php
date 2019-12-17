@@ -11,6 +11,9 @@ class User extends Authenticatable
 {
     use Notifiable;
     use HasRoles;
+
+    protected $connection = 'mysql';
+
     protected $casts = [
         'saved_fields' => 'array',
     ];

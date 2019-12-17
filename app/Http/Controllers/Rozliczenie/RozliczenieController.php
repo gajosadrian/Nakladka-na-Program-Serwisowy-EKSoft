@@ -60,7 +60,7 @@ class RozliczenieController extends Controller
      */
     public function show(int $id)
     {
-        $rozliczenie = Rozliczenie::with('rozliczone_zlecenia.zlecenie.terminarz')->findOrFail($id);
+        $rozliczenie = Rozliczenie::with('rozliczone_zlecenia.zlecenie.terminarz', 'rozliczone_zlecenia.zlecenie.technik')->findOrFail($id);
         $rozliczone_zlecenia = $rozliczenie->rozliczone_zlecenia->sortBy('zleceniodawca');
         $zleceniodawcy = $rozliczenie->zleceniodawcy;
 
@@ -154,6 +154,6 @@ class RozliczenieController extends Controller
         $rozliczenie->dojazdy = $dojazdy;
         $rozliczenie->save();
 
-        return back();
+        return redirect()->back();
     }
 }

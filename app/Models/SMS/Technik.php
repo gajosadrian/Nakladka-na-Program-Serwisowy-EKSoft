@@ -16,7 +16,6 @@ class Technik extends Model
     * Attributes
     *
     */
-
     public function getIdAttribute(): int
     {
         return $this->attributes['id_technika'];
@@ -56,7 +55,6 @@ class Technik extends Model
      * Methods
      *
      */
-
     public function getArray(): array
     {
         return [
@@ -68,5 +66,14 @@ class Technik extends Model
     {
         $technik_ids = Terminarz::with('technik')->orderByDesc('STARTDATE')->limit(100)->get()->pluck('technik.id')->unique()->values();
         return self::whereIn('id_technika', $technik_ids)->get()->sortBy('imie')->sortBy('nazwisko'); // nazwa
+    }
+
+    /**
+     * Relations
+     *
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'id_technika', 'technik_id');
     }
 }

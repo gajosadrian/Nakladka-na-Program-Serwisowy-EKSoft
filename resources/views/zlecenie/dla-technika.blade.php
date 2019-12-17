@@ -144,14 +144,14 @@
                                     </div>
                                     <div class="mt-3">
                                         <b-row>
-                                            <b-col cols="7" style="border-right: 1px solid #aaa">
+                                            <b-col cols="12" {{-- style="border-right: 1px solid #aaa" --}}>
     											{{-- <div class="font-w700">OPIS ZLECENIA:</div> --}}
     											<hr class="m-0" style="border-top-color: #aaa">
                                                 <div class="py-2">
                                                     {!! $zlecenie->opis_formatted !!}
                                                 </div>
                                             </b-col>
-                                            <b-col cols="5">
+                                            {{-- <b-col cols="5">
                                                 <div class="clearfix" style="min-height: 170px">
                                                     <div class="float-left">
                                                         <div class="font-w700">UWAGI TECHNIKA:</div>
@@ -163,7 +163,7 @@
                                                         @endif
         											</div>
                                                 </div>
-                                            </b-col>
+                                            </b-col> --}}
                                         </b-row>
                                     </div>
                                     <div style="font-size:0.6em">

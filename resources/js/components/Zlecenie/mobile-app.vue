@@ -88,6 +88,11 @@
                         <div class="font-w700">{{ zlecenie.urzadzenie.producent }}, {{ zlecenie.urzadzenie.nazwa }}</div>
                         <div>{{ zlecenie.urzadzenie.model }}</div>
                         <div class="font-size-sm" style="font-family:consolas;">{{ zlecenie.urzadzenie.nr_seryjny }}</div>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-rounded" :class="{ 'btn-danger': true }">
+                                <i class="fa fa-camera"></i>
+                            </button>
+                        </div>
                     </div>
                     <hr>
                     <div class="font-w700">Opis:</div>
@@ -177,6 +182,7 @@ if (window.location.href == route('zlecenia.mobileApp')) {
 export default {
     data() {
         return {
+            click_21: null,
             _token: '',
             scroll_pos: 0,
             timer: null,
@@ -193,6 +199,8 @@ export default {
     mounted() {
         this.fetchZlecenia();
         this.timer = setInterval(this.fetchZlecenia, 120000); // 2 min
+        // this.click_21 = new Audio('/sounds/click_021.mp3');
+        this.click_21 = new Audio('/zlecenia/public/sounds/click_021.mp3');
     },
 
     beforeDestroy() {
@@ -260,6 +268,7 @@ export default {
 		setZlecenie(zlecenie, scroll = true, scroll_reset = true) {
             if (zlecenie) {
                 this.rememberScroll();
+                this.click_21.play();
             }
 			this.zlecenie = zlecenie;
             if (scroll) {

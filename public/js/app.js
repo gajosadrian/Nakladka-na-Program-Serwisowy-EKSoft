@@ -2344,6 +2344,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 if (window.location.href == route('zlecenia.mobileApp')) {
   history.pushState(null, null, location.href);
 
@@ -2355,6 +2360,7 @@ if (window.location.href == route('zlecenia.mobileApp')) {
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      click_21: null,
       _token: '',
       scroll_pos: 0,
       timer: null,
@@ -2370,6 +2376,9 @@ if (window.location.href == route('zlecenia.mobileApp')) {
   mounted: function mounted() {
     this.fetchZlecenia();
     this.timer = setInterval(this.fetchZlecenia, 120000); // 2 min
+    // this.click_21 = new Audio('/sounds/click_021.mp3');
+
+    this.click_21 = new Audio('/zlecenia/public/sounds/click_021.mp3');
   },
   beforeDestroy: function beforeDestroy() {
     this.cancelAutoUpdate();
@@ -2436,6 +2445,7 @@ if (window.location.href == route('zlecenia.mobileApp')) {
 
       if (zlecenie) {
         this.rememberScroll();
+        this.click_21.play();
       }
 
       this.zlecenie = zlecenie;
@@ -45069,7 +45079,19 @@ var render = function() {
                       staticStyle: { "font-family": "consolas" }
                     },
                     [_vm._v(_vm._s(_vm.zlecenie.urzadzenie.nr_seryjny))]
-                  )
+                  ),
+                  _vm._v(" "),
+                  _c("div", [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-rounded",
+                        class: { "btn-danger": true },
+                        attrs: { type: "button" }
+                      },
+                      [_c("i", { staticClass: "fa fa-camera" })]
+                    )
+                  ])
                 ]),
                 _vm._v(" "),
                 _c("hr"),

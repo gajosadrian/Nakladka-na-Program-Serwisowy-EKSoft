@@ -4,6 +4,7 @@ namespace App\Models\Zlecenie;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Zlecenie extends Model
 {
@@ -67,6 +68,9 @@ class Zlecenie extends Model
 		'Eldom' => ['eldom'],
 		'LG' => ['lg'],
 		'Elica' => ['elica', 'elika'],
+		'Fondital' => ['fondital'],
+		'Tosai' => ['tosai'],
+		'PZU' => ['pzu'],
     ];
 
     /**
@@ -745,6 +749,11 @@ HTML;
         return $this->hasMany('App\Models\Zlecenie\Zdjecie', 'zlecenie_id', 'id_zlecenia');
     }
 
+    public function logs()
+    {
+        return $this->hasMany('App\Models\Zlecenie\Log', 'zlecenie_id', 'id_zlecenia');
+    }
+
     /**
     * Methods
     *
@@ -838,6 +847,8 @@ HTML;
 
     public function changeStatus(int $status_id, int $pracownik_id, bool $remove_termin = false, int $add_seconds = 0): void
     {
+        $user = auth()->user();
+
         $status_historia = new StatusHistoria;
         $status_historia->pracownik_id = $pracownik_id;
         $status_historia->status_id = $status_id;
@@ -851,37 +862,75 @@ HTML;
             $this->terminarz->removeTermin();
             $this->terminarz->save();
         }
+
+        if ($user->technik_id) {
+            $this->addLog(Log::TYPE_STATUS, $user->id, $status_id);
+        }
     }
 
     public function appendOpis(string $opis, string $name, bool $minified = false): void
     {
+        $user = auth()->user();
+
         if (! $minified) {
             $opis = preg_replace("/(\r?\n)/", ' ', $opis);
             $opis = str_replace([' .', ' ,'], ['. ', ', '], $opis);
             $this->opis .= "\r\n# " . $name . ' ' . date('d.m H:i') . ':  ' . $opis;
         } else {
             // TODO: przerobić funkcję
-            $user = auth()->user();
             $this->opis .= "\r\n" . date('d.m H:i') . ' ' . $user->short_name . ': ' . $opis;
+        }
+
+        if ($user->technik_id) {
+            $this->addLog(Log::TYPE_OPIS, $user->id, $opis);
         }
     }
 
     public function getNiezakonczone(array $data = [])
     {
         $data = (object) $data;
-        $query = $this->withRelations()->with(['status_historia', 'zatwierdzony_blad'])->niezakonczone()->oldest('DataKoniec');
+        $query = $this->withRelations()->with(['status_historia', 'zatwierdzony_blad'])->niezakonczone();
         if (@$data->technik_id) {
-            $query->technik($data->technik_id);
+            $query
+                ->technik($data->technik_id)
+                ->orderBy(DB::raw('case when id_status in ('. Status::NA_WARSZTACIE_ID .') then 1 else 0 end'), 'id_status');
         }
-        return $query->get()->sortByDesc('dni_od_zakonczenia');
+        return $query->oldest('DataPrzyjecia')->get();
     }
 
     public static function getDoRozliczenia()
     {
-        return $query = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->limit(2000)->get()
+        $zlecenia1 = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->limit(2000)->get()
             ->filter(function ($zlecenie) {
-                // return !$zlecenie->is_rozliczone and $zlecenie->data_zakonczenia <= Carbon::create(2019, 1, 31)->endOfDay() and $zlecenie->status->id == 26;
                 return !$zlecenie->is_rozliczone;
             })->sortBy('data_zakonczenia');
+		$zlecenia2 = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->skip(2000)->limit(2000)->get()
+            ->filter(function ($zlecenie) {
+                return !$zlecenie->is_rozliczone;
+            })->sortBy('data_zakonczenia');
+		return $zlecenia2->merge($zlecenia1);
+    }
+
+    public function addLog(int $log_type, int $user_id, $content): void
+    {
+        $zlecenie_data = @$this->terminarz->is_data_rozpoczecia ? $this->terminarz->data_rozpoczecia : null;
+
+        $log = new Log;
+        $log->type = $log_type;
+        $log->zlecenie_id = $this->id;
+        $log->user_id = $user_id;
+        $log->zlecenie_data = $zlecenie_data;
+        $log->terminowo = ($zlecenie_data and $zlecenie_data->isToday()) ? true : false;
+
+        switch ($log_type) {
+            case Log::TYPE_OPIS:
+                $log->opis = $content;
+                break;
+            case Log::TYPE_STATUS:
+                $log->status_id = $content;
+                break;
+        }
+
+        $this->logs()->save($log);
     }
 }

@@ -101,6 +101,7 @@
                                     <th class="font-w700">Zleceniodawca</th>
                                     <th class="font-w700">Robocizny</th>
                                     <th class="font-w700">Dojazdy</th>
+                                    <th class="font-w700">Technik</th>
                                     <th class="font-w700">Zakończenie</th>
                                     <th class="font-w700">Działania</th>
                                     <th class="font-w700">Status</th>
@@ -115,6 +116,7 @@
                                             <td>{{ $rozliczone_zlecenie->zleceniodawca }}</td>
                                             <td>{!! $rozliczone_zlecenie->robocizny_html !!}</td>
                                             <td>{!! $rozliczone_zlecenie->dojazdy_html !!}</td>
+                                            <td>{{ $rozliczone_zlecenie->zlecenie->technik->nazwa }}</td>
                                             <td>{{ $rozliczone_zlecenie->zlecenie->data_zakonczenia->toDateString() }}</td>
                                             <td>
                                                 @if (! $rozliczenie->is_closed)
