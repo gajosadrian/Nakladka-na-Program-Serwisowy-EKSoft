@@ -71,6 +71,7 @@ class Zlecenie extends Model
 		'Fondital' => ['fondital'],
 		'Tosai' => ['tosai'],
 		'PZU' => ['pzu'],
+		'VDB' => ['vdb'],
     ];
 
     /**

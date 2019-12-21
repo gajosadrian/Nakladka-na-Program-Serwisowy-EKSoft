@@ -10,7 +10,7 @@
                 Ładowanie zleceń...
             </div>
             <div v-else v-for="(termin, index) in terminy" :class="{'bg-success-light': termin.zlecenie && termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_do_wyjasnienia, 'bg-danger-light': termin.zlecenie && termin.zlecenie.is_do_wyjasnienia && !termin.zlecenie.is_soft_zakonczone, 'bg-info-light': termin.zlecenie && termin.zlecenie.is_do_wyjasnienia && termin.zlecenie.is_soft_zakonczone, 'border border-bold border-top-0 border-bottom-0 border-right-0 border-danger': termin.zlecenie && !termin.zlecenie.is_soft_zakonczone}" class="block block-rounded shadow-sm">
-                <div @click="setZlecenie(termin.zlecenie)" :class="{'bg-gray': !termin.zlecenie}" class="block-content block-content-full p-2" style="cursor:pointer;">
+                <div @click="setZlecenie(termin.zlecenie); plastic_click_001.play();" :class="{'bg-gray': !termin.zlecenie}" class="block-content block-content-full p-2" style="cursor:pointer;">
                     <div class="clearfix">
                         <div class="float-left">
                             <div v-if="termin.zlecenie">
@@ -42,7 +42,7 @@
                                 <span v-else-if="termin.zlecenie.checkable_umowiono && !termin.zlecenie.is_umowiono" class="bg-danger text-white px-1">Nieumówione</span>
                                 <span v-else><br></span>
                             </div>
-                            <a v-if="!termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_warsztat && !termin.zlecenie.is_do_wyjasnienia" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
+                            <a v-if="show_map && !termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_warsztat && !termin.zlecenie.is_do_wyjasnienia" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
                                 <i class="fa fa-map-marker-alt"></i>
                                 Mapa
                             </a>
@@ -77,7 +77,7 @@
                                 {{ telefon }}
                             </a>
                         </div>
-                        <div class="mt-2">
+                        <div v-if="show_map" class="mt-2">
                             <a :href="zlecenie.google_maps_route_link" class="btn btn-light">
                                 <i class="fa fa-map-marker-alt text-info"></i>
                                 Mapa
@@ -158,7 +158,7 @@
 
 			<div class="pt-5"></div>
             <nav class="fixed-bottom bg-white p-2 text-right" style="box-shadow: 0px 6px 2px 8px rgba(0,0,0,.08);">
-                <button @click="setZlecenie(null, true, false)" type="button" class="btn bg-white text-muted">
+                <button @click="setZlecenie(null, true, false); plastic_click_002.play();" type="button" class="btn bg-white text-muted">
                     <i class="fa fa-reply"></i>
                     Cofnij
                 </button>
@@ -183,10 +183,13 @@ export default {
     data() {
         return {
             click_21: null,
+            plastic_click_001: null,
+            plastic_click_002: null,
             _token: '',
             scroll_pos: 0,
             timer: null,
             date: new Date().toJSON().slice(0,10),
+            show_map: null,
             technik: null,
             zlecenie: null,
             terminy: [],
@@ -201,6 +204,8 @@ export default {
         this.timer = setInterval(this.fetchZlecenia, 120000); // 2 min
         // this.click_21 = new Audio('/sounds/click_021.mp3');
         this.click_21 = new Audio('/zlecenia/public/sounds/click_021.mp3');
+        this.plastic_click_001 = new Audio('/zlecenia/public/sounds/plastic_click_001.mp3');
+        this.plastic_click_002 = new Audio('/zlecenia/public/sounds/plastic_click_002.mp3');
     },
 
     beforeDestroy() {
@@ -238,6 +243,7 @@ export default {
                 this.date_string = data.date_string;
                 this.technik = data.technik;
                 this.terminy = data.terminy;
+                this.show_map = data.show_map;
             });
             this.updateZlecenieInstance();
         },
@@ -268,7 +274,6 @@ export default {
 		setZlecenie(zlecenie, scroll = true, scroll_reset = true) {
             if (zlecenie) {
                 this.rememberScroll();
-                this.click_21.play();
             }
 			this.zlecenie = zlecenie;
             if (scroll) {

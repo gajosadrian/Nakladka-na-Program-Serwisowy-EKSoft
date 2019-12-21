@@ -2361,10 +2361,13 @@ if (window.location.href == route('zlecenia.mobileApp')) {
   data: function data() {
     return {
       click_21: null,
+      plastic_click_001: null,
+      plastic_click_002: null,
       _token: '',
       scroll_pos: 0,
       timer: null,
       date: new Date().toJSON().slice(0, 10),
+      show_map: null,
       technik: null,
       zlecenie: null,
       terminy: [],
@@ -2379,6 +2382,8 @@ if (window.location.href == route('zlecenia.mobileApp')) {
     // this.click_21 = new Audio('/sounds/click_021.mp3');
 
     this.click_21 = new Audio('/zlecenia/public/sounds/click_021.mp3');
+    this.plastic_click_001 = new Audio('/zlecenia/public/sounds/plastic_click_001.mp3');
+    this.plastic_click_002 = new Audio('/zlecenia/public/sounds/plastic_click_002.mp3');
   },
   beforeDestroy: function beforeDestroy() {
     this.cancelAutoUpdate();
@@ -2416,6 +2421,7 @@ if (window.location.href == route('zlecenia.mobileApp')) {
         _this.date_string = data.date_string;
         _this.technik = data.technik;
         _this.terminy = data.terminy;
+        _this.show_map = data.show_map;
       });
       this.updateZlecenieInstance();
     },
@@ -2445,7 +2451,6 @@ if (window.location.href == route('zlecenia.mobileApp')) {
 
       if (zlecenie) {
         this.rememberScroll();
-        this.click_21.play();
       }
 
       this.zlecenie = zlecenie;
@@ -44715,7 +44720,8 @@ var render = function() {
                       staticStyle: { cursor: "pointer" },
                       on: {
                         click: function($event) {
-                          return _vm.setZlecenie(termin.zlecenie)
+                          _vm.setZlecenie(termin.zlecenie)
+                          _vm.plastic_click_001.play()
                         }
                       }
                     },
@@ -44874,6 +44880,7 @@ var render = function() {
                                   : _c("span", [_c("br")])
                               ]),
                               _vm._v(" "),
+                              _vm.show_map &&
                               !termin.zlecenie.is_soft_zakonczone &&
                               !termin.zlecenie.is_warsztat &&
                               !termin.zlecenie.is_do_wyjasnienia
@@ -45040,23 +45047,27 @@ var render = function() {
                       ])
                     }),
                     _vm._v(" "),
-                    _c("div", { staticClass: "mt-2" }, [
-                      _c(
-                        "a",
-                        {
-                          staticClass: "btn btn-light",
-                          attrs: { href: _vm.zlecenie.google_maps_route_link }
-                        },
-                        [
-                          _c("i", {
-                            staticClass: "fa fa-map-marker-alt text-info"
-                          }),
-                          _vm._v(
-                            "\n                                Mapa\n                            "
+                    _vm.show_map
+                      ? _c("div", { staticClass: "mt-2" }, [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "btn btn-light",
+                              attrs: {
+                                href: _vm.zlecenie.google_maps_route_link
+                              }
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "fa fa-map-marker-alt text-info"
+                              }),
+                              _vm._v(
+                                "\n                                Mapa\n                            "
+                              )
+                            ]
                           )
-                        ]
-                      )
-                    ])
+                        ])
+                      : _vm._e()
                   ],
                   2
                 ),
@@ -45320,7 +45331,8 @@ var render = function() {
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      return _vm.setZlecenie(null, true, false)
+                      _vm.setZlecenie(null, true, false)
+                      _vm.plastic_click_002.play()
                     }
                   }
                 },
