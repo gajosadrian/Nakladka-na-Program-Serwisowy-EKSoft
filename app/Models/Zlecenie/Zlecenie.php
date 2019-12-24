@@ -72,6 +72,7 @@ class Zlecenie extends Model
 		'Tosai' => ['tosai'],
 		'PZU' => ['pzu'],
 		'VDB' => ['vdb'],
+		'Unitron' => ['unitron'],
     ];
 
     /**
