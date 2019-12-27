@@ -41,6 +41,15 @@
             'route' => 'zlecenia.logs',
             'routeOptions' => [],
         ],
+        [
+            'name' => 'Magazyn',
+        ],
+        [
+          'name' => 'Inwentaryzacja',
+          'icon' => 'si si-flag',
+          'route' => 'inwentaryzacja.show',
+          'routeOptions' => [],
+        ],
         // [
         //     'name' => 'Części',
         // ],
