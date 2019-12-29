@@ -23,23 +23,39 @@ class InwentaryzacjaController extends Controller
         $towar = Subiekt_Towar::where('tw_Symbol', $symbol)->first();
 
         $_polka = null;
-        if ($polka and $pojemnik) {
-            $_polka = preg_replace('/\s+/', '', strtolower($polka . '-' . $pojemnik));
+        if ($polka) { // and ($pojemnik or str_contains($polka, ['m', 'M']))
+            if (!$pojemnik) { // str_contains($polka, ['m', 'M'])
+                $_polka = preg_replace('/\s+/', '', strtolower($polka));
+            } else {
+                $_polka = preg_replace('/\s+/', '', strtolower($polka . '-' . $pojemnik));
+            }
         }
         $_towar_polka = $towar ? preg_replace('/\s+/', '', strtolower($towar->polka)) : '';
-
         $valid_polka = str_contains($_towar_polka, $_polka) and ($_towar_polka and $_polka);
 
-        $stan = Stan::where('user_id', $user->id)->where('symbol', $towar->symbol)->where('polka', $_polka)->first();
-        $stan_logs = StanLog::where('symbol', $towar->symbol)->get();
+        // if ($user->id == 1) {
+        //     dd($_polka);
+        // }
 
-        return view('inwentaryzacja.show', compact('symbol', 'polka', 'pojemnik', 'towar', 'valid_polka', 'stan', 'stan_logs', '_polka'));
+        $stan = @Stan::where('user_id', $user->id)->where('symbol', $towar->symbol)->where('polka', $_polka)->first() ?? null;
+        $stany = @Stan::where('symbol', $towar->symbol)->get() ?? null;
+        $is_stany = (count($stany) > 0);
+        $stan_logs = @StanLog::where('symbol', $towar->symbol)->get() ?? null;
+        $is_stan_logs = (count($stan_logs) > 0);
+
+        return view('inwentaryzacja.show', compact('symbol', 'polka', 'pojemnik', 'towar', 'valid_polka', 'stan', 'stany', 'stan_logs', '_polka', 'is_stan_logs', 'is_stany'));
     }
 
     public function update(Request $request)
     {
         $user = auth()->user();
         $status = null;
+
+        if ($request->polka_new) {
+            $towar = Subiekt_Towar::where('tw_Symbol', $request->symbol)->first();
+            $towar->polka = $request->polka_new;
+            $towar->save();
+        }
 
         $stan = Stan::firstOrCreate([
             'user_id' => $user->id,
@@ -67,7 +83,7 @@ class InwentaryzacjaController extends Controller
         $stan_log->symbol = $request->symbol;
         $stan_log->polka = $request->polka;
         $stan_log->status = $status;
-        $stan_log->stan = $request->stan;
+        $stan_log->stan = $request->stan ?? 0;
         $stan_log->save();
 
         return redirect()->back();

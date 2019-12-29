@@ -11,6 +11,8 @@ class Subiekt_Towar extends Model
     protected $primaryKey = 'tw_Id';
     protected $with = ['zdjecia'];
 
+    public $timestamps = false;
+
     /**
     * Attributes
     *
@@ -59,6 +61,11 @@ class Subiekt_Towar extends Model
     public function getPolkaAttribute(): string
     {
         return $this->attributes['tw_PKWiU'] ?? false;
+    }
+
+    public function setPolkaAttribute(string $value): void
+    {
+        $this->attributes['tw_PKWiU'] = $value;
     }
 
     public function getRodzajAttribute(): int
