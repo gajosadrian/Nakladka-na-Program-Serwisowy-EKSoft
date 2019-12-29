@@ -93,8 +93,18 @@ class Subiekt_Towar extends Model
      *
      */
 
+    public function stan()
+    {
+        return $this->hasOne(TowarStan::class, 'st_TowId', 'tw_Id')->where('st_MagId', 1);
+    }
+
     public function zdjecia()
     {
         return $this->hasMany('App\Models\Subiekt\TowarZdjecie', 'zd_IdTowar', 'tw_Id')->orderByDesc('zd_Glowne');
+    }
+
+    public function inwentaryzacja_stany()
+    {
+        return $this->hasMany('App\Models\Inwentaryzacja\Stan', 'towar_id', 'tw_Id');
     }
 }

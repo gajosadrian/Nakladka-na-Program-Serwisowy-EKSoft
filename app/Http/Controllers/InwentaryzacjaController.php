@@ -88,4 +88,15 @@ class InwentaryzacjaController extends Controller
 
         return redirect()->back();
     }
+
+    public function showNotChecked()
+    {
+        $towary = Subiekt_Towar::with('stan')->whereHas('stan', function ($stan) {
+            $stan->where('st_Stan', '>=', 10);
+        })->whereDoesntHave('inwentaryzacja_stany', function ($inwentaryzacja_stan) {
+            $inwentaryzacja_stan->where('stan', '>', 0);
+        })->get();
+
+        return response()->json(count($towary), 200);
+    }
 }
