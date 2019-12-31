@@ -91,12 +91,19 @@ class InwentaryzacjaController extends Controller
 
     public function showNotChecked()
     {
-        $towary = Subiekt_Towar::with('stan')->whereHas('stan', function ($stan) {
-            $stan->where('st_Stan', '>=', 10);
-        })->whereDoesntHave('inwentaryzacja_stany', function ($inwentaryzacja_stan) {
-            $inwentaryzacja_stan->where('stan', '>', 0);
-        })->get();
+        // $towary = Subiekt_Towar::with('stan')->whereHas('stan', function ($stan) {
+        //     $stan->where('st_Stan', '>', 0);
+        // })->whereDoesntHave('inwentaryzacja_stany', function ($inwentaryzacja_stan) {
+        //     $inwentaryzacja_stan->where('stan', '>', 0);
+        // })->get();
 
-        return response()->json(count($towary), 200);
+        $stany = Stan::get(['towar_id', 'symbol', 'stan']);
+        $towary = Subiekt_Towar::without('zdjecia')->with('stan')->whereHas('stan', function ($stan) {
+            $stan->where('st_Stan', '>', 0);
+        })->get(['tw_Id', 'tw_Nazwa', 'tw_Symbol', 'tw_PKWiU'])->filter(function ($towar) use ($stany) {
+            return ! (bool) $stany->where('towar_id', $towar->id)->first();
+        })->sortBy('polka');
+
+        return view('inwentaryzacja.not-checked', compact('towary'));
     }
 }

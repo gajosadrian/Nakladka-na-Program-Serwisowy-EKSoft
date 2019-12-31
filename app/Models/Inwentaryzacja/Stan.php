@@ -9,10 +9,6 @@ class Stan extends Model
     protected $connection = 'mysql';
     protected $table = 'inwentaryzacja_stany';
     protected $guarded = [];
-    // protected $dates = ['closed_at'];
-    // protected $casts = [
-    //     '' => 'array',
-    // ];
 
     /**
      * Attributes
