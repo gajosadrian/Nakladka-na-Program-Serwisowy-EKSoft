@@ -11,7 +11,11 @@ class Stan extends Model
     protected $guarded = [];
 
     /**
-     * Attributes
+     * Relations
      *
      */
+    public function towar()
+    {
+        return $this->belongsTo('App\Models\Subiekt\Subiekt_Towar', 'towar_id', 'tw_Id');
+    }
 }

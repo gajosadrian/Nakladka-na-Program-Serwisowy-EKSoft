@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
         Route::get('show', 'InwentaryzacjaController@show')->name('show');
         Route::put('/{symbol}', 'InwentaryzacjaController@update')->name('update');
         Route::get('not-checked', 'InwentaryzacjaController@showNotChecked')->name('showNotChecked');
+        Route::get('summary/{mode?}', 'InwentaryzacjaController@summary')->name('summary');
     });
 
     Route::prefix('admin')->middleware('role:super-admin')->group(function () {

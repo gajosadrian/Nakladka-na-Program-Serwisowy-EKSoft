@@ -56,7 +56,6 @@ class Zlecenie extends Model
         'Ferro' => ['ferro', 'fero'],
         'Solgaz' => ['solgaz', 'solgas'],
         'Kospel' => ['kospel'],
-        'Haier' => ['haier', 'hajer'],
         'Formaster' => ['formaster'],
         'MPM' => ['mpm'],
         'Euroterm' => ['euroterm'],
@@ -754,6 +753,11 @@ HTML;
     public function logs()
     {
         return $this->hasMany('App\Models\Zlecenie\Log', 'zlecenie_id', 'id_zlecenia');
+    }
+
+    public function test_zlecenie()
+    {
+        return $this->hasOne('App\Test\Models\TestZlecenie', 'zlecenie_id', 'id_zlecenia');
     }
 
     /**

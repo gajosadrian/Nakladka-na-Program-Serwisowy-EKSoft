@@ -206,8 +206,16 @@
                             <b-button-group size="sm" class="mr-2">
                                 @if ($user->is_technik)
                                     @if ($zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
+                                        <zlecenie-change-status
+                                            zlecenie_id=@json($zlecenie->id)
+                                            status_id=@json(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID)
+                                            remove_termin="0"
+                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
+                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
+                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
+                                        ></zlecenie-change-status>
                                         @if ($zlecenie->is_gwarancja)
-                                            <zlecenie-change-status
+                                            <zlecenie-change-status class="ml-1"
                                                 zlecenie_id=@json($zlecenie->id)
                                                 status_id=@json(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID)
                                                 remove_termin="0"
@@ -216,7 +224,7 @@
                                                 color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
                                             ></zlecenie-change-status>
                                         @else
-                                            <zlecenie-change-status
+                                            <zlecenie-change-status class="ml-1"
                                                 zlecenie_id=@json($zlecenie->id)
                                                 status_id=@json(App\Models\Zlecenie\Status::DO_WYCENY_ID)
                                                 remove_termin="0"
@@ -225,7 +233,7 @@
                                                 color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYCENY_ID))
                                             ></zlecenie-change-status>
                                         @endif
-                                        @if ($zlecenie->is_odplatne)
+                                        {{-- @if ($zlecenie->is_odplatne)
                                             <zlecenie-change-status class="ml-1"
                                                 zlecenie_id=@json($zlecenie->id)
                                                 status_id=@json(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID)
@@ -234,7 +242,7 @@
                                                 icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
                                                 color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
                                             ></zlecenie-change-status>
-                                        @endif
+                                        @endif --}}
                                         @if ($zlecenie->was_warsztat)
                                             <zlecenie-change-status class="ml-1"
                                                 zlecenie_id=@json($zlecenie->id)

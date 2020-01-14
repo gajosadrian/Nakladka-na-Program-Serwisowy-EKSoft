@@ -16,11 +16,11 @@ class CreateInwentaryzacjaStanLogsTable extends Migration
         Schema::create('inwentaryzacja_stan_logs', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('towar_id');
+            $table->unsignedInteger('towar_id')->nullable();
             $table->string('symbol');
             $table->string('polka')->nullable();
             $table->string('status');
-            $table->integer('stan');
+            $table->float('stan')->nullable();
             $table->timestamps();
         });
     }

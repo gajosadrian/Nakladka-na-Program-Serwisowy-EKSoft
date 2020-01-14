@@ -16,39 +16,56 @@
             'icon' => 'si si-docs',
             'route' => 'zlecenia.dla-technika',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
         [
             'name' => 'Kilometrówka',
             'icon' => 'si si-disc',
             'route' => 'zlecenia.kilometrowka',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
         [
             'name' => 'Wyszukiwanie części',
             'icon' => 'si si-wrench',
             'route' => 'zlecenia.wyszukiwanieCzesci',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
         [
             'name' => 'Wyszukiwanie zlecenia',
             'icon' => 'si si-doc',
             'route' => 'zlecenia.wyszukiwanieZlecenia',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
         [
             'name' => 'Logi',
             'icon' => 'si si-flag',
             'route' => 'zlecenia.logs',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
         [
             'name' => 'Magazyn',
+            'role' => 'super-admin',
         ],
         [
-          'name' => 'Inwentaryzacja',
-          'icon' => 'si si-flag',
-          'route' => 'inwentaryzacja.show',
-          'routeOptions' => [],
+            'name' => 'Inwentaryzacja',
+            'icon' => 'si si-flag',
+            'route' => 'inwentaryzacja.show',
+            'routeOptions' => [],
+            'role' => 'super-admin',
         ],
         // [
         //     'name' => 'Części',
@@ -94,7 +111,7 @@
 
 <ul class="nav-main">
     @foreach ($nav as $item)
-        @if((@!$item['role'] or $user->hasanyrole($item['role'])) and (@!$item['permission'] or $user->hasanyrole($item['permission'])))
+        @if ((@!$item['role'] or ($user and $user->hasAnyRole($item['role']))) and (@!$item['permission'] or ($user and $user->isPerm($item['permission']))) and (!isset($item['if']) or $item['if']()))
             @if (@$item['route'])
                 <li class="nav-main-item">
                     <a class="nav-main-link {{ $routeName == $item['route'] ? 'active' : '' }}" href="{{ route($item['route'], $item['routeOptions']) ?? [] }}">
@@ -122,7 +139,7 @@
                     </a>
                     <ul class="nav-main-submenu">
                         @foreach ($item['subitems'] as $subitem)
-                            @if((@!$subitem['role'] or $user->hasanyrole($subitem['role'])) and (@!$subitem['permission'] or $user->hasanyrole($subitem['permission'])))
+                            @if ((@!$subitem['role'] or ($user and $user->hasAnyRole($subitem['role']))) and (@!$subitem['permission'] or ($user and $user->isPerm($subitem['permission']))) and (!isset($subitem['if']) or $subitem['if']()))
                                 <li class="nav-main-item">
                                     <a class="nav-main-link {{ $routeName == $subitem['route'] ? 'active' : '' }}" href="{{ route($subitem['route'], $subitem['routeOptions']) ?? [] }}">
                                         @if (@$subitem['icon'])

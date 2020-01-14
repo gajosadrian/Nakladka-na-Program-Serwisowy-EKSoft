@@ -50,6 +50,14 @@ class InwentaryzacjaController extends Controller
     {
         $user = auth()->user();
         $status = null;
+        $request_stan = $request->stan ?? 0;
+
+        if ($request_stan) {
+            $request_stan = str_replace(',', '.', $request_stan);
+            if ( ! is_numeric($request_stan)) {
+                abort(400);
+            }
+        }
 
         if ($request->polka_new) {
             $towar = Subiekt_Towar::where('tw_Symbol', $request->symbol)->first();
@@ -63,19 +71,19 @@ class InwentaryzacjaController extends Controller
             'polka' => $request->polka,
         ]);
 
-        if ($request->stan) {
+        // if ($request_stan) {
             $stan->towar_id = $request->towar_id;
-            $stan->stan = $request->stan;
+            $stan->stan = $request_stan;
             $stan->save();
             if ($stan->wasRecentlyCreated) {
                 $status = 'new';
             } else {
                 $status = 'update';
             }
-        } else {
-            $stan->delete();
-            $status = 'delete';
-        }
+        // } else {
+        //     $stan->delete();
+        //     $status = 'delete';
+        // }
 
         $stan_log = new StanLog;
         $stan_log->user_id = $user->id;
@@ -83,7 +91,7 @@ class InwentaryzacjaController extends Controller
         $stan_log->symbol = $request->symbol;
         $stan_log->polka = $request->polka;
         $stan_log->status = $status;
-        $stan_log->stan = $request->stan ?? 0;
+        $stan_log->stan = $request_stan;
         $stan_log->save();
 
         return redirect()->back();
@@ -98,12 +106,20 @@ class InwentaryzacjaController extends Controller
         // })->get();
 
         $stany = Stan::get(['towar_id', 'symbol', 'stan']);
+        $stany_towar_ids = $stany->unique('towar_id')->pluck('towar_id')->values();
         $towary = Subiekt_Towar::without('zdjecia')->with('stan')->whereHas('stan', function ($stan) {
             $stan->where('st_Stan', '>', 0);
-        })->get(['tw_Id', 'tw_Nazwa', 'tw_Symbol', 'tw_PKWiU'])->filter(function ($towar) use ($stany) {
-            return ! (bool) $stany->where('towar_id', $towar->id)->first();
-        })->sortBy('polka');
+        })->get(['tw_Id', 'tw_Nazwa', 'tw_Symbol', 'tw_PKWiU'])->whereNotIn('id', $stany_towar_ids)->sortBy('polka');
 
         return view('inwentaryzacja.not-checked', compact('towary'));
+    }
+
+    public function summary(int $mode = 0)
+    {
+        $stany_grouped = Stan::with(['towar' => function ($towar) {
+            $towar->without('zdjecia')->select(['tw_Id', 'tw_Nazwa', 'tw_Symbol', 'tw_PKWiU']);
+        }, 'towar.stan'])->get(['towar_id', 'symbol', 'stan'])->groupBy('towar_id');
+
+        return view('inwentaryzacja.summary', compact('stany_grouped', 'mode'));
     }
 }

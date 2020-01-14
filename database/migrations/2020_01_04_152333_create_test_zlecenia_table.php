@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInwentaryzacjaStanyTable extends Migration
+class CreateTestZleceniaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateInwentaryzacjaStanyTable extends Migration
      */
     public function up()
     {
-        Schema::create('inwentaryzacja_stany', function (Blueprint $table) {
+        Schema::connection('test')->create('test_zlecenia', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('zlecenie_id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('towar_id')->nullable();
-            $table->string('symbol');
-            $table->float('stan')->nullable();
-            $table->string('polka')->nullable();
+            $table->string('uwagi')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateInwentaryzacjaStanyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('inwentaryzacja_stany');
+        Schema::dropIfExists('test_zlecenia');
     }
 }

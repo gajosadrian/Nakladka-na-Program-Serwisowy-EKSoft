@@ -90,7 +90,7 @@
 						<tbody>
 							@php $counter = 0 @endphp
 							@foreach ($zlecenia as $zlecenie)
-								<tr class="{{ ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat) ? 'table-warning' : '' }}">
+								<tr class="{{ ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat) ? 'table-success' : '' }}">
 									<th class="text-muted">{{ ++$counter }}</th>
 									<td nowrap>
                                         @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
@@ -158,10 +158,13 @@
 
 									<td class="d-none">
                                         {{ $zlecenie->nr }} {{ $zlecenie->nr_obcy }}
+                                        {{ $zlecenie->klient->telefony_formatted }}
+                                        {{ str_replace(['-', ' '], '', $zlecenie->klient->telefony_formatted) }}
                                         @if ($zlecenie->is_technik)
                                             technik:{{ $zlecenie->technik->akronim }}
                                         @endif
 										@foreach ($zlecenie->kosztorys_pozycje as $pozycja)
+                                            @continue($pozycja->is_usluga)
 											{{ $pozycja->opis }}
                                             {{ $pozycja->towar->symbol }}
                                             {{ $pozycja->towar->symbol_dostawcy }}

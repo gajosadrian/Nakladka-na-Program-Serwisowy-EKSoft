@@ -10,6 +10,10 @@ class StanLog extends Model
     protected $table = 'inwentaryzacja_stan_logs';
     protected $guarded = [];
 
+    /**
+     * Relations
+     *
+     */
     public function user()
     {
         return $this->belongsTo('App\User');
