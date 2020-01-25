@@ -43,7 +43,7 @@ class Zlecenie extends Model
         'Novoterm' => ['novoterm', 'nowoterm'],
         'Deante' => ['deante', 'deande'],
         'Ciarko' => ['ciarko', 'ciarco'],
-        'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi'],
+        'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi', 'haier', 'hajer'],
         'Europ Assistance' => ['europ assistance', 'europ-assistance', 'europ', 'eap', 'assistance'],
         'RTV Euro AGD' => ['euro-net', 'euro net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
         'Mentax' => ['mentax', 'mentaks'],

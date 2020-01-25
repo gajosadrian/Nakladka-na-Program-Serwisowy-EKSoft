@@ -106,6 +106,18 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'test2' => [
+            'driver' => 'sqlsrv',
+            'host' => env('DB_HOST_5', 'localhost'),
+            'port' => env('DB_PORT_5', '1433'),
+            'database' => env('DB_DATABASE_5', 'forge'),
+            'username' => env('DB_USERNAME_5', 'forge'),
+            'password' => env('DB_PASSWORD_5', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
+
     ],
 
     /*

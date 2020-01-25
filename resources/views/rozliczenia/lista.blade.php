@@ -71,10 +71,13 @@
                                 </tr>
                             @endif
                             @foreach ($rozliczenia ?? [] as $rozliczenie)
+                                @php
+                                    $rozliczone_zlecenia_n = $rozliczenie->rozliczone_zlecenia->count();
+                                @endphp
                                 <tr>
                                     <th nowrap>{{ $rozliczenie->nr }}</th>
-                                    <td class="text-muted" nowrap>{{ $rozliczenie->rozliczone_zlecenia->count() }}</td>
-                                    <td class="text-muted text-right" nowrap>{{ $rozliczenie->suma_robocizn_formatted }}</td>
+                                    <td class="text-muted" nowrap>{{ $rozliczone_zlecenia_n }}</td>
+                                    <td class="text-muted text-right" nowrap>{{ $rozliczenie->suma_robocizn_formatted }} (~{{ round($rozliczenie->suma_robocizn / ($rozliczone_zlecenia_n ?: 1)) }} zł)</td>
                                     <td class="text-muted text-right" nowrap>{{ $rozliczenie->suma_dojazdow_formatted }}</td>
                                     <td class="text-muted" nowrap>{!! $rozliczenie->is_closed ? $rozliczenie->closed_at->format('Y-m-d') : '<i class="text-success font-w600">w trakcie rozliczania</i>' !!}</td>
                                     <td class="text-muted" nowrap>{{ $rozliczenie->is_closed ? $rozliczenie->rozliczyl : '-' }}</td>
