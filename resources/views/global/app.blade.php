@@ -122,6 +122,7 @@
         <script src="{{ asset('js/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
         <script src="{{ asset('js/plugins/select2/js/select2.full.min.js') }}"></script>
         <script src="{{ asset('js/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/image-compressor/image-compressor.min.js') }}"></script>
         {{-- <script src="{{ asset('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.pl.min.js') }}"></script> --}}
 
         {{-- Laravel Scaffolding JS --}}

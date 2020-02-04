@@ -46,7 +46,7 @@ class Zlecenie extends Model
         'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi', 'haier', 'hajer'],
         'Europ Assistance' => ['europ assistance', 'europ-assistance', 'europ', 'eap', 'assistance'],
         'RTV Euro AGD' => ['euro-net', 'euro net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
-        'Mentax' => ['mentax', 'mentaks'],
+        'Mentax' => ['mentax', 'mentaks', 'generali'],
         'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
         'Arconet' => ['arconet', 'arco net', 'arco-net', 'arkonet', 'arqonet'],
         'Ferroli' => ['ferroli', 'feroli'],
@@ -68,7 +68,7 @@ class Zlecenie extends Model
 		'LG' => ['lg'],
 		'Elica' => ['elica', 'elika'],
 		'Fondital' => ['fondital'],
-		'Tosai' => ['tosai'],
+		'Uni-Lux' => ['uni-lux', 'unilux', 'tosai'],
 		'PZU' => ['pzu'],
 		'VDB' => ['vdb'],
 		'Unitron' => ['unitron'],
@@ -214,7 +214,19 @@ class Zlecenie extends Model
 
     public function getGoogleMapsRouteLinkAttribute(): string
     {
-        return 'https://www.google.com/maps/dir//' . urlencode(explode('/', $this->klient->adres)[0]) . ',+' . urlencode($this->klient->kod_pocztowy) . '+' . urlencode($this->klient->miasto) . ',+Polska/';
+        // return 'https://www.google.com/maps/dir//' . urlencode(explode('/', $this->klient->adres)[0]) . ',+' . urlencode($this->klient->kod_pocztowy) . '+' . urlencode($this->klient->miasto) . ',+Polska/';
+        return 'https://www.google.com/maps/dir//' . $this->google_maps_address . '/';
+    }
+
+    public function getGoogleMapsAddressAttribute(): string
+    {
+        return urlencode($this->klient->adres2) . ',+' . urlencode($this->klient->miasto) . ',+Polska';
+    }
+
+    public static function getGoogleMapsKmLink(array $places): string
+    {
+        $place = urlencode('Jana Samsonowicza 18, 27-400 Ostrowiec Świętokrzyski, Polska');
+        return 'https://www.google.com/maps/dir/' . $place . '/' . implode('/', $places) . '/' . $place . '/';
     }
 
     public function getNrAttribute(): string
@@ -320,9 +332,29 @@ class Zlecenie extends Model
         return false;
     }
 
+    public function getIsNaWarsztacieAttribute()
+    {
+        foreach ($this->statusy as $key => $status) {
+            dd($status->nazwa);
+        }
+        return false;
+    }
+
     public function getIsGotoweAttribute(): bool
     {
         return ($this->status_id == Status::GOTOWE_DO_WYJAZDU_ID);
+    }
+
+    public function getStatusyNieOdbieraAttribute(): ?object
+    {
+        $collection = collect();
+        foreach ($this->statusy as $status) {
+            if ($status->status_id == Status::NIE_ODBIERA_ID) {
+                $collection->push($status);
+            }
+        }
+        if (count($collection) == 0) return null;
+        return $collection;
     }
 
     public function getLastStatusNieOdbieraAttribute(): ?object
@@ -588,12 +620,12 @@ class Zlecenie extends Model
 
     public function getRobociznyHtmlAttribute(): string
     {
-        return $this->getHtmlKosztorys('ROBOCIZNY', $this->robocizny);
+        return $this->getHtmlKosztorys('ROBOCIZNY', $this->robocizny, 'info');
     }
 
     public function getDojazdyHtmlAttribute(): string
     {
-        return $this->getHtmlKosztorys('DOJAZDY', $this->dojazdy);
+        return $this->getHtmlKosztorys('DOJAZDY', $this->dojazdy, 'success');
     }
 
     public function getTableCellStatusHTMLAttribute(): string
@@ -641,6 +673,11 @@ HTML;
     public function getStatusyAttribute()
     {
         return $this->status_historia->sortByDesc('data');
+    }
+
+    public function getZdjeciaAttribute()
+    {
+        return $this->zdjecia_do_zlecenia->merge($this->zdjecia_do_urzadzenia);
     }
 
     /**
@@ -745,9 +782,14 @@ HTML;
         return $this->hasOne('App\Models\Zlecenie\ZatwierdzonyBlad', 'zlecenie_id', 'id_zlecenia');
     }
 
-    public function zdjecia()
+    public function zdjecia_do_zlecenia()
     {
         return $this->hasMany('App\Models\Zlecenie\Zdjecie', 'zlecenie_id', 'id_zlecenia');
+    }
+
+    public function zdjecia_do_urzadzenia()
+    {
+        return $this->hasMany('App\Models\Zlecenie\Zdjecie', 'urzadzenie_id', 'id_maszyny');
     }
 
     public function logs()
@@ -804,10 +846,11 @@ HTML;
         return $array;
     }
 
-    public static function getHtmlKosztorys(string $type, array $pozycje): string
+    public static function getHtmlKosztorys(string $type, array $pozycje, string $color = 'secondary'): string
     {
         $symbole_pocyzji = self::SYMBOLE_KOSZTORYSU[$type];
-        $str = '';
+        $suma = array_sum($pozycje);
+        $str = '<span class="text-' . $color . ' font-w700 mr-2">(' . round($suma, 2) . ' zł)</span>';
 
         foreach ($pozycje as $symbol => $kwota) {
             $pozycja_symbol = $symbole_pocyzji[$symbol];

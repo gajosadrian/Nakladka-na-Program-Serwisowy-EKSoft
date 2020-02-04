@@ -12,12 +12,24 @@ class Zdjecie extends Model
 
     public const
         TYPE_GWARANCJA = 'gwarancja',   TYPE_POLISA = 'polisa',
-        TYPE_DOWOD_ZAKUPU = 'd_zakupu', TYPE_URZADZENIE = 'urzadzenie',
-        TYPE_TABLICZKA = 'tabliczka';
+        TYPE_DOWOD_ZAKUPU = 'dowod_zakupu', TYPE_URZADZENIE = 'urzadzenie',
+        TYPE_TABLICZKA = 'tabliczka', TYPE_INNE = 'inne';
+
+    public const TECHNIK_PATH = '# %s/%s/%s/%s';
+
+    public function getIsDeletableAttribute(): bool
+    {
+        return auth()->user()->hasRole('super-admin');
+    }
 
     public function getUrlAttribute(): string
     {
         return route('zlecenie-zdjecie.make', $this->id);
+    }
+
+    public function scopeOnlyType(string $type)
+    {
+        return $this->where('type', $type);
     }
 
     public function scopeOnlyGwarancja()
@@ -43,5 +55,10 @@ class Zdjecie extends Model
     public function scopeOnlyTabliczka()
     {
         return $this->where('type', self::TYPE_TABLICZKA);
+    }
+
+    public function scopeOnlyInne()
+    {
+        return $this->where('type', self::TYPE_INNE);
     }
 }

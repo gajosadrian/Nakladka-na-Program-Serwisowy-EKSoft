@@ -2,7 +2,12 @@
     <div>
         <div v-show="!zlecenie">
             <div v-if="technik" class="row mb-3">
-                <h3 class="col-7">{{ technik.nazwa }}</h3>
+                <h3 class="col-7">
+                    {{ technik.nazwa }}
+                    <b-link :href="route('logout')" class="btn btn-light btn-sm border">
+                        <i class="fa fa-sign-out-alt"></i>
+                    </b-link>
+                </h3>
                 <date-picker class="col-5" @input="terminy=[];fetchZlecenia()" v-model="date" lang="en" valueType="format" :first-day-of-week="1"></date-picker>
             </div>
 
@@ -10,17 +15,31 @@
                 Ładowanie zleceń...
             </div>
             <div v-else v-for="(termin, index) in terminy" :class="{'bg-success-light': termin.zlecenie && termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_do_wyjasnienia, 'bg-danger-light': termin.zlecenie && termin.zlecenie.is_do_wyjasnienia && !termin.zlecenie.is_soft_zakonczone, 'bg-info-light': termin.zlecenie && termin.zlecenie.is_do_wyjasnienia && termin.zlecenie.is_soft_zakonczone, 'border border-bold border-top-0 border-bottom-0 border-right-0 border-danger': termin.zlecenie && !termin.zlecenie.is_soft_zakonczone}" class="block block-rounded shadow-sm">
-                <div @click="setZlecenie(termin.zlecenie); plastic_click_001.play();" :class="{'bg-gray': !termin.zlecenie}" class="block-content block-content-full p-2" style="cursor:pointer;">
+                <div @click="setZlecenie(termin.zlecenie, true, true, !termin.zlecenie); plastic_click_001.play();" :class="{'bg-gray': !termin.zlecenie && !termin.klient, 'bg-danger-light': !termin.zlecenie && termin.klient}" class="block-content block-content-full p-2" style="cursor:pointer;">
                     <div class="clearfix">
                         <div class="float-left">
                             <div v-if="termin.zlecenie">
+                                <div v-if="termin.temat && !termin.zlecenie.is_dzwonic && !termin.zlecenie.is_soft_zakonczone" class="mb-1 p-1 font-w600 text-danger">
+                                    <u>{{ termin.temat }}</u>
+                                </div>
                                 <div v-if="!termin.zlecenie.is_do_wyjasnienia" class="font-size-sm text-muted"><i :class="termin.zlecenie.znacznik_icon"></i> {{ termin.zlecenie.znacznik_formatted }}</div>
                                 <div><span class="font-w700">{{ termin.zlecenie.klient.nazwa }}</span> <span class="font-size-sm">- {{ termin.zlecenie.klient.symbol }}</span></div>
                                 <div>{{ termin.zlecenie.klient.kod_pocztowy }} {{ termin.zlecenie.klient.miasto }}</div>
                                 <div>{{ termin.zlecenie.klient.adres }}</div>
                             </div>
                             <div v-else>
-                                {{ termin.temat || 'Zlecenie usunięte z terminarza' }}
+                                <div v-if="termin.klient" class="mb-1">
+                                    <div><span class="font-w700">{{ termin.klient.nazwa }}</span></div>
+                                    <div>{{ termin.klient.kod_pocztowy }} {{ termin.klient.miasto }}</div>
+                                    <div>{{ termin.klient.adres }}</div>
+                                    <div v-for="(telefon, t_index) in termin.klient.telefony">
+                                        <a :href="'tel:'+telefon" class="btn btn-light btn-sm mr-1">
+                                            <i class="fa fa-phone text-success"></i>
+                                            {{ telefon }}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div :class="{'font-w700 text-white': !termin.zlecenie && termin.klient}">{{ termin.temat || 'Zlecenie usunięte z terminarza' }}</div>
                             </div>
                         </div>
                         <div class="float-right text-right">
@@ -89,9 +108,9 @@
                         <div>{{ zlecenie.urzadzenie.model }}</div>
                         <div class="font-size-sm" style="font-family:consolas;">{{ zlecenie.urzadzenie.nr_seryjny }}</div>
                         <div>
-                            <button type="button" class="btn btn-sm btn-rounded" :class="{ 'btn-danger': true }">
+                            <a :href="zlecenie.zdjecia_url" class="btn btn-sm btn-rounded" :class="{ 'btn-danger': true }" target="_blank">
                                 <i class="fa fa-camera"></i>
-                            </button>
+                            </a>
                         </div>
                     </div>
                     <hr>
@@ -271,7 +290,9 @@ export default {
             return new_zlecenie;
         },
 
-		setZlecenie(zlecenie, scroll = true, scroll_reset = true) {
+		setZlecenie(zlecenie, scroll = true, scroll_reset = true, blocked = false) {
+            if (blocked) return;
+
             if (zlecenie) {
                 this.rememberScroll();
             }

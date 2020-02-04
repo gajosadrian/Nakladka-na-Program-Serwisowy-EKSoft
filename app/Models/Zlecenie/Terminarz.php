@@ -14,7 +14,7 @@ class Terminarz extends Model
     public $timestamps = false;
 
     public const SAMOCHOD_KEYS = ['samochod-', 'samochód-', 'Samochod-', 'Samochód-'];
-    public const ZLECENIE_DO_WYJASNIENIA_KEY = ['zlec:'];
+    public const ZLECENIE_DO_WYJASNIENIA_KEY = ['ZS/'];
 
     public const BRAK_ID = '536870912'; public const UMOWIONO_ID = '8689404';
     public const DZWONIC_WCZESNIEJ_ID = '14982788'; public const ZAKONCZONE_ID = '6610596';
@@ -44,6 +44,16 @@ class Terminarz extends Model
     public function setZlecenieIdAttribute(int $value = null): void
     {
         $this->attributes['ID_ZLECENIA'] = $value;
+    }
+
+    public function getKlientIdAttribute(): ?int
+    {
+        return $this->attributes['ID_O_FIRMY'];
+    }
+
+    public function setKlientIdAttribute(int $value): void
+    {
+        $this->attributes['ID_O_FIRMY'] = $value;
     }
 
     public function getStatusIdAttribute(): string
@@ -162,9 +172,9 @@ class Terminarz extends Model
     }
 
     /**
-    * Relations
-    *
-    */
+     * Relations
+     *
+     */
 
     public function technik()
     {
@@ -176,6 +186,11 @@ class Terminarz extends Model
         return $this->belongsTo('App\Models\Zlecenie\Zlecenie', 'ID_ZLECENIA', 'id_zlecenia')->withDefault([
             'id_zlecenia' => 0,
         ]);
+    }
+
+    public function klient()
+    {
+        return $this->belongsTo('App\Models\Subiekt\Subiekt_Kontrahent', 'ID_O_FIRMY', 'kh_Id');
     }
 
     /**
@@ -230,8 +245,7 @@ class Terminarz extends Model
         });
 
         foreach ($terminy as $termin) {
-            $temat = strtoupper(trim(str_replace(self::ZLECENIE_DO_WYJASNIENIA_KEY, '', strtolower($termin->temat))));
-            $symbole[] = $temat;
+            $symbole[] = $termin->temat;
         }
 
         return $symbole;

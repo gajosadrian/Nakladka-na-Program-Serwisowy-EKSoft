@@ -3,6 +3,23 @@
 @section('content')
 
 <div class="content">
+    @if (@auth()->user()->technik_id)
+        <div class="row gutters-tiny">
+            <div class="col-6 col-md-4 col-xl-2">
+                <a class="block block-bordered block-link-shadow text-center" href="{{ route('zlecenia.mobileApp') }}">
+                    <div class="block-content block-content-full aspect-ratio-4-3 d-flex justify-content-center align-items-center">
+                        <div>
+                            <i class="fa fa-2x fa-mobile-alt text-primary"></i>
+                            <div class="font-w600 mt-3 text-uppercase">Aplikacja</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    @endif
+</div>
+
+{{-- <div class="content">
     <div class="bg-success" style="width:850px; height: 480px; overflow: hidden; transform: scale(1); transform-origin: top left;">
         <div id="map" style="position: relative; left: 0px; top: 0px; z-index: 1; overflow: visible;">
             @for ($y = 0; $y <= 9; $y++)
@@ -95,6 +112,6 @@ document.addEventListener('mouseup', function(e) {
     window.mouseDown = false;
 });
 
-}</script>
+}</script> --}}
 
 @endsection

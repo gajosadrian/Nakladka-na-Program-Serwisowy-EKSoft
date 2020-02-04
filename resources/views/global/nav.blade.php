@@ -12,10 +12,29 @@
             'routeOptions' => [],
         ],
         [
+            'name' => 'Aplikacja mobilna',
+            'icon' => 'si si-screen-smartphone',
+            'route' => 'zlecenia.mobileApp',
+            'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and $user->technik_id;
+            },
+        ],
+        [
             'name' => 'Zlecenia dla technika',
             'icon' => 'si si-docs',
             'route' => 'zlecenia.dla-technika',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
+        ],
+        [
+            'name' => 'Planowanie trasy',
+            'icon' => 'si si-map',
+            'route' => 'zlecenia.planowanieTrasy',
+            'routeOptions' => [],
+            'role' => 'super-admin',
             'if' => function() use ($user) {
                 return $user and !$user->technik_id;
             },
@@ -56,17 +75,17 @@
                 return $user and !$user->technik_id;
             },
         ],
-        [
-            'name' => 'Magazyn',
-            'role' => 'super-admin',
-        ],
-        [
-            'name' => 'Inwentaryzacja',
-            'icon' => 'si si-flag',
-            'route' => 'inwentaryzacja.show',
-            'routeOptions' => [],
-            'role' => 'super-admin',
-        ],
+        // [
+        //     'name' => 'Magazyn',
+        //     'role' => 'super-admin',
+        // ],
+        // [
+        //     'name' => 'Inwentaryzacja',
+        //     'icon' => 'si si-flag',
+        //     'route' => 'inwentaryzacja.show',
+        //     'routeOptions' => [],
+        //     'role' => 'super-admin',
+        // ],
         // [
         //     'name' => 'Części',
         // ],

@@ -2349,6 +2349,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 if (window.location.href == route('zlecenia.mobileApp')) {
   history.pushState(null, null, location.href);
 
@@ -2448,6 +2467,8 @@ if (window.location.href == route('zlecenia.mobileApp')) {
     setZlecenie: function setZlecenie(zlecenie) {
       var scroll = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var scroll_reset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var blocked = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+      if (blocked) return;
 
       if (zlecenie) {
         this.rememberScroll();
@@ -2543,6 +2564,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     zlecenie_id: String
@@ -2553,6 +2575,14 @@ __webpack_require__.r(__webpack_exports__);
       opis: '',
       new_opis: ''
     };
+  },
+  computed: {
+    opis_formatted: function opis_formatted() {
+      var opis = this.opis.split('>>').join('<span class="font-w600 text-danger"><u>');
+      opis = opis.split('<<').join('</u></span>');
+      opis = opis.split("\n").join('<br>');
+      return opis;
+    }
   },
   methods: {
     appendNotatka: function appendNotatka() {
@@ -44655,9 +44685,26 @@ var render = function() {
               "div",
               { staticClass: "row mb-3" },
               [
-                _c("h3", { staticClass: "col-7" }, [
-                  _vm._v(_vm._s(_vm.technik.nazwa))
-                ]),
+                _c(
+                  "h3",
+                  { staticClass: "col-7" },
+                  [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.technik.nazwa) +
+                        "\n                    "
+                    ),
+                    _c(
+                      "b-link",
+                      {
+                        staticClass: "btn btn-light btn-sm border",
+                        attrs: { href: _vm.route("logout") }
+                      },
+                      [_c("i", { staticClass: "fa fa-sign-out-alt" })]
+                    )
+                  ],
+                  1
+                ),
                 _vm._v(" "),
                 _c("date-picker", {
                   staticClass: "col-5",
@@ -44716,11 +44763,19 @@ var render = function() {
                     "div",
                     {
                       staticClass: "block-content block-content-full p-2",
-                      class: { "bg-gray": !termin.zlecenie },
+                      class: {
+                        "bg-gray": !termin.zlecenie && !termin.klient,
+                        "bg-danger-light": !termin.zlecenie && termin.klient
+                      },
                       staticStyle: { cursor: "pointer" },
                       on: {
                         click: function($event) {
-                          _vm.setZlecenie(termin.zlecenie)
+                          _vm.setZlecenie(
+                            termin.zlecenie,
+                            true,
+                            true,
+                            !termin.zlecenie
+                          )
                           _vm.plastic_click_001.play()
                         }
                       }
@@ -44730,6 +44785,19 @@ var render = function() {
                         _c("div", { staticClass: "float-left" }, [
                           termin.zlecenie
                             ? _c("div", [
+                                termin.temat &&
+                                !termin.zlecenie.is_dzwonic &&
+                                !termin.zlecenie.is_soft_zakonczone
+                                  ? _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "mb-1 p-1 font-w600 text-danger"
+                                      },
+                                      [_c("u", [_vm._v(_vm._s(termin.temat))])]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
                                 !termin.zlecenie.is_do_wyjasnienia
                                   ? _c(
                                       "div",
@@ -44778,13 +44846,84 @@ var render = function() {
                                 ])
                               ])
                             : _c("div", [
-                                _vm._v(
-                                  "\n                                " +
-                                    _vm._s(
-                                      termin.temat ||
-                                        "Zlecenie usunięte z terminarza"
-                                    ) +
-                                    "\n                            "
+                                termin.klient
+                                  ? _c(
+                                      "div",
+                                      { staticClass: "mb-1" },
+                                      [
+                                        _c("div", [
+                                          _c(
+                                            "span",
+                                            { staticClass: "font-w700" },
+                                            [
+                                              _vm._v(
+                                                _vm._s(termin.klient.nazwa)
+                                              )
+                                            ]
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("div", [
+                                          _vm._v(
+                                            _vm._s(termin.klient.kod_pocztowy) +
+                                              " " +
+                                              _vm._s(termin.klient.miasto)
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("div", [
+                                          _vm._v(_vm._s(termin.klient.adres))
+                                        ]),
+                                        _vm._v(" "),
+                                        _vm._l(termin.klient.telefony, function(
+                                          telefon,
+                                          t_index
+                                        ) {
+                                          return _c("div", [
+                                            _c(
+                                              "a",
+                                              {
+                                                staticClass:
+                                                  "btn btn-light btn-sm mr-1",
+                                                attrs: {
+                                                  href: "tel:" + telefon
+                                                }
+                                              },
+                                              [
+                                                _c("i", {
+                                                  staticClass:
+                                                    "fa fa-phone text-success"
+                                                }),
+                                                _vm._v(
+                                                  "\n                                            " +
+                                                    _vm._s(telefon) +
+                                                    "\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          ])
+                                        })
+                                      ],
+                                      2
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    class: {
+                                      "font-w700 text-white":
+                                        !termin.zlecenie && termin.klient
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      _vm._s(
+                                        termin.temat ||
+                                          "Zlecenie usunięte z terminarza"
+                                      )
+                                    )
+                                  ]
                                 )
                               ])
                         ]),
@@ -45094,11 +45233,14 @@ var render = function() {
                   _vm._v(" "),
                   _c("div", [
                     _c(
-                      "button",
+                      "a",
                       {
                         staticClass: "btn btn-sm btn-rounded",
                         class: { "btn-danger": true },
-                        attrs: { type: "button" }
+                        attrs: {
+                          href: _vm.zlecenie.zdjecia_url,
+                          target: "_blank"
+                        }
                       },
                       [_c("i", { staticClass: "fa fa-camera" })]
                     )
@@ -45384,12 +45526,9 @@ var render = function() {
   return _c(
     "div",
     [
-      _c(
-        "div",
-        { staticClass: "mb-3" },
-        [_c("nl2br", { attrs: { tag: "div", text: _vm.opis } })],
-        1
-      ),
+      _c("div", { staticClass: "mb-3" }, [
+        _c("div", { domProps: { innerHTML: _vm._s(_vm.opis_formatted) } })
+      ]),
       _vm._v(" "),
       _c("textarea", {
         directives: [

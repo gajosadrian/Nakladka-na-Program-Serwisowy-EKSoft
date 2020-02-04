@@ -97,7 +97,7 @@
                             <table id="rozliczone{{ $room }}" class="table table-sm table-striped table-hover table-borderless table-vcenter font-size-sm dataTable">
                                 <thead>
                                     <th class="font-w700" style="width:1%">Lp.</th>
-                                    <th class="font-w700">Nr zlecenia</th>
+                                    <th class="font-w700" nowrap>Nr zlecenia</th>
                                     <th class="font-w700">Zleceniodawca</th>
                                     <th class="font-w700">Robocizny</th>
                                     <th class="font-w700">Dojazdy</th>
@@ -115,17 +115,17 @@
                                             {!! $rozliczone_zlecenie->zlecenie->tableCellNrHTML !!}
                                             <td>{{ $rozliczone_zlecenie->zleceniodawca }}</td>
                                             <td>{!! $rozliczone_zlecenie->robocizny_html !!}</td>
-                                            <td>{!! $rozliczone_zlecenie->dojazdy_html !!}</td>
-                                            <td>{{ $rozliczone_zlecenie->zlecenie->technik->nazwa }}</td>
-                                            <td>{{ $rozliczone_zlecenie->zlecenie->data_zakonczenia->toDateString() }}</td>
-                                            <td>
+                                            <td nowrap>{!! $rozliczone_zlecenie->dojazdy_html !!}</td>
+                                            <td nowrap>{{ $rozliczone_zlecenie->zlecenie->technik->nazwa }}</td>
+                                            <td nowrap>{{ $rozliczone_zlecenie->zlecenie->data_zakonczenia->toDateString() }}</td>
+                                            <td nowrap>
                                                 @if (! $rozliczenie->is_closed)
                                                     <a onclick="removeRozliczoneZlecenie{{ $room }}({{ $rozliczone_zlecenie->id }})" href="javascript:void(0)" class="text-danger font-w600">
                                                         <i class="fa fa-trash-alt"></i> Usuń
                                                     </a>
                                                 @endif
                                             </td>
-                                            <td>{!! ($rozliczone_zlecenie->zlecenie->status_id != App\Models\Zlecenie\Status::ZAKONCZONE_ID) ? '<span class="text-danger font-w600">Zlecenie niezarchiwizowane</span>' : '' !!}</td>
+                                            <td nowrap>{!! ($rozliczone_zlecenie->zlecenie->status_id != App\Models\Zlecenie\Status::ZAKONCZONE_ID) ? '<span class="text-danger font-w600">Zlecenie niezarchiwizowane</span>' : '' !!}</td>
                                             <td class="d-none">
                                                 {{ $rozliczone_zlecenie->zlecenie->nr }} ; {{ $rozliczone_zlecenie->zlecenie->nr_obcy }}
                                             </td>
@@ -159,7 +159,7 @@
                                             <th class="font-w700">
                                                 <b-form-checkbox id="check-all" name="check-all"></b-form-checkbox>
                                             </th>
-                                            <th class="font-w700">Nr zlecenia</th>
+                                            <th class="font-w700" nowrap>Nr zlecenia</th>
                                             <th class="font-w700">Zleceniodawca</th>
                                             <th class="font-w700">Robocizny</th>
                                             <th class="font-w700">Dojazdy</th>
@@ -181,13 +181,13 @@
                                                     <b-form-checkbox id="row_{{ $counter }}" name="row_{{ $counter }}"></b-form-checkbox>
                                                 </td>
                                                 {!! $zlecenie->tableCellNrHTML !!}
-                                                <td>{!! $zlecenie->zleceniodawca_formatted !!}</td>
+                                                <td nowrap>{!! $zlecenie->zleceniodawca_formatted !!}</td>
                                                 <td class="{{ empty($robocizny) ? 'table-danger' : '' }}">{!! $robocizny ? $zlecenie->robocizny_html : '<span class="text-danger font-w700">Do uzupełnienia</span>' !!}</td>
-                                                <td>{!! $zlecenie->dojazdy_html !!}</td>
-                                                <td>{{ $zlecenie->data_przyjecia->toDateString() }}</td>
-                                                <td>{!! $zlecenie->is_data_zakonczenia ? $zlecenie->data_zakonczenia->toDateString() : '<span class="text-danger font-w700">Brak terminu</span>' !!}</td>
+                                                <td nowrap>{!! $zlecenie->dojazdy_html !!}</td>
+                                                <td nowrap>{{ $zlecenie->data_przyjecia->toDateString() }}</td>
+                                                <td nowrap>{!! $zlecenie->is_data_zakonczenia ? $zlecenie->data_zakonczenia->toDateString() : '<span class="text-danger font-w700">Brak terminu</span>' !!}</td>
                                                 {!! $zlecenie->tableCellStatusHTML !!}
-                                                <td class="d-none">
+                                                <td class="d-none" nowrap>
                                                     {{ $zlecenie->nr }} ; {{ $zlecenie->nr_obcy }}
                                                 </td>
                                             </tr>

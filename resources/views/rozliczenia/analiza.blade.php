@@ -24,6 +24,11 @@
         @if ($is_zleceniodawca)
             <b-block title="{{ $zleceniodawca }}" full>
                 <template slot="content">
+                    <div class="">
+                        <div>Suma robocizn: <span class="font-w600 text-info">{{ round($zlecenia->sum('suma_robocizn'), 2) }} zł</span></div>
+                        <div>Suma dojazdów: <span class="font-w600 text-success">{{ round($zlecenia->sum('suma_dojazdow'), 2) }} zł</span></div>
+                    </div>
+
                     <table id="zlecenia{{ $room }}" class="table table-striped table-hover table-borderless table-vcenter font-size-sm dataTable">
                         <thead>
                             <th class="font-w700">Lp.</th>
@@ -55,10 +60,10 @@
                                     </td>
                                 </tr>
                                 @foreach ($zlecenie->kosztorys_pozycje as $index2 => $pozycja)
-                                    @if ($pozycja->is_czesc)
+                                    @if ($pozycja->is_towar)
                                         @if ($index2 == 0)
-                                            <tr id="noclicable">
-                                                <th>{{ $index + 1 }}.{{ $index2 }}</th>
+                                            <tr id="nonclicable">
+                                                <th class="table-secondary">{{ $index + 1 }}.{{ $index2 }}</th>
                                                 <th>Symbol</th>
                                                 <th>Symbol dost.</th>
                                                 <th>Nazwa</th>
@@ -70,7 +75,15 @@
                                             </tr>
                                         @endif
                                         <tr>
-                                            <th>{{ $index + 1 }}.{{ $index2 + 1 }}</th>
+                                            <th class="
+                                                @if ($pozycja->is_zamontowane)
+                                                    table-success
+                                                @elseif ($pozycja->is_rozpisane)
+                                                    table-warning
+                                                @else
+                                                    table-danger
+                                                @endif
+                                            ">{{ $index + 1 }}.{{ $index2 + 1 }}</th>
                                             <td>{{ $pozycja->towar->symbol }}</td>
                                             <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
                                             <td>{{ $pozycja->towar->nazwa }} {{ $pozycja->opis ? '-' : '' }} <span class="text-danger">{{ $pozycja->opis }}</span></td>
@@ -84,6 +97,19 @@
                                         </tr>
                                     @endif
                                 @endforeach
+                                <tr id="nonclicable">
+                                    <td>
+                                        <span class="d-none">{{ $index + 1 }}.999</span>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -95,7 +121,7 @@
 
 @section('js_after')<script>$(function(){
     var $lastRow = null;
-    $('table#zlecenia{{ $room }} > tbody tr:not(#noclicable)').click(function () {
+    $('table#zlecenia{{ $room }} > tbody tr:not(#nonclicable)').click(function () {
         let $row = $(this);
 
         if ($lastRow) {

@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
         Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');
         Route::get('pokaz/{zlecenie_id}/zdjecia', 'ZlecenieZdjecieController@show')->name('pokazZdjecia');
         Route::get('dla-technika/{technik_id?}/{timestamp?}', 'ZlecenieController@dlaTechnika')->name('dla-technika');
+        Route::get('planowanie-trasy/{technik_id?}/{date_string?}', 'ZlecenieController@planowanieTrasy')->name('planowanieTrasy');
         Route::get('kilometrowka/{technik_id?}/{month_id?}', 'ZlecenieController@kilometrowka')->name('kilometrowka');
         Route::get('wyszukiwanie-zlecenia/{nr_zlec?}', 'ZlecenieController@wyszukiwanieZlecenia')->name('wyszukiwanieZlecenia');
         Route::get('wyszukiwanie-czesci/{symbol?}', 'ZlecenieController@wyszukiwanieCzesci')->name('wyszukiwanieCzesci');
@@ -47,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('zlecenie-zdjecie')->name('zlecenie-zdjecie.')->group(function () {
         Route::get('{zdjecie}', 'ZlecenieZdjecieController@make')->name('make');
         Route::post('/', 'ZlecenieZdjecieController@store')->name('store');
+        Route::delete('/{zdjecie}', 'ZlecenieZdjecieController@destroy')->name('destroy');
     });
 
     Route::prefix('czesci')->name('czesci.')->group(function () {

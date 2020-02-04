@@ -22,12 +22,22 @@ class RozliczoneZlecenie extends Model
 
     public function getRobociznyHtmlAttribute(): string
     {
-        return Zlecenie::getHtmlKosztorys('ROBOCIZNY', $this->robocizny);
+        return Zlecenie::getHtmlKosztorys('ROBOCIZNY', $this->robocizny, 'info');
     }
 
     public function getDojazdyHtmlAttribute(): string
     {
-        return Zlecenie::getHtmlKosztorys('DOJAZDY', $this->dojazdy);
+        return Zlecenie::getHtmlKosztorys('DOJAZDY', $this->dojazdy, 'success');
+    }
+
+    public function getSumaRobociznAttribute(): float
+    {
+        return array_sum($this->robocizny);
+    }
+
+    public function getSumaDojazdowAttribute(): float
+    {
+        return array_sum($this->dojazdy);
     }
 
     /**

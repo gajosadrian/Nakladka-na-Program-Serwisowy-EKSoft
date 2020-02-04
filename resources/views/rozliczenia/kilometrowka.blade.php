@@ -52,7 +52,7 @@
 					<div class="mx-3">
                         <div class="mb-3 clearfix" style="font-size: 2em">
                             <div class="float-left">
-                                {{ $technik->nazwa }} - {{ $month->name }}
+                                {{ $technik->nazwa }} - {{ $year_id }} {{ $month->name }}
                                 <span class="font-size-sm text-muted">(<span id="zlecenia_n"></span> zlec.)</span>
                             </div>
                             <div class="float-right">
@@ -74,6 +74,9 @@
                                     $zlecenia_n = 0;
                                 @endphp
 								@foreach ($grouped_terminy ?? [] as $date_string => $grouped_termin)
+                                    @php
+                                        $array = [];
+                                    @endphp
 
 									<tr>
 										<td class="bg-gray font-w700" colspan="4">{{ $date_string }}</td>
@@ -86,6 +89,7 @@
 										@if ($zlecenie->id and !$zlecenie->was_warsztat and !$zlecenie->is_odwolano)
                                             @php
                                                 $zlecenia_n++;
+                                                $array[] = $zlecenie->google_maps_address;
                                             @endphp
 											<tr>
 												<th class="text-right">{{ $zlecenia_n }}.</th>
@@ -106,6 +110,15 @@
 											</tr>
 										@endif
 									@endforeach
+
+                                    <tr class="text-center font-w600 d-print-none">
+                                        <td colspan="4">
+                                            <a href="{{ App\Models\Zlecenie\Zlecenie::getGoogleMapsKmLink($array) }}" target="_blank">
+                                                <i class="fa fa-map-marked-alt"></i>
+                                                Mapa
+                                            </a>
+                                        </td>
+                                    </tr>
 								@endforeach
 							</tbody>
 						</table>

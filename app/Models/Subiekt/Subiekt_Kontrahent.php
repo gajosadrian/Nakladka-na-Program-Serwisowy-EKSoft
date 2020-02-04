@@ -41,9 +41,23 @@ class Subiekt_Kontrahent extends Model
         return $this->dane->adres;
     }
 
+    public function getAdres2Attribute(): string
+    {
+        $adres = $this->adres;
+        $adres_arr = explode('/', $adres);
+        if (count($adres_arr) > 1) {
+            array_pop($adres_arr);
+        }
+        return implode('/', $adres_arr);
+    }
+
     public function getMiastoAttribute(): string
     {
-        return $this->dane->miejscowosc;
+        $miejscowosc = $this->dane->miejscowosc;
+        if (str_contains($miejscowosc, 'Ostrowiec Św')) {
+            $miejscowosc = 'Ostrowiec Świętokrzyski';
+        }
+        return $miejscowosc;
     }
 
     public function getKodPocztowyAttribute(): string

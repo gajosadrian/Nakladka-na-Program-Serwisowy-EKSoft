@@ -25,11 +25,18 @@
                         <b-col cols="2">
                             <input type="text" class="js-datepicker form-control" value="{{ $date_string }}" onchange="updateUrl(this)">
                         </b-col>
-                        <b-col cols="2">
+                        <b-col cols="2" md="1">
                             <b-button class="btn-rounded shadow" variant="info" size="sm" onclick="Dashmix.helpers('print')">
                                 <i class="fa fa-print"></i> Drukuj
                             </b-button>
                         </b-col>
+                        @if (count($places) > 0)
+                            <b-col cols="2" md="1">
+                                <b-link class="btn btn-sm btn-rounded btn-success shadow" href="{{ App\Models\Zlecenie\Zlecenie::getGoogleMapsKmLink($places) }}" target="_blank">
+                                    <i class="fa fa-map-marked-alt"></i> Mapa
+                                </b-link>
+                            </b-col>
+                        @endif
                     @endif
                 </b-row>
             </template>
@@ -107,7 +114,9 @@
                                             @if (!$zlecenie->_do_wyjasnienia)
                                                 <b-col cols="4" class="text-right">
                                                     @if ($zlecenie->is_warsztat)
-                                                        <span class="bg-dark text-white px-1">warsztat</span>
+                                                        <span class="bg-dark text-white px-1">WARSZTAT</span>
+                                                    @elseif (false)
+                                                        <span class="bg-dark text-white px-1">ODWIEŹĆ</span>
                                                     @endif
                                                     {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
                                                 </b-col>
@@ -128,11 +137,11 @@
                                                         {{ $zlecenie->klient->adres }}, {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}<br>
                                                         {{ $zlecenie->klient->telefony_formatted }}
                                                     </div>
-                                                    <div class="float-right text-right">
+                                                    {{-- <div class="float-right text-right">
                                                         @if (!$zlecenie->is_warsztat and !$zlecenie->_do_wyjasnienia)
                                                             <b-img src="https://chart.googleapis.com/chart?chs=80x80&cht=qr&chld=L|1&choe=UTF-8&chl={{ urlencode($zlecenie->google_maps_route_link) }}" fuild></b-img>
                                                         @endif
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </b-col>
                                             <b-col cols="5">
@@ -167,17 +176,15 @@
                                         </b-row>
                                     </div>
                                     <div style="font-size:0.6em">
-                                        <div class="d-none">
-                                            Nie odbiera tel.:
-                                        </div>
                                         <div>
                                             <span style="border-top: 1px solid #aaa;">
                                                 Przyjął: {{ $zlecenie->przyjmujacy->nazwa }}
+                                                ◦◦ Trwanie zlecenia: {{ $zlecenie->czas_trwania_formatted }}
                                                 @if ($zlecenie->is_umowiono)
-                                                    ◦◦ Umówił: {{ $zlecenie->last_status_umowiono->pracownik->nazwa }} {{ $zlecenie->last_status_umowiono->data->format('m.d H:i') }}
+                                                    ◦◦ Umówił: {{ $zlecenie->last_status_umowiono->pracownik->nazwa }} {{ $zlecenie->last_status_umowiono->data->format('Y-m-d H:i') }}
                                                 @endif
-                                                @if (true)
-                                                    ◦◦ Trwanie zlecenia: {{ $zlecenie->czas_trwania_formatted }}
+                                                @if ($zlecenie->statusy_nie_odbiera)
+                                                    ◦◦ Nieodebrane: {{ $zlecenie->statusy_nie_odbiera->implode('data_formatted', ', ') }}
                                                 @endif
                                             </span>
                                         </div>
@@ -205,7 +212,11 @@
                                                         @php
                                                             $wartosc_brutto += $pozycja->wartosc_brutto;
                                                         @endphp
-                                                        <tr>
+                                                        <tr
+                                                            @if ($pozycja->is_zamontowane or $pozycja->is_rozpisane)
+                                                                style="text-decoration: line-through;"
+                                                            @endif
+                                                        >
                                                             <td nowrap>{{ $pozycja->polka }}</td>
                                                             <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
                                                             <td nowrap>{{ $pozycja->symbol }}</td>
@@ -233,7 +244,7 @@
                                         </div>
                                     @endif
                                 @else
-                                    <div class="font-w700 bg-gray p-1">
+                                    <div class="font-w700 bg-gray p-2">
                                         <b-row class="gutters-tiny">
                                             <b-col cols="9">
                                                 {{ $terminarz->temat }}
@@ -243,6 +254,13 @@
                                             </b-col>
                                         </b-row>
                                     </div>
+                                    @if ($terminarz->klient_id)
+                                        <div>
+                                            <span class="font-w700">{{ $terminarz->klient->symbol }} <u>{{ $terminarz->klient->nazwa }}</u></span><br>
+                                            {{ $terminarz->klient->adres }}, {{ $terminarz->klient->kod_pocztowy }} {{ $terminarz->klient->miasto }}<br>
+                                            {{ $terminarz->klient->telefony_formatted }}
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                         @endforeach

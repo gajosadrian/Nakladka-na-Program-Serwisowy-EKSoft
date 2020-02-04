@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="mb-3">
-            <nl2br tag="div" :text="opis" />
+            <div v-html="opis_formatted"></div>
+            <!-- <nl2br tag="div" :text="opis" /> -->
         </div>
         <textarea v-model.trim="new_opis" class="form-control form-control-alt mb-2" placeholder="Dodaj opis.."></textarea>
         <b-button size="sm" variant="primary" :disabled="disable_button" @click="appendNotatka">Dodaj opis</b-button>
@@ -20,6 +21,15 @@ export default {
             opis: '',
             new_opis: '',
         }
+    },
+
+    computed: {
+        opis_formatted() {
+            let opis = this.opis.split('>>').join('<span class="font-w600 text-danger"><u>');
+            opis = opis.split('<<').join('</u></span>');
+            opis = opis.split("\n").join('<br>');
+            return opis;
+        },
     },
 
     methods: {
@@ -46,6 +56,6 @@ export default {
         })).then(response => {
             self.opis = response.data;
         });
-    }
+    },
 }
 </script>

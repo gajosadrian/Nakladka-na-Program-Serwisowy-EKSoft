@@ -112,6 +112,7 @@
                                         @else
                                             <td>
                                                 <select class="form-control form-control-sm font-w700 {{ $zlecenie->status->color ? 'bg-'.$zlecenie->status->color.'-lighter' : '' }}">
+                                                    <option value="{{ $zlecenie->status->id }}" selected disabled>{{ $zlecenie->status->nazwa }}</option>
                                                     @foreach ($statusy_aktywne as $status)
                                                         <option value="{{ $status->id }}" {{ ($status->id == $zlecenie->status->id) ? 'selected' : '' }}>{{ $status->nazwa }}</option>
                                                     @endforeach

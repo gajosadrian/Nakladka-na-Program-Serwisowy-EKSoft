@@ -99,8 +99,10 @@ class ZlecenieController extends Controller
      */
     public function show($id)
     {
-        $zlecenie = Zlecenie::findOrFail($id);
+        $zlecenie = Zlecenie::with('status_historia')->findOrFail($id);
         $statusy_aktywne = Status::getAktywne();
+
+        // dd($zlecenie->is_na_warsztacie);
 
         return view('zlecenie.pokaz', compact(
             'zlecenie',
@@ -172,6 +174,14 @@ class ZlecenieController extends Controller
             $samochod = Terminarz::getSamochod($technik->id, $date_string);
         }
 
+        $places = [];
+        foreach ($terminy ?? [] as $termin) {
+            $zlecenie = $termin->zlecenie;
+            if ( ! $zlecenie->id or $zlecenie->is_warsztat) continue;
+
+            $places[] = $zlecenie->google_maps_address;
+        }
+
         return view('zlecenie.dla-technika', compact(
             'is_technik',
             'technicy',
@@ -185,7 +195,8 @@ class ZlecenieController extends Controller
             'is_up_to_date',
             'terminy',
             'terminarz_notatki',
-            'samochod'
+            'samochod',
+            'places'
         ));
     }
 
@@ -207,6 +218,7 @@ class ZlecenieController extends Controller
             $date_from = Carbon::create($now->year, $month_id, 1)->startOfDay();
         }
         $date_to = $date_from->copy()->endOfMonth()->endOfDay();
+        $year_id = $date_from->year;
 
         $month = $months->where('id', $month_id)->first();
 
@@ -230,7 +242,7 @@ class ZlecenieController extends Controller
             }
         }
 
-        return view('rozliczenia.kilometrowka', compact('months', 'month', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'date_from', 'date_to', 'grouped_terminy'));
+        return view('rozliczenia.kilometrowka', compact('months', 'month', 'is_technik', 'technicy', 'technik_id', 'technik', 'month_id', 'year_id', 'date_from', 'date_to', 'grouped_terminy'));
     }
 
     public function logs(int $technik_id = null, string $date_string = null)
@@ -423,7 +435,18 @@ class ZlecenieController extends Controller
                 'godzina_rozpoczecia' => $termin->godzina_rozpoczecia,
                 'przeznaczony_czas_formatted' => $termin->przeznaczony_czas_formatted,
                 'zlecenie' => null,
+                'klient' => null,
             ];
+            if ($termin->klient_id) {
+                $item['klient'] = [
+                    'symbol' => $termin->klient->symbol,
+                    'nazwa' => $termin->klient->nazwa,
+                    'kod_pocztowy' => $termin->klient->kod_pocztowy,
+                    'miasto' => $termin->klient->miasto,
+                    'adres' => $termin->klient->adres,
+                    'telefony' => $termin->klient->telefony_array,
+                ];
+            }
             if ($termin->zlecenie->klient) {
                 $status_historia_preautoryzacja = $termin->zlecenie->getStatusHistoriaAt($date_string, Status::PREAUTORYZACJA_ID);
                 $is_soft_zakonczone = (bool) ($termin->zlecenie->is_zakonczone or $status_historia_preautoryzacja);
@@ -457,6 +480,7 @@ class ZlecenieController extends Controller
                         'telefony' => $termin->zlecenie->klient->telefony_array,
                     ],
                     'kosztorys_pozycje' => $termin->zlecenie->getKosztorysArray(),
+                    'zdjecia_url' => route('zlecenia.pokazZdjecia', $termin->zlecenie->id),
                     'urzadzenie' => null,
                 ];
                 if ($termin->zlecenie->urzadzenie) {
