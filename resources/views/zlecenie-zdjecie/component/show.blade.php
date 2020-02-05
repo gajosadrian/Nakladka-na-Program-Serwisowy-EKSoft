@@ -63,8 +63,8 @@ function onImageChange{{ $room }}(self) {
     });
 
     imageCompressor{{ $room }}.compress(file, {
-        maxWidth: 850,
-        maxHeight: 850,
+        maxWidth: 1000,
+        maxHeight: 1000,
         quality: 1.0,
     })
         .then((result) => {

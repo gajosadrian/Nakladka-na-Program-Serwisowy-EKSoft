@@ -2157,7 +2157,8 @@ __webpack_require__.r(__webpack_exports__);
       axios.post(route('zlecenia.api.change_status', {
         id: this.zlecenie_id,
         status_id: this.status_id,
-        remove_termin: this.remove_termin
+        remove_termin: this.remove_termin,
+        terminarz_status_id: '12897956'
       })).then(function (response) {
         location.reload();
       });

@@ -30,6 +30,7 @@ export default {
                 id: this.zlecenie_id,
                 status_id: this.status_id,
                 remove_termin: this.remove_termin,
+                terminarz_status_id: '12897956',
             })).then(response => {
                 location.reload();
             });

@@ -36,7 +36,7 @@ class Zlecenie extends Model
         'Amica' => ['amica', 'amika'],
         'Gorenje' => ['gorenje', 'gorenie', 'gorenja', 'gorenia'],
         'ERGO Hestia' => ['efficient', 'logisfera', 'logiswera', 'ergo-hestia', 'ergohestia', 'ergo', 'hestia', 'ergo hestia', 'euro hestia'],
-        'Quadra-Net' => ['quadra', 'quadra-net', 'quadra net', 'quadra - net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
+        'Quadra-Net' => ['quadra', 'quadra-net', 'quadra net', 'quadra - net', 'quadra- net', 'quadra -net', 'quadranet', 'kuadra', 'kuadra-net', 'kuadranet', 'kładra', 'kładra-net', 'kładranet'],
         'IBC' => ['ibc'],
         'Kromet' => ['kromet', 'kromed', 'cromet', 'cromed'],
         'Kernau' => ['kernau', 'kernał', 'galicja'],
@@ -940,9 +940,10 @@ HTML;
         $data = (object) $data;
         $query = $this->withRelations()->with(['status_historia', 'zatwierdzony_blad'])->niezakonczone();
         if (@$data->technik_id) {
-            $query
-                ->technik($data->technik_id)
-                ->orderBy(DB::raw('case when id_status in ('. Status::NA_WARSZTACIE_ID .') then 1 else 0 end'), 'id_status');
+            // $query
+            //     ->technik($data->technik_id)
+            //     ->orderBy(DB::raw('case when id_status in ('. Status::NA_WARSZTACIE_ID .') then 1 else 0 end'), 'id_status');
+            $query->where('id_status', Status::NA_WARSZTACIE_ID);
         }
         return $query->oldest('DataPrzyjecia')->get();
     }

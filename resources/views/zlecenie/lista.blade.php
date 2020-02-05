@@ -83,7 +83,8 @@
                                 @if ($show_errors)
                                     <th class="font-w700">Błędy</th>
                                 @endif
-								<th class="font-w700">Ostatnia data</th>
+                                {{-- <th class="font-w700">Ostatnia data</th> --}}
+								<th class="font-w700">Data przyjęcia</th>
 								<th class="d-none"></th>
 							</tr>
 						</thead>
@@ -128,7 +129,7 @@
                                     @endif
 
 									<td nowrap>
-                                        @if ($zlecenie->is_termin)
+                                        {{-- @if ($zlecenie->is_termin)
                                             {{ $zlecenie->data_zakonczenia_formatted }}
                                         @else
                                             {{ $zlecenie->data_statusu_formatted }}
@@ -153,6 +154,23 @@
                                             @elseif ($dni_od_zakonczenia == 0 and $is_termin)
                                                 (dzisiaj)
     										@endif
+                                        </small> --}}
+
+                                        {{ $zlecenie->data_przyjecia_formatted }}
+                                        <br>
+                                        @php
+                                            $dni_od_przyjecia = $zlecenie->dni_od_przyjecia;
+                                        @endphp
+                                        <small class="text-muted">
+                                            @if ($dni_od_przyjecia > 0)
+                                                @if ($dni_od_przyjecia >= 2)
+                                                    ({{ $dni_od_przyjecia }} dni temu)
+                                                @else
+                                                    (wczoraj)
+                                                @endif
+                                            @else
+                                                (dzisiaj)
+                                            @endif
                                         </small>
 									</td>
 

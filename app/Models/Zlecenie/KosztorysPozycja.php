@@ -2,10 +2,12 @@
 
 namespace App\Models\Zlecenie;
 
-use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Database\Eloquent\Model;
+use Awobaz\Compoships\Database\Eloquent\Model;
 
 class KosztorysPozycja extends Model
 {
+
     protected $connection = 'sqlsrv';
     protected $table = 'ser_ZlecKosztPoz';
     protected $with = ['towar'];
@@ -16,9 +18,9 @@ class KosztorysPozycja extends Model
     private const ZAMOWIONE_KEYS = ['zamowion', 'zamowien'];
 
     /**
-    * Attributes
-    *
-    */
+     * Attributes
+     *
+     */
 
     public function getTowarIdAttribute(): int
     {
@@ -69,7 +71,7 @@ class KosztorysPozycja extends Model
 
     public function getOpisAsciiAttribute(): string
     {
-        return iconv('UTF-8', 'ascii//translit', $this->opis);
+        return strtolower(iconv('UTF-8', 'ascii//translit', $this->opis));
     }
 
     public function getCenaAttribute(): float
@@ -198,9 +200,9 @@ class KosztorysPozycja extends Model
     }
 
     /**
-    * Methods
-    *
-    */
+     * Methods
+     *
+     */
 
     public function hasKey(array $keys): bool
     {
@@ -208,9 +210,9 @@ class KosztorysPozycja extends Model
     }
 
     /**
-    * Relations
-    *
-    */
+     * Relations
+     *
+     */
 
     public function zlecenie()
     {
@@ -228,10 +230,15 @@ class KosztorysPozycja extends Model
         ]);
     }
 
+    public function naszykowana_czesc()
+    {
+        return $this->hasOne('App\Models\Czesc\Naszykowana', ['zlecenie_id', 'towar_id'], ['id_zs', 'id_o_tw']);
+    }
+
     /**
-    * Methods
-    *
-    */
+     * Methods
+     *
+     */
 
     public function getArray(): array
     {
