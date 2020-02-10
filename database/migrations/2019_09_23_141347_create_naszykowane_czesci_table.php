@@ -15,6 +15,7 @@ class CreateNaszykowaneCzesciTable extends Migration
     {
         Schema::create('naszykowane_czesci', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('key')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('sprawdzil_user_id')->nullable();
             $table->timestamp('sprawdzone_at')->nullable();
@@ -25,6 +26,8 @@ class CreateNaszykowaneCzesciTable extends Migration
             $table->float('ilosc');
             $table->float('ilosc_do_zwrotu');
             $table->float('ilosc_zamontowane')->default(0);
+            $table->float('ilosc_rozpisane')->default(0);
+            $table->timestamp('technik_updated_at')->nullable();
             $table->string('uwagi')->nullable();
             $table->timestamps();
         });

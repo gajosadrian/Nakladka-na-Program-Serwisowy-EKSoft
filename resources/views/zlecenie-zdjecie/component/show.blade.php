@@ -14,6 +14,9 @@
             <input type="hidden" name="save_to" id="save_to{{ $room }}" value="{{ $save_to }}">
             <input type="hidden" name="type" id="type{{ $room }}" value="{{ $type }}">
             <input type="file" name="image" id="image{{ $room }}" accept="image/*" onchange="onImageChange{{ $room }}(this)">
+
+            <div id="alert-wrapper{{ $room }}" class="mt-2"></div>
+
         </b-col>
     </b-row>
 
@@ -54,13 +57,11 @@ function onImageChange{{ $room }}(self) {
     let file = self.files[0];
     if ( ! file) return;
 
-    swal({
-        position: 'center',
-        type: 'info',
-        title: 'Wysyłanie...',
-        showConfirmButton: false,
-        allowOutsideClick: false
-    });
+    let alertWrapper = alertWrapper{{ $room }};
+    let formData = formData{{ $room }};
+    let key = Math.random().toString(36).substring(7);
+
+    alertWrapper(key, 'warning', 'Wysyłanie...');
 
     imageCompressor{{ $room }}.compress(file, {
         maxWidth: 1000,
@@ -68,17 +69,30 @@ function onImageChange{{ $room }}(self) {
         quality: 1.0,
     })
         .then((result) => {
-            formData{{ $room }}.append('image', result, result.name);
+            formData.append('image', result, result.name);
 
-            axios.post( route('zlecenie-zdjecie.store') , formData{{ $room }}).then((data) => {
+            axios.post( route('zlecenie-zdjecie.store') , formData).then((data) => {
                 data = data.data;
                 console.log(data);
-                location.reload();
+                alertWrapper(key, 'success', 'Wysłano');
             });
         })
         .catch((err) => {
             console.log(err);
         })
+}
+
+function alertWrapper{{ $room }}(key, color, txt) {
+    let $alertWrapper = $('#alert-wrapper{{ $room }}');
+
+    $('#' + key).remove();
+    $alertWrapper.append(`
+        <div id="` + key + `">
+            <div class="alert alert-` + color + ` p-1 my-1">
+                <p class="mb-0">` + txt + `</p>
+            </div>
+        </div>
+    `);
 }
 
 </script>@append

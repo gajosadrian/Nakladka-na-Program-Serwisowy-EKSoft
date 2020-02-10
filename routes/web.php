@@ -53,7 +53,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('czesci')->name('czesci.')->group(function () {
         Route::get('szykowanie/{technik_id?}/{date_string?}', 'CzesciController@indexSzykowanie')->name('indexSzykowanie');
-        Route::patch('naszykuj/{zlecenie_id}/{towar_id}', 'CzesciController@updateNaszykuj')->name('updateNaszykuj');
+        Route::patch('naszykuj/{kosztorys_pozycja}', 'CzesciController@updateNaszykuj')->name('updateNaszykuj');
+        Route::patch('zamontuj/{kosztorys_pozycja}/{towar_id}', 'CzesciController@updateZamontuj')->name('updateZamontuj');
         Route::get('odbior/{technik_id?}', 'CzesciController@indexOdbior')->name('indexOdbior');
         Route::get('dodawanie/{technik_id?}/{date_string?}', 'CzesciController@indexDodawanie')->name('indexDodawanie');
     });

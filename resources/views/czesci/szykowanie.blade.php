@@ -31,12 +31,12 @@
         </b-block>
         @foreach ($terminy as $termin)
             @foreach ($termin->zlecenie->kosztorys_pozycje as $pozycja)
-                @continue( !$pozycja->is_towar or $pozycja->is_zamontowane )
+                @continue( !$pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane )
 
                 <b-block class="mb-2">
                     <template slot="content">
                         <div>
-                            {{-- <div>zlecenie_id: {{ $termin->zlecenie_id }}, towar_id: {{ $pozycja->towar_id }}</div> --}}
+                            <div>zlecenie_id: {{ $termin->zlecenie_id }}, towar_id: {{ $pozycja->towar_id }}, pozycja_id: {{ $pozycja->id }}, opis: ({{ $pozycja->opis }})</div>
                             <div>{{ $termin->zlecenie->nr }}, <span class="font-w600">{{ $termin->zlecenie->klient->nazwa }}</span></div>
                         </div>
                         <div class="ribbon ribbon-{{ $pozycja->naszykowana_czesc ? 'success' : 'danger' }}">
@@ -71,8 +71,11 @@
                                         @endphp
                                         <input id="ilosc_{{ $random }}" class="form-control {{ $pozycja->naszykowana_czesc ? 'form-control-alt is-valid' : '' }}" type="number" value="{{ $pozycja->naszykowana_czesc ? $pozycja->naszykowana_czesc->ilosc : $pozycja->ilosc }}" onclick="select()">
                                         <div class="input-group-append">
-                                            <button class="btn btn-{{ $pozycja->naszykowana_czesc ? '' : 'outline-' }}success" onclick="naszykujCzesc(@json($termin->zlecenie_id), @json($pozycja->towar_id), Number($('#ilosc_{{ $random }}').val()))">
+                                            <button class="btn btn-{{ $pozycja->naszykowana_czesc ? '' : 'outline-' }}success" onclick="naszykujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
                                                 <i class="fa fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-danger" onclick="zamontujCzesc(@json($pozycja->id), @json($pozycja->towar_id), Number($('#ilosc_{{ $random }}').val()))">
+                                                <i class="fa fa-exclamation-triangle"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -98,9 +101,22 @@
 let technik_id = @json(@$technik->id ?? 0);
 let date_string = @json($date_string);
 
-function naszykujCzesc(zlecenie_id, towar_id, ilosc) {
+function naszykujCzesc(kosztorys_pozycja_id, ilosc) {
     axios.post( route('czesci.updateNaszykuj', {
-        zlecenie_id,
+        kosztorys_pozycja: kosztorys_pozycja_id,
+    }), {
+        _token: @json(csrf_token()),
+        _method: 'patch',
+        technik_id,
+        ilosc,
+    }).then((response) => {
+        location.reload();
+    });
+}
+
+function zamontujCzesc(kosztorys_pozycja_id, towar_id, ilosc) {
+    axios.post( route('czesci.updateZamontuj', {
+        kosztorys_pozycja: kosztorys_pozycja_id,
         towar_id,
     }), {
         _token: @json(csrf_token()),

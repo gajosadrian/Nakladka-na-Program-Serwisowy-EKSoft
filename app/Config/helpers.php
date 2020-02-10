@@ -89,3 +89,13 @@ function array_sub_identical_keys(array $a1, array $a2): array
     }
     return $sums;
 }
+
+function get_string_between(string $string, string $start, string $end): string
+{
+    $string = ' ' . $string;
+    $ini = strpos($string, $start);
+    if ($ini == 0) return '';
+    $ini += strlen($start);
+    $len = strpos($string, $end, $ini) - $ini;
+    return substr($string, $ini, $len);
+}

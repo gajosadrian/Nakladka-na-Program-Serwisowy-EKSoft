@@ -11,6 +11,7 @@ class KosztorysPozycja extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'ser_ZlecKosztPoz';
     protected $with = ['towar'];
+    public $timestamps = false;
 
     private const ZAMONTOWANE_KEYS = ['zamontowan', 'zalozon'];
     private const ODLOZONE_KEYS = ['odlozon'];
@@ -56,9 +57,24 @@ class KosztorysPozycja extends Model
         return $this->towar->symbol_dostawcy2;
     }
 
-	public function getOpisAttribute(): string
+    public function getOpisRawAttribute(): string
     {
         return $this->attributes['opis_dodatkowy'] ?? false;
+    }
+
+	public function getOpisAttribute(): string
+    {
+        $opis = $this->attributes['opis_dodatkowy'] ?? false;
+        if ( ! $opis) {
+            return false;
+        }
+        $opis = trim(str_replace('$'.$this->naszykowana_czesc_key.'$', '', $opis));
+        return $opis;
+    }
+
+	public function setOpisAttribute(string $value): void
+    {
+        $this->attributes['opis_dodatkowy'] = $value;
     }
 
 	public function getOpisFixedAttribute(): string
@@ -66,12 +82,12 @@ class KosztorysPozycja extends Model
         $opis = $this->opis;
         if ($opis == '') return false;
         $opis = preg_replace("/\[[^)]+\]/", '', $opis);
-        return $opis;
+        return trim($opis);
     }
 
     public function getOpisAsciiAttribute(): string
     {
-        return strtolower(iconv('UTF-8', 'ascii//translit', $this->opis));
+        return strtolower(str_replace("'", '', iconv('UTF-8', 'ascii//translit', $this->opis)));
     }
 
     public function getCenaAttribute(): float
@@ -199,6 +215,30 @@ class KosztorysPozycja extends Model
         return '-';
     }
 
+    public function getNaszykowanaCzescKeyAttribute(): ?string
+    {
+        $opis = $this->opis_raw;
+        if ( ! str_contains($opis, '$')) return null;
+        return get_string_between($opis, '$', '$');
+    }
+
+    public function setNaszykowanaCzescKeyAttribute(string $key): void
+    {
+        $opis = $this->opis;
+        $old_key = $this->naszykowana_czesc_key;
+
+        if ($old_key) {
+            $opis = trim(str_replace('$'.$old_key.'$', '', $opis));
+        }
+
+        $this->opis .= ' $' . $key . '$';
+    }
+
+    public function getNaszykowanaCzescAttribute()
+    {
+        return $this->naszykowane_czesci->where('key', $this->naszykowana_czesc_key)->first() ?? null;
+    }
+
     /**
      * Methods
      *
@@ -230,9 +270,9 @@ class KosztorysPozycja extends Model
         ]);
     }
 
-    public function naszykowana_czesc()
+    public function naszykowane_czesci()
     {
-        return $this->hasOne('App\Models\Czesc\Naszykowana', ['zlecenie_id', 'towar_id'], ['id_zs', 'id_o_tw']);
+        return $this->hasMany('App\Models\Czesc\Naszykowana', ['zlecenie_id', 'towar_id'], ['id_zs', 'id_o_tw']);
     }
 
     /**
@@ -257,6 +297,10 @@ class KosztorysPozycja extends Model
             'is_czesc' => $this->is_czesc,
             'is_towar' => $this->is_towar,
             'is_usluga' => $this->is_usluga,
+            'is_odlozone' => $this->is_odlozone,
+            'is_zamontowane' => $this->is_zamontowane,
+            'is_rozpisane' => $this->is_rozpisane,
+            'is_zamontowane_or_rozpisane' => ($this->is_zamontowane or $this->is_rozpisane)
         ];
     }
 

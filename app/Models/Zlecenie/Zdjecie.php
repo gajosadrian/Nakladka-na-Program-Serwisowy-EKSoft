@@ -19,7 +19,7 @@ class Zdjecie extends Model
 
     public function getIsDeletableAttribute(): bool
     {
-        return auth()->user()->hasRole('super-admin');
+        return auth()->user()->hasRole('super-admin') and auth()->user()->id == 1;
     }
 
     public function getUrlAttribute(): string

@@ -44,7 +44,7 @@ class Zlecenie extends Model
         'Deante' => ['deante', 'deande'],
         'Ciarko' => ['ciarko', 'ciarco'],
         'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi', 'haier', 'hajer'],
-        'Europ Assistance' => ['europ assistance', 'europ-assistance', 'europ', 'eap', 'assistance'],
+        'Europ Assistance' => ['europ assistance', 'europ-assistance', 'europ-asistance', 'europ', 'eap', 'assistance'],
         'RTV Euro AGD' => ['euro-net', 'euro net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
         'Mentax' => ['mentax', 'mentaks', 'generali'],
         'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
@@ -547,16 +547,13 @@ class Zlecenie extends Model
     {
         $array = [];
 
-        if (!$this->is_termin and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID]))
+        if (!$this->is_termin and $this->dni_od_statusu >= 1 and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID]))
             $array[] = 'Ustal termin';
 
-        if ($this->dni_od_zakonczenia >= 2 and $this->isAktywnyBlad(2) and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID]))
+        if ($this->dni_od_statusu >= 2 and $this->isAktywnyBlad(2) and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::PREAUTORYZACJA_ID]))
             $array[] = 'Zlecenie niezamknięte';
 
-        if (!$this->is_termin and $this->dni_od_statusu >= 2 and $this->isAktywnyBlad(2) and in_array($this->status_id, [Status::NA_WARSZTACIE_ID]))
-            $array[] = 'Zlecenie niezamknięte';
-
-        if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::INFO_O_KOSZTACH_ID]))
+        if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::DO_POINFORMOWANIA_ID, Status::INFO_O_KOSZTACH_ID]))
             $array[] = 'Dzwonić do klienta';
 
         if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::DO_ZAMOWIENIA_ID, Status::DO_WYCENY_ID, Status::DO_WYJASNIENIA_ID]))
@@ -565,11 +562,14 @@ class Zlecenie extends Model
         if ($this->dni_od_statusu >= 3 and $this->isAktywnyBlad(3) and in_array($this->status_id, [Status::ZALICZKA_ID]))
             $array[] = 'Czy jest zaliczka?';
 
-        if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::DZWONIC_PO_ODBIOR_ID, Status::DO_ODBIORU_ID]))
+        if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::DZWONIC_PO_ODBIOR_ID]))
+            $array[] = 'Dzwonić po odbiór';
+
+        if ($this->dni_od_statusu >= 2 and $this->isAktywnyBlad(2) and in_array($this->status_id, [Status::DO_ODBIORU_ID]))
             $array[] = 'Dzwonić po odbiór';
 
         if ($this->dni_od_statusu >= 5 and $this->isAktywnyBlad(5) and in_array($this->status_id, [Status::DO_ROZLICZENIA_ID]))
-            $array[] = 'Nie rozliczone';
+            $array[] = 'Nierozliczone';
 
         if ($this->dni_od_statusu >= 4 and $this->isAktywnyBlad(4) and in_array($this->status_id, [Status::ZAMOWIONO_CZESC_ID]))
             $array[] = 'Czy dotarła część?';

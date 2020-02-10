@@ -22,7 +22,7 @@
                 'zlecenie' => $zlecenie,
             ])
         @endif
-        @if ($zlecenie->urzadzenie_id and $zlecenie->is_ubezpieczenie)
+        @if ($zlecenie->urzadzenie_id and ($zlecenie->is_gwarancja or $zlecenie->is_ubezpieczenie))
             @include('zlecenie-zdjecie.component.show', [
                 'title' => 'Polisa',
                 'save_to' => 'urzadzenie',

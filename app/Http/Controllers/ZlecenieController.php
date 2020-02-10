@@ -500,8 +500,8 @@ class ZlecenieController extends Controller
             'date_string' => $date_string,
             'technik' => $user->technik->getArray(),
             'terminy' => $array,
-            // 'show_map' => $user->technik->nazwa != 'Szymek Gajos',
             'show_map' => true,
+            // 'show_map' => $user->technik->nazwa != 'Szymek Gajos',
         ], 200);
     }
 }

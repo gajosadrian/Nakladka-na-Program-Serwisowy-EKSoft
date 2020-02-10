@@ -122,7 +122,7 @@
                             <span class="font-w700">Suma kosztorysu:</span>
                             <span>{{ suma_kosztorysu.toFixed(2) }} zł</span>
                         </div>
-                        <div class="font-w700">Kosztorys:</div>
+                        <!-- <div class="font-w700">Kosztorys:</div> -->
                         <div class="font-size-sm">
                             <div v-for="(pozycja, index2) in zlecenie.kosztorys_pozycje" v-if="pozycja.ilosc > 0" class="mt-2">
                                 <div class="clearfix border border-left-0 border-right-0 border-bottom-0">
@@ -145,17 +145,18 @@
                                         </div>
                                     </div>
                                     <div v-if="pozycja.is_towar && Number.isInteger(pozycja.ilosc)" class="float-right text-right">
-                                        <!-- <select v-model="parts[pozycja.id]" :class="{
-                                            'bg-success': parts[pozycja.id] == 'mounted',
-                                            'bg-danger': parts[pozycja.id] == 'unmounted',
-                                            'bg-warning': parts[pozycja.id] == 'written'
+                                        <select v-model="parts[pozycja.id]" :class="{
+                                            'bg-success': String(parts[pozycja.id]).includes('mounted'),
+                                            'bg-danger': String(parts[pozycja.id]).includes('unmounted'),
+                                            'bg-warning': String(parts[pozycja.id]).includes('written'),
+                                            'bg-secondary': ! parts[pozycja.id],
                                         }" class="form-control form-control-sm mt-1" style="width:30px;">
                                             <option value="" disabled>{{ pozycja.nazwa }}</option>
-                                            <option value="">---</option>
-                                            <option v-for="n in pozycja.ilosc" :key="n" value="mounted">Zamontowane - {{ n }} szt.</option>
+                                            <!-- <option value="">---</option> -->
+                                            <option v-for="n in pozycja.ilosc" :key="n" :value="'mounted#' + n">Zamontowane - {{ n }} szt.</option>
+                                            <option v-for="n in pozycja.ilosc" :key="n" :value="'written#' + n">Rozpisane - {{ n }} szt.</option>
                                             <option value="unmounted">Niezamontowane</option>
-                                            <option value="written">Rozpisane</option>
-                                        </select> -->
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -175,13 +176,15 @@
                 </div>
             </div>
 
-			<div class="pt-5"></div>
-            <nav class="fixed-bottom bg-white p-2 text-right" style="box-shadow: 0px 6px 2px 8px rgba(0,0,0,.08);">
-                <button @click="setZlecenie(null, true, false); plastic_click_002.play();" type="button" class="btn bg-white text-muted">
-                    <i class="fa fa-reply"></i>
-                    Cofnij
-                </button>
-            </nav>
+            <div class="d-none d-md-block">
+    			<div class="pt-5"></div>
+                <nav class="fixed-bottom bg-white p-2 text-right" style="box-shadow: 0px 6px 2px 8px rgba(0,0,0,.08);">
+                    <button @click="setZlecenie(null, true, false); plastic_click_002.play();" type="button" class="btn bg-white text-muted">
+                        <i class="fa fa-reply"></i>
+                        Cofnij
+                    </button>
+                </nav>
+            </div>
         </div>
         <div class="pb-3 text-center">
             <hr>
@@ -191,12 +194,12 @@
 </template>
 
 <script>
-if (window.location.href == route('zlecenia.mobileApp')) {
-    history.pushState(null, null, location.href);
-    window.onpopstate = function () {
-        history.go(1);
-    };
-}
+// if (window.location.href == route('zlecenia.mobileApp')) {
+//     history.pushState(null, null, location.href);
+//     window.onpopstate = function () {
+//         history.go(1);
+//     };
+// }
 
 export default {
     data() {
@@ -365,6 +368,18 @@ export default {
         cancelAutoUpdate() {
             clearInterval(this.timer);
         },
+    },
+
+    created() {
+        let self = this;
+
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+
+            self.setZlecenie(null, true, false);
+            self.plastic_click_002.play();
+        };
     },
 }
 </script>
