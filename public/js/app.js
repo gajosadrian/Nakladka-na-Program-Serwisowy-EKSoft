@@ -2177,6 +2177,14 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 //
 //
 //
@@ -2432,6 +2440,24 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    mountPart: function mountPart(pozycja, value) {
+      var _value$split = value.split('#'),
+          _value$split2 = _slicedToArray(_value$split, 2),
+          type = _value$split2[0],
+          ilosc = _value$split2[1];
+
+      axios.post(route('czesci.updateZamontuj', {
+        kosztorys_pozycja: pozycja.id
+      }), {
+        _token: this._token,
+        _method: 'patch',
+        technik_id: this.technik.id,
+        type: type,
+        ilosc: ilosc
+      }).then(function (response) {
+        console.log('success');
+      });
+    },
     fetchZlecenia: function fetchZlecenia() {
       var _this = this;
 
@@ -2443,8 +2469,26 @@ __webpack_require__.r(__webpack_exports__);
         _this.technik = data.technik;
         _this.terminy = data.terminy;
         _this.show_map = data.show_map;
+        _this.parts = [];
+
+        _this.terminy.map(function (termin) {
+          if (termin.zlecenie) {
+            termin.zlecenie.kosztorys_pozycje.map(function (pozycja) {
+              if (pozycja.is_zamontowane) {
+                _this.parts[pozycja.id] = 'zamontowane#' + pozycja.ilosc;
+              } else if (pozycja.is_rozpisane) {
+                _this.parts[pozycja.id] = 'rozpisane#' + pozycja.ilosc;
+              } else if (pozycja.is_niezamontowane) {
+                _this.parts[pozycja.id] = 'niezamontowane';
+              } else {
+                _this.parts[pozycja.id] = false;
+              }
+            });
+          }
+        });
+
+        _this.updateZlecenieInstance();
       });
-      this.updateZlecenieInstance();
     },
     fetchZlecenie: function fetchZlecenie() {
       if (!this.zlecenie) return false;
@@ -45284,7 +45328,9 @@ var render = function() {
                           pozycja,
                           index2
                         ) {
-                          return pozycja.ilosc > 0
+                          return pozycja.ilosc > 0 ||
+                            (pozycja.naszykowana_czesc &&
+                              pozycja.naszykowana_czesc.is_editable)
                             ? _c("div", { staticClass: "mt-2" }, [
                                 _c(
                                   "div",
@@ -45384,7 +45430,9 @@ var render = function() {
                                     ]),
                                     _vm._v(" "),
                                     pozycja.is_towar &&
-                                    Number.isInteger(pozycja.ilosc)
+                                    Number.isInteger(pozycja.ilosc) &&
+                                    (!pozycja.naszykowana_czesc ||
+                                      pozycja.naszykowana_czesc.is_editable)
                                       ? _c(
                                           "div",
                                           {
@@ -45408,44 +45456,58 @@ var render = function() {
                                                 staticClass:
                                                   "form-control form-control-sm mt-1",
                                                 class: {
-                                                  "bg-success": String(
-                                                    _vm.parts[pozycja.id]
-                                                  ).includes("mounted"),
+                                                  "bg-success":
+                                                    String(
+                                                      _vm.parts[pozycja.id]
+                                                    ).includes("zamontowane") &&
+                                                    !String(
+                                                      _vm.parts[pozycja.id]
+                                                    ).includes(
+                                                      "niezamontowane"
+                                                    ),
                                                   "bg-danger": String(
                                                     _vm.parts[pozycja.id]
-                                                  ).includes("unmounted"),
+                                                  ).includes("niezamontowane"),
                                                   "bg-warning": String(
                                                     _vm.parts[pozycja.id]
-                                                  ).includes("written"),
+                                                  ).includes("rozpisane"),
                                                   "bg-secondary": !_vm.parts[
                                                     pozycja.id
                                                   ]
                                                 },
                                                 staticStyle: { width: "30px" },
                                                 on: {
-                                                  change: function($event) {
-                                                    var $$selectedVal = Array.prototype.filter
-                                                      .call(
-                                                        $event.target.options,
-                                                        function(o) {
-                                                          return o.selected
-                                                        }
+                                                  change: [
+                                                    function($event) {
+                                                      var $$selectedVal = Array.prototype.filter
+                                                        .call(
+                                                          $event.target.options,
+                                                          function(o) {
+                                                            return o.selected
+                                                          }
+                                                        )
+                                                        .map(function(o) {
+                                                          var val =
+                                                            "_value" in o
+                                                              ? o._value
+                                                              : o.value
+                                                          return val
+                                                        })
+                                                      _vm.$set(
+                                                        _vm.parts,
+                                                        pozycja.id,
+                                                        $event.target.multiple
+                                                          ? $$selectedVal
+                                                          : $$selectedVal[0]
                                                       )
-                                                      .map(function(o) {
-                                                        var val =
-                                                          "_value" in o
-                                                            ? o._value
-                                                            : o.value
-                                                        return val
-                                                      })
-                                                    _vm.$set(
-                                                      _vm.parts,
-                                                      pozycja.id,
-                                                      $event.target.multiple
-                                                        ? $$selectedVal
-                                                        : $$selectedVal[0]
-                                                    )
-                                                  }
+                                                    },
+                                                    function($event) {
+                                                      return _vm.mountPart(
+                                                        pozycja,
+                                                        _vm.parts[pozycja.id]
+                                                      )
+                                                    }
+                                                  ]
                                                 }
                                               },
                                               [
@@ -45464,53 +45526,63 @@ var render = function() {
                                                   ]
                                                 ),
                                                 _vm._v(" "),
-                                                _vm._l(pozycja.ilosc, function(
-                                                  n
-                                                ) {
-                                                  return _c(
-                                                    "option",
-                                                    {
-                                                      key: n,
-                                                      domProps: {
-                                                        value: "mounted#" + n
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "Zamontowane - " +
-                                                          _vm._s(n) +
-                                                          " szt."
-                                                      )
-                                                    ]
-                                                  )
-                                                }),
+                                                _vm._l(
+                                                  (pozycja.naszykowana_czesc &&
+                                                    pozycja.naszykowana_czesc
+                                                      .ilosc) ||
+                                                    pozycja.ilosc,
+                                                  function(n) {
+                                                    return _c(
+                                                      "option",
+                                                      {
+                                                        key: n,
+                                                        domProps: {
+                                                          value:
+                                                            "zamontowane#" + n
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Zamontowane - " +
+                                                            _vm._s(n) +
+                                                            " szt."
+                                                        )
+                                                      ]
+                                                    )
+                                                  }
+                                                ),
                                                 _vm._v(" "),
-                                                _vm._l(pozycja.ilosc, function(
-                                                  n
-                                                ) {
-                                                  return _c(
-                                                    "option",
-                                                    {
-                                                      key: n,
-                                                      domProps: {
-                                                        value: "written#" + n
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "Rozpisane - " +
-                                                          _vm._s(n) +
-                                                          " szt."
-                                                      )
-                                                    ]
-                                                  )
-                                                }),
+                                                _vm._l(
+                                                  (pozycja.naszykowana_czesc &&
+                                                    pozycja.naszykowana_czesc
+                                                      .ilosc) ||
+                                                    pozycja.ilosc,
+                                                  function(n) {
+                                                    return _c(
+                                                      "option",
+                                                      {
+                                                        key: n,
+                                                        domProps: {
+                                                          value:
+                                                            "rozpisane#" + n
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Rozpisane - " +
+                                                            _vm._s(n) +
+                                                            " szt."
+                                                        )
+                                                      ]
+                                                    )
+                                                  }
+                                                ),
                                                 _vm._v(" "),
                                                 _c(
                                                   "option",
                                                   {
                                                     attrs: {
-                                                      value: "unmounted"
+                                                      value: "niezamontowane"
                                                     }
                                                   },
                                                   [_vm._v("Niezamontowane")]

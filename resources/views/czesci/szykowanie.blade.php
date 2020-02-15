@@ -36,7 +36,7 @@
                 <b-block class="mb-2">
                     <template slot="content">
                         <div>
-                            <div>zlecenie_id: {{ $termin->zlecenie_id }}, towar_id: {{ $pozycja->towar_id }}, pozycja_id: {{ $pozycja->id }}, opis: ({{ $pozycja->opis }})</div>
+                            {{-- <div>zlecenie_id: {{ $termin->zlecenie_id }}, towar_id: {{ $pozycja->towar_id }}, pozycja_id: {{ $pozycja->id }}, opis: ({{ $pozycja->opis_raw }})</div> --}}
                             <div>{{ $termin->zlecenie->nr }}, <span class="font-w600">{{ $termin->zlecenie->klient->nazwa }}</span></div>
                         </div>
                         <div class="ribbon ribbon-{{ $pozycja->naszykowana_czesc ? 'success' : 'danger' }}">
@@ -74,9 +74,9 @@
                                             <button class="btn btn-{{ $pozycja->naszykowana_czesc ? '' : 'outline-' }}success" onclick="naszykujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
                                                 <i class="fa fa-check"></i>
                                             </button>
-                                            <button class="btn btn-danger" onclick="zamontujCzesc(@json($pozycja->id), @json($pozycja->towar_id), Number($('#ilosc_{{ $random }}').val()))">
+                                            {{-- <button class="btn btn-danger" onclick="zamontujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
                                                 <i class="fa fa-exclamation-triangle"></i>
-                                            </button>
+                                            </button> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -114,10 +114,9 @@ function naszykujCzesc(kosztorys_pozycja_id, ilosc) {
     });
 }
 
-function zamontujCzesc(kosztorys_pozycja_id, towar_id, ilosc) {
+function zamontujCzesc(kosztorys_pozycja_id, ilosc) {
     axios.post( route('czesci.updateZamontuj', {
         kosztorys_pozycja: kosztorys_pozycja_id,
-        towar_id,
     }), {
         _token: @json(csrf_token()),
         _method: 'patch',

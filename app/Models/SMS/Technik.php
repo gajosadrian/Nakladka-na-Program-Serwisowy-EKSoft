@@ -58,6 +58,7 @@ class Technik extends Model
     public function getArray(): array
     {
         return [
+            'id' => $this->id,
             'nazwa' => $this->nazwa,
         ];
     }

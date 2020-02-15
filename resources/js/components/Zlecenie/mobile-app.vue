@@ -124,7 +124,7 @@
                         </div>
                         <!-- <div class="font-w700">Kosztorys:</div> -->
                         <div class="font-size-sm">
-                            <div v-for="(pozycja, index2) in zlecenie.kosztorys_pozycje" v-if="pozycja.ilosc > 0" class="mt-2">
+                            <div v-for="(pozycja, index2) in zlecenie.kosztorys_pozycje" v-if="(pozycja.ilosc > 0 || (pozycja.naszykowana_czesc && pozycja.naszykowana_czesc.is_editable))" class="mt-2">
                                 <div class="clearfix border border-left-0 border-right-0 border-bottom-0">
                                     <div class="float-left">
                                         <div class="font-w700">{{ pozycja.nazwa }}</div>
@@ -144,18 +144,18 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div v-if="pozycja.is_towar && Number.isInteger(pozycja.ilosc)" class="float-right text-right">
-                                        <select v-model="parts[pozycja.id]" :class="{
-                                            'bg-success': String(parts[pozycja.id]).includes('mounted'),
-                                            'bg-danger': String(parts[pozycja.id]).includes('unmounted'),
-                                            'bg-warning': String(parts[pozycja.id]).includes('written'),
+                                    <div v-if="pozycja.is_towar && Number.isInteger(pozycja.ilosc) && (!pozycja.naszykowana_czesc || pozycja.naszykowana_czesc.is_editable)" class="float-right text-right">
+                                        <select v-model="parts[pozycja.id]" @change="mountPart(pozycja, parts[pozycja.id])" :class="{
+                                            'bg-success': String(parts[pozycja.id]).includes('zamontowane') && !String(parts[pozycja.id]).includes('niezamontowane'),
+                                            'bg-danger': String(parts[pozycja.id]).includes('niezamontowane'),
+                                            'bg-warning': String(parts[pozycja.id]).includes('rozpisane'),
                                             'bg-secondary': ! parts[pozycja.id],
                                         }" class="form-control form-control-sm mt-1" style="width:30px;">
                                             <option value="" disabled>{{ pozycja.nazwa }}</option>
                                             <!-- <option value="">---</option> -->
-                                            <option v-for="n in pozycja.ilosc" :key="n" :value="'mounted#' + n">Zamontowane - {{ n }} szt.</option>
-                                            <option v-for="n in pozycja.ilosc" :key="n" :value="'written#' + n">Rozpisane - {{ n }} szt.</option>
-                                            <option value="unmounted">Niezamontowane</option>
+                                            <option v-for="n in (pozycja.naszykowana_czesc && pozycja.naszykowana_czesc.ilosc || pozycja.ilosc)" :key="n" :value="'zamontowane#' + n">Zamontowane - {{ n }} szt.</option>
+                                            <option v-for="n in (pozycja.naszykowana_czesc && pozycja.naszykowana_czesc.ilosc || pozycja.ilosc)" :key="n" :value="'rozpisane#' + n">Rozpisane - {{ n }} szt.</option>
+                                            <option value="niezamontowane">Niezamontowane</option>
                                         </select>
                                     </div>
                                 </div>
@@ -257,6 +257,22 @@ export default {
     },
 
     methods: {
+        mountPart(pozycja, value) {
+            let [type, ilosc] = value.split('#');
+
+            axios.post( route('czesci.updateZamontuj', {
+                kosztorys_pozycja: pozycja.id,
+            }), {
+                _token: this._token,
+                _method: 'patch',
+                technik_id: this.technik.id,
+                type,
+                ilosc,
+            }).then((response) => {
+                console.log('success');
+            });
+        },
+
         fetchZlecenia() {
             axios.get(route('zlecenia.api.getFromTerminarz', {
                 date_string: this.date,
@@ -266,8 +282,26 @@ export default {
                 this.technik = data.technik;
                 this.terminy = data.terminy;
                 this.show_map = data.show_map;
+
+                this.parts = [];
+                this.terminy.map((termin) => {
+                    if (termin.zlecenie) {
+                        termin.zlecenie.kosztorys_pozycje.map((pozycja) => {
+                            if (pozycja.is_zamontowane) {
+                                this.parts[pozycja.id] = 'zamontowane#' + pozycja.ilosc;
+                            } else if (pozycja.is_rozpisane) {
+                                this.parts[pozycja.id] = 'rozpisane#' + pozycja.ilosc;
+                            } else if (pozycja.is_niezamontowane) {
+                                this.parts[pozycja.id] = 'niezamontowane';
+                            } else {
+                                this.parts[pozycja.id] = false;
+                            }
+                        });
+                    }
+                });
+
+                this.updateZlecenieInstance();
             });
-            this.updateZlecenieInstance();
         },
 
         fetchZlecenie() {
@@ -376,7 +410,6 @@ export default {
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
             history.go(1);
-
             self.setZlecenie(null, true, false);
             self.plastic_click_002.play();
         };

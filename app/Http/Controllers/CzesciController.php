@@ -53,27 +53,21 @@ class CzesciController extends Controller
         $technik_id = $request->technik_id;
         $ilosc = str_replace(',', '.', $request->ilosc);
 
-        $naszykowana_czesc = Naszykowana::firstOrNew([
-            'key' => $pozycja->naszykowana_czesc_key,
-            'zlecenie_id' => $pozycja->zlecenie_id,
-            'towar_id' => $pozycja->towar_id,
-        ]);
-        if ( ! $ilosc or $ilosc == 0) {
-            $naszykowana_czesc->delete();
-            return response()->json('deleted', 200);
-        }
-
         $zlecenie = $pozycja->zlecenie;
         if ( ! $zlecenie->terminarz) {
             abort(401);
         }
 
-        $key = strtolower(str_random(4));
+        $key = $pozycja->naszykowana_czesc_key ?? strtolower(str_random(4));
+        $naszykowana_czesc = $pozycja->naszykowane_czesci()->firstOrNew([
+            'key' => $key,
+        ]);
 
-        $pozycja->naszykowana_czesc_key = $key;
-        $pozycja->save();
+        if ( ! $ilosc or $ilosc == 0) {
+            $naszykowana_czesc->delete();
+            return response()->json('deleted', 200);
+        }
 
-        $naszykowana_czesc->key = $key;
         $naszykowana_czesc->user_id = $user->id;
         $naszykowana_czesc->technik_id = $technik_id;
         $naszykowana_czesc->ilosc = $ilosc;
@@ -81,10 +75,15 @@ class CzesciController extends Controller
         $naszykowana_czesc->zlecenie_data = $zlecenie->terminarz->data_rozpoczecia;
         $naszykowana_czesc->save();
 
+        if ($pozycja->naszykowana_czesc_key != $key) {
+            $pozycja->naszykowana_czesc_key = $key;
+            $pozycja->save();
+        }
+
         return response()->json('saved', 200);
     }
 
-    public function updateZamontuj(Request $request, KosztorysPozycja $kosztorys_pozycja, int $towar_id)
+    public function updateZamontuj(Request $request, KosztorysPozycja $kosztorys_pozycja)
     {
         $user = $request->user();
         $pozycja = $kosztorys_pozycja;
@@ -93,18 +92,55 @@ class CzesciController extends Controller
         $ilosc = str_replace(',', '.', $request->ilosc);
 
         if ( ! $ilosc or $ilosc == 0) {
-            abort(401);
+            $request->type = 'niezamontowane';
         }
 
-        if ( ! $pozycja->naszykowane_czesci) {
-            $this->updateNaszykuj($request, $pozycja->zlecenie_id, $towar_id);
-            $pozycja->naszykowane_czesci = $pozycja->naszykowane_czesci()->get();
+        if ( ! $pozycja->naszykowana_czesc and $request->type == 'niezamontowane') {
+            $pozycja->opis = '(-' . $pozycja->ilosc . ') niezałożone';
+            $pozycja->ilosc = 0;
+            $pozycja->save();
+            return response()->json('saved', 200);
         }
 
-        $naszykowana_czesc = $pozycja->naszykowane_czesci;
-        $naszykowana_czesc->ilosc_zamontowane = $ilosc;
-        $naszykowana_czesc->ilosc_do_zwrotu -= $ilosc;
+        if ( ! $pozycja->naszykowana_czesc) {
+            $this->updateNaszykuj($request, $pozycja);
+            $pozycja->load('naszykowane_czesci');
+        }
+
+        $naszykowana_czesc = $pozycja->naszykowana_czesc;
+        switch ($request->type) {
+            case 'rozpisane':
+                $naszykowana_czesc->ilosc_zamontowane = 0;
+                $naszykowana_czesc->ilosc_rozpisane = $ilosc;
+                $naszykowana_czesc->ilosc_do_zwrotu = $naszykowana_czesc->ilosc;
+                $pozycja->opis = 'rozpisane';
+                $pozycja->ilosc = $ilosc;
+                break;
+
+            case 'niezamontowane':
+                $naszykowana_czesc->ilosc_zamontowane = 0;
+                $naszykowana_czesc->ilosc_rozpisane = 0;
+                $naszykowana_czesc->ilosc_do_zwrotu = $naszykowana_czesc->ilosc;
+                $pozycja->opis = '(-' . $naszykowana_czesc->ilosc . ') niezałożone';
+                $pozycja->ilosc = 0;
+                break;
+
+            default:
+                $naszykowana_czesc->ilosc_rozpisane = 0;
+                $naszykowana_czesc->ilosc_zamontowane = $ilosc;
+                $do_zwrotu = $naszykowana_czesc->ilosc - $ilosc;
+                $naszykowana_czesc->ilosc_do_zwrotu = $do_zwrotu;
+                $pozycja->opis = 'założone';
+                if ($do_zwrotu > 0) {
+                    $pozycja->opis = '(-' . $do_zwrotu . ') ' . $pozycja->opis;
+                }
+                $pozycja->ilosc = $ilosc;
+                break;
+        }
+        $naszykowana_czesc->technik_updated_at = now();
         $naszykowana_czesc->save();
+        $pozycja->naszykowana_czesc_key = $naszykowana_czesc->key;
+        $pozycja->save();
 
         return response()->json('saved', 200);
     }

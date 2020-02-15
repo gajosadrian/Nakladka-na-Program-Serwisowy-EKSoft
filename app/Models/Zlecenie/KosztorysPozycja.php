@@ -14,6 +14,7 @@ class KosztorysPozycja extends Model
     public $timestamps = false;
 
     private const ZAMONTOWANE_KEYS = ['zamontowan', 'zalozon'];
+    private const NIEZAMONTOWANE_KEYS = ['niezamontowan', 'niezalozon'];
     private const ODLOZONE_KEYS = ['odlozon'];
     private const ROZPISANE_KEYS = ['rozpisan'];
     private const ZAMOWIONE_KEYS = ['zamowion', 'zamowien'];
@@ -74,7 +75,7 @@ class KosztorysPozycja extends Model
 
 	public function setOpisAttribute(string $value): void
     {
-        $this->attributes['opis_dodatkowy'] = $value;
+        $this->attributes['opis_dodatkowy'] = trim($value);
     }
 
 	public function getOpisFixedAttribute(): string
@@ -113,6 +114,11 @@ class KosztorysPozycja extends Model
     public function getIloscAttribute(): float
     {
         return round($this->attributes['ilosc'], 2);
+    }
+
+    public function setIloscAttribute(float $value): void
+    {
+        $this->attributes['ilosc'] = $value;
     }
 
     public function getWartoscAttribute(): float
@@ -181,7 +187,12 @@ class KosztorysPozycja extends Model
 
     public function getIsZamontowaneAttribute(): bool
     {
-        return $this->hasKey(self::ZAMONTOWANE_KEYS);
+        return $this->hasKey(self::ZAMONTOWANE_KEYS) && !$this->hasKey(self::NIEZAMONTOWANE_KEYS);
+    }
+
+    public function getIsNiezamontowaneAttribute(): bool
+    {
+        return $this->hasKey(self::NIEZAMONTOWANE_KEYS);
     }
 
     public function getIsOdlozoneAttribute(): bool
@@ -230,12 +241,16 @@ class KosztorysPozycja extends Model
         if ($old_key) {
             $opis = trim(str_replace('$'.$old_key.'$', '', $opis));
         }
+        if ( ! $key) {
+            return;
+        }
 
-        $this->opis .= ' $' . $key . '$';
+        $this->opis = $opis . ' $' . $key . '$';
     }
 
     public function getNaszykowanaCzescAttribute()
     {
+        if (!$this->naszykowana_czesc_key or !$this->naszykowane_czesci) return null;
         return $this->naszykowane_czesci->where('key', $this->naszykowana_czesc_key)->first() ?? null;
     }
 
@@ -282,7 +297,7 @@ class KosztorysPozycja extends Model
 
     public function getArray(): array
     {
-        return [
+        $array = [
             'id' => $this->id,
             'polka' => $this->polka,
             'symbol_dostawcy' => $this->symbol_dostawcy,
@@ -299,9 +314,22 @@ class KosztorysPozycja extends Model
             'is_usluga' => $this->is_usluga,
             'is_odlozone' => $this->is_odlozone,
             'is_zamontowane' => $this->is_zamontowane,
+            'is_niezamontowane' => $this->is_niezamontowane,
             'is_rozpisane' => $this->is_rozpisane,
-            'is_zamontowane_or_rozpisane' => ($this->is_zamontowane or $this->is_rozpisane)
+            'is_zamontowane_or_rozpisane' => ($this->is_zamontowane or $this->is_rozpisane),
+            'naszykowana_czesc' => false,
         ];
+        if ($this->naszykowana_czesc) {
+            $array['naszykowana_czesc'] = $this->naszykowana_czesc->only([
+                'id',
+                'ilosc',
+                'ilosc_do_zwrotu',
+                'ilosc_zamontowane',
+                'ilosc_rozpisane',
+            ]);
+            $array['naszykowana_czesc']['is_editable'] = $this->naszykowana_czesc->technik_updated_at ? $this->naszykowana_czesc->technik_updated_at->isToday() : true;
+        }
+        return $array;
     }
 
     public static function getFixedValue($value)

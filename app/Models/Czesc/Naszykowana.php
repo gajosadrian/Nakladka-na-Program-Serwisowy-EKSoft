@@ -9,6 +9,7 @@ class Naszykowana extends Model
 {
     protected $connection = 'mysql';
     protected $table = 'naszykowane_czesci';
+    protected $dates = ['technik_updated_at'];
     protected $guarded = [];
 
     /**
@@ -19,5 +20,10 @@ class Naszykowana extends Model
     public function getIloscZwroconeAttribute(): float
     {
         return $this->ilosc - $this->ilosc_zamontowane - $this->ilosc_do_zwrotu;
+    }
+
+    public function getTechnikUpdatedAtFormattedAttribute(): string
+    {
+        return $this->technik_updated_at->format('Y-m-d H:i');
     }
 }
