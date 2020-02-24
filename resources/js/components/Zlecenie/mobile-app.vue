@@ -105,11 +105,11 @@
                     </div>
                     <div class="text-right">
                         <div class="font-w700">{{ zlecenie.urzadzenie.producent }}, {{ zlecenie.urzadzenie.nazwa }}</div>
-                        <div>{{ zlecenie.urzadzenie.model }}</div>
-                        <div class="font-size-sm" style="font-family:consolas;">{{ zlecenie.urzadzenie.nr_seryjny }}</div>
+                        <div style="font-family:consolas;">{{ zlecenie.urzadzenie.model }}</div>
+                        <div style="font-family:consolas;">{{ zlecenie.urzadzenie.nr_seryjny }}</div>
                         <div>
                             <a :href="zlecenie.zdjecia_url" class="btn btn-sm btn-rounded" :class="{ 'btn-danger': true }" target="_blank">
-                                <i class="fa fa-camera"></i>
+                                <i class="fa fa-camera"></i> Zdjęcia
                             </a>
                         </div>
                     </div>
@@ -117,6 +117,10 @@
                     <div class="font-w700">Opis:</div>
                     <div v-html="opis_formatted"></div>
                     <!-- <nl2br tag="div" :text="opis_formatted" /> -->
+                    <div v-if="dodawanie_opisu" class="font-w600 text-danger">
+                        <i class="fa fa-spinner fa-pulse"></i>
+                        Dodawanie opisu...
+                    </div>
                     <template v-if="zlecenie.kosztorys_pozycje.length > 0">
                         <div class="mt-2">
                             <span class="font-w700">Suma kosztorysu:</span>
@@ -217,13 +221,14 @@ export default {
             terminy: [],
             disable_OpisButton: false,
             new_opis: '',
+            dodawanie_opisu: false,
             parts: [],
         }
     },
 
     mounted() {
         this.fetchZlecenia();
-        this.timer = setInterval(this.fetchZlecenia, 120000); // 2 min
+        this.timer = setInterval(this.fetchZlecenia, 300000); // 5 min
         // this.click_21 = new Audio('/sounds/click_021.mp3');
         this.click_21 = new Audio('/zlecenia/public/sounds/click_021.mp3');
         this.plastic_click_001 = new Audio('/zlecenia/public/sounds/plastic_click_001.mp3');
@@ -268,8 +273,19 @@ export default {
                 technik_id: this.technik.id,
                 type,
                 ilosc,
-            }).then((response) => {
+            })
+            .then((response) => {
                 console.log('success');
+            })
+            .catch((error) => {
+                this.parts[pozycja.id] = false;
+                swal({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Wystąpił problem',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             });
         },
 
@@ -357,6 +373,7 @@ export default {
             if (! this.zlecenie) return false;
 
             this.disable_OpisButton = true;
+            this.dodawanie_opisu = true;
             axios.post(route('zlecenia.api.append_opis', {
                 id: this.zlecenie.id,
                 opis: this.new_opis,
@@ -365,28 +382,30 @@ export default {
             })
             .then(response => {
                 this.disable_OpisButton = false;
+                this.dodawanie_opisu = false;
                 this.new_opis = '';
-                swal({
-                    position: 'center',
-                    type: 'success',
-                    title: 'Dodano opis',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                // swal({
+                //     position: 'center',
+                //     type: 'success',
+                //     title: 'Dodano opis',
+                //     showConfirmButton: false,
+                //     timer: 1500
+                // });
+
+                this.changeStatus(41);
+                this.fetchZlecenia();
             })
             .catch((error) => {
                 this.disable_OpisButton = false;
+                this.dodawanie_opisu = false;
                 swal({
                     position: 'center',
                     type: 'error',
-                    title: 'Spróbuj jeszcze raz',
+                    title: 'Wystąpił problem',
                     showConfirmButton: false,
                     timer: 1500
                 });
             });
-
-            this.changeStatus(41);
-            this.fetchZlecenia();
         },
 
         changeStatus(status_id) {

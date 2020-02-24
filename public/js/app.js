@@ -2380,6 +2380,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
 // if (window.location.href == route('zlecenia.mobileApp')) {
 //     history.pushState(null, null, location.href);
 //     window.onpopstate = function () {
@@ -2402,12 +2406,13 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       terminy: [],
       disable_OpisButton: false,
       new_opis: '',
+      dodawanie_opisu: false,
       parts: []
     };
   },
   mounted: function mounted() {
     this.fetchZlecenia();
-    this.timer = setInterval(this.fetchZlecenia, 120000); // 2 min
+    this.timer = setInterval(this.fetchZlecenia, 300000); // 5 min
     // this.click_21 = new Audio('/sounds/click_021.mp3');
 
     this.click_21 = new Audio('/zlecenia/public/sounds/click_021.mp3');
@@ -2441,6 +2446,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   },
   methods: {
     mountPart: function mountPart(pozycja, value) {
+      var _this = this;
+
       var _value$split = value.split('#'),
           _value$split2 = _slicedToArray(_value$split, 2),
           type = _value$split2[0],
@@ -2456,38 +2463,47 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         ilosc: ilosc
       }).then(function (response) {
         console.log('success');
+      }).catch(function (error) {
+        _this.parts[pozycja.id] = false;
+        swal({
+          position: 'center',
+          type: 'error',
+          title: 'Wystąpił problem',
+          showConfirmButton: false,
+          timer: 1500
+        });
       });
     },
     fetchZlecenia: function fetchZlecenia() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get(route('zlecenia.api.getFromTerminarz', {
         date_string: this.date
       })).then(function (response) {
         var data = response.data;
-        _this.date_string = data.date_string;
-        _this.technik = data.technik;
-        _this.terminy = data.terminy;
-        _this.show_map = data.show_map;
-        _this.parts = [];
+        _this2.date_string = data.date_string;
+        _this2.technik = data.technik;
+        _this2.terminy = data.terminy;
+        _this2.show_map = data.show_map;
+        _this2.parts = [];
 
-        _this.terminy.map(function (termin) {
+        _this2.terminy.map(function (termin) {
           if (termin.zlecenie) {
             termin.zlecenie.kosztorys_pozycje.map(function (pozycja) {
               if (pozycja.is_zamontowane) {
-                _this.parts[pozycja.id] = 'zamontowane#' + pozycja.ilosc;
+                _this2.parts[pozycja.id] = 'zamontowane#' + pozycja.ilosc;
               } else if (pozycja.is_rozpisane) {
-                _this.parts[pozycja.id] = 'rozpisane#' + pozycja.ilosc;
+                _this2.parts[pozycja.id] = 'rozpisane#' + pozycja.ilosc;
               } else if (pozycja.is_niezamontowane) {
-                _this.parts[pozycja.id] = 'niezamontowane';
+                _this2.parts[pozycja.id] = 'niezamontowane';
               } else {
-                _this.parts[pozycja.id] = false;
+                _this2.parts[pozycja.id] = false;
               }
             });
           }
         });
 
-        _this.updateZlecenieInstance();
+        _this2.updateZlecenieInstance();
       });
     },
     fetchZlecenie: function fetchZlecenie() {
@@ -2541,38 +2557,42 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.scroll_pos = window.scrollY;
     },
     addOpis: function addOpis() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.new_opis == '') return false;
       if (!this.zlecenie) return false;
       this.disable_OpisButton = true;
+      this.dodawanie_opisu = true;
       axios.post(route('zlecenia.api.append_opis', {
         id: this.zlecenie.id,
         opis: this.new_opis
       }), {
         _token: this._token
       }).then(function (response) {
-        _this2.disable_OpisButton = false;
-        _this2.new_opis = '';
-        swal({
-          position: 'center',
-          type: 'success',
-          title: 'Dodano opis',
-          showConfirmButton: false,
-          timer: 1500
-        });
+        _this3.disable_OpisButton = false;
+        _this3.dodawanie_opisu = false;
+        _this3.new_opis = ''; // swal({
+        //     position: 'center',
+        //     type: 'success',
+        //     title: 'Dodano opis',
+        //     showConfirmButton: false,
+        //     timer: 1500
+        // });
+
+        _this3.changeStatus(41);
+
+        _this3.fetchZlecenia();
       }).catch(function (error) {
-        _this2.disable_OpisButton = false;
+        _this3.disable_OpisButton = false;
+        _this3.dodawanie_opisu = false;
         swal({
           position: 'center',
           type: 'error',
-          title: 'Spróbuj jeszcze raz',
+          title: 'Wystąpił problem',
           showConfirmButton: false,
           timer: 1500
         });
       });
-      this.changeStatus(41);
-      this.fetchZlecenia();
     },
     changeStatus: function changeStatus(status_id) {
       if (!this.zlecenie) return false;
@@ -45274,16 +45294,13 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _c("div", [_vm._v(_vm._s(_vm.zlecenie.urzadzenie.model))]),
+                  _c("div", { staticStyle: { "font-family": "consolas" } }, [
+                    _vm._v(_vm._s(_vm.zlecenie.urzadzenie.model))
+                  ]),
                   _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "font-size-sm",
-                      staticStyle: { "font-family": "consolas" }
-                    },
-                    [_vm._v(_vm._s(_vm.zlecenie.urzadzenie.nr_seryjny))]
-                  ),
+                  _c("div", { staticStyle: { "font-family": "consolas" } }, [
+                    _vm._v(_vm._s(_vm.zlecenie.urzadzenie.nr_seryjny))
+                  ]),
                   _vm._v(" "),
                   _c("div", [
                     _c(
@@ -45296,7 +45313,10 @@ var render = function() {
                           target: "_blank"
                         }
                       },
-                      [_c("i", { staticClass: "fa fa-camera" })]
+                      [
+                        _c("i", { staticClass: "fa fa-camera" }),
+                        _vm._v(" Zdjęcia\n                        ")
+                      ]
                     )
                   ])
                 ]),
@@ -45308,6 +45328,15 @@ var render = function() {
                 _c("div", {
                   domProps: { innerHTML: _vm._s(_vm.opis_formatted) }
                 }),
+                _vm._v(" "),
+                _vm.dodawanie_opisu
+                  ? _c("div", { staticClass: "font-w600 text-danger" }, [
+                      _c("i", { staticClass: "fa fa-spinner fa-pulse" }),
+                      _vm._v(
+                        "\n                    Dodawanie opisu...\n                "
+                      )
+                    ])
+                  : _vm._e(),
                 _vm._v(" "),
                 _vm.zlecenie.kosztorys_pozycje.length > 0
                   ? [
