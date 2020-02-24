@@ -29,16 +29,16 @@
                 return $user and !$user->technik_id;
             },
         ],
-        [
-            'name' => 'Planowanie trasy',
-            'icon' => 'si si-map',
-            'route' => 'zlecenia.planowanieTrasy',
-            'routeOptions' => [],
-            'role' => 'super-admin',
-            'if' => function() use ($user) {
-                return $user and !$user->technik_id;
-            },
-        ],
+        // [
+        //     'name' => 'Planowanie trasy',
+        //     'icon' => 'si si-map',
+        //     'route' => 'zlecenia.planowanieTrasy',
+        //     'routeOptions' => [],
+        //     'role' => 'super-admin',
+        //     'if' => function() use ($user) {
+        //         return $user and !$user->technik_id;
+        //     },
+        // ],
         [
             'name' => 'Kilometrówka',
             'icon' => 'si si-disc',
@@ -86,27 +86,27 @@
         //     'routeOptions' => [],
         //     'role' => 'super-admin',
         // ],
-        // [
-        //     'name' => 'Części',
-        // ],
-        // [
-        //     'name' => 'Szykowanie części',
-        //     'icon' => 'si si-briefcase',
-        //     'route' => 'zlecenia.szykowanieCzesci',
-        //     'routeOptions' => [],
-        // ],
-        // [
-        //     'name' => 'Odbiór części',
-        //     'icon' => 'si si-check',
-        //     'route' => 'zlecenia.odbiorCzesci',
-        //     'routeOptions' => [],
-        // ],
-        // [
-        //     'name' => 'Dodawanie części',
-        //     'icon' => 'si si-plus',
-        //     'route' => 'zlecenia.dodawanieCzesci',
-        //     'routeOptions' => [],
-        // ],
+        [
+            'name' => 'Części',
+        ],
+        [
+            'name' => 'Szykowanie części',
+            'icon' => 'si si-briefcase',
+            'route' => 'czesci.indexSzykowanie',
+            'routeOptions' => [],
+        ],
+        [
+            'name' => 'Odbiór części',
+            'icon' => 'si si-check',
+            'route' => 'czesci.indexOdbior',
+            'routeOptions' => [],
+        ],
+        [
+            'name' => 'Dodawanie części',
+            'icon' => 'si si-plus',
+            'route' => 'czesci.indexDodawanie',
+            'routeOptions' => [],
+        ],
         [
             'name' => 'Admin',
             'role' => 'super-admin',

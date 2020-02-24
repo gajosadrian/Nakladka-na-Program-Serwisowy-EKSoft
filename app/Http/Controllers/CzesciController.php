@@ -144,4 +144,32 @@ class CzesciController extends Controller
 
         return response()->json('saved', 200);
     }
+
+    public function indexOdbior(int $technik_id = null)
+    {
+        $technicy = Technik::getLast();
+        $technik = Technik::find($technik_id);
+
+        $naszykowane_czesci = [];
+        if ($technik) {
+            $naszykowane_czesci = Naszykowana::with('kosztorys_pozycje.zlecenie.klient', 'user')->where('technik_id', $technik->id)->where(function ($q) {
+                $q  ->where('ilosc_do_zwrotu', '>', 0)
+                    ->orWhereNull('sprawdzone_at');
+            })->orderBy('zlecenie_data')->get();
+        }
+
+        return view('czesci.odbior', compact('technik', 'technicy', 'naszykowane_czesci'));
+    }
+
+    public function updateSprawdz(Request $request, Naszykowana $naszykowana_czesc)
+    {
+        $user = $request->user();
+
+        $naszykowana_czesc->sprawdzil_user_id = $user->id;
+        $naszykowana_czesc->sprawdzone_at = now();
+        $naszykowana_czesc->ilosc_do_zwrotu = 0;
+        $naszykowana_czesc->save();
+
+        return response()->json('saved', 200);
+    }
 }

@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
+use Jenssegers\Agent\Agent;
 
 class User extends Authenticatable
 {
@@ -36,10 +37,27 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    private $agent;
+
+    public function __construct()
+    {
+        $this->agent = new Agent();
+    }
+
     /**
      * Attributes
      *
      */
+
+    public function getIsDesktopAttribute(): bool
+    {
+        return $this->agent->isDesktop();
+    }
+
+    public function getIsMobileAttribute(): bool
+    {
+        return ! $this->agent->isDesktop();
+    }
 
     public function getIsTechnikAttribute(): bool
     {
