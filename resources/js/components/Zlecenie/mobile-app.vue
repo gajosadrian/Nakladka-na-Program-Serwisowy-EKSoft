@@ -279,6 +279,7 @@ export default {
             })
             .catch((error) => {
                 this.parts[pozycja.id] = false;
+                this.fetchZlecenia();
                 swal({
                     position: 'center',
                     type: 'error',

@@ -2465,6 +2465,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         console.log('success');
       }).catch(function (error) {
         _this.parts[pozycja.id] = false;
+
+        _this.fetchZlecenia();
+
         swal({
           position: 'center',
           type: 'error',

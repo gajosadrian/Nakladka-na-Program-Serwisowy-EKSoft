@@ -68,18 +68,23 @@ function onImageChange{{ $room }}(self) {
         maxHeight: 1000,
         quality: 1.0,
     })
-        .then((result) => {
-            formData.append('image', result, result.name);
+    .then((result) => {
+        formData.append('image', result, result.name);
 
-            axios.post( route('zlecenie-zdjecie.store') , formData).then((data) => {
-                data = data.data;
-                console.log(data);
-                alertWrapper(key, 'success', 'Wysłano');
-            });
+        axios.post( route('zlecenie-zdjecie.store') , formData)
+        .then((data) => {
+            alertWrapper(key, 'success', 'Wysłano');
+            // data = data.data;
+            // console.log(data);
         })
         .catch((err) => {
             console.log(err);
-        })
+            alertWrapper(key, 'danger', 'Błąd. Wyślij jeszcze raz.');
+        });
+    })
+    .catch((err) => {
+        console.log(err);
+    })
 }
 
 function alertWrapper{{ $room }}(key, color, txt) {

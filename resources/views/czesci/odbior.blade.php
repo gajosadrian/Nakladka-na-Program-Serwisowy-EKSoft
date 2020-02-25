@@ -46,9 +46,9 @@
                                 <span class="font-w600">{{ $naszykowana_czesc->zlecenie_data_formatted }}</span>
                                 <span class="ml-2">
                                     @if ($naszykowana_czesc->user->technik_id)
-                                        <span class="d-none d-sm-inline bg-danger text-white font-w600 px-1">Część nie była naszykowana</span>
+                                        <span class="d-none d-sm-inline bg-secondary text-white font-w600 px-1">Część nie była naszykowana</span>
                                     @elseif ( ! $naszykowana_czesc->technik_updated_at)
-                                        <span class="d-none d-sm-inline bg-secondary text-white font-w600 px-1">Technik nie odznaczył części</span>
+                                        <span class="d-none d-sm-inline bg-danger text-white font-w600 px-1">Technik nie odznaczył części</span>
                                     @endif
                                 </span>
                             </div>
@@ -94,6 +94,7 @@
                                         <div>
                                             Do zwrotu zużyte:
                                             <span class="font-w600 bg-warning text-white px-1">{{ $naszykowana_czesc->ilosc_zamontowane }}</span>
+                                            <small class="text-secondary">({{ $naszykowana_czesc->ilosc }})</small>
                                         </div>
                                     @endif
                                     @if ($naszykowana_czesc->ilosc_zamontowane > 0 or $naszykowana_czesc->ilosc_rozpisane == 0)
