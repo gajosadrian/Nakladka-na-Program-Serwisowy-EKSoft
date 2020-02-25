@@ -37,7 +37,11 @@
         <b-row>
             @foreach ($terminy as $termin)
                 @foreach ($termin->zlecenie->kosztorys_pozycje as $pozycja)
-                    @continue( !$pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane )
+                    @continue( ! $pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane )
+                    @php
+                        $is_naszykowane = (bool) ($pozycja->naszykowana_czesc ?? $pozycja->is_ekspertyza);
+                    @endphp
+
                     <b-col lg="4">
                         <b-block class="{{ $is_mobile ? 'mb-2' : '' }}">
                             <template slot="content">
@@ -45,7 +49,7 @@
                                     {{-- <div>zlecenie_id: {{ $termin->zlecenie_id }}, towar_id: {{ $pozycja->towar_id }}, pozycja_id: {{ $pozycja->id }}, opis: ({{ $pozycja->opis_raw }})</div> --}}
                                     <div>{{ $termin->zlecenie->nr }}, <span class="font-w600">{{ $termin->zlecenie->klient->nazwa }}</span></div>
                                 </div>
-                                <div class="ribbon ribbon-{{ $pozycja->naszykowana_czesc ? 'success' : 'danger' }}">
+                                <div class="ribbon ribbon-{{ $is_naszykowane ? 'success' : 'danger' }}">
                                     <div class="ribbon-box">{{ $pozycja->state_formatted }}</div>
                                     @if ($pozycja->is_zdjecie)
                                         <div>
@@ -57,7 +61,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="bg-{{ $pozycja->naszykowana_czesc ? 'success' : 'danger' }} text-white p-1 mb-1">
+                                <div class="bg-{{ $is_naszykowane ? 'success' : 'danger' }} text-white p-1 mb-1">
                                     <div class="clearfix">
                                         <div class="float-left font-w700">
                                             @if ($pozycja->is_czesc_symbol)
@@ -70,22 +74,24 @@
                                 </div>
                                 <div class="row gutters-tiny">
                                     <div class="col-4">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                @php
-                                                    $random = str_random(8);
-                                                @endphp
-                                                <input id="ilosc_{{ $random }}" class="form-control {{ $pozycja->naszykowana_czesc ? 'form-control-alt is-valid' : '' }}" type="number" value="{{ $pozycja->naszykowana_czesc ? $pozycja->naszykowana_czesc->ilosc : $pozycja->ilosc }}" onclick="select()">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-{{ $pozycja->naszykowana_czesc ? '' : 'outline-' }}success" onclick="naszykujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
-                                                        <i class="fa fa-check"></i>
-                                                    </button>
-                                                    {{-- <button class="btn btn-danger" onclick="zamontujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
-                                                        <i class="fa fa-exclamation-triangle"></i>
-                                                    </button> --}}
+                                        @if ( ! $pozycja->is_ekspertyza)
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    @php
+                                                        $random = str_random(8);
+                                                    @endphp
+                                                    <input id="ilosc_{{ $random }}" class="form-control {{ $is_naszykowane ? 'form-control-alt is-valid' : '' }}" type="number" value="{{ $pozycja->naszykowana_czesc ? $pozycja->naszykowana_czesc->ilosc : $pozycja->ilosc }}" onclick="select()">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-{{ $is_naszykowane ? '' : 'outline-' }}success" onclick="naszykujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
+                                                            <i class="fa fa-check"></i>
+                                                        </button>
+                                                        {{-- <button class="btn btn-danger" onclick="zamontujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
+                                                            <i class="fa fa-exclamation-triangle"></i>
+                                                        </button> --}}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
                                     <div class="col-8 text-right">
                                         <div>

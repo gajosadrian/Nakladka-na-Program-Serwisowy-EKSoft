@@ -37,18 +37,31 @@
                     $pozycja = $naszykowana_czesc->kosztorys_pozycja;
                     if ( ! $pozycja) continue;
                 @endphp
+
+                @if ( ! isset($separator) and ! $naszykowana_czesc->is_zlecenie_data_past )
+                    @php
+                        $separator = true;
+                    @endphp
+                    <b-col cols="12">
+                        <h2 class="content-heading border-black-op">
+                            <i class="si si-wrench mr-1"></i>
+                            Pozostałe części
+                        </h2>
+                    </b-col>
+                @endif
+
                 <b-col lg="6">
                     <b-block class="{{ $is_mobile ? 'mb-2' : '' }}" full>
                         <template slot="content">
                             <div class="{{ $is_mobile ? '' : 'push' }}">
-                                {{ $pozycja->zlecenie->nr }},
-                                {{-- <span class="font-w600">{{ $pozycja->zlecenie->klient->nazwa }}</span>, --}}
+                                {{-- {{ $pozycja->zlecenie->nr }}, --}}
+                                {{ $pozycja->zlecenie->klient->nazwa }},
                                 <span class="font-w600">{{ $naszykowana_czesc->zlecenie_data_formatted }}</span>
                                 <span class="ml-2">
                                     @if ($naszykowana_czesc->user->technik_id)
                                         <span class="d-none d-sm-inline bg-secondary text-white font-w600 px-1">Część nie była naszykowana</span>
                                     @elseif ( ! $naszykowana_czesc->technik_updated_at)
-                                        <span class="d-none d-sm-inline bg-danger text-white font-w600 px-1">Technik nie odznaczył części</span>
+                                        <span class="d-block d-sm-inline bg-danger text-white font-w600 px-1">Technik nie odznaczył części</span>
                                     @endif
                                 </span>
                             </div>

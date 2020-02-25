@@ -148,7 +148,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div v-if="pozycja.is_towar && Number.isInteger(pozycja.ilosc) && (!pozycja.naszykowana_czesc || pozycja.naszykowana_czesc.is_editable)" class="float-right text-right">
+                                    <div v-if="pozycja.is_towar && !pozycja.is_ekspertyza && Number.isInteger(pozycja.ilosc) && (!pozycja.naszykowana_czesc || pozycja.naszykowana_czesc.is_editable)" class="float-right text-right">
                                         <select v-model="parts[pozycja.id]" @change="mountPart(pozycja, parts[pozycja.id])" :class="{
                                             'bg-success': String(parts[pozycja.id]).includes('zamontowane') && !String(parts[pozycja.id]).includes('niezamontowane'),
                                             'bg-danger': String(parts[pozycja.id]).includes('niezamontowane'),

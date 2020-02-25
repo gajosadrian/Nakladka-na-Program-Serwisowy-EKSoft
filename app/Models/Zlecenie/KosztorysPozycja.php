@@ -13,11 +13,13 @@ class KosztorysPozycja extends Model
     protected $with = ['towar'];
     public $timestamps = false;
 
-    private const ZAMONTOWANE_KEYS = ['zamontowan', 'zalozon'];
-    private const NIEZAMONTOWANE_KEYS = ['niezamontowan', 'niezalozon'];
-    private const ODLOZONE_KEYS = ['odlozon'];
-    private const ROZPISANE_KEYS = ['rozpisan'];
-    private const ZAMOWIONE_KEYS = ['zamowion', 'zamowien'];
+    private const
+        ZAMONTOWANE_KEYS = ['zamontowan', 'zalozon'],
+        NIEZAMONTOWANE_KEYS = ['niezamontowan', 'niezalozon'],
+        ODLOZONE_KEYS = ['odlozon'],
+        ROZPISANE_KEYS = ['rozpisan'],
+        ZAMOWIONE_KEYS = ['zamowion', 'zamowien'],
+        EKSPERTYZA_KEYS = ['ekspertyza'];
 
     /**
      * Attributes
@@ -210,6 +212,11 @@ class KosztorysPozycja extends Model
         return $this->hasKey(self::ZAMOWIONE_KEYS);
     }
 
+    public function getIsEkspertyzaAttribute(): bool
+    {
+        return $this->hasKey(self::EKSPERTYZA_KEYS);
+    }
+
     public function getStateFormattedAttribute(): string
     {
         if ($this->is_zamontowane) {
@@ -310,6 +317,7 @@ class KosztorysPozycja extends Model
             'wartosc' => $this->wartosc,
             'wartosc_brutto' => $this->wartosc_brutto,
             'is_czesc' => $this->is_czesc,
+            'is_ekspertyza' => $this->is_ekspertyza,
             'is_towar' => $this->is_towar,
             'is_usluga' => $this->is_usluga,
             'is_odlozone' => $this->is_odlozone,

@@ -45462,6 +45462,7 @@ var render = function() {
                                     ]),
                                     _vm._v(" "),
                                     pozycja.is_towar &&
+                                    !pozycja.is_ekspertyza &&
                                     Number.isInteger(pozycja.ilosc) &&
                                     (!pozycja.naszykowana_czesc ||
                                       pozycja.naszykowana_czesc.is_editable)

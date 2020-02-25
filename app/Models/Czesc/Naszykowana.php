@@ -32,6 +32,11 @@ class Naszykowana extends Model
         return $this->zlecenie_data->toDateString();
     }
 
+    public function getIsZlecenieDataPastAttribute(): bool
+    {
+        return $this->zlecenie_data->copy()->endOfDay()->lt( now() );
+    }
+
     public function getKosztorysPozycjaAttribute()
     {
         if ( ! $this->kosztorys_pozycje ) return null;
