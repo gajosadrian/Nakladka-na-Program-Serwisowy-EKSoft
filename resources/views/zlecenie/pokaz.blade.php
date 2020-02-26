@@ -7,19 +7,7 @@
 
 @section('content')
     <div class="content">
-		<b-row>
-			@if ($zlecenie->errors)
-                <b-col cols="12">
-                    <div class="alert alert-danger d-flex align-items-center">
-                        <div class="flex-00-auto">
-                            <i class="fa fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="flex-fill ml-3">
-                            <p class="mb-0">{{ implode(', ', $zlecenie->errors) }}</p>
-                        </div>
-                    </div>
-                </b-col>
-			@endif
+		{{-- <b-row>
 			@if ($zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
                 <b-col cols="12">
                     <div class="alert alert-warning d-flex align-items-center">
@@ -35,7 +23,7 @@
                     </div>
                 </b-col>
 			@endif
-		</b-row>
+		</b-row> --}}
         <b-row class="row-deck">
             <b-col lg="5">
                 <b-block title="Kontrahent" theme="bg-primary-light">
@@ -111,12 +99,19 @@
                                             </td>
                                         @else
                                             <td>
-                                                <select class="form-control form-control-sm font-w700 {{ $zlecenie->status->color ? 'bg-'.$zlecenie->status->color.'-lighter' : '' }}">
-                                                    <option value="{{ $zlecenie->status->id }}" selected disabled>{{ $zlecenie->status->nazwa }}</option>
-                                                    @foreach ($statusy_aktywne as $status)
-                                                        <option value="{{ $status->id }}" {{ ($status->id == $zlecenie->status->id) ? 'selected' : '' }}>{{ $status->nazwa }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <div class="row gutters-tiny">
+                                                    <div class="col-10">
+                                                        <select class="form-control form-control-sm font-w700 {{ $zlecenie->status->color ? 'bg-'.$zlecenie->status->color.'-lighter' : '' }}">
+                                                            <option value="{{ $zlecenie->status->id }}" selected disabled>{{ $zlecenie->status->nazwa }}</option>
+                                                            @foreach ($statusy_aktywne as $status)
+                                                                <option value="{{ $status->id }}" {{ ($status->id == $zlecenie->status->id) ? 'selected' : '' }}>{{ $status->nazwa }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <b-button variant="primary" size="sm">Ok</b-button>
+                                                    </div>
+                                                </div>
                                             </td>
                                         @endif
                                     </tr>
@@ -160,7 +155,7 @@
             </b-col>
         </b-row>
         <b-row class="row-deck">
-            <b-col lg="4">
+            <b-col lg="3">
                 <b-block title="Urządzenie" theme="bg-primary-light">
                     <template slot="content">
                         <table class="table table-sm table-borderless">
@@ -188,7 +183,7 @@
                     </template>
                 </b-block>
             </b-col>
-            <b-col lg="8">
+            <b-col lg="9">
                 <div class="block block-rounded shadow-sm">
                     <ul class="nav nav-tabs nav-tabs-alt align-items-center js-tabs bg-primary-light" data-toggle="tabs" role="tablist">
                         <li class="nav-item">
@@ -291,7 +286,7 @@
                                         <th class="font-w700" nowrap>Symbol</th>
                                         <th class="font-w700" nowrap>Nazwa</th>
                                         <th class="font-w700" nowrap>Opis</th>
-                                        <th class="font-w700 text-right" nowrap>Cena netto</th>
+                                        <th class="font-w700 text-right" nowrap>Cena brutto</th>
                                         <th class="font-w700 text-center" nowrap>Ilość</th>
                                         <th class="font-w700 text-right" nowrap>Wartość netto</th>
                                         <th class="font-w700 text-right" nowrap>Wartość brutto</th>
@@ -310,9 +305,19 @@
                                         <tr>
                                             <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
                                             <td nowrap>{{ $pozycja->symbol }}</td>
-                                            <td nowrap>{{ $pozycja->nazwa }}</td>
-                                            <td class="small" nowrap>{{ $pozycja->opis_fixed }}</td>
-                                            <td class="text-right" nowrap>{{ $pozycja->cena_formatted }}</td>
+                                            <td nowrap>{{ str_limit($pozycja->nazwa, 50) }}</td>
+                                            <td class="small" nowrap>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control form-control-sm" value="{{ $pozycja->opis_fixed }}" onkeyup="changeOpis(@json($pozycja->id), $(this).val())" onclick="this.select()">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <i id="pozycja_status_success{{ $pozycja->id }}" class="fa fa-check text-success"></i>
+                                                            <i id="pozycja_status_sending{{ $pozycja->id }}" class="d-none fa fa-circle-notch fa-spin text-secondary"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
                                             <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}" nowrap>{{ $pozycja->ilosc }}</td>
                                             <td class="text-right" nowrap>{{ $pozycja->wartosc_formatted }}</td>
                                             <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
@@ -334,6 +339,12 @@
                             </table>
                         </div>
                         <div class="tab-pane fade active show" id="opis" role="tabpanel">
+                            @if ($zlecenie->errors)
+                                <div class="font-w600 text-danger">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    {{ implode(', ', $zlecenie->errors) }}
+                                </div>
+                            @endif
                             <zlecenie-opis zlecenie_id=@json($zlecenie->id) />
                         </div>
                         <div class="tab-pane fade" id="statusy" role="tabpanel">
@@ -390,6 +401,22 @@ $(document).keydown(function (e) {
 		window.close();
 	}
 });
+
+var timers = [];
+function changeOpis(pozycja_id, val) {
+    $success = $('#pozycja_status_success' + pozycja_id);
+    $sending = $('#pozycja_status_sending' + pozycja_id);
+
+    $success.addClass('d-none');
+    $sending.removeClass('d-none');
+
+    clearTimeout(timers[pozycja_id]);
+    timers[pozycja_id] = setTimeout(function () {
+        $success.removeClass('d-none');
+        $sending.addClass('d-none');
+        console.log(pozycja_id, val);
+    }, 1000);
+}
 
 function zatwierdzBlad() {
     axios.post(route('zlecenia.api.zatwierdz_blad', { id: @json($zlecenie->id) }))

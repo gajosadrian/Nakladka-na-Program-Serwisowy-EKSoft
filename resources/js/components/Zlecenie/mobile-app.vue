@@ -169,7 +169,7 @@
                     <hr>
                     <div class="font-w700">Uwagi technika:</div>
                     <div v-if="!zlecenie.is_zakonczone">
-                        <textarea v-model.trim="new_opis" :class="{'border border-danger': is_new_opis}" class="form-control form-control-alt my-2" placeholder="Dodaj opis.." rows="3"></textarea>
+                        <textarea v-model.trim="new_opis" :class="{'border border-danger': is_new_opis}" class="form-control form-control-alt my-2" placeholder="Dodaj opis.." rows="6"></textarea>
                         <div class="text-right">
                             <button @click="addOpis" :disabled="disable_OpisButton" :class="{'btn-light': !is_new_opis, 'btn-danger': is_new_opis}" type="button" class="btn">Dodaj opis</button>
                         </div>

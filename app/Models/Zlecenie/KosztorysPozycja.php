@@ -105,7 +105,7 @@ class KosztorysPozycja extends Model
 
     public function getCenaBruttoAttribute(): float
     {
-        return self::getFixedValue(round($this->cena * ($this->vat + 1), 4));
+        return self::getFixedValue(round($this->cena * 1.23, 4));
     }
 
 	public function getCenaBruttoFormattedAttribute(): string

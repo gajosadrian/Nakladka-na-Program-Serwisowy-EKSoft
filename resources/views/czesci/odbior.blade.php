@@ -84,7 +84,8 @@
                                                 @if ($pozycja->is_czesc_symbol)
                                                     {{ $pozycja->opis_fixed }}
                                                 @else
-                                                    {{ str_limit($pozycja->nazwa, 30) }}
+                                                    <span class="truncate">{{ $pozycja->nazwa }}</span>
+                                                    {{-- {{ str_limit($pozycja->nazwa, 30) }} --}}
                                                 @endif
                                             </span>
                                             {{-- <small class="text-secondary">({{ $pozycja->state_formatted }})</small> --}}

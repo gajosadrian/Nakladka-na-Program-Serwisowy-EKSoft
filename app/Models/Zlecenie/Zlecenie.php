@@ -48,7 +48,7 @@ class Zlecenie extends Model
         'RTV Euro AGD' => ['euro-net', 'euro net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
         'Mentax' => ['mentax', 'mentaks', 'generali'],
         'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
-        'Arconet' => ['arconet', 'arco net', 'arco-net', 'arkonet', 'arqonet'],
+        'Arconet' => ['arconet', 'arco net', 'arco-net', 'arkonet', 'arqonet', 'tesy'],
         'Ferroli' => ['ferroli', 'feroli'],
         'Mondial' => ['mondial', 'mondial assistance'],
         'Enpol' => ['enpol'],
@@ -662,7 +662,7 @@ HTML;
 
     public function getPopupLinkAttribute(): string
     {
-        return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', 1500, 800)";
+        return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', 1800, 800)";
     }
 
     public function getPopupZdjeciaLinkAttribute(): string
