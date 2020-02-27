@@ -101,7 +101,7 @@
                                             <td>
                                                 <div class="row gutters-tiny">
                                                     <div class="col-10">
-                                                        <select class="form-control form-control-sm font-w700 {{ $zlecenie->status->color ? 'bg-'.$zlecenie->status->color.'-lighter' : '' }}">
+                                                        <select id="status_select" class="form-control form-control-sm font-w700 {{ $zlecenie->status->color ? 'bg-'.$zlecenie->status->color.'-lighter' : '' }}">
                                                             <option value="{{ $zlecenie->status->id }}" selected disabled>{{ $zlecenie->status->nazwa }}</option>
                                                             @foreach ($statusy_aktywne as $status)
                                                                 <option value="{{ $status->id }}" {{ ($status->id == $zlecenie->status->id) ? 'selected' : '' }}>{{ $status->nazwa }}</option>
@@ -109,7 +109,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-2">
-                                                        <b-button variant="primary" size="sm">Ok</b-button>
+                                                        <b-button variant="primary" size="sm" onclick="changeStatus(Number($('#status_select').val()))">Ok</b-button>
                                                     </div>
                                                 </div>
                                             </td>
@@ -196,7 +196,8 @@
                             <a href="#statusy" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Statusy</a>
                         </li>
                         <li class="nav-item">
-                            <button type="button" class="nav-link" style="color: rgba(255, 255, 255, 0.9)" onclick="{{ $zlecenie->popup_zdjecia_link }}">Zdjęcia</button>
+                            {{-- <button type="button" class="nav-link" style="color: rgba(255, 255, 255, 0.9)" onclick="{{ $zlecenie->popup_zdjecia_link }}">Zdjęcia</button> --}}
+                            <a href="#zdjecia" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Zdjęcia</a>
                         </li>
                         <li class="nav-item ml-auto">
                             <b-button-group size="sm" class="mr-2">
@@ -259,7 +260,7 @@
                                             ></zlecenie-change-status>
                                         @endif
                                     @endif
-                                @elseif (!$user->is_technik)
+                                @elseif ( ! $user->is_technik)
                                     @if (count($zlecenie->errors) > 0)
                                         <b-button onclick="zatwierdzBlad()" size="sm" variant="light"><i class="fa fa-exclamation-triangle text-danger" class="ml-1"></i> Usuń błąd</b-button>
                                     @endif
@@ -305,17 +306,27 @@
                                         <tr>
                                             <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
                                             <td nowrap>{{ $pozycja->symbol }}</td>
-                                            <td nowrap>{{ str_limit($pozycja->nazwa, 50) }}</td>
+                                            <td nowrap>
+                                                @if ($pozycja->is_towar and $pozycja->is_zamowione)
+                                                    <i class="fa fa-shopping-cart text-danger"></i>
+                                                @endif
+                                                {{ str_limit($pozycja->nazwa, 50) }}
+                                            </td>
                                             <td class="small" nowrap>
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control form-control-sm" value="{{ $pozycja->opis_fixed }}" onkeyup="changeOpis(@json($pozycja->id), $(this).val())" onclick="this.select()">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text">
-                                                            <i id="pozycja_status_success{{ $pozycja->id }}" class="fa fa-check text-success"></i>
-                                                            <i id="pozycja_status_sending{{ $pozycja->id }}" class="d-none fa fa-circle-notch fa-spin text-secondary"></i>
-                                                        </span>
+                                                @if ( ! $user->is_technik)
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control form-control-sm" value="{{ $pozycja->opis_fixed }}" onkeyup="changeOpis(@json($pozycja->id), $(this).val())" onclick="this.select()">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">
+                                                                <i id="pozycja_status_success{{ $pozycja->id }}" class="fa fa-check text-success"></i>
+                                                                <i id="pozycja_status_sending{{ $pozycja->id }}" class="d-none fa fa-circle-notch fa-spin text-secondary"></i>
+                                                                <i id="pozycja_status_error{{ $pozycja->id }}" class="d-none fa fa-times text-danger"></i>
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @else
+                                                    {{ $pozycja->opis_fixed }}
+                                                @endif
                                             </td>
                                             <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
                                             <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}" nowrap>{{ $pozycja->ilosc }}</td>
@@ -387,6 +398,9 @@
                                 </b-col>
                             </b-row>
                         </div>
+                        <div class="tab-pane fade" id="zdjecia" role="tabpanel">
+                            @include('zlecenie-zdjecie.component.index', compact('zlecenie'))
+                        </div>
                     </div>
                 </div>
             </b-col>
@@ -402,20 +416,75 @@ $(document).keydown(function (e) {
 	}
 });
 
-var timers = [];
-function changeOpis(pozycja_id, val) {
-    $success = $('#pozycja_status_success' + pozycja_id);
-    $sending = $('#pozycja_status_sending' + pozycja_id);
+var last_status_id = @json($zlecenie->status_id);
+function changeStatus(status_id) {
+    if (last_status_id == status_id) {
+        swal({
+            position: 'center',
+            type: 'error',
+            title: 'Już ustawiono ten status',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        return;
+    }
 
-    $success.addClass('d-none');
-    $sending.removeClass('d-none');
+    last_status_id = status_id;
+
+    axios.post( route('zlecenia.api.change_status', {
+        id: @json($zlecenie->id),
+        status_id,
+        remove_termin: 0,
+    })).then((response) => {
+        swal({
+            position: 'center',
+            type: 'success',
+            title: 'Status zmieniony',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    });
+}
+
+var timers = [];
+function changeOpis(pozycja_id, opis) {
+    pozycjaStatus(pozycja_id, 'sending');
 
     clearTimeout(timers[pozycja_id]);
     timers[pozycja_id] = setTimeout(function () {
-        $success.removeClass('d-none');
-        $sending.addClass('d-none');
-        console.log(pozycja_id, val);
+        axios.post( route('zlecenia.api.changeKosztorysPozycjaOpis', {
+            kosztorys_pozycja: pozycja_id,
+            opis,
+        }), {
+            _token: @json(csrf_token()),
+        }).then((response) => {
+            pozycjaStatus(pozycja_id, 'success');
+        }).catch((response) => {
+            pozycjaStatus(pozycja_id, 'error');
+        });
     }, 1000);
+}
+
+function pozycjaStatus(pozycja_id, state) {
+    let $success = $('#pozycja_status_success' + pozycja_id);
+    let $sending = $('#pozycja_status_sending' + pozycja_id);
+    let $error = $('#pozycja_status_error' + pozycja_id);
+
+    $sending.removeClass('d-none').addClass('d-none');
+    $success.removeClass('d-none').addClass('d-none');
+    $error.removeClass('d-none').addClass('d-none');
+
+    switch (state) {
+        case 'sending':
+            $sending.removeClass('d-none');
+            break;
+        case 'success':
+            $success.removeClass('d-none');
+            break;
+        case 'error':
+            $error.removeClass('d-none');
+            break;
+    }
 }
 
 function zatwierdzBlad() {
@@ -439,4 +508,4 @@ function removeStatus(el, id) {
     });
 }
 
-</script>@endsection
+</script>@append

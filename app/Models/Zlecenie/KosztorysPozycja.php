@@ -271,6 +271,17 @@ class KosztorysPozycja extends Model
         return str_contains($this->opis_ascii, $keys);
     }
 
+    public function changeOpis(?string $opis): void
+    {
+        $user = auth()->user();
+        $key = $this->naszykowana_czesc_key;
+
+        $this->opis = $opis ?? '';
+        if ($key) {
+            $this->naszykowana_czesc_key = $key;
+        }
+    }
+
     /**
      * Relations
      *

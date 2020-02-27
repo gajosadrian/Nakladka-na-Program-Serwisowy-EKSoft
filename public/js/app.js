@@ -45656,7 +45656,7 @@ var render = function() {
                         ],
                         staticClass: "form-control form-control-alt my-2",
                         class: { "border border-danger": _vm.is_new_opis },
-                        attrs: { placeholder: "Dodaj opis..", rows: "3" },
+                        attrs: { placeholder: "Dodaj opis..", rows: "6" },
                         domProps: { value: _vm.new_opis },
                         on: {
                           input: function($event) {

@@ -99,10 +99,8 @@ class ZlecenieController extends Controller
      */
     public function show($id)
     {
-        $zlecenie = Zlecenie::with('status_historia')->findOrFail($id);
+        $zlecenie = Zlecenie::with('status_historia', 'zdjecia_do_zlecenia', 'zdjecia_do_urzadzenia')->findOrFail($id);
         $statusy_aktywne = Status::getAktywne();
-
-        // dd($zlecenie->is_na_warsztacie);
 
         return view('zlecenie.pokaz', compact(
             'zlecenie',
@@ -383,6 +381,14 @@ class ZlecenieController extends Controller
             $zlecenie->terminarz->status_id = $terminarz_status_id;
             $zlecenie->terminarz->save();
         }
+
+        return response()->json('success', 200);
+    }
+
+    public function apiChangeKosztorysPozycjaOpis(Request $request, KosztorysPozycja $kosztorys_pozycja)
+    {
+        $kosztorys_pozycja->changeOpis( $request->opis );
+        $kosztorys_pozycja->save();
 
         return response()->json('success', 200);
     }

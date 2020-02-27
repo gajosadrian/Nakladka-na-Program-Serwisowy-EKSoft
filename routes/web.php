@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
         Route::get('api/get_opis/{id}', 'ZlecenieController@apiGetOpis')->name('api.get_opis');
         Route::post('api/append_notatka/{id}', 'ZlecenieController@apiAppendNotatka')->name('api.append_opis');
         Route::post('api/change_status/{id}', 'ZlecenieController@apiChangeStatus')->name('api.change_status');
+        Route::post('api/change_kosztorys_pozycja_opis/{kosztorys_pozycja}', 'ZlecenieController@apiChangeKosztorysPozycjaOpis')->name('api.changeKosztorysPozycjaOpis');
         Route::post('api/umow_klienta/{id}', 'ZlecenieController@apiUmowKlienta')->name('api.umow_klienta');
         Route::post('api/nie_odbiera/{id}', 'ZlecenieController@apiNieOdbiera')->name('api.nie_odbiera');
         Route::post('api/zatwierdz_blad/{id}', 'ZlecenieController@apiZatwierdzBlad')->name('api.zatwierdz_blad');
