@@ -61,10 +61,10 @@
                                 <span v-else-if="termin.zlecenie.checkable_umowiono && !termin.zlecenie.is_umowiono" class="bg-danger text-white px-1">Nieumówione</span>
                                 <span v-else><br></span>
                             </div>
-                            <a v-if="show_map && !termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_warsztat && !termin.zlecenie.is_do_wyjasnienia" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
+                            <!-- <a v-if="show_map && !termin.zlecenie.is_soft_zakonczone && !termin.zlecenie.is_warsztat && !termin.zlecenie.is_do_wyjasnienia" :href="termin.zlecenie.google_maps_route_link" class="btn btn-sm btn-light">
                                 <i class="fa fa-map-marker-alt"></i>
                                 Mapa
-                            </a>
+                            </a> -->
                         </div>
                         <div class="float-right text-right">
                             <div>{{ termin.zlecenie.urzadzenie.producent }}, {{ termin.zlecenie.urzadzenie.nazwa }}</div>
@@ -90,16 +90,22 @@
                     <div>{{ zlecenie.klient.nazwa }} <span class="font-size-sm">- {{ zlecenie.klient.symbol }}</span></div>
                     <div>{{ zlecenie.klient.kod_pocztowy }} {{ zlecenie.klient.miasto }}, {{ zlecenie.klient.adres }}</div>
                     <div class="mt-1">
+                        <div v-if="show_map" class="push">
+                            <a :href="zlecenie.google_maps_route_link" class="btn btn-light">
+                                <i class="fa fa-map-marker-alt text-info"></i>
+                                Mapy Google
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=pl.neptis.yanosik.mobi.android&launch=true" class="btn btn-light ml-2"
+                                v-clipboard:copy="address_formatted"
+                            >
+                                <i class="fa fa-map-marker-alt text-danger"></i>
+                                Yanosik
+                            </a>
+                        </div>
                         <div v-for="(telefon, t_index) in zlecenie.klient.telefony" class="mt-2">
                             <a :href="'tel:'+telefon" class="btn btn-light">
                                 <i class="fa fa-phone text-success"></i>
                                 {{ telefon }}
-                            </a>
-                        </div>
-                        <div v-if="show_map" class="mt-2">
-                            <a :href="zlecenie.google_maps_route_link" class="btn btn-light">
-                                <i class="fa fa-map-marker-alt text-info"></i>
-                                Mapa
                             </a>
                         </div>
                     </div>
@@ -253,6 +259,11 @@ export default {
             opis = opis.split('<<').join('</u></span>');
             opis = opis.split("\n").join('<br>');
             return opis;
+        },
+
+        address_formatted() {
+            if ( ! this.zlecenie) return false;
+            return this.zlecenie.klient.adres + ', ' + this.zlecenie.klient.miasto;
         },
 
         suma_kosztorysu() {

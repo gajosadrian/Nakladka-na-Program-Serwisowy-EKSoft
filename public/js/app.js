@@ -2384,6 +2384,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
 // if (window.location.href == route('zlecenia.mobileApp')) {
 //     history.pushState(null, null, location.href);
 //     window.onpopstate = function () {
@@ -2436,6 +2442,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       opis = opis.split('<<').join('</u></span>');
       opis = opis.split("\n").join('<br>');
       return opis;
+    },
+    address_formatted: function address_formatted() {
+      if (!this.zlecenie) return false;
+      return this.zlecenie.klient.adres + ', ' + this.zlecenie.klient.miasto;
     },
     suma_kosztorysu: function suma_kosztorysu() {
       if (!this.zlecenie) return 0;
@@ -45094,31 +45104,7 @@ var render = function() {
                                       [_vm._v("Nieumówione")]
                                     )
                                   : _c("span", [_c("br")])
-                              ]),
-                              _vm._v(" "),
-                              _vm.show_map &&
-                              !termin.zlecenie.is_soft_zakonczone &&
-                              !termin.zlecenie.is_warsztat &&
-                              !termin.zlecenie.is_do_wyjasnienia
-                                ? _c(
-                                    "a",
-                                    {
-                                      staticClass: "btn btn-sm btn-light",
-                                      attrs: {
-                                        href:
-                                          termin.zlecenie.google_maps_route_link
-                                      }
-                                    },
-                                    [
-                                      _c("i", {
-                                        staticClass: "fa fa-map-marker-alt"
-                                      }),
-                                      _vm._v(
-                                        "\n                            Mapa\n                        "
-                                      )
-                                    ]
-                                  )
-                                : _vm._e()
+                              ])
                             ]),
                             _vm._v(" "),
                             _c(
@@ -45238,6 +45224,56 @@ var render = function() {
                   "div",
                   { staticClass: "mt-1" },
                   [
+                    _vm.show_map
+                      ? _c("div", { staticClass: "push" }, [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "btn btn-light",
+                              attrs: {
+                                href: _vm.zlecenie.google_maps_route_link
+                              }
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "fa fa-map-marker-alt text-info"
+                              }),
+                              _vm._v(
+                                "\n                            Mapy Google\n                        "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "a",
+                            {
+                              directives: [
+                                {
+                                  name: "clipboard",
+                                  rawName: "v-clipboard:copy",
+                                  value: _vm.address_formatted,
+                                  expression: "address_formatted",
+                                  arg: "copy"
+                                }
+                              ],
+                              staticClass: "btn btn-light ml-2",
+                              attrs: {
+                                href:
+                                  "https://play.google.com/store/apps/details?id=pl.neptis.yanosik.mobi.android&launch=true"
+                              }
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "fa fa-map-marker-alt text-danger"
+                              }),
+                              _vm._v(
+                                "\n                            Yanosik\n                        "
+                              )
+                            ]
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
                     _vm._l(_vm.zlecenie.klient.telefony, function(
                       telefon,
                       t_index
@@ -45261,29 +45297,7 @@ var render = function() {
                           ]
                         )
                       ])
-                    }),
-                    _vm._v(" "),
-                    _vm.show_map
-                      ? _c("div", { staticClass: "mt-2" }, [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "btn btn-light",
-                              attrs: {
-                                href: _vm.zlecenie.google_maps_route_link
-                              }
-                            },
-                            [
-                              _c("i", {
-                                staticClass: "fa fa-map-marker-alt text-info"
-                              }),
-                              _vm._v(
-                                "\n                            Mapa\n                        "
-                              )
-                            ]
-                          )
-                        ])
-                      : _vm._e()
+                    })
                   ],
                   2
                 ),

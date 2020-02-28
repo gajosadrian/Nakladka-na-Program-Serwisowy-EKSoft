@@ -58,6 +58,7 @@ function onImageChange{{ $room }}(self) {
     if ( ! file) return;
 
     let alertWrapper = alertWrapper{{ $room }};
+    let storeUnsentImage = storeUnsentImage{{ $room }};
     let formData = formData{{ $room }};
     let key = Math.random().toString(36).substring(7);
 
@@ -68,23 +69,48 @@ function onImageChange{{ $room }}(self) {
         maxHeight: 1000,
         quality: 1.0,
     })
-    .then((result) => {
-        formData.append('image', result, result.name);
+        .then((result) => {
+            formData.append('image', result, result.name);
 
-        axios.post( route('zlecenie-zdjecie.store') , formData)
-        .then((data) => {
-            alertWrapper(key, 'success', 'Wysłano');
-            // data = data.data;
-            // console.log(data);
+            axios.post( route('zlecenie-zdjecie.store') , formData)
+                .then((data) => {
+                    alertWrapper(key, 'success', 'Wysłano');
+                    // data = data.data;
+                    // console.log(data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    storeUnsentImage(key, formData);
+                    alertWrapper(key, 'danger', 'Błąd! <a class="alert-link" onclick="tryResendImage{{ $room }}(`' + key + '`)" href="javascript:void(0)"><u>Kliknij aby wysłać jeszcze raz</u></a>');
+                });
         })
         .catch((err) => {
             console.log(err);
-            alertWrapper(key, 'danger', 'Błąd. Wyślij jeszcze raz.');
+        })
+}
+
+var unsent_images{{ $room }} = [];
+
+function storeUnsentImage{{ $room }}(key, data) {
+    let unsent_images = unsent_images{{ $room }};
+    unsent_images[key] = data;
+}
+
+function tryResendImage{{ $room }}(key) {
+    let alertWrapper = alertWrapper{{ $room }};
+    let unsent_images = unsent_images{{ $room }};
+    let data = unsent_images[key];
+
+    alertWrapper(key, 'warning', 'Wysyłanie...');
+
+    axios.post( route('zlecenie-zdjecie.store') , data)
+        .then((data) => {
+            alertWrapper(key, 'success', 'Wysłano');
+        })
+        .catch((err) => {
+            console.log(err);
+            alertWrapper(key, 'danger', 'Błąd! <a class="alert-link" onclick="tryResendImage{{ $room }}(`' + key + '`)" href="javascript:void(0)"><u>Kliknij aby wysłać jeszcze raz</u></a>');
         });
-    })
-    .catch((err) => {
-        console.log(err);
-    })
 }
 
 function alertWrapper{{ $room }}(key, color, txt) {

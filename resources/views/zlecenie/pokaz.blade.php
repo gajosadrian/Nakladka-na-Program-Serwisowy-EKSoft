@@ -432,7 +432,7 @@ function changeStatus(status_id) {
     last_status_id = status_id;
 
     let remove_termin = 0;
-    if (status_id == 14) {
+    if (status_id == 14 || status_id == 13) {
         remove_termin = 1;
     }
 
