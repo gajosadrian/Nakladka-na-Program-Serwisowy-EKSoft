@@ -95,7 +95,7 @@
                                 <i class="fa fa-map-marker-alt text-info"></i>
                                 Mapy Google
                             </a>
-                            <a href="https://play.google.com/store/apps/details?id=pl.neptis.yanosik.mobi.android&launch=true" class="btn btn-light ml-2"
+                            <a href="https://play.google.com/store/apps/details?id=pl.neptis.yanosik.mobi.android&launch=true" class="btn btn-light"
                                 v-clipboard:copy="address_formatted"
                             >
                                 <i class="fa fa-map-marker-alt text-danger"></i>
@@ -263,7 +263,7 @@ export default {
 
         address_formatted() {
             if ( ! this.zlecenie) return false;
-            return this.zlecenie.klient.adres + ', ' + this.zlecenie.klient.miasto;
+            return this.zlecenie.klient.miasto + ', ' + this.zlecenie.klient.adres;
         },
 
         suma_kosztorysu() {

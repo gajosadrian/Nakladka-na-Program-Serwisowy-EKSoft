@@ -2445,7 +2445,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     },
     address_formatted: function address_formatted() {
       if (!this.zlecenie) return false;
-      return this.zlecenie.klient.adres + ', ' + this.zlecenie.klient.miasto;
+      return this.zlecenie.klient.miasto + ', ' + this.zlecenie.klient.adres;
     },
     suma_kosztorysu: function suma_kosztorysu() {
       if (!this.zlecenie) return 0;
@@ -45256,7 +45256,7 @@ var render = function() {
                                   arg: "copy"
                                 }
                               ],
-                              staticClass: "btn btn-light ml-2",
+                              staticClass: "btn btn-light",
                               attrs: {
                                 href:
                                   "https://play.google.com/store/apps/details?id=pl.neptis.yanosik.mobi.android&launch=true"
