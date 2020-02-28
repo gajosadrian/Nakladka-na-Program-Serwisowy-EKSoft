@@ -36,6 +36,7 @@
                 @php
                     $pozycja = $naszykowana_czesc->kosztorys_pozycja;
                     if ( ! $pozycja) continue;
+                    if ( ! $pozycja->zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_do_zwrotu == 0) continue;
                 @endphp
 
                 @if ( ! isset($separator) and ! $naszykowana_czesc->is_zlecenie_data_past )

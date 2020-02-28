@@ -431,10 +431,15 @@ function changeStatus(status_id) {
 
     last_status_id = status_id;
 
+    let remove_termin = 0;
+    if (status_id == 14) {
+        remove_termin = 1;
+    }
+
     axios.post( route('zlecenia.api.change_status', {
         id: @json($zlecenie->id),
         status_id,
-        remove_termin: 0,
+        remove_termin,
     })).then((response) => {
         swal({
             position: 'center',
