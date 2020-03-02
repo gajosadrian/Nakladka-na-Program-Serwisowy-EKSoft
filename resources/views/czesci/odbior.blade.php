@@ -96,6 +96,9 @@
                                             <span class="ml-2">{{ $pozycja->symbol_dostawcy }}</span>
                                             <span class="ml-2 font-w700 text-success">{{ $pozycja->polka }}</span>
                                         </div>
+                                        <div>
+                                            Naszykował: <span class="font-w600 text-info">{{ $pozycja->naszykowana_czesc->user->name }}</span>
+                                        </div>
                                     </div>
 
                                     @if ($naszykowana_czesc->ilosc_do_zwrotu > 0 or ! $pozycja->zlecenie->is_gwarancja)

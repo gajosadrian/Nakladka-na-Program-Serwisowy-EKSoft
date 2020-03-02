@@ -48,6 +48,11 @@
                                 <div>
                                     {{-- <div>zlecenie_id: {{ $termin->zlecenie_id }}, towar_id: {{ $pozycja->towar_id }}, pozycja_id: {{ $pozycja->id }}, opis: ({{ $pozycja->opis_raw }})</div> --}}
                                     <div>{{ $termin->zlecenie->nr }}, <span class="font-w600">{{ $termin->zlecenie->klient->nazwa }}</span></div>
+                                    @if ($pozycja->naszykowana_czesc)
+                                        <div>
+                                            Naszykował: <span class="font-w600 text-info">{{ $pozycja->naszykowana_czesc->user->name }}</span>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="ribbon ribbon-{{ $is_naszykowane ? 'success' : 'danger' }}">
                                     <div class="ribbon-box">{{ $pozycja->state_formatted }}</div>
