@@ -374,7 +374,7 @@ class ZlecenieController extends Controller
         $user = auth()->user();
         $zlecenie = Zlecenie::findOrFail($id);
 
-        $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false);
+        $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false, $request->add_seconds ?? false);
         $zlecenie->save();
 
         if ($terminarz_status_id = $request->terminarz_status_id) {

@@ -37,9 +37,9 @@
         <b-row>
             @foreach ($terminy as $termin)
                 @foreach ($termin->zlecenie->kosztorys_pozycje as $pozycja)
-                    @continue( ! $pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane )
+                    @continue( ! $pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane or $pozycja->is_zamowione )
                     @php
-                        $is_naszykowane = (bool) ($pozycja->naszykowana_czesc ?? $pozycja->is_ekspertyza);
+                        $is_naszykowane = (bool) (($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date) or $pozycja->is_niezamontowane) ?? $pozycja->is_ekspertyza);
                     @endphp
 
                     <b-col lg="4">
@@ -75,7 +75,7 @@
                                 </div>
                                 <div class="row gutters-tiny">
                                     <div class="col-4">
-                                        @if ( ! $pozycja->is_ekspertyza)
+                                        @if ( ! $pozycja->is_ekspertyza and ! $pozycja->is_niezamontowane)
                                             <div class="form-group">
                                                 <div class="input-group">
                                                     @php
@@ -92,6 +92,8 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        @elseif ($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->is_rozliczone)
+                                            Pozycja powinna być rozliczona
                                         @endif
                                     </div>
                                     <div class="col-8 text-right">

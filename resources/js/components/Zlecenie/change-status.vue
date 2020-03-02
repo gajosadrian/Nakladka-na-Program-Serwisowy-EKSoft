@@ -9,7 +9,9 @@ export default {
     props: {
         zlecenie_id: String,
         status_id: String,
-        remove_termin: Boolean,
+        second_status_id: String,
+        remove_termin: Number,
+        dont_change_color: Number,
         name: String,
         icon: String,
         color: String,
@@ -26,13 +28,25 @@ export default {
 
     methods: {
         changeStatus() {
+            let status_color = this.dont_change_color && '0' || '12897956';
+
             axios.post(route('zlecenia.api.change_status', {
                 id: this.zlecenie_id,
                 status_id: this.status_id,
                 remove_termin: this.remove_termin,
-                terminarz_status_id: '12897956',
+                terminarz_status_id: status_color,
             })).then(response => {
-                location.reload();
+                if (this.second_status_id) {
+                    axios.post(route('zlecenia.api.change_status', {
+                        id: this.zlecenie_id,
+                        status_id: this.second_status_id,
+                        add_seconds: 1,
+                    })).then(response => {
+                        location.reload();
+                    });
+                } else {
+                    location.reload();
+                }
             });
         }
     },

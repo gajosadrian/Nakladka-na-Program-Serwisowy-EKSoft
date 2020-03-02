@@ -2139,7 +2139,9 @@ __webpack_require__.r(__webpack_exports__);
   props: {
     zlecenie_id: String,
     status_id: String,
-    remove_termin: Boolean,
+    second_status_id: String,
+    remove_termin: Number,
+    dont_change_color: Number,
     name: String,
     icon: String,
     color: String
@@ -2154,13 +2156,26 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     changeStatus: function changeStatus() {
+      var _this = this;
+
+      var status_color = this.dont_change_color && '0' || '12897956';
       axios.post(route('zlecenia.api.change_status', {
         id: this.zlecenie_id,
         status_id: this.status_id,
         remove_termin: this.remove_termin,
-        terminarz_status_id: '12897956'
+        terminarz_status_id: status_color
       })).then(function (response) {
-        location.reload();
+        if (_this.second_status_id) {
+          axios.post(route('zlecenia.api.change_status', {
+            id: _this.zlecenie_id,
+            status_id: _this.second_status_id,
+            add_seconds: 1
+          })).then(function (response) {
+            location.reload();
+          });
+        } else {
+          location.reload();
+        }
       });
     }
   }

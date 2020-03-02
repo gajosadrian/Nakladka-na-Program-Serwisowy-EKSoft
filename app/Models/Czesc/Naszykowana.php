@@ -22,6 +22,21 @@ class Naszykowana extends Model
         return $this->ilosc - $this->ilosc_zamontowane - $this->ilosc_do_zwrotu;
     }
 
+    public function getIsZamontowaneAttribute(): bool
+    {
+        return $this->ilosc_zamontowane > 0;
+    }
+
+    public function getIsRozpisaneAttribute(): bool
+    {
+        return $this->ilosc_rozpisane > 0;
+    }
+
+    public function getIsRozliczoneAttribute(): bool
+    {
+        return $this->is_zamontowane or $this->is_rozpisane;
+    }
+
     public function getTechnikUpdatedAtFormattedAttribute(): string
     {
         return $this->technik_updated_at->format('Y-m-d H:i');
