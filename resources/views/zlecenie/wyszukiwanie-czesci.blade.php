@@ -52,6 +52,7 @@
                                     <th class="font-w700">Wartość brutto</th>
                                     <th class="font-w700">Przyjęcie</th>
                                     <th class="font-w700">Status</th>
+                                    <th class="font-w700">Rozliczone</th>
                                     <th class="font-w700">Ostatnia data</th>
                                 </tr>
                             </thead>
@@ -69,6 +70,15 @@
                                         <td nowrap>{{ $kosztorys_pozycja->wartosc_brutto_formatted }}</td>
                                         <td>{{ $kosztorys_pozycja->zlecenie->data_przyjecia_formatted }}</td>
                                         {!! $kosztorys_pozycja->zlecenie->table_cell_status_html !!}
+                                        <td class="table-{{ $kosztorys_pozycja->zlecenie->is_rozliczenie ? 'success' : 'danger' }}" nowrap>
+                                            @if ($kosztorys_pozycja->zlecenie->is_rozliczenie)
+                                                <i class="fa fa-check text-success mx-2"></i>
+                                                {{ $kosztorys_pozycja->zlecenie->rozliczenie->rozliczenie->nr }}
+                                            @else
+                                                <i class="fa fa-times text-danger mx-2"></i>
+                                                Nie
+                                            @endif
+                                        </td>
                                         <td>{{ $kosztorys_pozycja->zlecenie->data_zakonczenia_formatted }}</td>
                                     </tr>
                                 @endforeach

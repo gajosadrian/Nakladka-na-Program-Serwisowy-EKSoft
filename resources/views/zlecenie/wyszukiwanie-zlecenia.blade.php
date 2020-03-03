@@ -40,6 +40,7 @@
                                             <th class="font-w700">Nr zlecenia</th>
                                             <th class="font-w700">Przyjęcie</th>
                                             <th class="font-w700">Status</th>
+                                            <th class="font-w700">Rozliczone</th>
                                             <th class="font-w700" nowrap>Ostatnia data</th>
                                         </tr>
                                     </thead>
@@ -50,6 +51,15 @@
                                                 {!! $zlecenie->table_cell_nr_html !!}
                                                 <td nowrap>{{ $zlecenie->data_przyjecia_formatted }}</td>
                                                 {!! $zlecenie->table_cell_status_html !!}
+                                                <td class="table-{{ $zlecenie->is_rozliczenie ? 'success' : 'danger' }}" nowrap>
+                                                    @if ($zlecenie->is_rozliczenie)
+                                                        <i class="fa fa-check text-success mx-2"></i>
+                                                        {{ $zlecenie->rozliczenie->rozliczenie->nr }}
+                                                    @else
+                                                        <i class="fa fa-times text-danger mx-2"></i>
+                                                        Nie
+                                                    @endif
+                                                </td>
                                                 <td nowrap>{{ $zlecenie->data_zakonczenia_formatted }}</td>
                                             </tr>
                                         @endforeach
