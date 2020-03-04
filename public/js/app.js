@@ -2573,19 +2573,23 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       navigator.vibrate(50);
     },
     doScroll: function doScroll() {
+      var _this3 = this;
+
       var reset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       if (reset) {
         window.scrollTo(0, 0);
       } else {
-        window.scrollTo(0, this.scroll_pos);
+        setTimeout(function () {
+          console.log('scroll to', _this3.scroll_pos);
+          window.scrollTo(0, _this3.scroll_pos);
+        }, 100);
       }
     },
-    rememberScroll: function rememberScroll() {
-      this.scroll_pos = window.scrollY;
+    rememberScroll: function rememberScroll() {// this.scroll_pos = window.scrollY;
     },
     addOpis: function addOpis() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.new_opis == '') return false;
       if (!this.zlecenie) return false;
@@ -2597,9 +2601,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       }), {
         _token: this._token
       }).then(function (response) {
-        _this3.disable_OpisButton = false;
-        _this3.dodawanie_opisu = false;
-        _this3.new_opis = ''; // swal({
+        _this4.disable_OpisButton = false;
+        _this4.dodawanie_opisu = false;
+        _this4.new_opis = ''; // swal({
         //     position: 'center',
         //     type: 'success',
         //     title: 'Dodano opis',
@@ -2607,12 +2611,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         //     timer: 1500
         // });
 
-        _this3.changeStatus(41);
+        _this4.changeStatus(41);
 
-        _this3.fetchZlecenia();
+        _this4.fetchZlecenia();
       }).catch(function (error) {
-        _this3.disable_OpisButton = false;
-        _this3.dodawanie_opisu = false;
+        _this4.disable_OpisButton = false;
+        _this4.dodawanie_opisu = false;
         swal({
           position: 'center',
           type: 'error',
@@ -2633,10 +2637,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     },
     cancelAutoUpdate: function cancelAutoUpdate() {
       clearInterval(this.timer);
+    },
+    handleScroll: function handleScroll() {
+      if (this.zlecenie) return;
+      this.scroll_pos = window.scrollY;
     }
   },
   created: function created() {
     var self = this;
+    window.addEventListener('scroll', this.handleScroll);
     history.pushState(null, null, location.href);
 
     window.onpopstate = function () {
@@ -2644,6 +2653,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       self.setZlecenie(null, true, false);
       self.plastic_click_002.play();
     };
+  },
+  destroyed: function destroyed() {
+    window.removeEventListener('scroll', this.handleScroll);
   }
 });
 

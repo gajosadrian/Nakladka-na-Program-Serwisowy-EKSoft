@@ -372,12 +372,15 @@ export default {
             if (reset) {
                 window.scrollTo(0, 0);
             } else {
-                window.scrollTo(0, this.scroll_pos);
+                setTimeout(() => {
+                    console.log('scroll to', this.scroll_pos);
+                    window.scrollTo(0, this.scroll_pos);
+                }, 100);
             }
         },
 
         rememberScroll() {
-            this.scroll_pos = window.scrollY;
+            // this.scroll_pos = window.scrollY;
         },
 
         addOpis() {
@@ -433,10 +436,17 @@ export default {
         cancelAutoUpdate() {
             clearInterval(this.timer);
         },
+
+        handleScroll () {
+            if (this.zlecenie) return;
+            this.scroll_pos = window.scrollY;
+        },
     },
 
     created() {
         let self = this;
+
+        window.addEventListener('scroll', this.handleScroll);
 
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
@@ -444,6 +454,10 @@ export default {
             self.setZlecenie(null, true, false);
             self.plastic_click_002.play();
         };
+    },
+
+    destroyed () {
+        window.removeEventListener('scroll', this.handleScroll);
     },
 }
 </script>
