@@ -25,17 +25,21 @@ class ZlecenieZdjecieController extends Controller
 
     public function store(Request $request)
     {
-        if ((!$request->zlecenie_id and !$request->urzadzenie_id) or !$request->image or !$request->type) abort(401);
+        if (( ! $request->zlecenie_id and ! $request->urzadzenie_id) or ! $request->image or ! $request->type) abort(401);
 
-        $technik = $request->user()->technik;
-        if ($technik) {
-            $image_original_name = $request->image->getClientOriginalName();
-            $today = today();
+        if ($technik = $request->user()->technik) {
+            $zlecenie = Zlecenie::find($request->zlecenie_id);
+            if ($zlecenie->terminarz) {
+                $date = $zlecenie->data;
+            } else {
+                $date = today();
+            }
             $months = getMonths();
-            $month_format = $today->format('m');
-            $month_name = $months->where('id', $today->month)->first()->name;
+            $month_format = $date->format('m');
+            $month_name = $months->where('id', $date->month)->first()->name;
+            $image_original_name = $request->image->getClientOriginalName();
 
-            Storage::disk('zdjecia_technikow')->putFileAs(sprintf(Zdjecie::TECHNIK_PATH, 2020, ($month_format.' '.$month_name), $technik->imie, $today->format('d.m')), $request->image, $image_original_name);
+            Storage::disk('zdjecia_technikow')->putFileAs(sprintf(Zdjecie::TECHNIK_PATH, 2020, ($month_format.' '.$month_name), $technik->imie, $date->format('d.m')), $request->image, $image_original_name);
         }
 
         Zdjecie::create([
