@@ -36,9 +36,18 @@ class Subiekt_Kontrahent extends Model
         return $this->dane->telefon;
     }
 
-    public function getAdresAttribute(): string
+    public function getAdresRawAttribute(): string
     {
         return $this->dane->adres;
+    }
+
+    public function getAdresAttribute(): string
+    {
+        $adres = $this->adres_raw;
+        if (str_contains($adres, ',')) {
+            $adres = explode(',', $adres)[1];
+        }
+        return $adres;
     }
 
     public function getAdres2Attribute(): string
@@ -51,13 +60,24 @@ class Subiekt_Kontrahent extends Model
         return implode('/', $adres_arr);
     }
 
-    public function getMiastoAttribute(): string
+    public function getMiastoRawAttribute(): string
     {
         $miejscowosc = $this->dane->miejscowosc;
         if (str_contains($miejscowosc, 'Ostrowiec Św')) {
             $miejscowosc = 'Ostrowiec Świętokrzyski';
         }
         return $miejscowosc;
+    }
+
+    public function getMiastoAttribute(): string
+    {
+        $adres = $this->adres_raw;
+        if (str_contains($adres, ',')) {
+            $miasto = explode(',', $adres)[0];
+        } else {
+            $miasto = $this->miasto_raw;
+        }
+        return $miasto;
     }
 
     public function getKodPocztowyAttribute(): string

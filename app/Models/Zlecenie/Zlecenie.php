@@ -214,13 +214,14 @@ class Zlecenie extends Model
 
     public function getGoogleMapsRouteLinkAttribute(): string
     {
-        // return 'https://www.google.com/maps/dir//' . urlencode(explode('/', $this->klient->adres)[0]) . ',+' . urlencode($this->klient->kod_pocztowy) . '+' . urlencode($this->klient->miasto) . ',+Polska/';
         return 'https://www.google.com/maps/dir//' . $this->google_maps_address . '/';
     }
 
     public function getGoogleMapsAddressAttribute(): string
     {
-        return urlencode($this->klient->adres2) . ',+' . urlencode($this->klient->miasto) . ',+Polska';
+        return urlencode($this->klient->adres2 . ', ' . $this->klient->kod_pocztowy . ' ' . $this->klient->miasto);
+        // return urlencode($this->klient->adres2 . ', ' . $this->klient->miasto);
+        // return urlencode($this->klient->kod_pocztowy . ' ' . $this->klient->miasto . ', ' . $this->klient->adres2); // BAD
     }
 
     public static function getGoogleMapsKmLink(array $places): string
