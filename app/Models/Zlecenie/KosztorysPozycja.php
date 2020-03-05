@@ -331,6 +331,7 @@ class KosztorysPozycja extends Model
             'is_ekspertyza' => $this->is_ekspertyza,
             'is_towar' => $this->is_towar,
             'is_usluga' => $this->is_usluga,
+            'is_zamowione' => $this->is_zamowione,
             'is_odlozone' => $this->is_odlozone,
             'is_zamontowane' => $this->is_zamontowane,
             'is_niezamontowane' => $this->is_niezamontowane,

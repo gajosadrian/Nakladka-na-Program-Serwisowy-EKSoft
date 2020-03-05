@@ -321,6 +321,11 @@ class Zlecenie extends Model
         return ($this->status_id == Status::NA_WARSZTACIE_ID);
     }
 
+    public function getIsZamowionoAttribute(): bool
+    {
+        return ($this->status_id == Status::ZAMOWIONO_CZESC_ID);
+    }
+
     public function getWasWarsztatAttribute(): bool
     {
         foreach ($this->statusy->sortBy('data') as $status) {
@@ -826,6 +831,12 @@ HTML;
             }
         }
         return null;
+    }
+
+    public function getIsSoftZakonczone($date_string): bool
+    {
+        $status_historia_preautoryzacja = $this->getStatusHistoriaAt($date_string, Status::PREAUTORYZACJA_ID);
+        return ($this->is_zakonczone or $status_historia_preautoryzacja);
     }
 
     private function getCalcKosztorys(string $type): array

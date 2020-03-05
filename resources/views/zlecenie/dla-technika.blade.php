@@ -75,7 +75,11 @@
                             @endphp
                             <div class="mb-4">
                                 @if ($zlecenie->id)
-                                    @if (!$is_technik and !$zlecenie->is_zakonczone and !$zlecenie->is_warsztat and !$zlecenie->_do_wyjasnienia and $is_up_to_date)
+                                    @php
+                                        $is_soft_zakonczone = $zlecenie->getIsSoftZakonczone($date_string);
+                                    @endphp
+
+                                    @if (!$is_technik and !$is_soft_zakonczone and !$zlecenie->is_warsztat and !$zlecenie->_do_wyjasnienia and !$zlecenie->is_zamowiono and $is_up_to_date)
                                         <div class="d-none d-lg-block mb-1">
                                             @if ($terminarz->is_umowiono or !$terminarz->is_umowiono_or_dzwonic)
                                                 <b-button @if(!$zlecenie->is_umowiono or !$terminarz->is_umowiono_or_dzwonic) onclick="umowKlienta({{ $zlecenie->id }}, 0)" @endif size="sm" variant="{{ ($zlecenie->is_umowiono and $terminarz->is_umowiono_or_dzwonic) ? 'danger' : 'outline-danger' }}">Umówiono klienta</b-button>
@@ -103,7 +107,15 @@
                                             <span class="{{ (strlen($terminarz->temat) <= 40) ? 'bg-dark text-white' : '' }} px-1">{{ $terminarz->temat }}</span>
                                         </div>
                                     @endif
-                                    <div class="font-w700 bg-gray p-1">
+                                    <div class="font-w700 p-1
+                                        @if ($zlecenie->is_zamowiono)
+                                            bg-xsmooth-lighter
+                                        @elseif ($is_soft_zakonczone)
+                                            bg-success-light
+                                        @else
+                                            bg-gray
+                                        @endif
+                                    ">
                                         <b-row class="gutters-tiny">
                                             <b-col cols="2">
                                                 {{ $zlecenie->nr }}
