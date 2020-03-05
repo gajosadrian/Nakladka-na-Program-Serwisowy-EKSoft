@@ -27,6 +27,14 @@
 
 @section('content')
     <div class="content">
+        <div class="clearfix mb-5">
+            <div class="float-left">
+                Zalogowany jako: <span class="font-w600 text-info">{{ auth()->user()->name }}</span>
+            </div>
+            <div class="float-right">
+                <a href="{{ route('logout') }}" class="btn btn-sm btn-secondary">Wyloguj</a>
+            </div>
+        </div>
         <div class="row row-deck">
             @foreach ($items as $item)
                 <div class="col-md-6 col-xl-3">
