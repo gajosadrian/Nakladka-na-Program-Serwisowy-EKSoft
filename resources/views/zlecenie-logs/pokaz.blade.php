@@ -4,7 +4,7 @@
     <div class="bg-body-light d-print-none">
         <div class="content content-full">
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center">
-                <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Logi</h1>
+                <h1 class="flex-sm-fill font-size-h2 font-w400 mt-2 mb-0 mb-sm-2">Zdarzenia</h1>
             </div>
         </div>
     </div>
@@ -34,32 +34,36 @@
         </b-block>
 
         @if ($technik)
-            <b-block title="Logi" full>
+            <b-block title="Zdarzenia">
                 <template slot="content">
                     <table class="table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
                         <tbody>
                             @foreach ($grouped_logs as $logs)
                                 <tr>
-                                    <th class="table-active">{{ $logs[0]->zlecenie->nr }}</th>
-                                    <td></td>
+                                    <th class="table-active" colspan="2" onclick="{{ $logs[0]->zlecenie->popup_link }}" style="cursor: pointer;">
+                                        {{ $logs[0]->zlecenie->nr }}
+                                    </th>
                                 </tr>
                                 @foreach ($logs as $log)
                                     <tr>
                                         @if ($log->is_opis)
-                                            <td>Dodanie opisu</td>
+                                            <td class="table-info" style="width:1%;" nowrap>
+                                                <i class="fa fa-edit text-info mr-2"></i>
+                                                Dodanie opisu
+                                            </td>
                                             <td>{{ $log->opis }}</td>
                                         @elseif ($log->is_status)
-                                            <td>Zmiana statusu</td>
+                                            <td class="table-{{ $log->status->color }}" style="width:1%;" nowrap>
+                                                <i class="{{ $log->status->icon }} text-{{ $log->status->color }} mr-2"></i>
+                                                Zmiana statusu
+                                            </td>
                                             <td>{{ $log->status->nazwa }}</td>
                                         @endif
                                     </tr>
                                 @endforeach
+                                <tr>
+                                    <td colspan="2"></td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>

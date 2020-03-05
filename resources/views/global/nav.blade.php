@@ -67,7 +67,7 @@
             },
         ],
         [
-            'name' => 'Logi',
+            'name' => 'Zdarzenia',
             'icon' => 'si si-flag',
             'route' => 'zlecenia.logs',
             'routeOptions' => [],
@@ -118,13 +118,13 @@
             'routeOptions' => [],
             'role' => 'super-admin',
         ],
-        [
-            'name' => 'Użytkownicy',
-            'icon' => 'si si-users',
-            'route' => 'admin.users.lista',
-            'routeOptions' => [],
-            'role' => 'super-admin',
-        ],
+        // [
+        //     'name' => 'Użytkownicy',
+        //     'icon' => 'si si-users',
+        //     'route' => 'admin.users.lista',
+        //     'routeOptions' => [],
+        //     'role' => 'super-admin',
+        // ],
     ];
 @endphp
 
