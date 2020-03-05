@@ -454,9 +454,8 @@ class ZlecenieController extends Controller
                 ];
             }
             if ($termin->zlecenie->klient) {
-                // $status_historia_preautoryzacja = $termin->zlecenie->getStatusHistoriaAt($date_string, Status::PREAUTORYZACJA_ID);
-                // $is_soft_zakonczone = (bool) ($termin->zlecenie->is_zakonczone or $status_historia_preautoryzacja);
-                $is_soft_zakonczone = $termin->zlecenie->getIsSoftZakonczone($date_string);
+                $status_historia_preautoryzacja = $termin->zlecenie->getStatusHistoriaAt($date_string, Status::PREAUTORYZACJA_ID);
+                $is_soft_zakonczone = (bool) ($termin->zlecenie->is_zakonczone or $status_historia_preautoryzacja);
                 $item['zlecenie'] = [
                     'id' => $termin->zlecenie->id,
                     'nr' => $termin->zlecenie->nr,
