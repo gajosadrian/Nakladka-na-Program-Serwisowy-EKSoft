@@ -11,6 +11,7 @@ use App\Models\Zlecenie\ZatwierdzonyBlad;
 use App\Models\Zlecenie\Log;
 use App\Models\SMS\Technik;
 use App\Models\Subiekt\Subiekt_Towar;
+use App\Models\Subiekt\Subiekt_Kontrahent as Klient;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -269,22 +270,29 @@ class ZlecenieController extends Controller
         return view('zlecenie-logs.pokaz', compact('date', 'date_string', 'technik', 'technicy', 'logs', 'grouped_logs'));
     }
 
-    public function wyszukiwanieZlecenia(Request $request, string $nr_zlec = null)
+    public function wyszukiwanieZlecenia(Request $request, string $search = null)
     {
-        $nr_zlec = $request->nr_zlec ?? $nr_zlec;
+        $search = $request->search ?? $search;
         $zlecenia = null;
 
-        if ($nr_zlec) {
-            if (str_contains($nr_zlec, ['zs', 'ZS'])) {
-                $where = ['NrZlecenia', '=', $nr_zlec];
+        $klient_ids = Klient::whereHas('ewidencja', function ($q) use ($search) {
+            $q->where('adr_Nazwa', 'like', '%'.$search.'%');
+        })->limit(20)->get(['kh_Id'])->pluck('id')->values();
+
+        if ($search) {
+            if (str_contains($search, ['zs', 'ZS'])) {
+                $where = ['NrZlecenia', '=', $search];
             } else {
-                $where = ['NrObcy', 'like', '%'.$nr_zlec.'%'];
+                $where = ['NrObcy', 'like', '%'.$search.'%'];
             }
 
-            $zlecenia = Zlecenie::with('status', 'terminarz', 'rozliczenie.rozliczenie')->where($where[0], $where[1], $where[2])->orderByDesc('id_zlecenia')->get();
+            $zlecenia = Zlecenie::with('klient', 'status', 'terminarz', 'urzadzenie', 'rozliczenie.rozliczenie')
+                ->where($where[0], $where[1], $where[2])
+                ->orWhereIn('id_firmy', $klient_ids)
+                ->orderByDesc('id_zlecenia')->limit(20)->get();
         }
 
-        return view('zlecenie.wyszukiwanie-zlecenia', compact('zlecenia', 'nr_zlec'));
+        return view('zlecenie.wyszukiwanie-zlecenia', compact('zlecenia', 'search'));
     }
 
     public function wyszukiwanieCzesci(Request $request, string $symbol = null)

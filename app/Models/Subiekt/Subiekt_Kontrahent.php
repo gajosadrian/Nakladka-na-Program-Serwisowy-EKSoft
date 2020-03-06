@@ -9,12 +9,17 @@ class Subiekt_Kontrahent extends Model
     protected $connection = 'sqlsrv2';
     protected $table = 'kh__Kontrahent';
     protected $primaryKey = 'kh_Id';
-    protected $with = ['ewidencje'];
+    protected $with = ['ewidencja'];
 
     /**
     * Attributes
     *
     */
+
+    public function getIdAttribute(): string
+    {
+        return $this->attributes['kh_Id'];
+    }
 
     public function getSymbolAttribute(): string
     {
@@ -23,7 +28,7 @@ class Subiekt_Kontrahent extends Model
 
     public function getDaneAttribute(): object
     {
-        return $this->ewidencje->where('typ_adresu', 1)->first();
+        return $this->ewidencja;
     }
 
     public function getNazwaAttribute(): string
@@ -105,8 +110,8 @@ class Subiekt_Kontrahent extends Model
      *
      */
 
-    public function ewidencje()
+    public function ewidencja()
     {
-        return $this->hasMany('App\Models\Subiekt\KontrahentEwidencja', 'adr_IdObiektu', 'kh_Id');
+        return $this->hasOne('App\Models\Subiekt\KontrahentEwidencja', 'adr_IdObiektu', 'kh_Id')->where('adr_TypAdresu', 1);
     }
 }

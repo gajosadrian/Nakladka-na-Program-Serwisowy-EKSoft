@@ -2583,7 +2583,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         setTimeout(function () {
           console.log('scroll to', _this3.scroll_pos);
           window.scrollTo(0, _this3.scroll_pos);
-        }, 100);
+        }, 200);
       }
     },
     rememberScroll: function rememberScroll() {// this.scroll_pos = window.scrollY;
@@ -45504,6 +45504,7 @@ var render = function() {
                                     _vm._v(" "),
                                     pozycja.is_towar &&
                                     !pozycja.is_ekspertyza &&
+                                    !pozycja.is_zamowione &&
                                     Number.isInteger(pozycja.ilosc) &&
                                     (!pozycja.naszykowana_czesc ||
                                       pozycja.naszykowana_czesc.is_editable)

@@ -15,7 +15,7 @@
                 <form action="{{ route('zlecenia.wyszukiwanieZlecenia') }}" method="get">
                     <b-row>
                         <b-col cols="7" lg="2">
-                            <input name="nr_zlec" type="text" class="form-control" value="{{ $nr_zlec ?? '' }}">
+                            <input name="search" type="text" class="form-control" value="{{ $search ?? '' }}">
                         </b-col>
                         <b-col cols="5" lg="1">
                             <b-button type="submit" class="btn-rounded shadow" variant="info" size="sm">
@@ -27,49 +27,50 @@
             </template>
         </b-block>
 
-        @if ($nr_zlec)
-            <div class="row">
-                <div class="col-xl-7">
-                    <b-block full>
-                        <template slot="content">
-                            <div class="table-responsive">
-                                <table class="table table-sm table-striped table-hover table-vcenter font-size-sm">
-                                    <thead>
-                                        <tr class="text-uppercase">
-                                            <th class="font-w700" style="width:1%">Lp.</th>
-                                            <th class="font-w700">Nr zlecenia</th>
-                                            <th class="font-w700">Przyjęcie</th>
-                                            <th class="font-w700">Status</th>
-                                            <th class="font-w700">Rozliczone</th>
-                                            <th class="font-w700" nowrap>Ostatnia data</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($zlecenia as $key => $zlecenie)
-                                            <tr>
-                                                <th>{{ $key + 1 }}</th>
-                                                {!! $zlecenie->table_cell_nr_html !!}
-                                                <td nowrap>{{ $zlecenie->data_przyjecia_formatted }}</td>
-                                                {!! $zlecenie->table_cell_status_html !!}
-                                                <td class="table-{{ $zlecenie->is_rozliczenie ? 'success' : 'danger' }}" nowrap>
-                                                    @if ($zlecenie->is_rozliczenie)
-                                                        <i class="fa fa-check text-success mx-2"></i>
-                                                        {{ $zlecenie->rozliczenie->rozliczenie->nr }}
-                                                    @else
-                                                        <i class="fa fa-times text-danger mx-2"></i>
-                                                        Nie
-                                                    @endif
-                                                </td>
-                                                <td nowrap>{{ $zlecenie->data_zakonczenia_formatted }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </template>
-                    </b-block>
-                </div>
-            </div>
+        @if ($search)
+            <b-block full>
+                <template slot="content">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover table-vcenter font-size-sm">
+                            <thead>
+                                <tr class="text-uppercase">
+                                    <th class="font-w700" style="width:1%">Lp.</th>
+                                    <th class="font-w700">Nazwa</th>
+                                    <th class="font-w700">Nr zlecenia</th>
+                                    <th class="font-w700">Przyjęcie</th>
+                                    <th class="font-w700">Status</th>
+                                    <th class="font-w700">Rozliczone</th>
+                                    <th class="font-w700" nowrap>Ostatnia data</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($zlecenia as $key => $zlecenie)
+                                    <tr>
+                                        <th>{{ $key + 1 }}</th>
+                                        <td>
+                                            {{ str_limit($zlecenie->klient->nazwa, 30) }}<br>
+                                            <small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
+                                        </td>
+                                        {!! $zlecenie->table_cell_nr_html !!}
+                                        <td nowrap>{{ $zlecenie->data_przyjecia_formatted }}</td>
+                                        {!! $zlecenie->table_cell_status_html !!}
+                                        <td class="table-{{ $zlecenie->is_rozliczenie ? 'success' : 'danger' }}" nowrap>
+                                            @if ($zlecenie->is_rozliczenie)
+                                                <i class="fa fa-check text-success mx-2"></i>
+                                                {{ $zlecenie->rozliczenie->rozliczenie->nr }}
+                                            @else
+                                                <i class="fa fa-times text-danger mx-2"></i>
+                                                Nie
+                                            @endif
+                                        </td>
+                                        <td nowrap>{{ $zlecenie->data_zakonczenia_formatted }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+            </b-block>
         @endif
     </div>
 @endsection

@@ -256,7 +256,7 @@
                                         </div>
                                     @endif
                                 @else
-                                    <div class="font-w700 bg-gray p-2">
+                                    <div class="font-w700 bg-success-light p-1">
                                         <b-row class="gutters-tiny">
                                             <b-col cols="9">
                                                 {{ $terminarz->temat }}
