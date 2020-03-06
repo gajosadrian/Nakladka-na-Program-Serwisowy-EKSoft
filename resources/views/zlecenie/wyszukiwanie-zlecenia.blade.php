@@ -36,6 +36,7 @@
                                 <tr class="text-uppercase">
                                     <th class="font-w700" style="width:1%">Lp.</th>
                                     <th class="font-w700">Nazwa</th>
+                                    <th class="font-w700">Adres</th>
                                     <th class="font-w700">Nr zlecenia</th>
                                     <th class="font-w700">Przyjęcie</th>
                                     <th class="font-w700">Status</th>
@@ -47,10 +48,14 @@
                                 @foreach ($zlecenia as $key => $zlecenie)
                                     <tr>
                                         <th>{{ $key + 1 }}</th>
-                                        <td>
+                                        <td nowrap>
                                             {{ str_limit($zlecenie->klient->nazwa, 30) }}<br>
                                             <small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
                                         </td>
+                                        <td nowrap>
+    										{{ $zlecenie->klient->adres }}<br>
+    										{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}
+    									</td>
                                         {!! $zlecenie->table_cell_nr_html !!}
                                         <td nowrap>{{ $zlecenie->data_przyjecia_formatted }}</td>
                                         {!! $zlecenie->table_cell_status_html !!}
