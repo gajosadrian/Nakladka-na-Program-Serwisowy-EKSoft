@@ -65,6 +65,11 @@ class Subiekt_Kontrahent extends Model
         return implode('/', $adres_arr);
     }
 
+    public function getUlicaAttribute(): string
+    {
+        return $this->dane->ulica;
+    }
+
     public function getMiastoRawAttribute(): string
     {
         $miejscowosc = $this->dane->miejscowosc;

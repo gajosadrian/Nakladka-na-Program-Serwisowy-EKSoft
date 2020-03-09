@@ -36,6 +36,11 @@ class KontrahentEwidencja extends Model
         return $this->attributes['adr_Telefon'];
     }
 
+    public function getUlicaAttribute()
+    {
+        return $this->attributes['adr_Ulica'];
+    }
+
     public function getAdresAttribute()
     {
         return $this->attributes['adr_Adres'];

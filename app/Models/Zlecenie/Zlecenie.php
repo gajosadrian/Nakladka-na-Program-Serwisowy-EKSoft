@@ -219,9 +219,12 @@ class Zlecenie extends Model
 
     public function getGoogleMapsAddressAttribute(): string
     {
+        if ( ! str_contains($this->klient->miasto, ['Ostrowiec Świętokrzyski', 'Ćmielów', 'Bodzechów', 'Kunów']) ) {
+            return urlencode($this->klient->ulica . ', ' . $this->klient->kod_pocztowy . ' ' . $this->klient->miasto);
+        }
         return urlencode($this->klient->adres2 . ', ' . $this->klient->kod_pocztowy . ' ' . $this->klient->miasto);
-        // return urlencode($this->klient->adres2 . ', ' . $this->klient->miasto);
         // return urlencode($this->klient->kod_pocztowy . ' ' . $this->klient->miasto . ', ' . $this->klient->adres2); // BAD
+        // return urlencode($this->klient->adres2 . ', ' . $this->klient->miasto);
     }
 
     public static function getGoogleMapsKmLink(array $places): string
