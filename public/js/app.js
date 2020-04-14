@@ -2523,6 +2523,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.fetchZdjecia();
+    history.pushState(null, null, location.href);
+
+    window.onpopstate = function () {
+      history.go(1);
+    };
   }
 });
 
