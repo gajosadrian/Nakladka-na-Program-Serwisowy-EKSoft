@@ -9,11 +9,27 @@ use App\Models\Zlecenie\Zdjecie;
 
 class ZlecenieZdjecieController extends Controller
 {
-    public function show(int $zlecenie_id)
+    public function show(Request $request, int $zlecenie_id)
     {
         $zlecenie = Zlecenie::with(['zdjecia_do_zlecenia', 'zdjecia_do_urzadzenia'])->findOrFail($zlecenie_id);
-        // return response()->json($zlecenie->zdjecia, 200);
+
+        if ( $request->wantsJson() ) {
+            return response()->json([
+                'zlecenie' => $zlecenie->only('id', 'is_gwarancja', 'is_ubezpieczenie', 'is_odplatne'),
+                'urzadzenie' => $zlecenie->urzadzenie_id ? $zlecenie->urzadzenie->only('id') : null,
+                'zdjecia' => $zlecenie->zdjecia->map->only('id', 'zlecenie_id', 'urzadzenie_id', 'type', 'url'),
+            ]);
+        }
+
         return view('zlecenie.zdjecia', compact('zlecenie'));
+    }
+
+    public function show2(int $zlecenie_id)
+    {
+        $zlecenie = Zlecenie::with(['zdjecia_do_zlecenia', 'zdjecia_do_urzadzenia'])->findOrFail($zlecenie_id);
+
+        // return response()->json($zlecenie->zdjecia, 200);
+        return view('zlecenie.zdjecia2', compact('zlecenie'));
     }
 
     public function make(Zdjecie $zdjecie)
@@ -25,7 +41,7 @@ class ZlecenieZdjecieController extends Controller
 
     public function store(Request $request)
     {
-        if (( ! $request->zlecenie_id and ! $request->urzadzenie_id) or ! $request->image or ! $request->type) abort(401);
+        if (( ! $request->zlecenie_id and ! $request->urzadzenie_id) or ! $request->image or ! $request->type) abort(400);
 
         if ($technik = $request->user()->technik) {
             $zlecenie = Zlecenie::find($request->zlecenie_id);

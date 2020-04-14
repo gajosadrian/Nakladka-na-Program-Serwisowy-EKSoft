@@ -35,8 +35,11 @@
             @foreach ($naszykowane_czesci as $naszykowana_czesc)
                 @php
                     $pozycja = $naszykowana_czesc->kosztorys_pozycja;
-                    if ( ! $pozycja) continue;
-                    if ( ! $pozycja->zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_do_zwrotu == 0) continue;
+                    $zlecenie = $naszykowana_czesc->zlecenie;
+                    $towar = $naszykowana_czesc->towar;
+
+                    // if ( ! $pozycja) continue;
+                    if ( ! $zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_do_zwrotu == 0) continue;
                 @endphp
 
                 @if ( ! isset($separator) and ! $naszykowana_czesc->is_zlecenie_data_past )
@@ -55,8 +58,8 @@
                     <b-block class="{{ $is_mobile ? 'mb-2' : '' }}" full>
                         <template slot="content">
                             <div class="{{ $is_mobile ? '' : 'push' }}">
-                                {{-- {{ $pozycja->zlecenie->nr }}, --}}
-                                {{ $pozycja->zlecenie->klient->nazwa }},
+                                {{-- {{ $zlecenie->nr }}, --}}
+                                {{ $zlecenie->klient->nazwa }},
                                 <span class="font-w600">{{ $naszykowana_czesc->zlecenie_data_formatted }}</span>
                                 <span class="ml-2">
                                     @if ($naszykowana_czesc->user->technik_id)
@@ -68,9 +71,9 @@
                             </div>
                             <b-row>
                                 <b-col lg="6">
-                                    @if ($pozycja->is_zdjecie)
+                                    @if ($towar->is_zdjecie)
                                         <div>
-                                            <img src="{{ $pozycja->zdjecie_url }}" alt="zdjęcie" class="img-fluid">
+                                            <img src="{{ $towar->zdjecie_url }}" alt="zdjęcie" class="img-fluid">
                                         </div>
                                     @else
                                         <div class="py-5 text-center border">
@@ -82,33 +85,33 @@
                                     <div class="push">
                                         <div>
                                             <span class="font-w700">
-                                                @if ($pozycja->is_czesc_symbol)
+                                                @if ($pozycja and $pozycja->is_czesc_symbol)
                                                     {{ $pozycja->opis_fixed }}
                                                 @else
-                                                    <span class="truncate">{{ $pozycja->nazwa }}</span>
-                                                    {{-- {{ str_limit($pozycja->nazwa, 30) }} --}}
+                                                    <span class="truncate">{{ $towar->nazwa }}</span>
+                                                    {{-- {{ str_limit($towar->nazwa, 30) }} --}}
                                                 @endif
                                             </span>
                                             {{-- <small class="text-secondary">({{ $pozycja->state_formatted }})</small> --}}
                                         </div>
                                         <div>
-                                            <span class="font-w600 bg-info text-white px-1">{{ $pozycja->symbol }}</span>
-                                            <span class="ml-2">{{ $pozycja->symbol_dostawcy }}</span>
-                                            <span class="ml-2 font-w700 text-success">{{ $pozycja->polka }}</span>
+                                            <span class="font-w600 bg-info text-white px-1">{{ $towar->symbol }}</span>
+                                            <span class="ml-2">{{ $towar->symbol_dostawcy }}</span>
+                                            <span class="ml-2 font-w700 text-success">{{ $towar->polka }}</span>
                                         </div>
                                         <div>
-                                            Naszykował: <span class="font-w600 text-info">{{ $pozycja->naszykowana_czesc->user->name }}</span>
+                                            Naszykował: <span class="font-w600 text-info">{{ $naszykowana_czesc->user->name }}</span>
                                         </div>
                                     </div>
 
-                                    @if ($naszykowana_czesc->ilosc_do_zwrotu > 0 or ! $pozycja->zlecenie->is_gwarancja)
+                                    @if ($naszykowana_czesc->ilosc_do_zwrotu > 0 or ! $zlecenie->is_gwarancja)
                                         <div>
                                             Do zwrotu nowe:
                                             <span class="font-w600 bg-danger text-white px-1">{{ $naszykowana_czesc->ilosc_do_zwrotu }}</span>
                                             <small class="text-secondary">({{ $naszykowana_czesc->ilosc }})</small>
                                         </div>
                                     @endif
-                                    @if ($pozycja->zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_zamontowane > 0)
+                                    @if ($zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_zamontowane > 0)
                                         <div>
                                             Do zwrotu zużyte:
                                             <span class="font-w600 bg-warning text-white px-1">{{ $naszykowana_czesc->ilosc_zamontowane }}</span>
@@ -124,7 +127,7 @@
                                     @if ($naszykowana_czesc->ilosc_rozpisane > 0)
                                         <div>
                                             Rozpisano:
-                                            <span class="font-w600 text-success">{{ $naszykowana_czesc->ilosc_zamontowane }}</span>
+                                            <span class="font-w600 text-success">{{ $naszykowana_czesc->ilosc_rozpisane }}</span>
                                         </div>
                                     @endif
                                     <div class="mt-2">

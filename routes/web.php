@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
         Route::get('lista', 'ZlecenieController@index')->name('lista');
         Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');
         Route::get('pokaz/{zlecenie_id}/zdjecia', 'ZlecenieZdjecieController@show')->name('pokazZdjecia');
+        Route::get('pokaz/{zlecenie_id}/zdjecia/v2', 'ZlecenieZdjecieController@show2')->name('pokazZdjecia2');
         Route::get('dla-technika/{technik_id?}/{timestamp?}', 'ZlecenieController@dlaTechnika')->name('dla-technika');
         Route::get('planowanie-trasy/{technik_id?}/{date_string?}', 'ZlecenieController@planowanieTrasy')->name('planowanieTrasy');
         Route::get('kilometrowka/{technik_id?}/{month_id?}', 'ZlecenieController@kilometrowka')->name('kilometrowka');

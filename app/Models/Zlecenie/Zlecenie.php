@@ -468,17 +468,32 @@ class Zlecenie extends Model
 
     public function getOpisFormattedAttribute(): string
     {
-        $opis = $this->opis;
-        $opis = strtr($opis, [
-            '>> ' => '>>',
-            ' <<' => '<<',
-        ]);
-        $opis = strtr($opis, [
-            '>>' => '<span class="bg-gray font-w700 px-1">',
-            '<<' => '</span>',
-        ]);
-        $opis = str_replace("\n", '<br>', $opis);
-        return $opis;
+        return $this->opisToHtml($this->opis);
+    }
+
+    public function getOpisKlientAttribute(): ?string
+    {
+        return trim(explode('#', $this->opis)[0]);
+    }
+
+    public function getOpisKlientFormattedAttribute(): string
+    {
+        return $this->opisToHtml($this->opis_klient);
+    }
+
+    public function getOpisTechnikAttribute(): ?string
+    {
+        $opis = explode('#', $this->opis);
+        array_shift($opis);
+        if ($opis) {
+            return '#' . implode('#', $opis);
+        }
+        return null;
+    }
+
+    public function getOpisTechnikFormattedAttribute(): string
+    {
+        return $this->opisToHtml($this->opis_technik);
     }
 
     public function setOpisAttribute(string $value): void
@@ -815,6 +830,20 @@ HTML;
     * Methods
     *
     */
+
+    public function opisToHtml(string $opis)
+    {
+        $opis = strtr($opis, [
+            '>> ' => '>>',
+            ' <<' => '<<',
+        ]);
+        $opis = strtr($opis, [
+            '>>' => '<span class="bg-gray font-w700 px-1">',
+            '<<' => '</span>',
+        ]);
+        $opis = str_replace("\n", '<br>', $opis);
+        return $opis;
+    }
 
     public function isAktywnyBlad(int $dni): bool
     {

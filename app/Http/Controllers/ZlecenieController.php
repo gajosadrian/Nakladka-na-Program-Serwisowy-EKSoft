@@ -289,6 +289,7 @@ class ZlecenieController extends Controller
             $zlecenia = Zlecenie::with('klient', 'status', 'terminarz', 'urzadzenie', 'rozliczenie.rozliczenie')
                 ->where($where[0], $where[1], $where[2])
                 ->orWhereIn('id_firmy', $klient_ids)
+                ->orWhere('OpisZlec', 'like', "%{$search}%")
                 ->orderByDesc('id_zlecenia')->limit(20)->get();
         }
 
@@ -297,12 +298,28 @@ class ZlecenieController extends Controller
 
     public function wyszukiwanieCzesci(Request $request, string $symbol = null)
     {
-        $towar = Subiekt_Towar::where('tw_Symbol', $request->symbol ?? $symbol)->first();
-        $towar_id = @$towar->id ?? null;
+        $symbol = $request->symbol ?? $symbol;
 
-        $kosztorys_pozycje = KosztorysPozycja::with('zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie', 'zlecenie.terminarz', 'zlecenie.rozliczenie.rozliczenie')->where('id_o_tw', $towar_id)->orderByDesc('id')->limit(20)->get();
+        if ($symbol) {
+            $towar = Subiekt_Towar::where('tw_Symbol', $symbol)
+                ->orWhere('tw_DostSymbol', 'like', "%{$symbol}%")
+                ->first();
+            $towar_id = @$towar->id ?? null;
+        } else {
+            $towar = null;
+            $towar_id = null;
+        }
 
-        return view('zlecenie.wyszukiwanie-czesci', compact('towar', 'towar_id', 'kosztorys_pozycje'));
+        if ($symbol) {
+            $kosztorys_pozycje = KosztorysPozycja::with('zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie', 'zlecenie.terminarz', 'zlecenie.rozliczenie.rozliczenie')
+                ->where('id_o_tw', $towar_id)
+                ->orWhere('opis_dodatkowy', 'like', "%{$symbol}%")
+                ->orderByDesc('id')->limit(20)->get();
+        } else {
+            $kosztorys_pozycje = collect();
+        }
+
+        return view('zlecenie.wyszukiwanie-czesci', compact('towar', 'towar_id', 'kosztorys_pozycje', 'symbol'));
     }
 
     public function apiZatwierdzBlad(Request $request, int $id)
@@ -494,7 +511,7 @@ class ZlecenieController extends Controller
                         'telefony' => $termin->zlecenie->klient->telefony_array,
                     ],
                     'kosztorys_pozycje' => $termin->zlecenie->getKosztorysArray(),
-                    'zdjecia_url' => route('zlecenia.pokazZdjecia', $termin->zlecenie->id),
+                    'zdjecia_url' => route('zlecenia.pokazZdjecia2', $termin->zlecenie->id),
                     'urzadzenie' => null,
                 ];
                 if ($termin->zlecenie->urzadzenie) {

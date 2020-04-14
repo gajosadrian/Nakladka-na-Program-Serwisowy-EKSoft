@@ -13,7 +13,7 @@
         <meta name="mobile-web-app-capable" content="yes">
 
         {{-- CSRF Token --}}
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
 
         {{-- Auto-refresh --}}
         @hasSection('autorefresh')

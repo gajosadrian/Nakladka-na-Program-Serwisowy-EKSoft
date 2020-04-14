@@ -15,7 +15,7 @@
                 <form action="{{ route('zlecenia.wyszukiwanieCzesci') }}" method="get">
                     <b-row>
                         <b-col cols="7" lg="2">
-                            <input name="symbol" type="text" class="form-control" value="{{ $towar ? $towar->symbol : '' }}">
+                            <input name="symbol" type="text" class="form-control" value="{{ $symbol }}">
                         </b-col>
                         <b-col cols="5" lg="1">
                             <b-button type="submit" class="btn-rounded shadow" variant="info" size="sm">
@@ -34,7 +34,7 @@
             </template>
         </b-block>
 
-        @if ($towar_id)
+        @if ($kosztorys_pozycje->count() > 0)
             <b-block full>
                 <template slot="content">
                     <div class="table-responsive">

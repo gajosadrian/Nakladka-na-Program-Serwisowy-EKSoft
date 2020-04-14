@@ -9,6 +9,7 @@ class Zdjecie extends Model
     protected $connection = 'mysql';
     protected $table = 'zlecenie_zdjecia';
     protected $guarded = [];
+    protected $appends = ['url'];
 
     public const
         TYPE_GWARANCJA = 'gwarancja',   TYPE_POLISA = 'polisa',

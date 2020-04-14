@@ -77,4 +77,14 @@ class Naszykowana extends Model
     {
         return $this->belongsTo('App\User', 'sprawdzil_user_id');
     }
+
+    public function zlecenie()
+    {
+        return $this->belongsTo('App\Models\Zlecenie\Zlecenie', 'zlecenie_id', 'id_zlecenia');
+    }
+
+    public function towar()
+    {
+        return $this->belongsTo('App\Models\Subiekt\Subiekt_Towar', 'towar_id', 'tw_Id');
+    }
 }

@@ -169,8 +169,14 @@
     											{{-- <div class="font-w700">OPIS ZLECENIA:</div> --}}
     											<hr class="m-0" style="border-top-color: #aaa">
                                                 <div class="py-2">
-                                                    {!! $zlecenie->opis_formatted !!}
+                                                    <span class="font-w600"><i>{!! $zlecenie->opis_klient_formatted !!}</i></span>
                                                 </div>
+                                                @if ($zlecenie->opis_technik)
+                                                    <hr class="m-0" style="border-top-color: #aaa">
+                                                    <div class="py-2">
+                                                        {!! $zlecenie->opis_technik_formatted !!}
+                                                    </div>
+                                                @endif
                                             </b-col>
                                             {{-- <b-col cols="5">
                                                 <div class="clearfix" style="min-height: 170px">

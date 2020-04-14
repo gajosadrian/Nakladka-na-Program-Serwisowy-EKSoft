@@ -154,7 +154,7 @@ class CzesciController extends Controller
 
         $naszykowane_czesci = [];
         if ($technik) {
-            $naszykowane_czesci = Naszykowana::with('kosztorys_pozycje.zlecenie.klient', 'user')->where('technik_id', $technik->id)->where(function ($q) {
+            $naszykowane_czesci = Naszykowana::with('kosztorys_pozycje', 'zlecenie.klient', 'towar', 'user')->where('technik_id', $technik->id)->where(function ($q) {
                 $q  ->where('ilosc_do_zwrotu', '>', 0)
                     ->orWhereNull('sprawdzone_at');
             })->orderBy('zlecenie_data')->get();

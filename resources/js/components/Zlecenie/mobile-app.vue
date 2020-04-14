@@ -127,6 +127,9 @@
                         <i class="fa fa-spinner fa-pulse"></i>
                         Dodawanie opisu...
                     </div>
+                    <div v-else class="font-w600 text-danger">
+                        {{ new_opis }}
+                    </div>
                     <template v-if="zlecenie.kosztorys_pozycje.length > 0">
                         <div class="mt-2">
                             <span class="font-w700">Suma kosztorysu:</span>
@@ -272,7 +275,25 @@ export default {
         },
     },
 
+    watch: {
+        new_opis(val) {
+            if ( ! this.zlecenie) return;
+            this.rememberOpis(this.zlecenie, val);
+        }
+    },
+
     methods: {
+        rememberOpis(zlecenie, opis) {
+            let key = 'zlecenie_opis#' + zlecenie.id
+            localStorage[key] = opis
+        },
+
+        retrieveOpis(zlecenie) {
+            let key = 'zlecenie_opis#' + zlecenie.id
+            let opis = localStorage[key]
+            this.new_opis = opis || ''
+        },
+
         mountPart(pozycja, value) {
             let [type, ilosc] = value.split('#');
 
@@ -360,6 +381,7 @@ export default {
 
             if (zlecenie) {
                 this.rememberScroll();
+                this.retrieveOpis(zlecenie);
             }
 			this.zlecenie = zlecenie;
             if (scroll) {
