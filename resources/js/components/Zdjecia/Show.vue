@@ -27,6 +27,11 @@
                     Błąd przy wysyłaniu!
                 </div>
             </div>
+            <div v-else-if="error_compressing">
+                <div class="bg-danger text-white font-w600 px-1">
+                    Błąd przy kompresji!
+                </div>
+            </div>
 
             <div class="mb-1">
                 <b-progress
@@ -110,6 +115,7 @@ export default {
                 this.form.image = compressed_img
                 this.submit(compressed_img)
             }, err => {
+                this.state = 'error_compressing'
                 console.log(err)
             })
         },
@@ -129,6 +135,9 @@ export default {
         },
         error() {
             return this.state == 'error'
+        },
+        error_compressing() {
+            return this.state == 'error_compressing'
         },
     },
     methods: {
@@ -207,19 +216,17 @@ export default {
         dataURLtoFile(dataurl, filename) {
             let arr = dataurl.split(','),
                 mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), 
-                n = bstr.length, 
-                u8arr = new Uint8Array(n);
-                
+                bstr = atob(arr[1]),
+                n = bstr.length,
+                u8arr = new Uint8Array(n)
             while (n--) {
                 u8arr[n] = bstr.charCodeAt(n)
             }
-            
-            return new File([u8arr], filename, {type:mime});
+            return new File([u8arr], filename, {type:mime})
         },
         addImagetoBase64Images(image) {
             this.getBase64(image, base64_image => {
-                this.base64_images.push([base64_image, base64_image.name])
+                this.base64_images.push([base64_image, image.name])
                 this.rememberBase64Images()
             })
         },

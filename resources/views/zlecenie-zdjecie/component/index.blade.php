@@ -36,6 +36,14 @@
         'zlecenie' => $zlecenie,
     ])
 @endif
+@if ($zlecenie->urzadzenie_id)
+    @include('zlecenie-zdjecie.component.show', [
+        'title' => 'Urządzenie',
+        'save_to' => 'urzadzenie',
+        'type' => App\Models\Zlecenie\Zdjecie::TYPE_URZADZENIE,
+        'zlecenie' => $zlecenie,
+    ])
+@endif
 @include('zlecenie-zdjecie.component.show', [
     'title' => 'Inne',
     'save_to' => 'zlecenie',

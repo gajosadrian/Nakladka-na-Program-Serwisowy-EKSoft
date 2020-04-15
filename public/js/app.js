@@ -2203,6 +2203,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 var imageCompressor = new ImageCompressor();
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2241,6 +2246,7 @@ var imageCompressor = new ImageCompressor();
 
         _this.submit(compressed_img);
       }, function (err) {
+        _this.state = 'error_compressing';
         console.log(err);
       });
     }
@@ -2260,6 +2266,9 @@ var imageCompressor = new ImageCompressor();
     },
     error: function error() {
       return this.state == 'error';
+    },
+    error_compressing: function error_compressing() {
+      return this.state == 'error_compressing';
     }
   },
   methods: {
@@ -2354,7 +2363,7 @@ var imageCompressor = new ImageCompressor();
       var _this4 = this;
 
       this.getBase64(image, function (base64_image) {
-        _this4.base64_images.push([base64_image, base64_image.name]);
+        _this4.base64_images.push([base64_image, image.name]);
 
         _this4.rememberBase64Images();
       });
@@ -45192,6 +45201,14 @@ var render = function() {
                 "div",
                 { staticClass: "bg-danger text-white font-w600 px-1" },
                 [_vm._v("\n                Błąd przy wysyłaniu!\n            ")]
+              )
+            ])
+          : _vm.error_compressing
+          ? _c("div", [
+              _c(
+                "div",
+                { staticClass: "bg-danger text-white font-w600 px-1" },
+                [_vm._v("\n                Błąd przy kompresji!\n            ")]
               )
             ])
           : _vm._e(),
