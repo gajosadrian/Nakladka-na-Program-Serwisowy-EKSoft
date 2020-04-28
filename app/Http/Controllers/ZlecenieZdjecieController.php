@@ -18,6 +18,7 @@ class ZlecenieZdjecieController extends Controller
                 'zlecenie' => $zlecenie->only('id', 'is_gwarancja', 'is_ubezpieczenie', 'is_odplatne'),
                 'urzadzenie' => $zlecenie->urzadzenie_id ? $zlecenie->urzadzenie->only('id') : null,
                 'zdjecia' => $zlecenie->zdjecia->map->only('id', 'zlecenie_id', 'urzadzenie_id', 'type', 'url'),
+                'no_img_url' => asset('media/no-img.jpg'),
             ]);
         }
 

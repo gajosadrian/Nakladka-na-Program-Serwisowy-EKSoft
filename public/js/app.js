@@ -2120,6 +2120,51 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    _token: String
+  },
+  data: function data() {
+    return {
+      urzadzenia: []
+    };
+  },
+  computed: {},
+  methods: {
+    fetchUrzadzenia: function fetchUrzadzenia() {
+      var _this = this;
+
+      axios.get(route('urzadzenie.zdjecia'), {
+        _token: this._token
+      }).then(function (res) {
+        _this.urzadzenia = res.data.urzadzenia;
+      }).catch(function (err) {
+        console.log(err);
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.fetchUrzadzenia();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Zdjecia/Show.vue?vue&type=script&lang=js&":
 /*!***********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Zdjecia/Show.vue?vue&type=script&lang=js& ***!
@@ -2208,6 +2253,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 var imageCompressor = new ImageCompressor();
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2217,20 +2269,20 @@ var imageCompressor = new ImageCompressor();
     type: String,
     save_to: String,
     urzadzenie_id: Number,
-    zlecenie_id: Number
+    zlecenie_id: Number,
+    no_img_url: String,
+    show_images: Boolean
   },
   data: function data() {
     return {
-      state: null,
+      states: [],
       form: {
         _token: document.getElementById('csrf-token').getAttribute('content'),
         zlecenie_id: this.zlecenie_id,
         urzadzenie_id: this.urzadzenie_id,
         save_to: this.save_to,
-        type: this.type,
-        image: null
+        type: this.type
       },
-      imageCompressor: null,
       file: null,
       base64_images: [],
       base64_images_key: ['base64_zdjecie', this.zlecenie_id, this.urzadzenie_id, this.type].join('#')
@@ -2242,11 +2294,12 @@ var imageCompressor = new ImageCompressor();
 
       if (!_file) return;
       this.compressImage(_file, function (compressed_img) {
-        _this.form.image = compressed_img;
+        _this.file = null;
 
         _this.submit(compressed_img);
       }, function (err) {
-        _this.state = 'error_compressing';
+        _this.addState('error_compressing');
+
         console.log(err);
       });
     }
@@ -2257,18 +2310,6 @@ var imageCompressor = new ImageCompressor();
     },
     has_base64_images: function has_base64_images() {
       return this.base64_images.length > 0;
-    },
-    sending: function sending() {
-      return this.state == 'sending';
-    },
-    sent: function sent() {
-      return this.state == 'sent';
-    },
-    error: function error() {
-      return this.state == 'error';
-    },
-    error_compressing: function error_compressing() {
-      return this.state == 'error_compressing';
     }
   },
   methods: {
@@ -2276,7 +2317,7 @@ var imageCompressor = new ImageCompressor();
       var _this2 = this;
 
       var from_restore = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      this.state = 'sending';
+      var state = this.addState('sending');
       var formData = new FormData();
       formData.append('_token', this.form._token);
       formData.append('zlecenie_id', this.form.zlecenie_id);
@@ -2286,11 +2327,11 @@ var imageCompressor = new ImageCompressor();
       formData.append('image', image, image.name);
       return new Promise(function (resolve, reject) {
         axios.post(route('zlecenie-zdjecie.store'), formData).then(function (res) {
-          _this2.state = 'sent';
+          state.type = 'sent';
           resolve();
         }).catch(function (err) {
           console.log(err);
-          _this2.state = 'error';
+          state.type = 'error';
 
           if (!from_restore) {
             _this2.addImagetoBase64Images(image);
@@ -2298,9 +2339,6 @@ var imageCompressor = new ImageCompressor();
 
           reject();
         }).then(function () {
-          _this2.file = null;
-          _this2.form.image = null;
-
           _this2.fetchZdjecia();
         });
       });
@@ -2313,6 +2351,15 @@ var imageCompressor = new ImageCompressor();
       this.submit(image, true).then(function () {
         _this3.removeBase64Image(index);
       }).catch(function () {});
+    },
+    addState: function addState(state) {
+      var key = Math.random().toString(36).substring(7);
+      var obj = {
+        key: key,
+        type: state
+      };
+      this.states.push(obj);
+      return obj;
     },
     fetchZdjecia: function fetchZdjecia() {
       this.$emit('fetchZdjecia');
@@ -2421,6 +2468,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     _token: String,
@@ -2430,7 +2485,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       zlecenie: null,
       urzadzenie: null,
-      zdjecia: []
+      zdjecia: [],
+      show_images: false,
+      no_img_url: null
     };
   },
   computed: {
@@ -2522,9 +2579,11 @@ __webpack_require__.r(__webpack_exports__);
       }), {
         _token: this._token
       }).then(function (res) {
-        _this.zlecenie = res.data.zlecenie;
-        _this.urzadzenie = res.data.urzadzenie;
-        _this.zdjecia = res.data.zdjecia;
+        var data = res.data;
+        _this.zlecenie = data.zlecenie;
+        _this.urzadzenie = data.urzadzenie;
+        _this.zdjecia = data.zdjecia;
+        _this.no_img_url = data.no_img_url;
       }).catch(function (err) {
         console.log(err);
       });
@@ -45165,6 +45224,30 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=template&id=e8042066&":
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=template&id=e8042066& ***!
+  \*********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [_vm._v("\n    UrzadzeniaZdjecia\n")])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Zdjecia/Show.vue?vue&type=template&id=6718b9c1&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Zdjecia/Show.vue?vue&type=template&id=6718b9c1& ***!
@@ -45185,33 +45268,45 @@ var render = function() {
       "div",
       { staticClass: "push" },
       [
-        _vm.sending
-          ? _c("div", [_vm._m(0)])
-          : _vm.sent
-          ? _c("div", [
-              _c(
-                "div",
-                { staticClass: "bg-success text-white font-w600 px-1" },
-                [_vm._v("\n                Wysłano!\n            ")]
-              )
-            ])
-          : _vm.error
-          ? _c("div", [
-              _c(
-                "div",
-                { staticClass: "bg-danger text-white font-w600 px-1" },
-                [_vm._v("\n                Błąd przy wysyłaniu!\n            ")]
-              )
-            ])
-          : _vm.error_compressing
-          ? _c("div", [
-              _c(
-                "div",
-                { staticClass: "bg-danger text-white font-w600 px-1" },
-                [_vm._v("\n                Błąd przy kompresji!\n            ")]
-              )
-            ])
-          : _vm._e(),
+        _vm._l(_vm.states, function(state) {
+          return _c("div", { staticClass: "mt-1" }, [
+            state.type == "sending"
+              ? _c("div", [_vm._m(0, true)])
+              : state.type == "sent"
+              ? _c("div", [
+                  _c(
+                    "div",
+                    { staticClass: "bg-success text-white font-w600 px-1" },
+                    [_vm._v("\n                    Wysłano!\n                ")]
+                  )
+                ])
+              : state.type == "error"
+              ? _c("div", [
+                  _c(
+                    "div",
+                    { staticClass: "bg-danger text-white font-w600 px-1" },
+                    [
+                      _vm._v(
+                        "\n                    Błąd przy wysyłaniu!\n                "
+                      )
+                    ]
+                  )
+                ])
+              : state.type == "error_compressing"
+              ? _c("div", [
+                  _c(
+                    "div",
+                    { staticClass: "bg-danger text-white font-w600 px-1" },
+                    [
+                      _vm._v(
+                        "\n                    Błąd przy kompresji!\n                "
+                      )
+                    ]
+                  )
+                ])
+              : _vm._e()
+          ])
+        }),
         _vm._v(" "),
         _c(
           "div",
@@ -45250,12 +45345,24 @@ var render = function() {
             _vm._l(_vm.zdjecia, function(zdjecie) {
               return _c(
                 "b-col",
-                { key: zdjecie.id, attrs: { cols: "4", md: "3", lg: "2" } },
+                {
+                  key: zdjecie.id,
+                  staticClass: "push",
+                  attrs: { cols: "4", md: "3", lg: "2" }
+                },
                 [
                   _c(
                     "b-link",
                     { attrs: { href: zdjecie.url, target: "_blank" } },
-                    [_c("b-img", { attrs: { src: zdjecie.url, fluid: "" } })],
+                    [
+                      _c("b-img", {
+                        attrs: {
+                          src:
+                            (_vm.show_images && zdjecie.url) || _vm.no_img_url,
+                          fluid: ""
+                        }
+                      })
+                    ],
                     1
                   )
                 ],
@@ -45266,7 +45373,11 @@ var render = function() {
             _vm._l(_vm.base64_images, function(base64_image, key) {
               return _c(
                 "b-col",
-                { key: key, attrs: { cols: "4", md: "3", lg: "2" } },
+                {
+                  key: key,
+                  staticClass: "push",
+                  attrs: { cols: "4", md: "3", lg: "2" }
+                },
                 [
                   _c(
                     "div",
@@ -45304,7 +45415,7 @@ var render = function() {
           2
         )
       ],
-      1
+      2
     )
   ])
 }
@@ -45315,7 +45426,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "bg-warning text-white font-w600 px-1" }, [
       _c("i", { staticClass: "fa fa-spinner fa-pulse" }),
-      _vm._v("\n                Wysyłanie zdjęcia...\n            ")
+      _vm._v("\n                    Wysyłanie zdjęcia...\n                ")
     ])
   }
 ]
@@ -45342,28 +45453,54 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    _vm._l(_vm.ZdjecieShow, function(_, i) {
-      return _.show && _.show2
-        ? _c("ZdjecieShow", {
-            key: i,
-            attrs: {
-              title: _.title,
-              required: _.required,
-              type: _.type,
-              zdjecia: _.zdjecia,
-              save_to: _.save_to,
-              urzadzenie_id: _.urzadzenie_id,
-              zlecenie_id: _.zlecenie_id
-            },
-            on: {
-              fetchZdjecia: function($event) {
-                return _vm.fetchZdjecia()
+    [
+      _c(
+        "div",
+        { staticClass: "border bg-white shadow-sm p-2 push" },
+        [
+          _c(
+            "b-form-checkbox",
+            {
+              attrs: { switch: "" },
+              model: {
+                value: _vm.show_images,
+                callback: function($$v) {
+                  _vm.show_images = $$v
+                },
+                expression: "show_images"
               }
-            }
-          })
-        : _vm._e()
-    }),
-    1
+            },
+            [_c("b", [_vm._v("Pokaż zdjęcia")])]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _vm._l(_vm.ZdjecieShow, function(_, i) {
+        return _.show && _.show2
+          ? _c("ZdjecieShow", {
+              key: i,
+              attrs: {
+                title: _.title,
+                required: _.required,
+                type: _.type,
+                zdjecia: _.zdjecia,
+                save_to: _.save_to,
+                urzadzenie_id: _.urzadzenie_id,
+                zlecenie_id: _.zlecenie_id,
+                no_img_url: _vm.no_img_url,
+                show_images: _vm.show_images
+              },
+              on: {
+                fetchZdjecia: function($event) {
+                  return _vm.fetchZdjecia()
+                }
+              }
+            })
+          : _vm._e()
+      })
+    ],
+    2
   )
 }
 var staticRenderFns = []
@@ -58762,6 +58899,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('zlecenie-mobile-app', __we
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('date-picker', vue2_datepicker__WEBPACK_IMPORTED_MODULE_5___default.a);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('Zdjecia', __webpack_require__(/*! ./components/Zdjecia/Zdjecia.vue */ "./resources/js/components/Zdjecia/Zdjecia.vue").default);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('ZdjecieShow', __webpack_require__(/*! ./components/Zdjecia/Show.vue */ "./resources/js/components/Zdjecia/Show.vue").default);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('UrzadzeniaZdjecia', __webpack_require__(/*! ./components/Urzadzenia/Zdjecia.vue */ "./resources/js/components/Urzadzenia/Zdjecia.vue").default);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.mixin({
   methods: {
     route: route
@@ -58898,6 +59036,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_b_block_vue_vue_type_template_id_18f76520___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_b_block_vue_vue_type_template_id_18f76520___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Urzadzenia/Zdjecia.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/components/Urzadzenia/Zdjecia.vue ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Zdjecia_vue_vue_type_template_id_e8042066___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Zdjecia.vue?vue&type=template&id=e8042066& */ "./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=template&id=e8042066&");
+/* harmony import */ var _Zdjecia_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Zdjecia.vue?vue&type=script&lang=js& */ "./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Zdjecia_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Zdjecia_vue_vue_type_template_id_e8042066___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Zdjecia_vue_vue_type_template_id_e8042066___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Urzadzenia/Zdjecia.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Zdjecia_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Zdjecia.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Zdjecia_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=template&id=e8042066&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=template&id=e8042066& ***!
+  \***************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Zdjecia_vue_vue_type_template_id_e8042066___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Zdjecia.vue?vue&type=template&id=e8042066& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Urzadzenia/Zdjecia.vue?vue&type=template&id=e8042066&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Zdjecia_vue_vue_type_template_id_e8042066___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Zdjecia_vue_vue_type_template_id_e8042066___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

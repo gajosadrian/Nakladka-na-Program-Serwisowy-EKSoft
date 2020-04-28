@@ -53,6 +53,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{zdjecie}', 'ZlecenieZdjecieController@destroy')->name('destroy');
     });
 
+    Route::prefix('urzadzenie')->name('urzadzenie.')->group(function () {
+        Route::get('zdjecia', 'UrzadzenieController@zdjecia')->name('zdjecia');
+    });
+
     Route::prefix('czesci')->name('czesci.')->group(function () {
         Route::get('szykowanie/{technik_id?}/{date_string?}', 'CzesciController@indexSzykowanie')->name('indexSzykowanie');
         Route::patch('naszykuj/{kosztorys_pozycja}', 'CzesciController@updateNaszykuj')->name('updateNaszykuj');

@@ -11,25 +11,30 @@
             </h4>
             <hr class="mt-1"> -->
 
-            <div v-if="sending">
-                <div class="bg-warning text-white font-w600 px-1">
-                    <i class="fa fa-spinner fa-pulse"></i>
-                    Wysyłanie zdjęcia...
+            <div
+                v-for="state in states"
+                class="mt-1"
+            >
+                <div v-if="state.type == 'sending'">
+                    <div class="bg-warning text-white font-w600 px-1">
+                        <i class="fa fa-spinner fa-pulse"></i>
+                        Wysyłanie zdjęcia...
+                    </div>
                 </div>
-            </div>
-            <div v-else-if="sent">
-                <div class="bg-success text-white font-w600 px-1">
-                    Wysłano!
+                <div v-else-if="state.type == 'sent'">
+                    <div class="bg-success text-white font-w600 px-1">
+                        Wysłano!
+                    </div>
                 </div>
-            </div>
-            <div v-else-if="error">
-                <div class="bg-danger text-white font-w600 px-1">
-                    Błąd przy wysyłaniu!
+                <div v-else-if="state.type == 'error'">
+                    <div class="bg-danger text-white font-w600 px-1">
+                        Błąd przy wysyłaniu!
+                    </div>
                 </div>
-            </div>
-            <div v-else-if="error_compressing">
-                <div class="bg-danger text-white font-w600 px-1">
-                    Błąd przy kompresji!
+                <div v-else-if="state.type == 'error_compressing'">
+                    <div class="bg-danger text-white font-w600 px-1">
+                        Błąd przy kompresji!
+                    </div>
                 </div>
             </div>
 
@@ -54,15 +59,17 @@
                 <b-col
                     cols="4" md="3" lg="2"
                     v-for="zdjecie in zdjecia" :key="zdjecie.id"
+                    class="push"
                 >
                     <b-link :href="zdjecie.url" target="_blank">
-                        <b-img :src="zdjecie.url" fluid />
+                        <b-img :src="show_images && zdjecie.url || no_img_url" fluid />
                     </b-link>
                 </b-col>
 
                 <b-col
                     cols="4" md="3" lg="2"
                     v-for="(base64_image, key) in base64_images" :key="key"
+                    class="push"
                 >
                     <div class="ribbon ribbon-danger">
                         <b-img :src="base64_image[0]" fluid />
@@ -89,19 +96,19 @@ export default {
         save_to: String,
         urzadzenie_id: Number,
         zlecenie_id: Number,
+        no_img_url: String,
+        show_images: Boolean,
     },
     data() {
         return {
-            state: null,
+            states: [],
             form: {
                 _token: document.getElementById('csrf-token').getAttribute('content'),
                 zlecenie_id: this.zlecenie_id,
                 urzadzenie_id: this.urzadzenie_id,
                 save_to: this.save_to,
                 type: this.type,
-                image: null,
             },
-            imageCompressor: null,
             file: null,
             base64_images: [],
             base64_images_key: ['base64_zdjecie', this.zlecenie_id, this.urzadzenie_id, this.type].join('#'),
@@ -112,10 +119,10 @@ export default {
             if (! file) return;
 
             this.compressImage(file, compressed_img => {
-                this.form.image = compressed_img
+                this.file = null
                 this.submit(compressed_img)
             }, err => {
-                this.state = 'error_compressing'
+                this.addState('error_compressing')
                 console.log(err)
             })
         },
@@ -127,22 +134,10 @@ export default {
         has_base64_images() {
             return this.base64_images.length > 0
         },
-        sending() {
-            return this.state == 'sending'
-        },
-        sent() {
-            return this.state == 'sent'
-        },
-        error() {
-            return this.state == 'error'
-        },
-        error_compressing() {
-            return this.state == 'error_compressing'
-        },
     },
     methods: {
         submit(image, from_restore = false) {
-            this.state = 'sending'
+            let state = this.addState('sending')
 
             let formData = new FormData()
             formData.append('_token', this.form._token)
@@ -155,24 +150,21 @@ export default {
             return new Promise((resolve, reject) => {
                 axios.post(route('zlecenie-zdjecie.store'), formData)
                     .then(res => {
-                        this.state = 'sent'
+                        state.type = 'sent'
                         resolve()
                     })
                     .catch(err => {
                         console.log(err)
-                        this.state = 'error'
+                        state.type = 'error'
                         if (! from_restore) {
                             this.addImagetoBase64Images(image)
                         }
                         reject()
                     })
                     .then(() => {
-                        this.file = null
-                        this.form.image = null
                         this.fetchZdjecia()
                     })
             })
-
         },
         submitBase64(index) {
             let base64_image = this.base64_images[index]
@@ -182,6 +174,15 @@ export default {
                     this.removeBase64Image(index)
                 })
                 .catch(() => {})
+        },
+        addState(state) {
+            let key = Math.random().toString(36).substring(7)
+            let obj = {
+                key,
+                type: state,
+            }
+            this.states.push(obj)
+            return obj
         },
         fetchZdjecia() {
             this.$emit('fetchZdjecia')

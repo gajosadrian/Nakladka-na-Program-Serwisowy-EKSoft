@@ -72,6 +72,7 @@ class Zlecenie extends Model
 		'PZU' => ['pzu'],
 		'VDB' => ['vdb'],
 		'Unitron' => ['unitron'],
+		'Honiio' => ['honiio', 'honio', 'henio', 'heniio'],
     ];
 
     /**

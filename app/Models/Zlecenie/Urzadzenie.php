@@ -9,6 +9,7 @@ class Urzadzenie extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'Maszyny';
     protected $primaryKey = 'ID_MASZYNY';
+    public $timestamps = false;
 
     /**
     * Attributes
@@ -54,4 +55,27 @@ class Urzadzenie extends Model
 
         return $nr_seryjny;
     }
+
+    /**
+     * Relations
+     *
+     */
+
+    public function zlecenie()
+    {
+        return $this->belongsTo(Zlecenie::class, 'ID_MASZYNY', 'id_maszyny')->latest('ID_MASZYNY');
+    }
+
+    // ERROR: MySQL <-> MsSQL
+    // public function zdjecia()
+    // {
+    //     return $this->hasManyThrough(
+    //         Zdjecie::class,
+    //         Zlecenie::class,
+    //         'id_maszyny',
+    //         'urzadzenie_id',
+    //         'ID_MASZYNY',
+    //         'id_maszyny'
+    //     );
+    // }
 }

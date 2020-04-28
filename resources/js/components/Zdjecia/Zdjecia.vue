@@ -2,6 +2,12 @@
     <div>
         <!-- <b-button @click="fetchZdjecia()" class="push">fetch zdjecia</b-button> -->
 
+        <div class="border bg-white shadow-sm p-2 push">
+            <b-form-checkbox v-model="show_images" switch>
+                <b>Pokaż zdjęcia</b>
+            </b-form-checkbox>
+        </div>
+
         <ZdjecieShow
             v-for="(_, i) in ZdjecieShow" :key="i"
             v-if="_.show && _.show2"
@@ -12,6 +18,8 @@
             :save_to="_.save_to"
             :urzadzenie_id="_.urzadzenie_id"
             :zlecenie_id="_.zlecenie_id"
+            :no_img_url="no_img_url"
+            :show_images="show_images"
             @fetchZdjecia="fetchZdjecia()"
         />
     </div>
@@ -28,12 +36,14 @@ export default {
             zlecenie: null,
             urzadzenie: null,
             zdjecia: [],
+            show_images: false,
+            no_img_url: null,
         }
     },
     computed: {
         ZdjecieShow() {
             if (! this.zlecenie) return []
-            
+
             return [
                 {
                     title: 'Tabliczka',
@@ -114,9 +124,12 @@ export default {
                 _token: this._token,
             })
                 .then(res => {
-                    this.zlecenie = res.data.zlecenie
-                    this.urzadzenie = res.data.urzadzenie
-                    this.zdjecia = res.data.zdjecia
+                    let data = res.data
+
+                    this.zlecenie = data.zlecenie
+                    this.urzadzenie = data.urzadzenie
+                    this.zdjecia = data.zdjecia
+                    this.no_img_url = data.no_img_url
                 })
                 .catch(err => {
                     console.log(err);

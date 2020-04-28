@@ -26,6 +26,7 @@ Vue.component('zlecenie-mobile-app', require('./components/Zlecenie/mobile-app.v
 Vue.component('date-picker', DatePicker);
 Vue.component('Zdjecia', require('./components/Zdjecia/Zdjecia.vue').default);
 Vue.component('ZdjecieShow', require('./components/Zdjecia/Show.vue').default);
+Vue.component('UrzadzeniaZdjecia', require('./components/Urzadzenia/Zdjecia.vue').default);
 
 
 
