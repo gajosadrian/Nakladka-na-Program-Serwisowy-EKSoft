@@ -40,17 +40,8 @@
         //     },
         // ],
         [
-            'name' => 'Kilometrówka',
-            'icon' => 'si si-disc',
-            'route' => 'zlecenia.kilometrowka',
-            'routeOptions' => [],
-            'if' => function() use ($user) {
-                return $user and !$user->technik_id;
-            },
-        ],
-        [
             'name' => 'Wyszukiwanie części',
-            'icon' => 'si si-wrench',
+            'icon' => 'si si-magnifier',
             'route' => 'zlecenia.wyszukiwanieCzesci',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -58,8 +49,8 @@
             },
         ],
         [
-            'name' => 'Wyszukiwanie zlecenia',
-            'icon' => 'si si-doc',
+            'name' => 'Wyszukiwanie zleceń',
+            'icon' => 'si si-magnifier',
             'route' => 'zlecenia.wyszukiwanieZlecenia',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -87,6 +78,18 @@
         //     'role' => 'super-admin',
         // ],
         [
+            'name' => 'Urządzenia',
+        ],
+        [
+            'name' => 'Zdjęcia',
+            'icon' => 'si si-camera',
+            'route' => 'urzadzenie.zdjecia',
+            'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
+        ],
+        [
             'name' => 'Części',
         ],
         [
@@ -108,15 +111,23 @@
             'routeOptions' => [],
         ],
         [
-            'name' => 'Admin',
-            'role' => 'super-admin',
+            'name' => 'Rozliczenia',
         ],
         [
-            'name' => 'Rozliczenia',
+            'name' => 'Zlecenia',
             'icon' => 'si si-bar-chart',
             'route' => 'rozliczenia.lista',
             'routeOptions' => [],
             'role' => 'super-admin',
+        ],
+        [
+            'name' => 'Kilometrówka',
+            'icon' => 'si si-disc',
+            'route' => 'zlecenia.kilometrowka',
+            'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
         // [
         //     'name' => 'Użytkownicy',

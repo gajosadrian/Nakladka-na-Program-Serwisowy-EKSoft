@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "bootstrap-vue": "^2.0.0-rc.12",
+        "debounce": "^1.2.0",
         "vue-clipboard2": "^0.3.0",
         "vue-nl2br": "^0.1.1",
         "vue2-datepicker": "^2.12.0"

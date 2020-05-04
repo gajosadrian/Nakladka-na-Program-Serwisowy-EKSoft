@@ -23,7 +23,16 @@ class Urzadzenie extends Model
 
     public function getProducentAttribute(): string
     {
-        return $this->attributes['KATEGORIA'] ?? false;
+        $producent = $this->attributes['KATEGORIA'] ?? false;
+        if (substr($producent, 0, 1) == '!') {
+            return false;
+        }
+        return $producent;
+    }
+
+    public function setProducentAttribute(string $val): void
+    {
+        $this->attributes['KATEGORIA'] = $val;
     }
 
     public function getNazwaAttribute(): string
@@ -31,14 +40,28 @@ class Urzadzenie extends Model
         return $this->attributes['NAZWA_MASZ'] ?? false;
     }
 
+    public function setNazwaAttribute(string $val): void
+    {
+        $this->attributes['NAZWA_MASZ'] = $val;
+    }
+
+    public function getModelRawAttribute(): ?string
+    {
+        return $this->attributes['TYP_MASZ'] ?? null;
+    }
+
     public function getModelAttribute(): string
     {
-        $typ = $this->attributes['TYP_MASZ'] ?? false;
-        if (substr($typ, 0, 1) == '!') {
+        $model = $this->model_raw ?? false;
+        if (substr($model, 0, 1) == '!') {
             return false;
         }
+        return $model;
+    }
 
-        return $typ;
+    public function setModelAttribute(string $val): void
+    {
+        $this->attributes['TYP_MASZ'] = $val;
     }
 
     public function getKodWyrobuAttribute(): string
@@ -46,14 +69,28 @@ class Urzadzenie extends Model
         return $this->attributes['asset'] ?? false;
     }
 
+    public function setKodWyrobuAttribute(?string $val): void
+    {
+        $this->attributes['asset'] = $val;
+    }
+
+    public function getNrSeryjnyRawAttribute(): ?string
+    {
+        return $this->attributes['SERIAL_NO'] ?? null;
+    }
+
     public function getNrSeryjnyAttribute(): string
     {
-        $nr_seryjny = $this->attributes['SERIAL_NO'] ?? false;
+        $nr_seryjny = $this->nr_seryjny_raw ?? false;
         if (substr($nr_seryjny, 0, 3) == 'FK0') {
             return false;
         }
-
         return $nr_seryjny;
+    }
+
+    public function setNrSeryjnyAttribute(string $val): void
+    {
+        $this->attributes['SERIAL_NO'] = $val;
     }
 
     /**
