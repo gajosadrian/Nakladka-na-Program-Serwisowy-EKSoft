@@ -236,7 +236,7 @@ class Zlecenie extends Model
     public function getZleceniodawcaAttribute(): string
     {
         $zleceniodawcy = self::ZLECENIODAWCY;
-        $zleceniodawca_type = trim(strtolower($this->kosztorys_opis->opis ?? ''));
+        $zleceniodawca_type = trim(str_replace('.', '', strtolower($this->kosztorys_opis->opis ?? '')));
         $zleceniodawca = '';
 
         if ($zleceniodawca_type == '' and !in_array($this->znacznik->nazwa, [self::ODPLATNE_NAME, self::SPRZEDAZ_CZESCI_NAME, self::MONTAZ_URZADZENIA_NAME])) {
