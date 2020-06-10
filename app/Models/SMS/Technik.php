@@ -10,6 +10,8 @@ class Technik extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'ser_Technicy';
     protected $primaryKey = 'id_technika';
+    protected $visible = ['id', 'imie', 'nazwisko'];
+    protected $appends = ['id', 'imie', 'nazwisko'];
     public $timestamps = false;
 
     /**

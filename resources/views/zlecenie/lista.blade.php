@@ -3,7 +3,7 @@
     $room = rand();
 @endphp
 @if ($autorefresh)
-    @section('autorefresh', 300)
+    @section('autorefresh', 120)
 @endif
 
 @section('content')

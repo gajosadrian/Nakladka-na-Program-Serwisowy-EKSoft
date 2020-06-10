@@ -49,7 +49,7 @@ export default {
                     title: 'Tabliczka',
                     show: Boolean(this.urzadzenie),
                     show2: true,
-                    required: this.zlecenie.is_gwarancja || this.zlecenie.is_ubezpieczenie,
+                    required: true,
                     type: 'tabliczka',
                     zdjecia: this.zdjecia.filter(zdjecie => zdjecie.type == 'tabliczka'),
                     save_to: 'urzadzenie',

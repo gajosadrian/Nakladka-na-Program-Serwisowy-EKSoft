@@ -50,7 +50,7 @@ class Zlecenie extends Model
         'De Dietrich' => ['de dietrich', 'dietrich', 'dedietrich'],
         'Arconet' => ['arconet', 'arco net', 'arco-net', 'arkonet', 'arqonet', 'tesy'],
         'Ferroli' => ['ferroli', 'feroli'],
-        'Mondial' => ['mondial', 'mondial assistance'],
+        'Mondial' => ['mondial', 'mondial assistance', 'mondial asistance', 'assistance', 'assistance'],
         'Enpol' => ['enpol'],
         'Akpo' => ['akpo'],
         'Ferro' => ['ferro', 'fero'],
@@ -73,12 +73,67 @@ class Zlecenie extends Model
 		'VDB' => ['vdb'],
 		'Unitron' => ['unitron'],
 		'Honiio' => ['honiio', 'honio', 'henio', 'heniio'],
+		'Vienna' => ['vig', 'vienna', 'wienna', 'viena', 'wiena'],
+    ];
+
+    public const REQUIRED_PHOTOS = [
+        self::ODPLATNE_NAME => ['tabliczka'],
+        self::UBEZPIECZENIE_NAME => ['tabliczka'],
+        self::GWARANCJA_NAME => ['tabliczka'],
+        'Amica' => ['dowod_zakupu', 'tabliczka'],
+        'Gorenje' => ['dowod_zakupu', 'tabliczka'],
+        'ERGO Hestia' => ['polisa', 'tabliczka'],
+        'Quadra-Net' => ['dowod_zakupu', 'polisa', 'tabliczka'],
+        'IBC' => ['tabliczka'],
+        'Kernau' => ['dowod_zakupu', 'tabliczka'],
+        'Novoterm' => ['tabliczka'],
+        'Ciarko' => ['tabliczka', 'dowod_zakupu'],
+        'Candy' => ['tabliczka', 'dowod_zakupu'],
+        'Europ Assistance' => ['tabliczka'],
+        'RTV Euro AGD' => ['polisa', 'tabliczka'],
+        'Mentax' => ['polisa', 'tabliczka'],
+        'De Dietrich' => ['tabliczka', 'gwarancja'],
+        'Arconet' => ['gwarancja', 'tabliczka', 'dowod_zakupu', 'polisa'],
+        'Ferroli' => ['tabliczka', 'gwarancja'],
+        'Mondial' => ['tabliczka'],
+        'Akpo' => ['tabliczka'],
+        'Solgaz' => ['dowod_zakupu', 'tabliczka'],
+        'Kospel' => ['tabliczka', 'gwarancja'],
+        'MPM' => ['dowod_zakupu', 'gwarancja', 'tabliczka'],
+        'Euroterm' => ['tabliczka' ],
+        'Agdom' => ['dowod_zakupu', 'gwarancja', 'tabliczka'],
+        'Makiano' => ['tabliczka'],
+        'STIEBEL ELTRON' => ['tabliczka', 'dowod_zakupu'],
+        'Euro-Serwis 24' => ['tabliczka'],
+        'Ravanson' => ['tabliczka', 'dowod_zakupu', 'gwarancja'],
+        'Elica' => ['tabliczka', 'dowod_zakupu'],
+        'Fondital' => ['dowod_zakupu', 'tabliczka'],
+        'Uni-Lux' => ['dowod_zakupu', 'tabliczka', 'gwarancja'],
+        'PZU' => ['polisa', 'tabliczka'],
+        'VDB' => ['tabliczka', 'dowod_zakupu'],
+        'Unitron' => ['tabliczka', 'gwarancja', 'urzadzenie'],
+        'Honiio' => ['tabliczka']
     ];
 
     /**
-    * Attributes
-    *
-    */
+     * Attributes
+     *
+     */
+
+    public function getRequiredPhotosAttribute(): array
+    {
+        $required_photos = self::REQUIRED_PHOTOS;
+        $arr = [];
+
+        if ($photos = @$required_photos[$this->znacznik->nazwa]) {
+            $arr = array_merge($arr, $photos);
+        }
+        if ($photos = @$required_photos[$this->zleceniodawca]) {
+            $arr = array_merge($arr, $photos);
+        }
+
+        return array_unique($arr);
+    }
 
     public function getDataAttribute(): Carbon
     {
@@ -273,6 +328,11 @@ class Zlecenie extends Model
     {
         if (!$this->rozliczenie or !$this->rozliczenie->rozliczenie) return false;
         return true;
+    }
+
+    public function getTechnikIdAttribute(): int
+    {
+        return $this->attributes['id_o_technika'];
     }
 
     public function getIsTechnikAttribute(): bool
@@ -705,6 +765,17 @@ HTML;
         return $this->zdjecia_do_zlecenia->merge($this->zdjecia_do_urzadzenia);
     }
 
+    public function getHasZdjeciaAttribute(): bool
+    {
+        $types = $this->zdjecia->pluck('type')->all();
+        foreach ($this->required_photos as $type) {
+            if (! in_array($type, $types)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
     * Scopes
     *
@@ -988,7 +1059,9 @@ HTML;
             // $query
             //     ->technik($data->technik_id)
             //     ->orderBy(DB::raw('case when id_status in ('. Status::NA_WARSZTACIE_ID .') then 1 else 0 end'), 'id_status');
-            $query->where('id_status', Status::NA_WARSZTACIE_ID);
+            $query
+                ->technik($data->technik_id)
+                ->where('id_status', Status::NA_WARSZTACIE_ID);
         }
         return $query->oldest('DataPrzyjecia')->get();
     }

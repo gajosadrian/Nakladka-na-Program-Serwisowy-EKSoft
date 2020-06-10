@@ -29,6 +29,7 @@
             label="Kod wyrobu"
             v-model.trim="urzadzenie.kod_wyrobu"
             :state="true"
+            :datalist="kod_wyrobu_list"
         />
 
         <b-form-group class="text-right">
@@ -56,6 +57,7 @@ export default {
             nazwa_list: [],
             model_list: [],
             nr_seryjny_raw_list: [],
+            kod_wyrobu_list: [],
             nr_seryjny_original: this.urzadzenie.nr_seryjny_raw,
             nr_seryjny_searched: null,
         }
@@ -80,6 +82,7 @@ export default {
         },
         'urzadzenie.kod_wyrobu': function (val) {
             this.unsaved = true
+            this.fetchProp('kod_wyrobu', val)
         },
     },
     computed: {
@@ -110,11 +113,11 @@ export default {
                 })
         },
         fetchProp(prop, search) {
-            axios.get(route(`urzadzenie.apiProps`, {
+            axios.post(route(`urzadzenie.apiProps`, {
                 prop,
-                search,
             }), {
                 _token: this._token,
+                search,
             })
                 .then(res => {
                     this[`${prop}_list`] = res.data
@@ -124,10 +127,9 @@ export default {
                 })
         },
         fetchSerialNo(search) {
-            axios.get(route(`urzadzenie.apiSerialNo`, {
-                search,
-            }), {
+            axios.post(route(`urzadzenie.apiSerialNo`), {
                 _token: this._token,
+                search,
             })
                 .then(res => {
                     this.nr_seryjny_searched = res.data.serial_no

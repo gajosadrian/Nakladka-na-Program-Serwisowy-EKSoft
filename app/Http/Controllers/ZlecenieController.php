@@ -512,6 +512,8 @@ class ZlecenieController extends Controller
                     ],
                     'kosztorys_pozycje' => $termin->zlecenie->getKosztorysArray(),
                     'zdjecia_url' => route('zlecenia.pokazZdjecia2', $termin->zlecenie->id),
+                    'required_photos' => $termin->zlecenie->required_photos,
+                    'has_zdjecia' => $termin->zlecenie->has_zdjecia,
                     'urzadzenie' => null,
                 ];
                 if ($termin->zlecenie->urzadzenie) {

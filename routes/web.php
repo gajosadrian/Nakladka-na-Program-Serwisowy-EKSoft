@@ -55,9 +55,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('urzadzenie')->name('urzadzenie.')->group(function () {
         Route::get('zdjecia', 'UrzadzenieController@zdjecia')->name('zdjecia');
-        Route::get('zdjecia/api-models/{model}', 'UrzadzenieController@apiModels')->name('apiModels');
-        Route::get('zdjecia/api-props/{prop}/{search}', 'UrzadzenieController@apiProps')->name('apiProps');
-        Route::get('zdjecia/api-serial-no/{search}', 'UrzadzenieController@apiSerialNo')->name('apiSerialNo');
+        Route::post('zdjecia/api-props/{prop}', 'UrzadzenieController@apiProps')->name('apiProps');
+        Route::post('zdjecia/api-serial-no', 'UrzadzenieController@apiSerialNo')->name('apiSerialNo');
         Route::put('{urzadzenie}', 'UrzadzenieController@putUrzadzenie')->name('putUrzadzenie');
     });
 

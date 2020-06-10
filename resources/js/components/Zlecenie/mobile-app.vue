@@ -8,7 +8,7 @@
                         <i class="fa fa-sign-out-alt"></i>
                     </b-link>
                 </h3>
-                <date-picker class="col-5" @input="terminy=[];fetchZlecenia()" v-model="date" lang="en" valueType="format" :first-day-of-week="1"></date-picker>
+                <date-picker class="col-5" @input="terminy=[];fetchZlecenia()" v-model="date" lang="pl" valueType="format" :first-day-of-week="1"></date-picker>
             </div>
 
             <div v-if="terminy.length == 0">
@@ -109,14 +109,27 @@
                             </a>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="font-w700">{{ zlecenie.urzadzenie.producent }}, {{ zlecenie.urzadzenie.nazwa }}</div>
-                        <div style="font-family:consolas;">{{ zlecenie.urzadzenie.model }}</div>
-                        <div style="font-family:consolas;">{{ zlecenie.urzadzenie.nr_seryjny }}</div>
-                        <div>
-                            <a :href="zlecenie.zdjecia_url" class="btn btn-sm btn-rounded" :class="{ 'btn-danger': true }" target="_blank">
-                                <i class="fa fa-camera"></i> Zdjęcia
-                            </a>
+                    <div class="clearfix">
+                        <div class="float-left mt-3">
+                            <div :class="{'text-danger': ! zlecenie.has_zdjecia, 'text-success': zlecenie.has_zdjecia}">
+                                <div
+                                    v-for="(req_photo_type, key) in zlecenie.required_photos" :key="key"
+                                    class="font-w600"
+                                >
+                                    <i class="fab fa-diaspora"></i>
+                                    <span>{{ req_photo_type }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="float-right">
+                            <div class="font-w700">{{ zlecenie.urzadzenie.producent }}, {{ zlecenie.urzadzenie.nazwa }}</div>
+                            <div style="font-family:consolas;">{{ zlecenie.urzadzenie.model }}</div>
+                            <div style="font-family:consolas;">{{ zlecenie.urzadzenie.nr_seryjny }}</div>
+                            <div>
+                                <a :href="zlecenie.zdjecia_url" class="btn btn-sm btn-rounded" :class="{'btn-danger': ! zlecenie.has_zdjecia, 'btn-outline-success': zlecenie.has_zdjecia}" target="_blank">
+                                    <i class="fa fa-camera"></i> Zdjęcia
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -428,6 +441,16 @@ export default {
                 //     showConfirmButton: false,
                 //     timer: 1500
                 // });
+
+                if (! this.has_zdjecia) {
+                    swal({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Brak dodanych zdjęć',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
 
                 this.changeStatus(41);
                 this.fetchZlecenia();

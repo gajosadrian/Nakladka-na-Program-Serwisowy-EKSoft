@@ -10,34 +10,39 @@ class UrzadzenieController extends Controller
 {
     public function zdjecia(Request $request)
     {
-        $page = (int) $request->page ?? 1;
-        $limit = 10;
-        $offset = ($page - 1) * $limit;
-        $urzadzenia_ids = [];
-
         if ($request->wantsJson()) {
-            $zlecenia = Zlecenie::whereHas('urzadzenie')->with('urzadzenie', 'zdjecia_do_urzadzenia')->latest('id_zlecenia')->offset($offset)->limit($limit)->get();
-            $zlecenia->each(function ($zlecenie, $index) use (&$urzadzenia_ids) {
+            $urzadzenia_ids = [];
+            $date_start = $request->date_start;
+            $date_end = $request->date_end;
+
+            if (! $date_start or ! $date_end) {
+                return response()->json(['zlecenia' => []]);
+            }
+
+            $zlecenia = collect();
+            $_zlecenia = Zlecenie::whereHas('urzadzenie')->whereHas('terminarz', function ($q) use ($date_start, $date_end) {
+                $q->where('STARTDATE', '>=', $date_start . ' 00:00:01');
+                $q->where('ENDDATE', '<=', $date_end . ' 23:59:59');
+            })->with('urzadzenie', 'zdjecia_do_urzadzenia', 'technik')->latest('id_zlecenia')->get();
+            $_zlecenia->each(function ($zlecenie) use (&$urzadzenia_ids, $zlecenia) {
                 if (! in_array($zlecenie->urzadzenie->id, $urzadzenia_ids)) {
                     $urzadzenia_ids[] = $zlecenie->urzadzenie->id;
 
                     $zlecenie->urzadzenie = $zlecenie->urzadzenie->only('id', 'producent', 'nazwa', 'model', 'kod_wyrobu', 'nr_seryjny', 'nr_seryjny_raw');
                     $zlecenie->zdjecia_do_urzadzenia = $zlecenie->zdjecia_do_urzadzenia->map->only('id', 'type', 'path', 'url');
-                } else {
-                    unset($zlecenia[$index]);
+
+                    $zlecenia->push($zlecenie);
                 }
             });
-            $zlecenia = $zlecenia->map->only('id', 'urzadzenie', 'zdjecia_do_urzadzenia');
+            $zlecenia = $zlecenia->map->only('id', 'urzadzenie', 'zdjecia_do_urzadzenia', 'technik', 'popup_link', 'nr');
 
-            return response()->json([
-                'zlecenia' => $zlecenia,
-            ]);
+            return response()->json(compact('zlecenia'));
         }
 
         return view('urzadzenie.zdjecia');
     }
 
-    public function apiProps(string $prop, string $search)
+    public function apiProps(Request $request, string $prop)
     {
         switch ($prop) {
             case 'producent':
@@ -52,18 +57,21 @@ class UrzadzenieController extends Controller
             case 'nr_seryjny_raw':
                 $prop_name = 'SERIAL_NO';
                 break;
+            case 'kod_wyrobu':
+                $prop_name = 'asset';
+                break;
         }
 
-        $props = Urzadzenie::where($prop_name, 'like', "{$search}%")->orderBy($prop_name)->select($prop_name)
+        $props = Urzadzenie::where($prop_name, 'like', "{$request->search}%")->orderBy($prop_name)->select($prop_name)
             ->distinct()->limit(10)->get()
             ->pluck($prop)->all();
 
         return response()->json($props);
     }
 
-    public function apiSerialNo(string $search)
+    public function apiSerialNo(Request $request)
     {
-        $urzadzenie = Urzadzenie::where('SERIAL_NO', $search)->select('SERIAL_NO')->first();
+        $urzadzenie = Urzadzenie::where('SERIAL_NO', $request->search)->select('SERIAL_NO')->first();
 
         if ($urzadzenie) {
             $found = true;
