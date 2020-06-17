@@ -11,6 +11,10 @@
 |
 */
 
+// Route::get('test', function (\App\Services\HostedSms $hostedSms) {
+//     return response()->json($hostedSms->send('665858880', 'test wysyłania'));
+// });
+
 Auth::routes();
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
@@ -93,6 +97,12 @@ Route::middleware('auth')->group(function () {
             Route::post('many', 'Rozliczenie\RozliczoneZlecenieController@apiStoreMany')->name('storeMany');
             Route::post('destroy', 'Rozliczenie\RozliczoneZlecenieController@apiDestory')->name('destroy');
         });
+    });
+
+    Route::prefix('sms')->name('sms.')->group(function () {
+        Route::get('create', 'SmsController@create')->name('create');
+        Route::get('history', 'SmsController@history')->name('history');
+        Route::post('/', 'SmsController@store')->name('store');
     });
 
 });

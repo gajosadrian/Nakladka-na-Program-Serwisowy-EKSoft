@@ -99,3 +99,19 @@ function get_string_between(string $string, string $start, string $end): string
     $len = strpos($string, $end, $ini) - $ini;
     return substr($string, $ini, $len);
 }
+
+function str_contains2(string $str, $values): bool {
+    switch (gettype($values)) {
+        case 'string':
+            return str_contains($str, $values);
+            break;
+        case 'array':
+            foreach ($values as $value) {
+                if (str_contains($str, $value)) {
+                    return true;
+                }
+                return false;
+            }
+            break;
+    }
+}

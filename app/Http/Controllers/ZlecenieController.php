@@ -301,9 +301,11 @@ class ZlecenieController extends Controller
         $symbol = $request->symbol ?? $symbol;
 
         if ($symbol) {
-            $towar = Subiekt_Towar::where('tw_Symbol', $symbol)
-                ->orWhere('tw_DostSymbol', 'like', "%{$symbol}%")
-                ->first();
+            $towar = Subiekt_Towar::where('tw_Symbol', $symbol)->first();
+            if (! $towar) {
+                $towar = Subiekt_Towar::where('tw_DostSymbol', 'like', "%{$symbol}%")->first();
+            }
+
             $towar_id = @$towar->id ?? null;
         } else {
             $towar = null;

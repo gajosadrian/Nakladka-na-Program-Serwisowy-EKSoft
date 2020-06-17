@@ -236,7 +236,7 @@ class KosztorysPozycja extends Model
     public function getNaszykowanaCzescKeyAttribute(): ?string
     {
         $opis = $this->opis_raw;
-        if ( ! str_contains($opis, '$')) return null;
+        if ( ! str_contains2($opis, '$')) return null;
         return get_string_between($opis, '$', '$');
     }
 
@@ -268,7 +268,7 @@ class KosztorysPozycja extends Model
 
     public function hasKey(array $keys): bool
     {
-        return str_contains($this->opis_ascii, $keys);
+        return str_contains2($this->opis_ascii, $keys);
     }
 
     public function changeOpis(?string $opis): void

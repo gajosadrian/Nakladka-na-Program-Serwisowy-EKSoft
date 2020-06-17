@@ -448,7 +448,7 @@ export default {
                         type: 'error',
                         title: 'Brak dodanych zdjęć',
                         showConfirmButton: false,
-                        timer: 2000
+                        timer: 5000
                     });
                 }
 

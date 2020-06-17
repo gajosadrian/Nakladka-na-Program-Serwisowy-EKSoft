@@ -27,6 +27,7 @@ Vue.component('date-picker', DatePicker);
 Vue.component('Zdjecia', require('./components/Zdjecia/Zdjecia.vue').default);
 Vue.component('ZdjecieShow', require('./components/Zdjecia/Show.vue').default);
 Vue.component('UrzadzeniaZdjecia', require('./components/Urzadzenia/Zdjecia.vue').default);
+Vue.component('SmsCreate', require('./components/Sms/Create.vue').default);
 
 
 

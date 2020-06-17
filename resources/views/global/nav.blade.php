@@ -66,6 +66,27 @@
                 return $user and !$user->technik_id;
             },
         ],
+        [
+            'name' => 'SMS',
+        ],
+        [
+            'name' => 'Nowy SMS',
+            'icon' => 'si si-paper-plane',
+            'route' => 'sms.create',
+            'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
+        ],
+        [
+            'name' => 'Historia',
+            'icon' => 'si si-bubbles',
+            'route' => 'sms.history',
+            'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
+        ],
         // [
         //     'name' => 'Magazyn',
         //     'role' => 'super-admin',

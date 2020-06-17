@@ -275,7 +275,7 @@ class Zlecenie extends Model
 
     public function getGoogleMapsAddressAttribute(): string
     {
-        if ( ! str_contains($this->klient->miasto, ['Ostrowiec Świętokrzyski', 'Ćmielów', 'Bodzechów', 'Kunów']) ) {
+        if ( ! str_contains2($this->klient->miasto, ['Ostrowiec Świętokrzyski', 'Ćmielów', 'Bodzechów', 'Kunów']) ) {
             return urlencode($this->klient->ulica . ', ' . $this->klient->kod_pocztowy . ' ' . $this->klient->miasto);
         }
         return urlencode($this->klient->adres2 . ', ' . $this->klient->kod_pocztowy . ' ' . $this->klient->miasto);
