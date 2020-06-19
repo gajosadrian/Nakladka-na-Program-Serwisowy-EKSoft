@@ -447,8 +447,7 @@ export default {
                         position: 'center',
                         type: 'error',
                         title: 'Brak dodanych zdjęć',
-                        showConfirmButton: false,
-                        timer: 5000
+                        showConfirmButton: true
                     });
                 }
 

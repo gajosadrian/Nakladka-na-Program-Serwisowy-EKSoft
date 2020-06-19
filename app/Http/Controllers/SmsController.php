@@ -14,9 +14,7 @@ class SmsController extends Controller
 
     public function store(Request $request, HostedSms $hostedSms)
     {
-        foreach ($request->phones as $phone) {
-            $hostedSms->send($phone, $request->message);
-        }
+        $hostedSms->send($request->phones, $request->message);
 
         return response()->json('success');
     }

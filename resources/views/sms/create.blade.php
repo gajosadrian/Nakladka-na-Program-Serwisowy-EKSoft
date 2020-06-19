@@ -12,7 +12,7 @@
   <div class="content">
     <b-row>
       <b-col lg="4">
-        <sms-create />
+        <sms-create _token=@json(csrf_token()) />
       </b-col>
     </b-row>
   </div>

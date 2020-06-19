@@ -16,6 +16,11 @@ class KontrahentEwidencja extends Model
     *
     */
 
+    public function getKlientIdAttribute()
+    {
+        return $this->attributes['adr_IdObiektu'];
+    }
+
     public function getTypAdresuAttribute()
     {
         return $this->attributes['adr_TypAdresu'];
@@ -59,6 +64,11 @@ class KontrahentEwidencja extends Model
     public function getTelefonyAttribute(): object
     {
         return $this->telefony_ewidencja->sortByDesc('tel_Podstawowy');
+    }
+
+    public function getTelefonyArrayAttribute(): array
+    {
+        return $this->telefony->pluck('tel_Numer')->toArray();
     }
 
     /**

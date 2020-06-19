@@ -102,7 +102,7 @@ class Subiekt_Kontrahent extends Model
 
     public function getTelefonyArrayAttribute(): array
     {
-        return $this->telefony->pluck('tel_Numer')->toArray();
+        return $this->dane->telefony_array;
     }
 
     public function getTelefonyFormattedAttribute(): string

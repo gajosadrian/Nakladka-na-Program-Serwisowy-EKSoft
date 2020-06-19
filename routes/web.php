@@ -1,15 +1,7 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 // Route::get('test', function (\App\Services\HostedSms $hostedSms) {
 //     return response()->json($hostedSms->send('665858880', 'test wysyłania'));
@@ -103,6 +95,10 @@ Route::middleware('auth')->group(function () {
         Route::get('create', 'SmsController@create')->name('create');
         Route::get('history', 'SmsController@history')->name('history');
         Route::post('/', 'SmsController@store')->name('store');
+    });
+
+    Route::prefix('kontrahent')->name('klient.')->group(function () {
+        Route::post('api/find', 'KlientController@apiFind')->name('apiFind');
     });
 
 });
