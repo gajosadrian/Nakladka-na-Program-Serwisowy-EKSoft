@@ -8,12 +8,15 @@ use App\Sms;
 class HostedSms {
     private $client;
     private $url = 'https://api.hostedsms.pl';
-    private $login = 'biuro@dar-gaz.pl';
-    private $password = 'Dargaz18K';
+    private $login;
+    private $password;
     private $sender = 'Serwis AGD';
 
     public function __construct()
     {
+        $this->login = config('app.hostedsms_login');
+        $this->password = config('app.hostedsms_password');
+
         $this->client = new Client([
             'base_uri' => $this->url,
         ]);

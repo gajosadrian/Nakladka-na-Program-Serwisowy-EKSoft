@@ -2,6 +2,9 @@
 
 return [
 
+    'hostedsms_login' => env('HOSTEDSMS_LOGIN'),
+    'hostedsms_password' => env('HOSTEDSMS_PASSWORD'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

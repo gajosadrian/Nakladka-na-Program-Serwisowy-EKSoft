@@ -276,11 +276,14 @@ class ZlecenieController extends Controller
         $zlecenia = null;
 
         $klient_ids = Klient::whereHas('ewidencja', function ($q) use ($search) {
-            $q->where('adr_Nazwa', 'like', '%'.$search.'%');
+            $q
+                ->where('adr_Nazwa', 'like', '%'.$search.'%')
+                ->orWhere('adr_NazwaPelna', 'like', '%'.$search.'%')
+            ;
         })->limit(20)->get(['kh_Id'])->pluck('id')->values();
 
         if ($search) {
-            if (str_contains($search, ['zs', 'ZS'])) {
+            if (str_contains2($search, ['zs', 'ZS'])) {
                 $where = ['NrZlecenia', '=', $search];
             } else {
                 $where = ['NrObcy', 'like', '%'.$search.'%'];
