@@ -3,7 +3,7 @@
     $room = rand();
 @endphp
 @if ($autorefresh)
-    @section('autorefresh', 120)
+    @section('autorefresh', $autorefresh)
 @endif
 
 @section('content')
@@ -19,37 +19,39 @@
         @if ($show_errors and $zlecenia_duplicate->count() > 0)
             <b-block title="Zdublowane zlecenia" theme="bg-danger">
                 <template slot="content">
-                    <table class="table table-sm table-striped table-hover table-vcenter font-size-sm">
-                        <thead>
-                            <tr class="text-uppercase">
-                                <th class="font-w700">Nr klienta</th>
-                                <th class="font-w700">Nazwa</th>
-                                <th class="font-w700">Miasto</th>
-                                <th class="font-w700">Nr zlecenia</th>
-                                <th class="font-w700">Nr obcy</th>
-                                <th class="font-w700">Urządzenie</th>
-                                <th class="font-w700">Nr seryjny</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($zlecenia_duplicate as $zlecenie_duplicate)
-                                @for ($i = 0; $i <= 1; $i++)
-                                    @php
-                                        $zlecenie = $zlecenie_duplicate[$i];
-                                    @endphp
-                                    <tr>
-                                        <td nowrap>{{ $zlecenie->klient->symbol }}</td>
-                                        <td nowrap>{{ str_limit($zlecenie->klient->nazwa, 30) }}</td>
-                                        <td nowrap>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
-                                        <td class="font-w600" nowrap><a href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</a></td>
-                                        <td class="font-w700 text-danger" nowrap>{{ $zlecenie->nr_obcy }}</td>
-                                        <td nowrap>{{ $zlecenie->urzadzenie->producent }}, {{ $zlecenie->urzadzenie->nazwa }}</td>
-                                        <td nowrap>{{ $zlecenie->urzadzenie->nr_seryjny }}</td>
-                                    </tr>
-                                @endfor
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover table-vcenter font-size-sm">
+                            <thead>
+                                <tr class="text-uppercase">
+                                    <th class="font-w700">Nr klienta</th>
+                                    <th class="font-w700">Nazwa</th>
+                                    <th class="font-w700">Miasto</th>
+                                    <th class="font-w700">Nr zlecenia</th>
+                                    <th class="font-w700">Nr obcy</th>
+                                    <th class="font-w700">Urządzenie</th>
+                                    <th class="font-w700">Nr seryjny</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($zlecenia_duplicate as $zlecenie_duplicate)
+                                    @for ($i = 0; $i <= 1; $i++)
+                                        @php
+                                            $zlecenie = $zlecenie_duplicate[$i];
+                                        @endphp
+                                        <tr>
+                                            <td nowrap>{{ $zlecenie->klient->symbol }}</td>
+                                            <td nowrap>{{ str_limit($zlecenie->klient->nazwa, 30) }}</td>
+                                            <td nowrap>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
+                                            <td class="font-w600" nowrap><a href="javascript:void(0)" onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</a></td>
+                                            <td class="font-w700 text-danger" nowrap>{{ $zlecenie->nr_obcy }}</td>
+                                            <td nowrap>{{ $zlecenie->urzadzenie->producent }}, {{ $zlecenie->urzadzenie->nazwa }}</td>
+                                            <td nowrap>{{ $zlecenie->urzadzenie->nr_seryjny }}</td>
+                                        </tr>
+                                    @endfor
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </template>
             </b-block>
         @endif

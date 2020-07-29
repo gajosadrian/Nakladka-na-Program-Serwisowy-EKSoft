@@ -37,6 +37,10 @@
                 <a class="img-link img-link-zoom-in img-thumb img-lightbox" href="{{ $zdjecie->url }}">
                     <img class="img-fluid" src="{{ $zdjecie->url }}">
                 </a>
+                <div class="px-1 bg-gray d-flex justify-content-between" style="margin: 0 6px">
+                    <div class="font-w700">{{ $zdjecie->days_old_formatted }}</div>
+                    <div class="font-size-sm my-auto">{{ $zdjecie->date_formatted }}</div>
+                </div>
             </div>
         @endforeach
     </b-row>

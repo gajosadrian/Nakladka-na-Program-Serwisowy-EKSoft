@@ -37,7 +37,7 @@ class ZlecenieController extends Controller
             'technik_id' => $user->technik_id,
         ]);
         $search_value = $user->getSavedField('zlecenia.search');
-        $autorefresh = (bool) $user->technik_id;
+        $autorefresh = ((bool) $user->technik_id) ? 120 : 600;
         $show_errors = (bool) ! $user->technik_id;
 
         $zlecenia_unique = $zlecenia_niezakonczone->unique('nr_obcy');
@@ -45,6 +45,7 @@ class ZlecenieController extends Controller
         foreach ($zlecenia_niezakonczone->where('nr_obcy')->diff($zlecenia_unique)->groupBy('nr_obcy') as $zlecenie_duplicate) {
             if ($zlecenie_duplicate->count() == 1) {
                 $zlecenie = $zlecenie_duplicate[0];
+                if ($zlecenie->zleceniodawca == 'Mentax') continue;
                 $zlecenia_duplicate_nr_obce[] = $zlecenie->nr_obcy;
             }
         }
@@ -283,7 +284,9 @@ class ZlecenieController extends Controller
         })->limit(20)->get(['kh_Id'])->pluck('id')->values();
 
         if ($search) {
-            if (str_contains2($search, ['zs', 'ZS'])) {
+            $search = strtoupper($search);
+
+            if (str_contains($search, 'ZS/')) {
                 $where = ['NrZlecenia', '=', $search];
             } else {
                 $where = ['NrObcy', 'like', '%'.$search.'%'];
@@ -316,7 +319,7 @@ class ZlecenieController extends Controller
         }
 
         if ($symbol) {
-            $kosztorys_pozycje = KosztorysPozycja::with('zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie', 'zlecenie.terminarz', 'zlecenie.rozliczenie.rozliczenie')
+            $kosztorys_pozycje = KosztorysPozycja::with('naszykowane_czesci', 'zlecenie', 'zlecenie.status', 'zlecenie.urzadzenie', 'zlecenie.terminarz', 'zlecenie.rozliczenie.rozliczenie')
                 ->where('id_o_tw', $towar_id)
                 ->orWhere('opis_dodatkowy', 'like', "%{$symbol}%")
                 ->orderByDesc('id')->limit(20)->get();

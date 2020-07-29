@@ -28,6 +28,24 @@ class Zdjecie extends Model
         return route('zlecenie-zdjecie.make', $this->id);
     }
 
+    public function getDateFormattedAttribute()
+    {
+        return $this->created_at->toDateString();
+    }
+
+    public function getDaysOldAttribute(): int
+    {
+        return $this->created_at->copy()->startOfDay()->diffInDays(today(), false);
+    }
+
+    public function getDaysOldFormattedAttribute(): string
+    {
+        $days_old = $this->days_old;
+        if ($days_old == 0) return 'Dzisiaj';
+        if ($days_old == 1) return 'Wczoraj';
+        return "{$days_old} dni temu";
+    }
+
     public function scopeOnlyType(string $type)
     {
         return $this->where('type', $type);

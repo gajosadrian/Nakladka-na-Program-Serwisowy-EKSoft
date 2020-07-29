@@ -63,7 +63,30 @@
                                         {!! $kosztorys_pozycja->zlecenie->table_cell_nr_html !!}
                                         <td>{{ $kosztorys_pozycja->symbol }}</td>
                                         <td nowrap>{{ $kosztorys_pozycja->symbol_dostawcy }}</td>
-                                        <td class="text-danger" nowrap>{{ $kosztorys_pozycja->opis }}</td>
+                                        <td class="text-danger" nowrap>
+                                            @if ($kosztorys_pozycja->naszykowana_czesc)
+                                                @if ($kosztorys_pozycja->naszykowana_czesc->sprawdzone_at or (! $kosztorys_pozycja->zlecenie->is_gwarancja and $kosztorys_pozycja->naszykowana_czesc->ilosc_do_zwrotu == 0))
+                                                    <i
+                                                        class="fa fa-check-circle text-success"
+                                                        data-toggle="tooltip" data-placement="left"
+                                                        title="Sprawdzone lub nie wymaga zwrotu"
+                                                    ></i>
+                                                @else
+                                                    <i
+                                                        class="fa fa-minus-circle text-danger"
+                                                        data-toggle="tooltip" data-placement="left"
+                                                        title="Część nie została sprawdzona/odebrana"
+                                                    ></i>
+                                                @endif
+                                            @else
+                                                <i
+                                                    class="fa fa-question-circle text-muted"
+                                                    data-toggle="tooltip" data-placement="left"
+                                                    title="Część nie była naszykowana"
+                                                ></i>
+                                            @endif
+                                            {{ $kosztorys_pozycja->opis }}
+                                        </td>
                                         <td nowrap>{{ $kosztorys_pozycja->cena_formatted }}</td>
                                         <td>{{ $kosztorys_pozycja->ilosc }}</td>
                                         <td nowrap>{{ $kosztorys_pozycja->wartosc_formatted }}</td>
