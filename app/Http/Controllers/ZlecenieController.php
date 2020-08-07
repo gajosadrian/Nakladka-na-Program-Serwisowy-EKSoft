@@ -545,4 +545,14 @@ class ZlecenieController extends Controller
             // 'show_map' => $user->technik->nazwa != 'Szymek Gajos',
         ], 200);
     }
+
+    public function apiGetKosztorys(int $zlecenie_id)
+    {
+        $pozycje = KosztorysPozycja::where('id_zs', $zlecenie_id)->get();
+        $pozycje = $pozycje->map(function ($pozycja) {
+            return $pozycja->getArray();
+        });
+
+        return response()->json($pozycje);
+    }
 }

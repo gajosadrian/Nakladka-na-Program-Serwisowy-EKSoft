@@ -12,7 +12,7 @@
             <hr class="mt-1"> -->
 
             <div
-                v-for="state in states"
+                v-for="(state, key) in states" :key="key"
                 class="mt-1"
             >
                 <div v-if="state.type == 'sending'">

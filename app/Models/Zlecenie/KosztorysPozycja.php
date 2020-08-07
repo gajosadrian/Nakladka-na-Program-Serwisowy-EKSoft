@@ -143,6 +143,11 @@ class KosztorysPozycja extends Model
         return number_format($this->wartosc_brutto, 2, '.', ' ') . ' zł'; // &nbsp;
     }
 
+    public function getVatProcentAttribute(): int
+    {
+        return $this->vat * 100;
+    }
+
     public function getIsCzescAttribute(): bool
     {
         return is_numeric($this->symbol) or $this->opis;
@@ -327,6 +332,7 @@ class KosztorysPozycja extends Model
             'ilosc' => $this->ilosc,
             'wartosc' => $this->wartosc,
             'wartosc_brutto' => $this->wartosc_brutto,
+            'vat_procent' => $this->vat_procent,
             'is_czesc' => $this->is_czesc,
             'is_ekspertyza' => $this->is_ekspertyza,
             'is_towar' => $this->is_towar,

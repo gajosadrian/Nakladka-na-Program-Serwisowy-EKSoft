@@ -6,8 +6,8 @@ use App\Models\Zlecenie\Zlecenie;
 use App\Models\Zlecenie\Terminarz;
 use App\Models\Zlecenie\KosztorysPozycja;
 use App\Models\SMS\Technik;
-// use App\Models\Subiekt\Subiekt_Towar;
 use App\Models\Czesc\Naszykowana;
+use App\Models\Subiekt\Subiekt_Towar;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -173,5 +173,20 @@ class CzesciController extends Controller
         $naszykowana_czesc->save();
 
         return response()->json('saved', 200);
+    }
+
+    public function apiProps(Request $request, string $prop)
+    {
+        switch ($prop) {
+            case 'symbol':
+                $prop_name = 'tw_Symbol';
+                break;
+        }
+
+        $props = Subiekt_Towar::where($prop_name, 'like', "{$request->search}%")->orderBy($prop_name)->select($prop_name)
+            ->distinct()->limit(10)->get()
+            ->pluck($prop)->all();
+
+        return response()->json($props);
     }
 }

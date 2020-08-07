@@ -110,8 +110,8 @@ function str_contains2(string $str, $values): bool {
                 if (str_contains($str, $value)) {
                     return true;
                 }
-                return false;
             }
+            return false;
             break;
     }
 }

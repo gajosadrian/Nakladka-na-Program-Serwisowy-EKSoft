@@ -12,7 +12,7 @@
       />
       <div v-if="text_danger" class="text-danger mt-1">{{ text_danger }}</div>
       <datalist :id="`datalist${_uid}`">
-        <option v-for="data in datalist">{{ data }}</option>
+        <option v-for="(data, key) in datalist" :key="key">{{ data }}</option>
       </datalist>
     </b-form-group>
   </div>

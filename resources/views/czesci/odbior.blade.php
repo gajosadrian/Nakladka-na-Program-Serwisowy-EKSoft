@@ -39,7 +39,8 @@
                     $towar = $naszykowana_czesc->towar;
 
                     // if ( ! $pozycja) continue;
-                    if ( ! $zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_do_zwrotu == 0) continue;
+                    if (! $zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_do_zwrotu == 0) continue;
+                    if (! $towar) continue;
                 @endphp
 
                 @if ( ! isset($separator) and ! $naszykowana_czesc->is_zlecenie_data_past )

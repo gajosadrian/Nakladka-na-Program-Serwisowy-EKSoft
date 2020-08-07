@@ -172,12 +172,12 @@
                                 <td>{!! $zlecenie->urzadzenie->model ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
                             </tr>
                             <tr>
-                                <th>Kod&nbsp;wyrobu:</th>
-                                <td>{!! $zlecenie->urzadzenie->kod_wyrobu ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
-                            </tr>
-                            <tr>
                                 <th>Nr seryjny:</th>
                                 <td>{!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
+                            </tr>
+                            <tr>
+                                <th>Kod&nbsp;wyrobu:</th>
+                                <td>{!! $zlecenie->urzadzenie->kod_wyrobu ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
                             </tr>
                         </table>
                     </template>
@@ -310,74 +310,78 @@
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">
                         <div class="tab-pane fade" id="kosztorys" role="tabpanel">
-                            <table class="table table-sm table-striped table-vcenter font-size-sm">
-                                <thead>
-                                    <tr>
-                                        <th class="font-w700" nowrap>Symbol dost.</th>
-                                        <th class="font-w700" nowrap>Symbol</th>
-                                        <th class="font-w700" nowrap>Nazwa</th>
-                                        <th class="font-w700" nowrap>Opis</th>
-                                        <th class="font-w700 text-right" nowrap>Cena brutto</th>
-                                        <th class="font-w700 text-center" nowrap>Ilość</th>
-                                        <th class="font-w700 text-right" nowrap>Wartość netto</th>
-                                        <th class="font-w700 text-right" nowrap>Wartość brutto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $wartosc_netto = 0.00;
-                                        $wartosc_brutto = 0.00;
-                                    @endphp
-                                    @foreach ($zlecenie->kosztorys_pozycje as $pozycja)
-                                        @php
-                                            $wartosc_netto += $pozycja->wartosc;
-                                            $wartosc_brutto += $pozycja->wartosc_brutto;
-                                        @endphp
+                            @if ($user->id > 1)
+                                <table class="table table-sm table-striped table-vcenter font-size-sm">
+                                    <thead>
                                         <tr>
-                                            <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
-                                            <td nowrap>{{ $pozycja->symbol }}</td>
-                                            <td nowrap>
-                                                @if ($pozycja->is_towar and $pozycja->is_zamowione)
-                                                    <i class="fa fa-shopping-cart text-danger"></i>
-                                                @endif
-                                                {{ str_limit($pozycja->nazwa, 50) }}
-                                            </td>
-                                            <td class="small" nowrap>
-                                                @if ( ! $user->is_technik)
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control form-control-sm" value="{{ $pozycja->opis_fixed }}" onkeyup="changeOpis(@json($pozycja->id), $(this).val())" onclick="this.select()">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">
-                                                                <i id="pozycja_status_success{{ $pozycja->id }}" class="fa fa-check text-success"></i>
-                                                                <i id="pozycja_status_sending{{ $pozycja->id }}" class="d-none fa fa-circle-notch fa-spin text-secondary"></i>
-                                                                <i id="pozycja_status_error{{ $pozycja->id }}" class="d-none fa fa-times text-danger"></i>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    {{ $pozycja->opis_fixed }}
-                                                @endif
-                                            </td>
-                                            <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
-                                            <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}" nowrap>{{ $pozycja->ilosc }}</td>
-                                            <td class="text-right" nowrap>{{ $pozycja->wartosc_formatted }}</td>
-                                            <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
+                                            <th class="font-w700" nowrap>Symbol dost.</th>
+                                            <th class="font-w700" nowrap>Symbol</th>
+                                            <th class="font-w700" nowrap>Nazwa</th>
+                                            <th class="font-w700" nowrap>Opis</th>
+                                            <th class="font-w700 text-right" nowrap>Cena brutto</th>
+                                            <th class="font-w700 text-center" nowrap>Ilość</th>
+                                            <th class="font-w700 text-right" nowrap>Wartość netto</th>
+                                            <th class="font-w700 text-right" nowrap>Wartość brutto</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th class="text-right">{{ number_format($wartosc_netto, 2, '.', ' ') }} zł</th>
-                                        <th class="text-right">{{ number_format($wartosc_brutto, 2, '.', ' ') }} zł</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $wartosc_netto = 0.00;
+                                            $wartosc_brutto = 0.00;
+                                        @endphp
+                                        @foreach ($zlecenie->kosztorys_pozycje as $pozycja)
+                                            @php
+                                                $wartosc_netto += $pozycja->wartosc;
+                                                $wartosc_brutto += $pozycja->wartosc_brutto;
+                                            @endphp
+                                            <tr>
+                                                <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
+                                                <td nowrap>{{ $pozycja->symbol }}</td>
+                                                <td nowrap>
+                                                    @if ($pozycja->is_towar and $pozycja->is_zamowione)
+                                                        <i class="fa fa-shopping-cart text-danger"></i>
+                                                    @endif
+                                                    {{ str_limit($pozycja->nazwa, 50) }}
+                                                </td>
+                                                <td class="small" nowrap>
+                                                    @if ( ! $user->is_technik)
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control form-control-sm" value="{{ $pozycja->opis_fixed }}" onkeyup="changeOpis(@json($pozycja->id), $(this).val())" onclick="this.select()">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">
+                                                                    <i id="pozycja_status_success{{ $pozycja->id }}" class="fa fa-check text-success"></i>
+                                                                    <i id="pozycja_status_sending{{ $pozycja->id }}" class="d-none fa fa-circle-notch fa-spin text-secondary"></i>
+                                                                    <i id="pozycja_status_error{{ $pozycja->id }}" class="d-none fa fa-times text-danger"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        {{ $pozycja->opis_fixed }}
+                                                    @endif
+                                                </td>
+                                                <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
+                                                <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}" nowrap>{{ $pozycja->ilosc }}</td>
+                                                <td class="text-right" nowrap>{{ $pozycja->wartosc_formatted }}</td>
+                                                <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th class="text-right">{{ number_format($wartosc_netto, 2, '.', ' ') }} zł</th>
+                                            <th class="text-right">{{ number_format($wartosc_brutto, 2, '.', ' ') }} zł</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            @else
+                                <zlecenie-kosztorys _token=@json(csrf_token()) :zlecenie_id="{{ $zlecenie->id }}"></zlecenie-kosztorys>
+                            @endif
                         </div>
                         <div class="tab-pane fade active show" id="opis" role="tabpanel">
                             @if ($zlecenie->errors)

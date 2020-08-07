@@ -74,6 +74,7 @@ class Zlecenie extends Model
 		'Unitron' => ['unitron'],
 		'Honiio' => ['honiio', 'honio', 'henio', 'heniio'],
 		'Vienna' => ['vig', 'vienna', 'wienna', 'viena', 'wiena'],
+		'Elterm' => ['elterm'],
     ];
 
     public const REQUIRED_PHOTOS = [

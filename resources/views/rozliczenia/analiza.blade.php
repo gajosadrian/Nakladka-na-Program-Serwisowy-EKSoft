@@ -86,7 +86,11 @@
                                             ">{{ $index + 1 }}.{{ $index2 + 1 }}</th>
                                             <td>{{ $pozycja->towar->symbol }}</td>
                                             <td>{{ $pozycja->towar->symbol_dostawcy }}</td>
-                                            <td>{{ $pozycja->towar->nazwa }} {{ $pozycja->opis ? '-' : '' }} <span class="text-danger">{{ $pozycja->opis }}</span></td>
+                                            <td>
+                                                {{ $pozycja->towar->nazwa }}
+                                                {{ $pozycja->opis ? '-' : '' }}
+                                                <span class="text-danger">{{ $pozycja->opis }}</span>
+                                            </td>
                                             <td class="text-right">{{ $pozycja->cena_formatted }}</td>
                                             <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}">{{ $pozycja->ilosc }}</td>
                                             <th class="text-right">{{ $pozycja->wartosc_formatted }}</th>

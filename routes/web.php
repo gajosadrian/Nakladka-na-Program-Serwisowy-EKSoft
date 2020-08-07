@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
         Route::get('api/terminarz_statusy/{technik_id}/{date_string?}', 'ZlecenieController@apiGetTerminarzStatusy')->name('api.terminarz_statusy');
         Route::delete('api/remove-status/{status_id}', 'ZlecenieController@apiRemoveStatus')->name('api.removeStatus');
         Route::get('api/get-from-terminarz/{date_string?}', 'ZlecenieController@apiGetFromTerminarz')->name('api.getFromTerminarz');
+        Route::get('api/get-kosztorys/{zlecenie_id}', 'ZlecenieController@apiGetKosztorys')->name('api.getKosztorys');
     });
 
     Route::prefix('zlecenie-zdjecie')->name('zlecenie-zdjecie.')->group(function () {
@@ -63,6 +64,7 @@ Route::middleware('auth')->group(function () {
         Route::get('odbior/{technik_id?}', 'CzesciController@indexOdbior')->name('indexOdbior');
         Route::patch('sprawdz/{naszykowana_czesc}', 'CzesciController@updateSprawdz')->name('updateSprawdz');
         Route::get('dodawanie/{technik_id?}/{date_string?}', 'CzesciController@indexDodawanie')->name('indexDodawanie');
+        Route::post('api-props/{prop}', 'CzesciController@apiProps')->name('apiProps');
     });
 
     Route::prefix('inwentaryzacja')->name('inwentaryzacja.')->group(function () {
