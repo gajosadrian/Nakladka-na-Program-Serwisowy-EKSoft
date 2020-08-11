@@ -67,6 +67,10 @@ Route::middleware('auth')->group(function () {
         Route::post('api-props/{prop}', 'CzesciController@apiProps')->name('apiProps');
     });
 
+    Route::prefix('kosztorys')->name('kosztorys.')->group(function () {
+        Route::put('pozycja', 'KosztorysController@updatePozycja')->name('updatePozycja');
+    });
+
     Route::prefix('inwentaryzacja')->name('inwentaryzacja.')->group(function () {
         Route::get('show', 'InwentaryzacjaController@show')->name('show');
         Route::put('/{symbol}', 'InwentaryzacjaController@update')->name('update');

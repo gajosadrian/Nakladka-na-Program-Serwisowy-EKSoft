@@ -8,6 +8,7 @@
         :list="`symbolList${_uid}`"
         :state="symbolState"
         @focus="$event.target.select()"
+        :disabled="Boolean(pozycja.id)"
         required
       />
       <datalist :id="`symbolList${_uid}`">
@@ -15,10 +16,10 @@
       </datalist>
     </b-td>
     <b-td nowrap>
+      <i class="fa fa-shopping-cart text-danger" v-if="pozycja.is_zamowione"></i>
       {{ pozycja.nazwa.substring(0, 30) }}
     </b-td>
     <b-td nowrap>
-      <i class="fa fa-shopping-cart text-danger" v-if="pozycja.is_zamowione"></i>
       <b-input
         v-model="pozycja.opis"
         size="sm"
@@ -84,7 +85,25 @@ export default {
 
   watch: {
     'pozycja.symbol': function (val) {
-      this.fetchProp('symbol', val)
+      this.symbolList = []
+      this.fetchProp('symbol', val, () => {
+        this.update()
+      })
+    },
+    'pozycja.opis': function (val) {
+      this.update()
+    },
+    'pozycja.cena': function (val) {
+      this.update()
+    },
+    'pozycja.var_procent': function (val) {
+      this.update()
+    },
+    'pozycja.cena_brutto': function (val) {
+      this.update()
+    },
+    'pozycja.ilosc': function (val) {
+      this.update()
     },
   },
 
@@ -100,6 +119,7 @@ export default {
     cenaFixed: {
       get() {
         return Math.round((this.pozycja.cena + Number.EPSILON) * 100) / 100
+        // return this.pozycja.cena.toFixed(2)
       },
       set(val) {
         this.pozycja.cena = Number(val)
@@ -109,6 +129,7 @@ export default {
     cenaBruttoFixed: {
       get() {
         return Math.round((this.pozycja.cena_brutto + Number.EPSILON) * 100) / 100
+        // return this.pozycja.cena_brutto.toFixed(2)
       },
       set(val) {
         this.pozycja.cena_brutto = Number(val)
@@ -120,16 +141,16 @@ export default {
     updateCena() {
       const cenaBrutto = this.pozycja.cena_brutto
       const cena = cenaBrutto / this.vatRate
-      this.pozycja.cena = Math.round((cena + Number.EPSILON) * 10000) / 10000
+      this.pozycja.cena = cena
     },
 
     updateCenaBrutto() {
       const cena = this.pozycja.cena
       const cenaBrutto = cena * this.vatRate
-      this.pozycja.cena_brutto = Math.round((cenaBrutto + Number.EPSILON) * 10000) / 10000
+      this.pozycja.cena_brutto = cenaBrutto
     },
 
-    fetchProp(prop, search) {
+    fetchProp(prop, search, callback) {
       axios.post(route(`czesci.apiProps`, {
         prop,
       }), {
@@ -138,6 +159,28 @@ export default {
       })
         .then(res => {
           this[`${prop}List`] = res.data
+          callback(res.data)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+
+    update() {
+      if (! this.isValidSymbol()) return;
+
+      axios.post(route('kosztorys.updatePozycja'), {
+        _method: 'PUT',
+        _token: this._token,
+        id: this.pozycja.id,
+        symbol: this.pozycja.symbol,
+        opis: this.pozycja.opis,
+        cena: this.pozycja.cena,
+        vat: this.pozycja.vat_procent,
+        ilosc: this.pozycja.ilosc,
+      })
+        .then(res => {
+          console.log(res)
         })
         .catch(err => {
           console.log(err)
@@ -151,6 +194,7 @@ export default {
 
   created() {
     this.fetchProp = debounce(this.fetchProp, 300)
+    this.update = debounce(this.update, 300)
   },
 }
 </script>

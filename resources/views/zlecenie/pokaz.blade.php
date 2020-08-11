@@ -310,7 +310,7 @@
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">
                         <div class="tab-pane fade" id="kosztorys" role="tabpanel">
-                            @if ($user->id > 1)
+                            @if (false)
                                 <table class="table table-sm table-striped table-vcenter font-size-sm">
                                     <thead>
                                         <tr>

@@ -2968,6 +2968,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2981,7 +2982,27 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     'pozycja.symbol': function pozycjaSymbol(val) {
-      this.fetchProp('symbol', val);
+      var _this = this;
+
+      this.symbolList = [];
+      this.fetchProp('symbol', val, function () {
+        _this.update();
+      });
+    },
+    'pozycja.opis': function pozycjaOpis(val) {
+      this.update();
+    },
+    'pozycja.cena': function pozycjaCena(val) {
+      this.update();
+    },
+    'pozycja.var_procent': function pozycjaVar_procent(val) {
+      this.update();
+    },
+    'pozycja.cena_brutto': function pozycjaCena_brutto(val) {
+      this.update();
+    },
+    'pozycja.ilosc': function pozycjaIlosc(val) {
+      this.update();
     }
   },
   computed: {
@@ -2993,7 +3014,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     cenaFixed: {
       get: function get() {
-        return Math.round((this.pozycja.cena + Number.EPSILON) * 100) / 100;
+        return Math.round((this.pozycja.cena + Number.EPSILON) * 100) / 100; // return this.pozycja.cena.toFixed(2)
       },
       set: function set(val) {
         this.pozycja.cena = Number(val);
@@ -3001,7 +3022,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     cenaBruttoFixed: {
       get: function get() {
-        return Math.round((this.pozycja.cena_brutto + Number.EPSILON) * 100) / 100;
+        return Math.round((this.pozycja.cena_brutto + Number.EPSILON) * 100) / 100; // return this.pozycja.cena_brutto.toFixed(2)
       },
       set: function set(val) {
         this.pozycja.cena_brutto = Number(val);
@@ -3012,15 +3033,15 @@ __webpack_require__.r(__webpack_exports__);
     updateCena: function updateCena() {
       var cenaBrutto = this.pozycja.cena_brutto;
       var cena = cenaBrutto / this.vatRate;
-      this.pozycja.cena = Math.round((cena + Number.EPSILON) * 10000) / 10000;
+      this.pozycja.cena = cena;
     },
     updateCenaBrutto: function updateCenaBrutto() {
       var cena = this.pozycja.cena;
       var cenaBrutto = cena * this.vatRate;
-      this.pozycja.cena_brutto = Math.round((cenaBrutto + Number.EPSILON) * 10000) / 10000;
+      this.pozycja.cena_brutto = cenaBrutto;
     },
-    fetchProp: function fetchProp(prop, search) {
-      var _this = this;
+    fetchProp: function fetchProp(prop, search, callback) {
+      var _this2 = this;
 
       axios.post(route("czesci.apiProps", {
         prop: prop
@@ -3028,7 +3049,25 @@ __webpack_require__.r(__webpack_exports__);
         _token: this._token,
         search: search
       }).then(function (res) {
-        _this["".concat(prop, "List")] = res.data;
+        _this2["".concat(prop, "List")] = res.data;
+        callback(res.data);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    },
+    update: function update() {
+      if (!this.isValidSymbol()) return;
+      axios.post(route('kosztorys.updatePozycja'), {
+        _method: 'PUT',
+        _token: this._token,
+        id: this.pozycja.id,
+        symbol: this.pozycja.symbol,
+        opis: this.pozycja.opis,
+        cena: this.pozycja.cena,
+        vat: this.pozycja.vat_procent,
+        ilosc: this.pozycja.ilosc
+      }).then(function (res) {
+        console.log(res);
       }).catch(function (err) {
         console.log(err);
       });
@@ -3039,6 +3078,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.fetchProp = Object(debounce__WEBPACK_IMPORTED_MODULE_0__["debounce"])(this.fetchProp, 300);
+    this.update = Object(debounce__WEBPACK_IMPORTED_MODULE_0__["debounce"])(this.update, 300);
   }
 });
 
@@ -3164,6 +3204,7 @@ __webpack_require__.r(__webpack_exports__);
     KosztorysPozycja: _KosztorysPozycja__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   props: {
+    _token: String,
     zlecenie_id: Number
   },
   data: function data() {
@@ -49772,7 +49813,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Chrome, Safari, Edge, Opera */\ninput[data-v-f4183d96]::-webkit-outer-spin-button,\ninput[data-v-f4183d96]::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\n/* Firefox */\ninput[type=number][data-v-f4183d96] {\n  -moz-appearance: textfield;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Chrome, Safari, Edge, Opera */\ninput[data-v-f4183d96]::-webkit-outer-spin-button,\ninput[data-v-f4183d96]::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\n/* Firefox */\ninput[type=number][data-v-f4183d96] {\n  -moz-appearance: textfield;\n}\n", ""]);
 
 // exports
 
@@ -69916,6 +69957,7 @@ var render = function() {
               size: "sm",
               list: "symbolList" + _vm._uid,
               state: _vm.symbolState,
+              disabled: Boolean(_vm.pozycja.id),
               required: ""
             },
             on: {
@@ -69945,6 +69987,9 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("b-td", { attrs: { nowrap: "" } }, [
+        _vm.pozycja.is_zamowione
+          ? _c("i", { staticClass: "fa fa-shopping-cart text-danger" })
+          : _vm._e(),
         _vm._v("\n    " + _vm._s(_vm.pozycja.nazwa.substring(0, 30)) + "\n  ")
       ]),
       _vm._v(" "),
@@ -69952,10 +69997,6 @@ var render = function() {
         "b-td",
         { attrs: { nowrap: "" } },
         [
-          _vm.pozycja.is_zamowione
-            ? _c("i", { staticClass: "fa fa-shopping-cart text-danger" })
-            : _vm._e(),
-          _vm._v(" "),
           _c("b-input", {
             attrs: { size: "sm" },
             model: {
@@ -70164,7 +70205,11 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "b-th",
-                    { staticClass: "font-w700", attrs: { nowrap: "" } },
+                    {
+                      staticClass: "font-w700",
+                      staticStyle: { width: "70px" },
+                      attrs: { nowrap: "" }
+                    },
                     [_vm._v("Symbol")]
                   ),
                   _vm._v(" "),
@@ -70182,7 +70227,11 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "b-th",
-                    { staticClass: "font-w700", attrs: { nowrap: "" } },
+                    {
+                      staticClass: "font-w700",
+                      staticStyle: { width: "1%" },
+                      attrs: { nowrap: "" }
+                    },
                     [_vm._v("Cena netto")]
                   ),
                   _vm._v(" "),
@@ -70193,12 +70242,16 @@ var render = function() {
                       staticStyle: { width: "50px" },
                       attrs: { nowrap: "" }
                     },
-                    [_vm._v("Vat")]
+                    [_vm._v("VAT")]
                   ),
                   _vm._v(" "),
                   _c(
                     "b-th",
-                    { staticClass: "font-w700", attrs: { nowrap: "" } },
+                    {
+                      staticClass: "font-w700",
+                      staticStyle: { width: "1%" },
+                      attrs: { nowrap: "" }
+                    },
                     [_vm._v("Cena brutto")]
                   ),
                   _vm._v(" "),
@@ -70216,6 +70269,7 @@ var render = function() {
                     "b-th",
                     {
                       staticClass: "font-w700 text-right",
+                      staticStyle: { width: "1%" },
                       attrs: { nowrap: "" }
                     },
                     [_vm._v("Wartość brutto")]

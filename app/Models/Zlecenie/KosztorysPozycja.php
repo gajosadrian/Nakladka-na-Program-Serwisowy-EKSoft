@@ -31,6 +31,11 @@ class KosztorysPozycja extends Model
         return $this->attributes['id_o_tw'];
     }
 
+    public function setTowarIdAttribute(int $towar_id): void
+    {
+        $this->attributes['id_o_tw'] = $towar_id;
+    }
+
     public function getZlecenieIdAttribute(): int
     {
         return $this->attributes['id_zs'];
@@ -96,6 +101,11 @@ class KosztorysPozycja extends Model
     public function getCenaAttribute(): float
     {
         return round($this->attributes['cena'], 4);
+    }
+
+    public function setCenaAttribute(float $cena): void
+    {
+        $this->attributes['cena'] = $cena;
     }
 
     public function getCenaFormattedAttribute(): string
