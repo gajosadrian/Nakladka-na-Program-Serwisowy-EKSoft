@@ -64,7 +64,13 @@
         required
       />
     </b-td>
-    <b-td class="text-right" nowrap>{{ pozycja.wartosc_brutto.toFixed(2) }}</b-td>
+    <b-td class="text-right" nowrap>{{ wartoscBrutto.toFixed(2) }}</b-td>
+    <b-td>
+      <i
+        class="fa fa-times text-danger"
+        @click="remove()"
+      ></i>
+    </b-td>
   </b-tr>
 </template>
 
@@ -110,6 +116,10 @@ export default {
   computed: {
     vatRate() {
       return this.pozycja.vat_procent / 100 + 1
+    },
+
+    wartoscBrutto() {
+      return this.pozycja.cena_brutto * this.pozycja.ilosc
     },
 
     symbolState() {
@@ -169,10 +179,9 @@ export default {
     update() {
       if (! this.isValidSymbol()) return;
 
-      axios.post(route('kosztorys.updatePozycja'), {
+      axios.post(route('kosztorys.updatePozycja', this.pozycja.id), {
         _method: 'PUT',
         _token: this._token,
-        id: this.pozycja.id,
         symbol: this.pozycja.symbol,
         opis: this.pozycja.opis,
         cena: this.pozycja.cena,
@@ -185,6 +194,11 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+
+    remove() {
+      if (! this.pozycja.id) return;
+      this.$emit('remove', this.pozycja.id)
     },
 
     isValidSymbol() {
@@ -210,5 +224,9 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.text-danger {
+  cursor: pointer;
 }
 </style>

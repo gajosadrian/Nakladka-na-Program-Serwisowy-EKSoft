@@ -2969,6 +2969,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -3008,6 +3014,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     vatRate: function vatRate() {
       return this.pozycja.vat_procent / 100 + 1;
+    },
+    wartoscBrutto: function wartoscBrutto() {
+      return this.pozycja.cena_brutto * this.pozycja.ilosc;
     },
     symbolState: function symbolState() {
       return this.symbolList.length === 1 ? null : false;
@@ -3057,10 +3066,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     update: function update() {
       if (!this.isValidSymbol()) return;
-      axios.post(route('kosztorys.updatePozycja'), {
+      axios.post(route('kosztorys.updatePozycja', this.pozycja.id), {
         _method: 'PUT',
         _token: this._token,
-        id: this.pozycja.id,
         symbol: this.pozycja.symbol,
         opis: this.pozycja.opis,
         cena: this.pozycja.cena,
@@ -3071,6 +3079,10 @@ __webpack_require__.r(__webpack_exports__);
       }).catch(function (err) {
         console.log(err);
       });
+    },
+    remove: function remove() {
+      if (!this.pozycja.id) return;
+      this.$emit('remove', this.pozycja.id);
     },
     isValidSymbol: function isValidSymbol() {
       return this.symbolState === null ? true : false;
@@ -3198,6 +3210,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -3209,7 +3242,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      pozycje: []
+      pozycje: [],
+      newSymbol: ''
     };
   },
   computed: {
@@ -3220,12 +3254,54 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    getPozycja: function getPozycja(id) {
+      return this.pozycje.find(function (pozycja) {
+        return pozycja.id == id;
+      });
+    },
     fetchKosztorys: function fetchKosztorys() {
       var _this = this;
 
       axios.get(route('zlecenia.api.getKosztorys', this.zlecenie_id)).then(function (response) {
         _this.pozycje = response.data;
       });
+    },
+    remove: function remove(pozycjaId) {
+      var _this2 = this;
+
+      var pozycja = this.getPozycja(pozycjaId);
+      axios.post(route('kosztorys.destroyPozycja', pozycja.id), {
+        _method: 'delete',
+        _token: this._token
+      }).then(function () {
+        _this2.pozycje.splice(_this2.pozycje.indexOf(pozycja), 1);
+      });
+    },
+    add: function add(symbol) {
+      var _this3 = this;
+
+      return new Promise(function (resolve, reject) {
+        axios.post(route('kosztorys.storePozycja'), {
+          _token: _this3._token,
+          zlecenieId: _this3.zlecenie_id,
+          symbol: symbol
+        }).then(function () {
+          resolve();
+        }).catch(function () {
+          reject();
+        });
+      });
+    },
+    submit: function submit() {
+      var _this4 = this;
+
+      if (!this.newSymbol) return;
+      this.add(this.newSymbol).then(function () {
+        _this4.fetchKosztorys();
+      }).catch(function () {
+        console.log('error');
+      });
+      this.newSymbol = '';
     }
   },
   mounted: function mounted() {
@@ -49813,7 +49889,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Chrome, Safari, Edge, Opera */\ninput[data-v-f4183d96]::-webkit-outer-spin-button,\ninput[data-v-f4183d96]::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\n/* Firefox */\ninput[type=number][data-v-f4183d96] {\n  -moz-appearance: textfield;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Chrome, Safari, Edge, Opera */\ninput[data-v-f4183d96]::-webkit-outer-spin-button,\ninput[data-v-f4183d96]::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\n/* Firefox */\ninput[type=number][data-v-f4183d96] {\n  -moz-appearance: textfield;\n}\n.text-danger[data-v-f4183d96] {\n  cursor: pointer;\n}\n", ""]);
 
 // exports
 
@@ -70113,7 +70189,18 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("b-td", { staticClass: "text-right", attrs: { nowrap: "" } }, [
-        _vm._v(_vm._s(_vm.pozycja.wartosc_brutto.toFixed(2)))
+        _vm._v(_vm._s(_vm.wartoscBrutto.toFixed(2)))
+      ]),
+      _vm._v(" "),
+      _c("b-td", [
+        _c("i", {
+          staticClass: "fa fa-times text-danger",
+          on: {
+            click: function($event) {
+              return _vm.remove()
+            }
+          }
+        })
       ])
     ],
     1
@@ -70207,7 +70294,7 @@ var render = function() {
                     "b-th",
                     {
                       staticClass: "font-w700",
-                      staticStyle: { width: "70px" },
+                      staticStyle: { width: "130px" },
                       attrs: { nowrap: "" }
                     },
                     [_vm._v("Symbol")]
@@ -70273,7 +70360,9 @@ var render = function() {
                       attrs: { nowrap: "" }
                     },
                     [_vm._v("Wartość brutto")]
-                  )
+                  ),
+                  _vm._v(" "),
+                  _c("b-th")
                 ],
                 1
               )
@@ -70283,13 +70372,85 @@ var render = function() {
           _vm._v(" "),
           _c(
             "b-tbody",
-            _vm._l(_vm.pozycje, function(pozycja) {
-              return _c("KosztorysPozycja", {
-                key: pozycja.id,
-                attrs: { pozycja: pozycja }
-              })
-            }),
-            1
+            [
+              _vm._l(_vm.pozycje, function(pozycja) {
+                return _c("KosztorysPozycja", {
+                  key: pozycja.id,
+                  attrs: { pozycja: pozycja },
+                  on: { remove: _vm.remove }
+                })
+              }),
+              _vm._v(" "),
+              _c(
+                "b-tr",
+                [
+                  _c("b-td"),
+                  _vm._v(" "),
+                  _c(
+                    "b-td",
+                    { attrs: { colspan: "2" } },
+                    [
+                      _c(
+                        "b-form",
+                        {
+                          attrs: { inline: "" },
+                          on: {
+                            submit: function($event) {
+                              $event.preventDefault()
+                              return _vm.submit()
+                            }
+                          }
+                        },
+                        [
+                          _c("b-input", {
+                            staticStyle: { width: "122px" },
+                            attrs: { size: "sm", required: "" },
+                            model: {
+                              value: _vm.newSymbol,
+                              callback: function($$v) {
+                                _vm.newSymbol = $$v
+                              },
+                              expression: "newSymbol"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "ml-1",
+                              attrs: {
+                                type: "submit",
+                                size: "sm",
+                                variant: "primary"
+                              }
+                            },
+                            [_vm._v("\n              Dodaj\n            ")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("b-td"),
+                  _vm._v(" "),
+                  _c("b-td"),
+                  _vm._v(" "),
+                  _c("b-td"),
+                  _vm._v(" "),
+                  _c("b-td"),
+                  _vm._v(" "),
+                  _c("b-td"),
+                  _vm._v(" "),
+                  _c("b-td"),
+                  _vm._v(" "),
+                  _c("b-td")
+                ],
+                1
+              )
+            ],
+            2
           ),
           _vm._v(" "),
           _c(
@@ -70324,7 +70485,9 @@ var render = function() {
                           " zł\n        "
                       )
                     ]
-                  )
+                  ),
+                  _vm._v(" "),
+                  _c("b-th")
                 ],
                 1
               )

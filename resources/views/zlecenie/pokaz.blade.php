@@ -169,15 +169,15 @@
                             </tr>
                             <tr>
                                 <th>Model:</th>
-                                <td>{!! $zlecenie->urzadzenie->model ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
+                                <td>{!! $zlecenie->urzadzenie->model ?: '<span class="font-w600 bg-danger text-white px-1">uzupełnić</span>' !!}</td>
                             </tr>
                             <tr>
                                 <th>Nr seryjny:</th>
-                                <td>{!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
+                                <td>{!! $zlecenie->urzadzenie->nr_seryjny ?: '<span class="font-w600 bg-danger text-white px-1">uzupełnić</span>' !!}</td>
                             </tr>
                             <tr>
                                 <th>Kod&nbsp;wyrobu:</th>
-                                <td>{!! $zlecenie->urzadzenie->kod_wyrobu ?: '<span class="font-w600 text-danger">uzupełnić</span>' !!}</td>
+                                <td>{{ $zlecenie->urzadzenie->kod_wyrobu }}</td>
                             </tr>
                         </table>
                     </template>
@@ -310,7 +310,7 @@
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">
                         <div class="tab-pane fade" id="kosztorys" role="tabpanel">
-                            @if (false)
+                            @if ($user->is_technik)
                                 <table class="table table-sm table-striped table-vcenter font-size-sm">
                                     <thead>
                                         <tr>
@@ -466,7 +466,7 @@ function changeStatus(status_id) {
     last_status_id = status_id;
 
     let remove_termin = 0;
-    if (status_id == 14 || status_id == 13) {
+    if (status_id == 14 || status_id == 13 || status_id == 29) {
         remove_termin = 1;
     }
 

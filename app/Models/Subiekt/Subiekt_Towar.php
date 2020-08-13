@@ -73,6 +73,11 @@ class Subiekt_Towar extends Model
         return $this->attributes['tw_Rodzaj'] ?? false;
     }
 
+    public function getJednostkaAttribute(): string
+    {
+        return $this->attributes['tw_JednMiary'];
+    }
+
     public function getIsZdjecieAttribute(): bool
     {
         return count($this->zdjecia) > 0;
@@ -96,6 +101,16 @@ class Subiekt_Towar extends Model
     public function stan()
     {
         return $this->hasOne(TowarStan::class, 'st_TowId', 'tw_Id')->where('st_MagId', 1);
+    }
+
+    public function vat()
+    {
+        return $this->hasOne(TowarVat::class, 'vat_Id', 'tw_IdVatSp');
+    }
+
+    public function cena()
+    {
+        return $this->hasOne(TowarCena::class, 'tc_IdTowar', 'tw_Id');
     }
 
     public function zdjecia()

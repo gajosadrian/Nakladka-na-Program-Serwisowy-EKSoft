@@ -68,7 +68,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('kosztorys')->name('kosztorys.')->group(function () {
-        Route::put('pozycja', 'KosztorysController@updatePozycja')->name('updatePozycja');
+        Route::put('pozycja/{pozycja}', 'KosztorysController@updatePozycja')->name('updatePozycja');
+        Route::post('pozycja', 'KosztorysController@storePozycja')->name('storePozycja');
+        Route::delete('pozycja/{pozycja}', 'KosztorysController@destroyPozycja')->name('destroyPozycja');
     });
 
     Route::prefix('inwentaryzacja')->name('inwentaryzacja.')->group(function () {

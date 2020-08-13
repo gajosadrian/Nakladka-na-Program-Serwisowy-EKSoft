@@ -11,6 +11,7 @@ class KosztorysPozycja extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'ser_ZlecKosztPoz';
     protected $with = ['towar'];
+    protected $guarded = ['id'];
     public $timestamps = false;
 
     private const
@@ -41,6 +42,16 @@ class KosztorysPozycja extends Model
         return $this->attributes['id_zs'];
     }
 
+    public function setZlecenieIdAttribute(int $zlecenie_id): void
+    {
+        $this->attributes['id_zs'] = $zlecenie_id;
+    }
+
+    public function setZlecenieNrAttribute(string $zlecenie_nr): void
+    {
+        $this->attributes['nr_o_zlecenia'] = $zlecenie_nr;
+    }
+
     public function getNazwaAttribute(): string
     {
         return $this->towar->nazwa;
@@ -63,6 +74,16 @@ class KosztorysPozycja extends Model
     public function getSymbolDostawcy2Attribute(): string
     {
         return $this->towar->symbol_dostawcy2;
+    }
+
+    public function getJednostkaAttribute(): string
+    {
+        return $this->attributes['jm'] ?? false;
+    }
+
+    public function setJednostkaAttribute(string $jednostka): void
+    {
+        $this->attributes['jm'] = $jednostka;
     }
 
     public function getOpisRawAttribute(): string
