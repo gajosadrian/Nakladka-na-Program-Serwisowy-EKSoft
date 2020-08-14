@@ -402,6 +402,16 @@ class ZlecenieController extends Controller
         return response()->json($zlecenie->opis, 200);
     }
 
+    public function apiUpdateNotatka(Request $request, int $id)
+    {
+        $zlecenie = Zlecenie::findOrFail($id);
+
+        $zlecenie->opis = $request->opis;
+        $zlecenie->save();
+
+        return response()->json($zlecenie->opis, 200);
+    }
+
     public function apiChangeStatus(Request $request, int $id)
     {
         $user = auth()->user();

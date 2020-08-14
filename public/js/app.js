@@ -3074,9 +3074,7 @@ __webpack_require__.r(__webpack_exports__);
         cena: this.pozycja.cena,
         vat: this.pozycja.vat_procent,
         ilosc: this.pozycja.ilosc
-      }).then(function (res) {
-        console.log(res);
-      }).catch(function (err) {
+      }).then(function (res) {}).catch(function (err) {
         console.log(err);
       });
     },
@@ -3168,7 +3166,19 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _KosztorysPozycja__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./KosztorysPozycja */ "./resources/js/components/Zlecenie/KosztorysPozycja.vue");
+/* harmony import */ var debounce__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debounce */ "./node_modules/debounce/index.js");
+/* harmony import */ var debounce__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debounce__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _KosztorysPozycja__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./KosztorysPozycja */ "./resources/js/components/Zlecenie/KosztorysPozycja.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3232,9 +3242,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    KosztorysPozycja: _KosztorysPozycja__WEBPACK_IMPORTED_MODULE_0__["default"]
+    KosztorysPozycja: _KosztorysPozycja__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   props: {
     _token: String,
@@ -3243,7 +3254,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       pozycje: [],
-      newSymbol: ''
+      newSymbol: '',
+      symbolList: []
     };
   },
   computed: {
@@ -3251,6 +3263,20 @@ __webpack_require__.r(__webpack_exports__);
       return this.pozycje.reduce(function (acc, pozycja) {
         return acc += pozycja.wartosc_brutto;
       }, 0);
+    },
+    symbolState: function symbolState() {
+      var length = this.symbolList.length;
+
+      if (length === 0 || length === 1) {
+        return null;
+      }
+
+      return false;
+    }
+  },
+  watch: {
+    newSymbol: function newSymbol(val) {
+      this.fetchProp('symbol', val);
     }
   },
   methods: {
@@ -3302,7 +3328,28 @@ __webpack_require__.r(__webpack_exports__);
         console.log('error');
       });
       this.newSymbol = '';
+    },
+    fetchProp: function fetchProp(prop, search, callback) {
+      var _this5 = this;
+
+      axios.post(route("czesci.apiProps", {
+        prop: prop
+      }), {
+        _token: this._token,
+        search: search
+      }).then(function (res) {
+        _this5["".concat(prop, "List")] = res.data;
+        if (callback) callback(res.data);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    },
+    isValidSymbol: function isValidSymbol() {
+      return this.symbolState === null ? true : false;
     }
+  },
+  created: function created() {
+    this.fetchProp = Object(debounce__WEBPACK_IMPORTED_MODULE_0__["debounce"])(this.fetchProp, 300);
   },
   mounted: function mounted() {
     this.fetchKosztorys();
@@ -3839,6 +3886,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var debounce__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debounce */ "./node_modules/debounce/index.js");
+/* harmony import */ var debounce__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debounce__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -3850,9 +3899,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    zlecenie_id: String
+    zlecenie_id: String,
+    is_technik: Number
   },
   data: function data() {
     return {
@@ -3867,6 +3924,9 @@ __webpack_require__.r(__webpack_exports__);
       opis = opis.split('<<').join('</u></span>');
       opis = opis.split("\n").join('<br>');
       return opis;
+    },
+    opisRows: function opisRows() {
+      return this.opis.split('\n').length;
     }
   },
   methods: {
@@ -3875,23 +3935,31 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.new_opis == '') return false;
       this.disable_button = true;
-      axios.post(route('zlecenia.api.append_opis', {
-        id: this.zlecenie_id,
+      axios.post(route('zlecenia.api.append_opis', this.zlecenie_id), {
         opis: this.new_opis
-      })).then(function (response) {
+      }).then(function (response) {
         _this.disable_button = false;
         _this.opis = response.data;
         _this.new_opis = '';
       });
+    },
+    updateNotatka: function updateNotatka() {
+      axios.post(route('zlecenia.api.updateOpis', this.zlecenie_id), {
+        opis: this.opis
+      });
     }
   },
   mounted: function mounted() {
-    var self = this;
+    var _this2 = this;
+
     axios.get(route('zlecenia.api.get_opis', {
       id: this.zlecenie_id
     })).then(function (response) {
-      self.opis = response.data;
+      _this2.opis = response.data;
     });
+  },
+  created: function created() {
+    this.updateNotatka = Object(debounce__WEBPACK_IMPORTED_MODULE_0__["debounce"])(this.updateNotatka, 500);
   }
 });
 
@@ -49889,7 +49957,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Chrome, Safari, Edge, Opera */\ninput[data-v-f4183d96]::-webkit-outer-spin-button,\ninput[data-v-f4183d96]::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\n/* Firefox */\ninput[type=number][data-v-f4183d96] {\n  -moz-appearance: textfield;\n}\n.text-danger[data-v-f4183d96] {\n  cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* Chrome, Safari, Edge, Opera */\ninput[data-v-f4183d96]::-webkit-outer-spin-button,\ninput[data-v-f4183d96]::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\n/* Firefox */\ninput[type=number][data-v-f4183d96] {\n  -moz-appearance: textfield;\n}\n.text-danger[data-v-f4183d96] {\n  cursor: pointer;\n}\n", ""]);
 
 // exports
 
@@ -70404,7 +70472,12 @@ var render = function() {
                         [
                           _c("b-input", {
                             staticStyle: { width: "122px" },
-                            attrs: { size: "sm", required: "" },
+                            attrs: {
+                              state: _vm.symbolState,
+                              list: "symbolList" + _vm._uid,
+                              size: "sm",
+                              required: ""
+                            },
                             model: {
                               value: _vm.newSymbol,
                               callback: function($$v) {
@@ -70415,13 +70488,25 @@ var render = function() {
                           }),
                           _vm._v(" "),
                           _c(
+                            "datalist",
+                            { attrs: { id: "symbolList" + _vm._uid } },
+                            _vm._l(_vm.symbolList, function(symbol) {
+                              return _c("option", { key: symbol }, [
+                                _vm._v(_vm._s(symbol))
+                              ])
+                            }),
+                            0
+                          ),
+                          _vm._v(" "),
+                          _c(
                             "b-button",
                             {
                               staticClass: "ml-1",
                               attrs: {
                                 type: "submit",
                                 size: "sm",
-                                variant: "primary"
+                                variant: "primary",
+                                disabled: !_vm.isValidSymbol()
                               }
                             },
                             [_vm._v("\n              Dodaj\n            ")]
@@ -71592,9 +71677,26 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div", { staticClass: "mb-3" }, [
-        _c("div", { domProps: { innerHTML: _vm._s(_vm.opis_formatted) } })
-      ]),
+      !_vm.is_technik
+        ? _c("b-textarea", {
+            staticClass: "mb-3",
+            attrs: { rows: _vm.opisRows },
+            on: { input: _vm.updateNotatka },
+            model: {
+              value: _vm.opis,
+              callback: function($$v) {
+                _vm.opis = $$v
+              },
+              expression: "opis"
+            }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.is_technik
+        ? _c("div", { staticClass: "mb-3" }, [
+            _c("div", { domProps: { innerHTML: _vm._s(_vm.opis_formatted) } })
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _c("textarea", {
         directives: [

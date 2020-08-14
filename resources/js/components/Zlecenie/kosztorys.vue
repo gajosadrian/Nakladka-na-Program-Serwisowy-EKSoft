@@ -25,8 +25,18 @@
           <b-td></b-td>
           <b-td colspan="2">
             <b-form @submit.prevent="submit()" inline>
-              <b-input v-model="newSymbol" size="sm" required style="width:122px;"></b-input>
-              <b-button type="submit" size="sm" variant="primary" class="ml-1">
+              <b-input
+                v-model="newSymbol"
+                :state="symbolState"
+                :list="`symbolList${_uid}`"
+                size="sm"
+                required
+                style="width:122px;"
+              />
+              <datalist :id="`symbolList${_uid}`">
+                <option v-for="symbol in symbolList" :key="symbol">{{ symbol }}</option>
+              </datalist>
+              <b-button type="submit" size="sm" variant="primary" class="ml-1" :disabled="! isValidSymbol()">
                 Dodaj
               </b-button>
             </b-form>
@@ -61,6 +71,7 @@
 </template>
 
 <script>
+import { debounce } from 'debounce'
 import KosztorysPozycja from './KosztorysPozycja'
 
 export default {
@@ -77,12 +88,27 @@ export default {
     return {
       pozycje: [],
       newSymbol: '',
+      symbolList: [],
     }
   },
 
   computed: {
     wartoscBrutto() {
       return this.pozycje.reduce((acc, pozycja) => acc += pozycja.wartosc_brutto, 0)
+    },
+
+    symbolState() {
+      const length = this.symbolList.length
+      if (length === 0 || length === 1) {
+        return null
+      }
+      return false
+    },
+  },
+
+  watch: {
+    newSymbol(val) {
+      this.fetchProp('symbol', val)
     },
   },
 
@@ -139,6 +165,30 @@ export default {
 
       this.newSymbol = ''
     },
+
+    fetchProp(prop, search, callback) {
+      axios.post(route(`czesci.apiProps`, {
+        prop,
+      }), {
+        _token: this._token,
+        search,
+      })
+        .then(res => {
+          this[`${prop}List`] = res.data
+          if (callback) callback(res.data);
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+
+    isValidSymbol() {
+      return this.symbolState === null ? true : false
+    },
+  },
+
+  created() {
+    this.fetchProp = debounce(this.fetchProp, 300)
   },
 
   mounted() {

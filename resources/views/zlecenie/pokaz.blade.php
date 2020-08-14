@@ -390,7 +390,7 @@
                                     {{ implode(', ', $zlecenie->errors) }}
                                 </div>
                             @endif
-                            <zlecenie-opis zlecenie_id=@json($zlecenie->id) />
+                            <zlecenie-opis zlecenie_id=@json($zlecenie->id) :is_technik="{{ (int) $user->is_technik }}" />
                         </div>
                         <div class="tab-pane fade" id="statusy" role="tabpanel">
                             <b-row>

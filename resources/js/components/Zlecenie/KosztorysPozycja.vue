@@ -188,9 +188,7 @@ export default {
         vat: this.pozycja.vat_procent,
         ilosc: this.pozycja.ilosc,
       })
-        .then(res => {
-          console.log(res)
-        })
+        .then(res => {})
         .catch(err => {
           console.log(err)
         })
