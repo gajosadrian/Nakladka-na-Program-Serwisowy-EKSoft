@@ -40,15 +40,6 @@
         //     },
         // ],
         [
-            'name' => 'Wyszukiwanie części',
-            'icon' => 'si si-magnifier',
-            'route' => 'zlecenia.wyszukiwanieCzesci',
-            'routeOptions' => [],
-            'if' => function() use ($user) {
-                return $user and !$user->technik_id;
-            },
-        ],
-        [
             'name' => 'Wyszukiwanie zleceń',
             'icon' => 'si si-magnifier',
             'route' => 'zlecenia.wyszukiwanieZlecenia',
@@ -78,15 +69,15 @@
                 return $user and !$user->technik_id;
             },
         ],
-        [
-            'name' => 'Historia',
-            'icon' => 'si si-bubbles',
-            'route' => 'sms.history',
-            'routeOptions' => [],
-            'if' => function() use ($user) {
-                return $user and !$user->technik_id;
-            },
-        ],
+        // [
+        //     'name' => 'Historia',
+        //     'icon' => 'si si-bubbles',
+        //     'route' => 'sms.history',
+        //     'routeOptions' => [],
+        //     'if' => function() use ($user) {
+        //         return $user and !$user->technik_id;
+        //     },
+        // ],
         // [
         //     'name' => 'Magazyn',
         //     'role' => 'super-admin',
@@ -126,11 +117,20 @@
             'routeOptions' => [],
         ],
         [
-            'name' => 'Dodawanie części',
-            'icon' => 'si si-plus',
-            'route' => 'czesci.indexDodawanie',
+            'name' => 'Wyszukiwanie części',
+            'icon' => 'si si-magnifier',
+            'route' => 'zlecenia.wyszukiwanieCzesci',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
+        // [
+        //     'name' => 'Dodawanie części',
+        //     'icon' => 'si si-plus',
+        //     'route' => 'czesci.indexDodawanie',
+        //     'routeOptions' => [],
+        // ],
         [
             'name' => 'Rozliczenia',
         ],

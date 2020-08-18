@@ -151,13 +151,19 @@ export default {
     updateCena() {
       const cenaBrutto = this.pozycja.cena_brutto
       const cena = cenaBrutto / this.vatRate
+
       this.pozycja.cena = cena
+      this.pozycja.wartosc = cena * this.pozycja.ilosc
+      this.pozycja.wartosc_brutto = cenaBrutto * this.pozycja.ilosc
     },
 
     updateCenaBrutto() {
       const cena = this.pozycja.cena
       const cenaBrutto = cena * this.vatRate
+
       this.pozycja.cena_brutto = cenaBrutto
+      this.pozycja.wartosc = cena * this.pozycja.ilosc
+      this.pozycja.wartosc_brutto = cenaBrutto * this.pozycja.ilosc
     },
 
     fetchProp(prop, search, callback) {

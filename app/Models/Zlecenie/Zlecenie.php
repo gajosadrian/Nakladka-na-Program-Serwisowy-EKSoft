@@ -11,7 +11,7 @@ class Zlecenie extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'ser_Zlecenia';
     protected $primaryKey = 'id_zlecenia';
-    protected $with = ['kosztorys_opis'];
+    protected $with = ['kosztorys_opis', 'terminarz'];
     public $timestamps = false;
 
     private $_czas_oczekiwania;

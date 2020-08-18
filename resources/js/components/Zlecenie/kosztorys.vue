@@ -99,7 +99,7 @@ export default {
 
     symbolState() {
       const length = this.symbolList.length
-      if (length === 0 || length === 1) {
+      if (length === 0 || this.isValidSymbol()) {
         return null
       }
       return false
@@ -183,7 +183,8 @@ export default {
     },
 
     isValidSymbol() {
-      return this.symbolState === null ? true : false
+      const symbolList = this.symbolList.map(symbol => symbol.toLowerCase())
+      return symbolList.includes( this.newSymbol.toLowerCase() )
     },
   },
 

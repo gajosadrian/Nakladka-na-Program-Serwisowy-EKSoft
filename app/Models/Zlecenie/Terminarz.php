@@ -260,7 +260,7 @@ class Terminarz extends Model
             $zlecenia_do_wyjasnienia_symbole = self::getZleceniaDoWyjasnieniaSymbole($technik_id, $date_string);
         }
 
-        $terminy = self::with('zlecenie.klient', 'zlecenie.urzadzenie', 'zlecenie.kosztorys_pozycje.naszykowane_czesci', 'zlecenie.status_historia')
+        $terminy = self::with('klient', 'zlecenie.klient', 'zlecenie.urzadzenie', 'zlecenie.kosztorys_pozycje.naszykowane_czesci.user', 'zlecenie.status_historia', 'zlecenie.przyjmujacy', 'zlecenie.zdjecia_do_zlecenia', 'zlecenie.zdjecia_do_urzadzenia')
             ->where(function ($query) use ($date_string, $technik_id) {
                 $query->where('STARTDATE', '>=', $date_string . ' 00:00:01');
                 $query->where('ENDDATE', '<=', $date_string . ' 23:59:59');

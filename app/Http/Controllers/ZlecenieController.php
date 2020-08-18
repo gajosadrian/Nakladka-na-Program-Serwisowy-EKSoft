@@ -264,7 +264,7 @@ class ZlecenieController extends Controller
         $logs = [];
         $grouped_logs = [];
         if ($technik) {
-            $logs = Log::where('user_id', $technik->user->id)->whereDate('created_at', $date_string)->get();
+            $logs = Log::with('zlecenie', 'status')->where('user_id', $technik->user->id)->whereDate('created_at', $date_string)->get();
             $grouped_logs = $logs->groupBy('zlecenie_id');
         }
 
