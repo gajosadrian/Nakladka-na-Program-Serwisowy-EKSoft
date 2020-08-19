@@ -109,12 +109,18 @@
             'icon' => 'si si-briefcase',
             'route' => 'czesci.indexSzykowanie',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
         [
             'name' => 'Odbiór części',
             'icon' => 'si si-check',
             'route' => 'czesci.indexOdbior',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
         ],
         [
             'name' => 'Wyszukiwanie części',
@@ -130,6 +136,9 @@
         //     'icon' => 'si si-plus',
         //     'route' => 'czesci.indexDodawanie',
         //     'routeOptions' => [],
+        //     'if' => function() use ($user) {
+        //         return $user and !$user->technik_id;
+        //     },
         // ],
         [
             'name' => 'Rozliczenia',
