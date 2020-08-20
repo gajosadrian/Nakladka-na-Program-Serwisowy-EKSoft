@@ -10,7 +10,7 @@
     <div v-if="is_technik" class="mb-3">
       <div v-html="opis_formatted"></div>
     </div>
-    <textarea v-model.trim="new_opis" class="form-control form-control-alt mb-2" placeholder="Dodaj opis.."></textarea>
+    <textarea v-model.trim="new_opis" @keydown.enter="appendNotatka()" class="form-control form-control-alt mb-2" placeholder="Dodaj opis.."></textarea>
     <b-button size="sm" variant="primary" :disabled="disable_button" @click="appendNotatka">Dodaj opis</b-button>
   </div>
 </template>

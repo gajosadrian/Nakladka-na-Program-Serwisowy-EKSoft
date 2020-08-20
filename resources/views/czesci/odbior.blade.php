@@ -61,8 +61,10 @@
                             <div class="clearfix {{ $is_mobile ? '' : 'push' }}">
                                 <div class="float-left">
                                     {{-- {{ $zlecenie->nr }}, --}}
-                                    {{ $zlecenie->klient->nazwa }},
-                                    <span class="font-w600">{{ $naszykowana_czesc->zlecenie_data_formatted }}</span>
+                                        <a href="javascript:void(0)" class="font-w600" onclick="{{ $naszykowana_czesc->zlecenie->popup_link }}">
+                                        {{ $zlecenie->klient->nazwa }}
+                                    </a>
+                                    {{ $naszykowana_czesc->zlecenie_data_formatted }}
                                     <span class="ml-2">
                                         @if ($naszykowana_czesc->user->technik_id)
                                             <span class="d-none d-sm-inline bg-secondary text-white font-w600 px-1">Część nie była naszykowana</span>

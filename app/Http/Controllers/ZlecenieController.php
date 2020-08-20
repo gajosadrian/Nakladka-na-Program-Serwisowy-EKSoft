@@ -284,7 +284,7 @@ class ZlecenieController extends Controller
         })->limit(20)->get(['kh_Id'])->pluck('id')->values();
 
         if ($search) {
-            $search = strtoupper($search);
+            // $search = strtoupper($search);
 
             if (str_contains($search, 'ZS/')) {
                 $where = ['NrZlecenia', '=', $search];
