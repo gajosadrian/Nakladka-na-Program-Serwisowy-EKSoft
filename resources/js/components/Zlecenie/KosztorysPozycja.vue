@@ -17,7 +17,7 @@
     </b-td>
     <b-td nowrap>
       <i class="fa fa-shopping-cart text-danger" v-if="pozycja.is_zamowione"></i>
-      {{ pozycja.nazwa.substring(0, 30) }}
+      {{ pozycja.nazwa.substring(0, 35) }}<span v-if="pozycja.nazwa.length > 35">...</span>
     </b-td>
     <b-td nowrap>
       <b-input
@@ -60,11 +60,18 @@
         v-model="pozycja.ilosc"
         type="number"
         size="sm"
+        @keyup="updateCena()"
         @focus="$event.target.select()"
         required
       />
     </b-td>
-    <b-td class="text-right" nowrap>{{ wartoscBrutto.toFixed(2) }}</b-td>
+    <b-td class="text-right" nowrap>
+      <b-input
+        :value="wartoscBrutto.toFixed(2)"
+        size="sm"
+        disabled
+      />
+    </b-td>
     <b-td>
       <i
         class="fa fa-times text-danger"
