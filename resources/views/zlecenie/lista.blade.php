@@ -65,10 +65,18 @@
                             Odśwież
                         </b-button>
                     </div>
-                    <div class="col-lg-10">
+                    <div class="col-lg-2">
                         Zleceń realizowanych: <span class="font-w600 text-primary">{{ $zlecenia_realizowane_n }}</span>
                         <br>
-                        Zleceń ukończonych: <span class="font-w600 text-primary">{{ $zlecenia_ukonczone_n }}</span>
+                        Zleceń do zamknięcia: <span class="font-w600 text-primary">{{ $zlecenia_ukonczone_n }}</span>
+                    </div>
+                    <div class="col-lg-8">
+                        Ilość błędów:
+                        @if ($errors_n > 5)
+                            <span class="font-w600 bg-danger text-white px-1">{{ $errors_n }}</span>
+                        @else
+                            <span class="font-w600 text-danger">{{ $errors_n }}</span>
+                        @endif
                     </div>
                 </div>
 

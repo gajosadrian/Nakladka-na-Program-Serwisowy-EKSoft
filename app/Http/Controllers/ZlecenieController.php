@@ -66,6 +66,11 @@ class ZlecenieController extends Controller
         $zlecenia_n = $zlecenia_niezakonczone->count();
         $zlecenia_realizowane_n = $zlecenia_n - $zlecenia_ukonczone_n;
 
+        $errors_n = $zlecenia_niezakonczone->reduce(function ($acc, $zlecenie) {
+            if ($zlecenie->has_errors) return $acc + 1;
+            return $acc;
+        }, 0);
+
         return view('zlecenie.lista', [
             'zlecenia' => $zlecenia_niezakonczone,
             'zlecenia_duplicate' => $zlecenia_duplicate,
@@ -74,6 +79,7 @@ class ZlecenieController extends Controller
             'show_errors' => $show_errors,
             'zlecenia_ukonczone_n' => $zlecenia_ukonczone_n,
             'zlecenia_realizowane_n' => $zlecenia_realizowane_n,
+            'errors_n' => $errors_n,
         ]);
     }
 

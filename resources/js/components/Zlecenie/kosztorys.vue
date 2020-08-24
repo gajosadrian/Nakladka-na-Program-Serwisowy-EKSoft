@@ -11,7 +11,7 @@
           <b-th class="font-w700" nowrap style="width:50px;">VAT</b-th>
           <b-th class="font-w700" style="width:90px;">Cena brutto</b-th>
           <b-th class="font-w700" nowrap style="width:50px;">Ilość</b-th>
-          <b-th class="font-w700 text-right" style="width:90px;">Wartość brutto</b-th>
+          <b-th class="font-w700" style="width:90px;">Wartość brutto</b-th>
           <b-th></b-th>
         </b-tr>
       </b-thead>

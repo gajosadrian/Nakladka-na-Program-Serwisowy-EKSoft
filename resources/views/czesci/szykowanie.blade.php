@@ -37,9 +37,20 @@
         <b-row>
             @foreach ($terminy as $termin)
                 @foreach ($termin->zlecenie->kosztorys_pozycje as $pozycja)
-                    @continue( ! $pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane or $pozycja->is_zamowione )
+                    @continue( ! $pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane )
+
                     @php
-                        $is_naszykowane = (bool) (($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date) or $pozycja->is_niezamontowane) ?? $pozycja->is_ekspertyza);
+                        $is_niezamontowane_gotowe = (bool) ($pozycja->is_niezamontowane and $pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->sprawdzone_at and $pozycja->naszykowana_czesc->sprawdzone_at->gte($pozycja->naszykowana_czesc->zlecenie_data));
+                        $is_naszykowane = (bool) (($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date)) ?: $pozycja->is_ekspertyza);
+
+                        $color = null;
+                        if ($pozycja->is_ekspertyza or $pozycja->is_zamowione) {
+                            $color = 'warning';
+                        // } elseif ($pozycja->is_niezamontowane) {
+                        //     $color = 'danger';
+                        } elseif ($is_naszykowane) {
+                            $color = 'success';
+                        }
                     @endphp
 
                     <b-col lg="4">
@@ -47,14 +58,17 @@
                             <template slot="content">
                                 <div>
                                     {{-- <div>zlecenie_id: {{ $termin->zlecenie_id }}, towar_id: {{ $pozycja->towar_id }}, pozycja_id: {{ $pozycja->id }}, opis: ({{ $pozycja->opis_raw }})</div> --}}
-                                    <div>{{ $termin->zlecenie->nr }}, <span class="font-w600">{{ $termin->zlecenie->klient->nazwa }}</span></div>
+                                    <div onclick="{{ $termin->zlecenie->popup_link }}" style="cursor:pointer;">
+                                        {{ $termin->zlecenie->nr }},
+                                        <span class="font-w600">{{ $termin->zlecenie->klient->nazwa }}</span>
+                                    </div>
                                     @if ($pozycja->naszykowana_czesc)
                                         <div>
                                             Naszykował: <span class="font-w600 text-info">{{ $pozycja->naszykowana_czesc->user->name }}</span>
                                         </div>
                                     @endif
                                 </div>
-                                <div class="ribbon ribbon-{{ $is_naszykowane ? 'success' : 'danger' }}">
+                                <div class="ribbon ribbon-{{ $color ? $color : 'danger' }}">
                                     <div class="ribbon-box">{{ $pozycja->state_formatted }}</div>
                                     @if ($pozycja->is_zdjecie)
                                         <div>
@@ -66,7 +80,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="bg-{{ $is_naszykowane ? 'success' : 'danger' }} text-white p-1 mb-1">
+                                <div class="bg-{{ $color ? $color : 'danger' }} text-white p-1 mb-1">
                                     <div class="clearfix">
                                         <div class="float-left font-w700">
                                             @if ($pozycja->is_czesc_symbol)
@@ -80,7 +94,7 @@
                                 </div>
                                 <div class="row gutters-tiny">
                                     <div class="col-4">
-                                        @if ( ! $pozycja->is_ekspertyza and ! $pozycja->is_niezamontowane)
+                                        @if ( ! $pozycja->is_ekspertyza and ! $pozycja->is_zamowione and (! $pozycja->is_niezamontowane or $is_niezamontowane_gotowe)) {{-- and ! $pozycja->is_niezamontowane --}}
                                             <div class="form-group">
                                                 <div class="input-group">
                                                     @php
@@ -97,6 +111,8 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        @elseif ($pozycja->is_niezamontowane and ! $is_niezamontowane_gotowe)
+                                            Usuń z opisu "niezałożone" i ustaw ilość
                                         @elseif ($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->is_rozliczone)
                                             Pozycja powinna być rozliczona
                                         @endif

@@ -570,7 +570,8 @@ class Zlecenie extends Model
 
     public function getDniOdStatusuAttribute(): int
     {
-        return $this->statusy->first()->data->copy()->startOfDay()->diffInDays(now()->startOfDay(), false);
+        $data = $this->statusy->first()->data->copy() ?? now();
+        return $data->startOfDay()->diffInDays(now()->startOfDay(), false);
     }
 
     public function getDniOdZakonczeniaAttribute(): int
@@ -664,6 +665,11 @@ class Zlecenie extends Model
             $array[] = 'Co z częścią?';
 
         return $array;
+    }
+
+    public function getHasErrorsAttribute(): bool
+    {
+        return $this->errors and count($this->errors) > 0;
     }
 
     public function getSamochodAttribute()

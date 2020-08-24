@@ -335,7 +335,7 @@ function nieOdbiera(zlecenie_id) {
                 last_terminarz_statusy = data;
             });
     }
-    setInterval(refreshIfNew, 15000);
+    setInterval(refreshIfNew, 60000);
 @endif
 
 </script>@endsection

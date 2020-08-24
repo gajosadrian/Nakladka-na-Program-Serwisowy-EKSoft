@@ -263,6 +263,8 @@ class KosztorysPozycja extends Model
             return 'Rozpisane';
         } elseif ($this->is_zamowione) {
             return 'Zamówione';
+        } elseif ($this->is_niezamontowane) {
+            return 'Niezamontowane';
         } elseif (!$this->is_czesc_symbol and $this->opis) {
             return $this->opis;
         }

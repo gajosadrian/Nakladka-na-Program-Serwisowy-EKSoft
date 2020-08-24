@@ -115,33 +115,33 @@
                                             </td>
                                         @endif
                                     </tr>
-                                    <tr>
-                                        <th>Przyjmujący:</th>
-                                        <td>{{ $zlecenie->przyjmujacy->nazwa }}</td>
-                                    </tr>
                                 </table>
                             </b-col>
                             <b-col lg="6">
                                 <table class="table table-sm table-borderless">
                                     <tr>
-                                        <th style="width:1%">Czas&nbsp;trwania:</th>
-                                        <td>{{ $zlecenie->czas_trwania_formatted }}</td>
+                                        <th style="width:1%;">Przyjmujący:</th>
+                                        <td>{{ $zlecenie->przyjmujacy->nazwa }}</td>
                                     </tr>
                                     <tr>
                                         <th>Przyjęcie:</th>
                                         <td>{{ $zlecenie->data_przyjecia_formatted }}</td>
                                     </tr>
                                     <tr>
+                                        <th nowrap>Czas trwania:</th>
+                                        <td>{{ $zlecenie->czas_trwania_formatted }}</td>
+                                    </tr>
+                                    {{-- <tr>
                                         <th>Zakończenie:</th>
                                         <td>{{ $zlecenie->data_zakonczenia_formatted }}</td>
-                                    </tr>
+                                    </tr> --}}
                                     <tr>
-                                        <th>Termin&nbsp;od:</th>
+                                        <th nowrap>Termin:</th>
                                         <td>{{ $zlecenie->terminarz->data_rozpoczecia_formatted }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Termin&nbsp;do:</th>
-                                        <td>{{ $zlecenie->terminarz->data_zakonczenia_formatted }}</td>
+                                        <th nowrap>Przeznaczony czas:</th>
+                                        <td>{{ $zlecenie->terminarz->przeznaczony_czas_formatted }}</td>
                                     </tr>
                                     <tr>
                                         <th>Technik:</th>
@@ -320,7 +320,7 @@
                                             <th class="font-w700" nowrap>Opis</th>
                                             <th class="font-w700 text-right" nowrap>Cena brutto</th>
                                             <th class="font-w700 text-center" nowrap>Ilość</th>
-                                            <th class="font-w700 text-right" nowrap>Wartość netto</th>
+                                            {{-- <th class="font-w700 text-right" nowrap>Wartość netto</th> --}}
                                             <th class="font-w700 text-right" nowrap>Wartość brutto</th>
                                         </tr>
                                     </thead>
@@ -361,7 +361,7 @@
                                                 </td>
                                                 <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
                                                 <td class="text-center {{ $pozycja->ilosc > 1 ? 'font-w600 text-danger' : '' }}" nowrap>{{ $pozycja->ilosc }}</td>
-                                                <td class="text-right" nowrap>{{ $pozycja->wartosc_formatted }}</td>
+                                                {{-- <td class="text-right" nowrap>{{ $pozycja->wartosc_formatted }}</td> --}}
                                                 <td class="text-right" nowrap>{{ $pozycja->wartosc_brutto_formatted }}</td>
                                             </tr>
                                         @endforeach
@@ -374,7 +374,7 @@
                                             <th></th>
                                             <th></th>
                                             <th></th>
-                                            <th class="text-right">{{ number_format($wartosc_netto, 2, '.', ' ') }} zł</th>
+                                            {{-- <th class="text-right">{{ number_format($wartosc_netto, 2, '.', ' ') }} zł</th> --}}
                                             <th class="text-right">{{ number_format($wartosc_brutto, 2, '.', ' ') }} zł</th>
                                         </tr>
                                     </tfoot>
