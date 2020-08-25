@@ -1,86 +1,91 @@
 <template>
-    <div>
-        <div class="push">
-            <!-- <h4 class="mb-0">
-                <span :class="{'text-danger': required && !has_zdjecia}">{{ title }}</span>
-                <i
-                    v-if=""
-                    class="fa fa-star-of-life"
-                    :class="has_zdjecia && 'text-success' || 'text-danger'"
-                />
-            </h4>
-            <hr class="mt-1"> -->
+    <div class="push">
+        <!-- <h4 class="mb-0">
+            <span :class="{'text-danger': required && !has_zdjecia}">{{ title }}</span>
+            <i
+                v-if=""
+                class="fa fa-star-of-life"
+                :class="has_zdjecia && 'text-success' || 'text-danger'"
+            />
+        </h4>
+        <hr class="mt-1"> -->
 
-            <div
-                v-for="(state, key) in states" :key="key"
-                class="mt-1"
-            >
-                <div v-if="state.type == 'sending'">
-                    <div class="bg-warning text-white font-w600 px-1">
-                        <i class="fa fa-spinner fa-pulse"></i>
-                        Wysyłanie zdjęcia...
-                    </div>
-                </div>
-                <div v-else-if="state.type == 'sent'">
-                    <div class="bg-success text-white font-w600 px-1">
-                        Wysłano!
-                    </div>
-                </div>
-                <div v-else-if="state.type == 'error'">
-                    <div class="bg-danger text-white font-w600 px-1">
-                        Błąd przy wysyłaniu!
-                    </div>
-                </div>
-                <div v-else-if="state.type == 'error_compressing'">
-                    <div class="bg-danger text-white font-w600 px-1">
-                        Błąd przy kompresji!
-                    </div>
+        <div
+            v-for="(state, key) in states" :key="key"
+            class="mt-1"
+        >
+            <div v-if="state.type == 'compressing'">
+                <div class="bg-danger text-white font-w600 px-1">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                    Kompresowanie...
                 </div>
             </div>
-
-            <div class="mb-1">
-                <b-progress
-                    v-if="required && !has_zdjecia"
-                    :value="1" :max="1"
-                    variant="danger"
-                    height="3px"
-                />
-                <b-form-file
-                    v-model="file"
-                    accept="image/*"
-                    :state="!required || has_zdjecia"
-                    :placeholder="title"
-                    drop-placeholder="Upuść zdjęcie tutaj..."
-                    browse-text="Wybierz"
-                />
+            <div v-else-if="state.type == 'sending'">
+                <div class="bg-warning text-white font-w600 px-1">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                    Wysyłanie...
+                </div>
             </div>
-
-            <b-row class="gutters-tiny">
-                <b-col
-                    cols="4" md="3" lg="2"
-                    v-for="zdjecie in zdjecia" :key="zdjecie.id"
-                    class="push"
-                >
-                    <b-link :href="zdjecie.url" target="_blank">
-                        <b-img :src="show_images && zdjecie.url || no_img_url" fluid />
-                    </b-link>
-                </b-col>
-
-                <b-col
-                    cols="4" md="3" lg="2"
-                    v-for="(base64_image, key) in base64_images" :key="key"
-                    class="push"
-                >
-                    <div class="ribbon ribbon-danger">
-                        <b-img :src="base64_image[0]" fluid />
-                        <div @click="submitBase64(key)" class="ribbon-box" style="cursor: pointer;">
-                            <i class="fa fa-redo-alt mr-1"></i>
-                            Wyślij
-                        </div>
-                    </div>
-                </b-col>
-            </b-row>
+            <div v-else-if="state.type == 'sent'">
+                <div class="bg-success text-white font-w600 px-1">
+                    Wysłano!
+                </div>
+            </div>
+            <div v-else-if="state.type == 'error'">
+                <div class="bg-danger text-white font-w600 px-1">
+                    Błąd przy wysyłaniu!
+                </div>
+            </div>
+            <div v-else-if="state.type == 'error_compressing'">
+                <div class="bg-danger text-white font-w600 px-1">
+                    Błąd przy kompresji!
+                </div>
+            </div>
         </div>
+
+        <div class="mb-1">
+            <b-progress
+                v-if="required && !has_zdjecia"
+                :value="1" :max="1"
+                variant="danger"
+                height="3px"
+            />
+            <b-form-file
+                v-model="file"
+                accept="image/*"
+                :state="!required || has_zdjecia"
+                :placeholder="title"
+                drop-placeholder="Upuść zdjęcie tutaj..."
+                browse-text="Wybierz"
+                :disabled="disabled"
+            />
+        </div>
+
+        <b-row class="gutters-tiny">
+            <b-col
+                cols="4" md="3" lg="2"
+                v-for="zdjecie in zdjecia" :key="zdjecie.id"
+                class="push"
+            >
+                <b-link :href="zdjecie.url" target="_blank">
+                    <b-img :src="show_images && zdjecie.url || no_img_url" fluid />
+                </b-link>
+            </b-col>
+
+            <b-col
+                cols="4" md="3" lg="2"
+                v-for="(base64_image, key) in base64_images" :key="key"
+                class="push"
+            >
+                <div class="ribbon ribbon-danger">
+                    <b-img :src="base64_image[0]" fluid />
+                    <div @click="submitBase64(key)" class="ribbon-box" style="cursor: pointer;">
+                        <i class="fa fa-redo-alt mr-1"></i>
+                        Wyślij
+                    </div>
+                </div>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
@@ -101,6 +106,7 @@ export default {
     },
     data() {
         return {
+            disabled: false,
             states: [],
             form: {
                 _token: document.getElementById('csrf-token').getAttribute('content'),
@@ -118,13 +124,18 @@ export default {
         file(file) {
             if (! file) return;
 
-            this.compressImage(file, compressed_img => {
-                this.file = null
-                this.submit(compressed_img)
-            }, err => {
-                this.addState('error_compressing')
-                console.log(err)
-            })
+            this.disabled = true
+            let state = this.addState('compressing')
+
+            setTimeout(() => {
+                this.compressImage(file, compressed_img => {
+                    this.file = null
+                    this.submit(compressed_img, null, state)
+                }, err => {
+                    this.addState('error_compressing')
+                    console.log(err)
+                })
+            }, 1000);
         },
     },
     computed: {
@@ -136,8 +147,14 @@ export default {
         },
     },
     methods: {
-        submit(image, from_restore = false) {
-            let state = this.addState('sending')
+        submit(image, from_restore = false, state) {
+            this.disabled = false
+
+            if (! state) {
+                state = this.addState('sending')
+            } else {
+                state.type = 'sending'
+            }
 
             let formData = new FormData()
             formData.append('_token', this.form._token)
