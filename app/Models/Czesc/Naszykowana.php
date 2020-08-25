@@ -87,4 +87,26 @@ class Naszykowana extends Model
     {
         return $this->belongsTo('App\Models\Subiekt\Subiekt_Towar', 'towar_id', 'tw_Id');
     }
+
+    /**
+     * Static
+     *
+     */
+
+    static function getNiesprawdzoneCount(): int
+    {
+        $naszykowane = static::with(['towar', 'zlecenie'])
+            ->whereDate('zlecenie_data', '<', today())
+            ->where(function ($query) {
+                $query->whereNull('sprawdzone_at');
+                $query->orWhere('ilosc_do_zwrotu', '>', 0);
+            })
+            ->get();
+
+        $naszykowane = $naszykowane->filter(function ($naszykowana) {
+            return $naszykowana->towar and ($naszykowana->zlecenie->is_gwarancja or $naszykowana->ilosc_do_zwrotu > 0);
+        });
+
+        return $naszykowane->count();
+    }
 }

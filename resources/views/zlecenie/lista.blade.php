@@ -60,7 +60,7 @@
             <template slot="content">
                 <div class="row">
                     <div class="col-lg-2">
-                        <b-button variant="success" size="sm" onclick="location.reload()">
+                        <b-button variant="primary" size="sm" onclick="location.reload()">
                             <i class="fa fa-sync-alt"></i>
                             Odśwież
                         </b-button>
@@ -77,6 +77,8 @@
                         @else
                             <span class="font-w600 text-danger">{{ $errors_n }}</span>
                         @endif
+                        <br>
+                        <span class="{{ ($niesprawdzone_czesci_n > 0) ? 'bg-danger text-white px-1' : '' }}">Niesprawdzonych części: {{ $niesprawdzone_czesci_n }}</span>
                     </div>
                 </div>
 
