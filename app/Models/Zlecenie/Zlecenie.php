@@ -28,7 +28,8 @@ class Zlecenie extends Model
     public const GWARANCJA_NAME = 'Gwarancja';
     public const UBEZPIECZENIE_NAME = 'Ubezpieczenie';
     public const SPRZEDAZ_CZESCI_NAME = 'Sprzedaż części';
-	public const MONTAZ_URZADZENIA_NAME = 'Montaż urządzenia';
+    public const MONTAZ_URZADZENIA_NAME = 'Montaż urządzenia';
+    public const SPRZEDAZ_URZADZENIA_NAME = 'Sprzedaż urządzenia';
     public const ZLECENIODAWCY = [
         // NIE EDYTOWAĆ INDEX'ÓW
         'Odpłatne' => ['', 'odplatne', 'odpłatne', 'odplatnie', 'odpłatnie'],
@@ -212,6 +213,11 @@ class Zlecenie extends Model
                 'icon' => 'fa fa-dollar-sign',
                 'color' => false,
             ],
+            'F' => (object) [
+                'nazwa' => self::SPRZEDAZ_URZADZENIA_NAME,
+                'icon' => 'fa fa-dollar-sign',
+                'color' => false,
+            ],
             '_default' => (object) [
                 'nazwa' => 'Inne',
                 'icon' => 'far fa-bookmark',
@@ -240,7 +246,7 @@ class Zlecenie extends Model
         $zleceniodawca_type = trim(str_replace('.', '', strtolower($this->kosztorys_opis->opis ?? '')));
         $zleceniodawca = '';
 
-        if ($zleceniodawca_type == '' and !in_array($this->znacznik->nazwa, [self::ODPLATNE_NAME, self::SPRZEDAZ_CZESCI_NAME, self::MONTAZ_URZADZENIA_NAME])) {
+        if ($zleceniodawca_type == '' and !in_array($this->znacznik->nazwa, [self::ODPLATNE_NAME, self::SPRZEDAZ_CZESCI_NAME, self::MONTAZ_URZADZENIA_NAME, self::SPRZEDAZ_URZADZENIA_NAME])) {
             if ($this->znacznik->nazwa == self::GWARANCJA_NAME) {
                 $zleceniodawca_type = strtolower($this->urzadzenie->producent);
             } else {
