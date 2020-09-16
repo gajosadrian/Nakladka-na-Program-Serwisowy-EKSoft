@@ -340,9 +340,8 @@ class ZlecenieController extends Controller
         return view('zlecenie.wyszukiwanie-czesci', compact('towar', 'towar_id', 'kosztorys_pozycje', 'symbol'));
     }
 
-    public function apiZatwierdzBlad(Request $request, int $id)
+    public function apiZatwierdzBlad(int $id)
     {
-        $user = $request->user();
         $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->zatwierdzony_blad()->delete();
@@ -356,9 +355,7 @@ class ZlecenieController extends Controller
 
     public function apiRemoveStatus(Request $request, int $status_id)
     {
-        $user = $request->user();
         $status = StatusHistoria::findOrFail($status_id);
-
         $status->delete();
 
         return response()->json('success', 200);
@@ -394,7 +391,38 @@ class ZlecenieController extends Controller
         return response()->json($array, 200);
     }
 
-    public function apiGetOpis(Request $request, int $id)
+    public function apiGetAkcKosztow(int $zlecenie)
+    {
+        $zlecenie = Zlecenie::findOrFail($zlecenie);
+        $akc_kosztow = ($zlecenie->is_akc_kosztow) ? $zlecenie->data_akc_kosztow->format('Y-m-d H:i') : null;
+
+        return response()->json([
+            'akc_kosztow' => $akc_kosztow,
+        ]);
+    }
+
+    public function apiSetAkcKosztow(Request $request, int $zlecenie)
+    {
+        $user = auth()->user();
+        $zlecenie = Zlecenie::findOrFail($zlecenie);
+
+        $zlecenie->data_akc_kosztow = $request->kwota ? now() : null;
+
+        if ($request->kwota) {
+            $opis = "Zgoda na naprawę: {$request->kwota} zł brutto";
+        } else {
+            $opis = 'Brak zgody na naprawę';
+        }
+        $zlecenie->appendOpis($opis, $user->short_name, ($user->technik_id == 0));
+
+        $zlecenie->save();
+
+        return response()->json([
+            'opis' => $zlecenie->opis,
+        ]);
+    }
+
+    public function apiGetOpis(int $id)
     {
         $zlecenie = Zlecenie::findOrFail($id);
 

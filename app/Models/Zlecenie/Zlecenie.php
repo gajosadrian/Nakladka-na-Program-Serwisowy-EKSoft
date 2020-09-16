@@ -529,6 +529,11 @@ class Zlecenie extends Model
         return Carbon::parse($this->attributes['data_akc_koszt']);
     }
 
+    public function setDataAkcKosztowAttribute($akc_kosztow): void
+    {
+        $this->attributes['data_akc_koszt'] = ($akc_kosztow) ? Carbon::parse($akc_kosztow) : null;
+    }
+
     public function getOpisAttribute(): string
     {
         return $this->attributes['OpisZlec'] ?? false;

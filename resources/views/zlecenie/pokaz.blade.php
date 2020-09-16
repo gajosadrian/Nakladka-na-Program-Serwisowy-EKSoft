@@ -48,10 +48,14 @@
                             <tr>
                                 <th class="text-right" nowrap>Akc. kosztów:</th>
                                 <td nowrap>
-                                    @if ($zlecenie->is_akc_kosztow)
-                                        <span class="text-success font-w600">{{ $zlecenie->data_akc_kosztow }}</span>
+                                    @if ($user->is_technik)
+                                        @if ($zlecenie->is_akc_kosztow)
+                                            <span class="text-success font-w600">{{ $zlecenie->data_akc_kosztow }}</span>
+                                        @else
+                                            <span class="text-muted"><i>Brak informacji</i></span>
+                                        @endif
                                     @else
-                                        <span class="text-muted"><i>Brak informacji</i></span>
+                                        <zlecenie-akc-kosztow _token=@json(csrf_token()) :zlecenie_id="{{ $zlecenie->id }}"></zlecenie-akc-kosztow>
                                     @endif
                                 </td>
                             </tr>

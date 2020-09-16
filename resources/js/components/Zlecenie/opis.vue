@@ -3,6 +3,7 @@
     <b-textarea
       v-if="! is_technik"
       v-model="opis"
+      id="opis"
       :rows="opisRows"
       class="mb-3"
       @input="updateNotatka"
@@ -41,7 +42,8 @@ export default {
     },
 
     opisRows() {
-      return this.opis.split('\n').length
+      const length = this.opis.split('\n').length
+      return length + 2
     },
   },
 

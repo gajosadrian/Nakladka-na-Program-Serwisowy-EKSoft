@@ -24,6 +24,7 @@ Vue.component('zlecenie-opis', require('./components/Zlecenie/opis.vue').default
 Vue.component('zlecenie-change-status', require('./components/Zlecenie/change-status.vue').default);
 Vue.component('zlecenie-kosztorys', require('./components/Zlecenie/kosztorys.vue').default);
 Vue.component('zlecenie-mobile-app', require('./components/Zlecenie/mobile-app.vue').default);
+Vue.component('zlecenie-akc-kosztow', require('./components/Zlecenie/akc-kosztow.vue').default);
 Vue.component('date-picker', DatePicker);
 Vue.component('Zdjecia', require('./components/Zdjecia/Zdjecia.vue').default);
 Vue.component('ZdjecieShow', require('./components/Zdjecia/Show.vue').default);

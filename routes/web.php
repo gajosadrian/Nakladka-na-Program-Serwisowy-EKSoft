@@ -43,6 +43,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('api/remove-status/{status_id}', 'ZlecenieController@apiRemoveStatus')->name('api.removeStatus');
         Route::get('api/get-from-terminarz/{date_string?}', 'ZlecenieController@apiGetFromTerminarz')->name('api.getFromTerminarz');
         Route::get('api/get-kosztorys/{zlecenie_id}', 'ZlecenieController@apiGetKosztorys')->name('api.getKosztorys');
+        Route::get('api/get-akc-kosztow/{zlecenie}', 'ZlecenieController@apiGetAkcKosztow')->name('api.getAkcKosztow');
+        Route::post('api/set-akc-kosztow/{zlecenie}', 'ZlecenieController@apiSetAkcKosztow')->name('api.setAkcKosztow');
     });
 
     Route::prefix('zlecenie-zdjecie')->name('zlecenie-zdjecie.')->group(function () {
