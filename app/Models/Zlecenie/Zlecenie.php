@@ -411,8 +411,12 @@ class Zlecenie extends Model
 
     public function getIsNaWarsztacieAttribute()
     {
-        foreach ($this->statusy as $key => $status) {
-            dd($status->nazwa);
+        foreach ($this->statusy as $status) {
+            if ($status->status_id == Status::NA_WARSZTACIE_ID) {
+                return true;
+            } elseif ($status->status_id == Status::PREAUTORYZACJA_ID) {
+                return false;
+            }
         }
         return false;
     }

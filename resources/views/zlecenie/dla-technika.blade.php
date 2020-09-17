@@ -127,7 +127,7 @@
                                                 <b-col cols="4" class="text-right">
                                                     @if ($zlecenie->is_warsztat)
                                                         <span class="bg-dark text-white px-1">WARSZTAT</span>
-                                                    @elseif (false)
+                                                    @elseif ($zlecenie->is_na_warsztacie)
                                                         <span class="bg-dark text-white px-1">ODWIEŹĆ</span>
                                                     @endif
                                                     {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}
