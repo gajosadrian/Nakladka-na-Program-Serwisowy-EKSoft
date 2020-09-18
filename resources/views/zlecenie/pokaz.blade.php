@@ -196,6 +196,11 @@
                         <li class="nav-item">
                             <a href="#opis" class="nav-link active show" style="color: rgba(255, 255, 255, 0.9)">Opis</a>
                         </li>
+                        @if (! $user->is_technik)
+                            <li class="nav-item">
+                                <a href="#sms" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">SMS</a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a href="#statusy" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Statusy</a>
                         </li>
@@ -396,6 +401,13 @@
                             @endif
                             <zlecenie-opis zlecenie_id=@json($zlecenie->id) :is_technik="{{ (int) $user->is_technik }}" />
                         </div>
+                        <div class="tab-pane fade" id="sms" role="tabpanel">
+                            <div class="row">
+                                <div class="col-12 col-lg-5">
+                                    <sms-create _token=@json(csrf_token()) />
+                                </div>
+                            </div>
+                        </div>
                         <div class="tab-pane fade" id="statusy" role="tabpanel">
                             <b-row>
                                 <b-col cols="12" xl="8">
@@ -438,6 +450,7 @@
                         </div>
                         <div class="tab-pane fade" id="zdjecia" role="tabpanel">
                             @include('zlecenie-zdjecie.component.index', compact('zlecenie'))
+                            {{-- <Zdjecia _token=@json(csrf_token()) :zlecenie_id=@json($zlecenie->id) /> --}}
                         </div>
                     </div>
                 </div>

@@ -772,7 +772,7 @@ HTML;
 
     public function getPopupLinkAttribute(): string
     {
-        return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', 1800, 800)";
+        return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', screen.availWidth * .95, screen.availHeight * .9)";
     }
 
     public function getPopupZdjeciaLinkAttribute(): string

@@ -1,66 +1,63 @@
 <template>
   <div>
-    <b-block full>
-      <template slot="content">
-        <b-form @submit.prevent="submit">
 
-          <!-- Customer -->
-          <b-form-group
-            label="Kontrahent"
+    <b-form @submit.prevent="submit">
+
+      <!-- Customer -->
+      <b-form-group
+        label="Kontrahent"
+      >
+        <b-form-input v-model="form.customer" />
+        <b-list-group>
+          <b-list-group-item
+            href="javascript:;"
+            v-show="! customer.selected || customer.selected.klient_id == kh.klient_id"
+            v-for="kh in customer.list" :key="kh.klient_id"
+            :active="customer.selected && customer.selected.klient_id == kh.klient_id"
+            @click="selectCustomer(kh)"
           >
-            <b-form-input v-model="form.customer" />
-            <b-list-group>
-              <b-list-group-item
-                href="javascript:;"
-                v-for="kh in customer.list" :key="customer.klient_id"
-                v-if="! customer.selected || customer.selected.klient_id == kh.klient_id"
-                :active="customer.selected && customer.selected.klient_id == kh.klient_id"
-                @click="selectCustomer(kh)"
-              >
-                {{ kh.pelna_nazwa }}, {{ kh.adres }}, {{ kh.kod_pocztowy }} {{ kh.miejscowosc }}
-              </b-list-group-item>
-            </b-list-group>
-            <b-list-group v-if="customer.selected">
-              <b-list-group-item
-                href="javascript:;"
-                v-for="(phone, index) in customer.selected.telefony_array" :key="index"
-                class="border border-primary"
-                @click="usePhone(phone)"
-              >
-                {{ phone }}
-              </b-list-group-item>
-            </b-list-group>
-          </b-form-group>
-
-          <!-- Phones -->
-          <b-form-group
-            label="Telefony"
-            description="Podawać po przecinku"
+            {{ kh.pelna_nazwa }}, {{ kh.adres }}, {{ kh.kod_pocztowy }} {{ kh.miejscowosc }}
+          </b-list-group-item>
+        </b-list-group>
+        <b-list-group v-if="customer.selected">
+          <b-list-group-item
+            href="javascript:;"
+            v-for="(phone, index) in customer.selected.telefony_array" :key="index"
+            class="border border-primary"
+            @click="usePhone(phone)"
           >
-            <b-form-input v-model.trim="form.phones" />
-          </b-form-group>
+            {{ phone }}
+          </b-list-group-item>
+        </b-list-group>
+      </b-form-group>
 
-          <!-- Message -->
-          <b-form-group
-            label="Treść wiadomości"
-            :description="`Ilość SMS: ${smsCount}, Znaków: ${message.length}/${maxSmsLength}`"
-          >
-            <b-form-textarea
-              v-model="form.message"
-              rows="6"
-            />
-            <b-select v-model="predefinedMessage.selected" :options="predefinedMessage.list" />
-          </b-form-group>
+      <!-- Phones -->
+      <b-form-group
+        label="Telefony"
+        description="Podawać po przecinku"
+      >
+        <b-form-input v-model.trim="form.phones" />
+      </b-form-group>
 
-          <!-- Buttons -->
-          <b-button type="submit" :variant="hasErrors ? 'danger' : 'success'" :disabled="hasErrors">
-            <span v-if="! sending">Wyślij</span>
-            <span v-else>Proszę czekać...</span>
-          </b-button>
+      <!-- Message -->
+      <b-form-group
+        label="Treść wiadomości"
+        :description="`Ilość SMS: ${smsCount}, Znaków: ${message.length}/${maxSmsLength}`"
+      >
+        <b-form-textarea
+          v-model="form.message"
+          rows="6"
+        />
+        <b-select v-model="predefinedMessage.selected" :options="predefinedMessage.list" />
+      </b-form-group>
 
-        </b-form>
-      </template>
-    </b-block>
+      <!-- Buttons -->
+      <b-button type="submit" :variant="hasErrors ? 'danger' : 'success'" :disabled="hasErrors">
+        <span v-if="! sending">Wyślij</span>
+        <span v-else>Proszę czekać...</span>
+      </b-button>
+
+    </b-form>
   </div>
 </template>
 
