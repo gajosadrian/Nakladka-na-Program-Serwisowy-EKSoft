@@ -404,7 +404,7 @@
                         <div class="tab-pane fade" id="sms" role="tabpanel">
                             <div class="row">
                                 <div class="col-12 col-lg-5">
-                                    <sms-create _token=@json(csrf_token()) />
+                                    <sms-create _token=@json(csrf_token()) :_predefined="true" :_telefony="{{ json_encode($zlecenie->klient->telefony_array) }}" />
                                 </div>
                             </div>
                         </div>

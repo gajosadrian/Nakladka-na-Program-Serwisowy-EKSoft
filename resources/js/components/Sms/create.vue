@@ -5,6 +5,7 @@
 
       <!-- Customer -->
       <b-form-group
+        v-if="! _predefined"
         label="Kontrahent"
       >
         <b-form-input v-model="form.customer" />
@@ -19,10 +20,17 @@
             {{ kh.pelna_nazwa }}, {{ kh.adres }}, {{ kh.kod_pocztowy }} {{ kh.miejscowosc }}
           </b-list-group-item>
         </b-list-group>
-        <b-list-group v-if="customer.selected">
+      </b-form-group>
+
+      <!-- Phones -->
+      <b-form-group
+        v-if="customer.selected || _predefined"
+        label="Wybierz telefon"
+      >
+        <b-list-group>
           <b-list-group-item
             href="javascript:;"
-            v-for="(phone, index) in customer.selected.telefony_array" :key="index"
+            v-for="(phone, index) in telefony" :key="index"
             class="border border-primary"
             @click="usePhone(phone)"
           >
@@ -67,6 +75,8 @@ import { debounce } from 'debounce'
 export default {
   props: {
     _token: String,
+    _predefined: Boolean,
+    _telefony: Array,
   },
 
   data() {
@@ -100,7 +110,16 @@ export default {
       }
       let message = this.form.message.replace(/ +(?= )/g, '').trim()
 
-      message = [...message].map((letter) => polishCharacters[letter] || letter).join('')
+      message = [...message].map(letter => {
+        if (polishCharacters[letter]) {
+          return polishCharacters[letter]
+        } else if (polishCharacters[letter.toLowerCase()]) {
+          return polishCharacters[letter.toLowerCase()].toUpperCase()
+        }
+
+        return letter
+      }).join('')
+
       return `${message}\n\n--\nSerwis DAR-GAZ\nSamsonowicza 18K\nOstrowiec Sw.\ntel. 412474575`
     },
 
@@ -134,6 +153,14 @@ export default {
     hasErrors() {
       return ! this.hasValidPhones || this.form.message.length == 0
     },
+
+    telefony() {
+      if (this.customer.selected) {
+        return this.customer.selected.telefony_array
+      } else if (this._predefined) {
+        return this._telefony
+      }
+    },
   },
 
   watch: {
@@ -161,9 +188,9 @@ export default {
       this.sending = true
 
       axios.post(route('sms.store'), {
-          phones: this.phones,
-          message: this.message,
-        })
+        phones: this.phones,
+        message: this.message,
+      })
         .then(response => {
           this.clearForm()
           this.swal('success', 'Wysłano!')
@@ -179,8 +206,8 @@ export default {
     clearForm() {
       this.form.phones = ''
       this.form.message = ''
-
       this.form.customer = ''
+
       this.customer.selected = null
     },
 
@@ -189,8 +216,8 @@ export default {
       this.customer.selected = null
 
       axios.post(route('klient.apiFind'), {
-          search,
-        })
+        search,
+      })
         .then(response => {
           this.customer.list = response.data
         })
