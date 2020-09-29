@@ -410,7 +410,7 @@ export default {
                 setTimeout(() => {
                     console.log('scroll to', this.scroll_pos);
                     window.scrollTo(0, this.scroll_pos);
-                }, 200);
+                }, 500);
             }
         },
 

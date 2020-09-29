@@ -44,7 +44,7 @@ class Zlecenie extends Model
         'Novoterm' => ['novoterm', 'nowoterm'],
         'Deante' => ['deante', 'deande'],
         'Ciarko' => ['ciarko', 'ciarco'],
-        'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi', 'haier', 'hajer'],
+        'Candy' => ['candy', 'candi', 'kandy', 'kandi', 'cendy', 'cendi', 'kendy', 'kendi', 'haier', 'hajer', 'hoover', 'hover'],
         'Europ Assistance' => ['europ assistance', 'europ-assistance', 'europ-asistance', 'europ', 'eap', 'assistance'],
         'RTV Euro AGD' => ['euro-net', 'euro net', 'euronet', 'euro', 'rtveuroagd', 'rtv euro agd'],
         'Mentax' => ['mentax', 'mentaks', 'generali'],
@@ -76,6 +76,7 @@ class Zlecenie extends Model
 		'Honiio' => ['honiio', 'honio', 'henio', 'heniio'],
 		'Vienna' => ['vig', 'vienna', 'wienna', 'viena', 'wiena'],
 		'Elterm' => ['elterm'],
+		'TERMICA' => ['termica', 'termika'],
     ];
 
     public const REQUIRED_PHOTOS = [
@@ -1063,6 +1064,9 @@ HTML;
         $user = auth()->user();
 
         if (! $minified) {
+            if (substr($this->opis, -1) != "\n" and ! strpos($this->opis, '#')) {
+                $this->opis .= "\r\n";
+            }
             $opis = preg_replace("/(\r?\n)/", ' ', $opis);
             $opis = str_replace([' .', ' ,'], ['. ', ', '], $opis);
             $this->opis .= "\r\n# " . $name . ' ' . date('d.m H:i') . ':  ' . $opis;

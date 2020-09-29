@@ -57,18 +57,6 @@
                 return $user and !$user->technik_id;
             },
         ],
-        [
-            'name' => 'SMS',
-        ],
-        [
-            'name' => 'Nowy SMS',
-            'icon' => 'si si-paper-plane',
-            'route' => 'sms.create',
-            'routeOptions' => [],
-            'if' => function() use ($user) {
-                return $user and !$user->technik_id;
-            },
-        ],
         // [
         //     'name' => 'Historia',
         //     'icon' => 'si si-bubbles',
@@ -90,7 +78,7 @@
         //     'role' => 'super-admin',
         // ],
         [
-            'name' => 'Urządzenia',
+            'name' => 'Dodatki',
         ],
         [
             'name' => 'Zdjęcia',
@@ -101,6 +89,16 @@
                 return $user and !$user->technik_id;
             },
         ],
+        [
+            'name' => 'SMS',
+            'icon' => 'si si-paper-plane',
+            'route' => 'sms.create',
+            'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
+        ],
+
         [
             'name' => 'Części',
         ],

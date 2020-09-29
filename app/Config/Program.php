@@ -11,7 +11,7 @@ class Program
 
     public function __construct()
     {
-        $this->name = 'Nakladka na EKSoft GT';
+        $this->name = 'Nakładka na EKSoft GT';
         $this->description = '';
         $this->version = '1.0';
         $this->lastUpdateDate = '2019-02-15';

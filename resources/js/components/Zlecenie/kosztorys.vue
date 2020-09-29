@@ -52,18 +52,10 @@
       </b-tbody>
       <b-tfoot>
         <b-tr>
-          <b-th></b-th>
-          <b-th></b-th>
-          <b-th></b-th>
-          <b-th></b-th>
-          <b-th></b-th>
-          <b-th></b-th>
-          <b-th></b-th>
-          <b-th></b-th>
-          <b-th class="text-right" nowrap>
-            {{ Math.ceil(wartoscBrutto) }} zł
+          <b-th colspan="10" class="text-right" nowrap>
+            <span>Suma kosztów: {{ sumaBrutto.toFixed(2) }} zł</span>
+            <span class="ml-4">Do dopłaty: {{ wartoscBrutto.toFixed(2) }} zł</span>
           </b-th>
-          <b-th></b-th>
         </b-tr>
       </b-tfoot>
     </b-table-simple>
@@ -94,7 +86,16 @@ export default {
 
   computed: {
     wartoscBrutto() {
-      return this.pozycje.reduce((acc, pozycja) => acc += pozycja.wartosc_brutto, 0)
+      return this.pozycje.reduce((acc, pozycja) => acc += Number(pozycja.wartosc_brutto.toFixed(2)), 0)
+    },
+
+    sumaBrutto() {
+      return this.pozycje.reduce((acc, pozycja) => {
+        if (pozycja.wartosc_brutto > 0) {
+          return acc += Number(pozycja.wartosc_brutto.toFixed(2))
+        }
+        return acc
+      }, 0)
     },
 
     symbolState() {
