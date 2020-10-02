@@ -79,7 +79,8 @@
         <b-block title="Zleceniodawcy" full>
             <template slot="content">
                 @foreach ($zleceniodawcy as $i => $_zleceniodawca)
-                    <span class="{{ ($i % 2 == 0) ? 'text-info' : '' }}">{{ $_zleceniodawca }}</span>{{ ($i < $zleceniodawcy->count() - 1) ? ',' : '' }}
+                    <span class="px-1 {{ ($i % 2 == 0) ? 'text-info' : '' }} {{ in_array($_zleceniodawca, $zleceniodawcy_nierozliczeni) ? 'border border-info' : '' }}">{{ $_zleceniodawca }}</span>
+                    {{-- ($i < $zleceniodawcy->count() - 1) ? ',' : '' --}}
                 @endforeach
             </template>
         </b-block>

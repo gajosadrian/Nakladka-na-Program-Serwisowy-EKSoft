@@ -1108,15 +1108,19 @@ HTML;
 
     public static function getDoRozliczenia()
     {
-        $zlecenia1 = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->limit(2000)->get()
+        $amount = 1800;
+
+        $zlecenia1 = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->limit($amount)->get()
             ->filter(function ($zlecenie) {
                 return !$zlecenie->is_rozliczone;
             })->sortBy('data_zakonczenia');
-		$zlecenia2 = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->skip(2000)->limit(2000)->get()
-            ->filter(function ($zlecenie) {
-                return !$zlecenie->is_rozliczone;
-            })->sortBy('data_zakonczenia');
-		return $zlecenia2->merge($zlecenia1);
+		// $zlecenia2 = self::with('status', 'terminarz', 'kosztorys_pozycje', 'rozliczenie')->zakonczone()->latest('id_zlecenia')->skip($amount)->limit($amount)->get()
+        //     ->filter(function ($zlecenie) {
+        //         return !$zlecenie->is_rozliczone;
+        //     })->sortBy('data_zakonczenia');
+        // return $zlecenia2->merge($zlecenia1);
+
+        return $zlecenia1;
     }
 
     public function addLog(int $log_type, int $user_id, $content): void

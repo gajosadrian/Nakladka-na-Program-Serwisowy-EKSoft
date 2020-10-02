@@ -63,16 +63,22 @@ class RozliczenieController extends Controller
         $rozliczenie = Rozliczenie::with('rozliczone_zlecenia.zlecenie.terminarz', 'rozliczone_zlecenia.zlecenie.technik')->findOrFail($id);
         $rozliczone_zlecenia = $rozliczenie->rozliczone_zlecenia->sortBy('zleceniodawca');
         $zleceniodawcy = $rozliczenie->zleceniodawcy;
+        $zleceniodawcy_nierozliczeni = [];
 
         $zlecenia_nierozliczone = null;
         if (! $rozliczenie->is_closed) {
             $zlecenia_nierozliczone = Zlecenie::getDoRozliczenia();
+
+            $zleceniodawcy_nierozliczeni = $zlecenia_nierozliczone->filter(function ($zlecenie) use ($rozliczenie) {
+                return $zlecenie->is_data_zakonczenia and $zlecenie->data->lte($rozliczenie->data) or (!$zlecenie->is_data_zakonczenia and $zlecenie->data_przyjecia->lte($rozliczenie->data));
+            })->unique('zleceniodawca')->pluck('zleceniodawca')->values()->toArray();
+
             $zleceniodawcy = $zleceniodawcy->merge($zlecenia_nierozliczone->unique('zleceniodawca')->pluck('zleceniodawca')->values())->unique()->sort()->values();
         }
 
-        $zleceniodawcy->filter(function ($value) {
-            return $value != Zlecenie::ODPLATNE_NAME;
-        });
+        // $zleceniodawcy = $zleceniodawcy->filter(function ($value) {
+        //     return $value != Zlecenie::ODPLATNE_NAME;
+        // });
 
         $rozliczone_zlecenia_amount = count($rozliczone_zlecenia);
         $zlecenia_nierozliczone_amount = @count($zlecenia_nierozliczone) ?? 0;
@@ -92,7 +98,8 @@ class RozliczenieController extends Controller
             'rozliczone_zlecenia',
             'zlecenia_nierozliczone_amount',
             'rozliczone_zlecenia_amount',
-            'zleceniodawcy'
+            'zleceniodawcy',
+            'zleceniodawcy_nierozliczeni'
         ));
     }
 
