@@ -3,24 +3,28 @@
     <Input
       label="Producent"
       v-model.trim="urzadzenie.producent"
+      :small="small"
       :state="Boolean(urzadzenie.producent && urzadzenie.producent != '!')"
       :datalist="producent_list"
     />
     <Input
       label="Nazwa"
       v-model.trim="urzadzenie.nazwa"
+      :small="small"
       :state="Boolean(urzadzenie.nazwa)"
       :datalist="nazwa_list"
     />
     <Input
       label="Model"
       v-model.trim="urzadzenie.model"
+      :small="small"
       :state="Boolean(urzadzenie.model && urzadzenie.model != '!' && urzadzenie.nr_seryjny_raw.substr(0, 3) != 'FK0')"
       :datalist="model_list"
     />
     <Input
       label="Nr seryjny"
       v-model.trim="urzadzenie.nr_seryjny_raw"
+      :small="small"
       :state="Boolean(urzadzenie.nr_seryjny_raw.substr(0, 3) != 'FK0' && isValidSerialNo)"
       :datalist="nr_seryjny_raw_list"
       :text_danger="(! isValidSerialNo) ? 'Nr seryjny już istnieje!' : ''"
@@ -28,12 +32,20 @@
     <Input
       label="Kod wyrobu"
       v-model.trim="urzadzenie.kod_wyrobu"
+      :small="small"
       :state="true"
       :datalist="kod_wyrobu_list"
     />
 
-    <b-form-group class="text-right">
-      <b-button @click="submit()" :variant="savable ? 'danger' : 'light'" :disabled="(! savable || sending)">Zapisz</b-button>
+    <b-form-group class="text-right" :class="{'mt-2': small}">
+      <b-button
+        :size="small ? 'sm' : null"
+        :variant="savable ? 'danger' : 'light'"
+        :disabled="(! savable || sending)"
+        @click="submit()"
+      >
+        Zapisz
+      </b-button>
     </b-form-group>
   </div>
 </template>
@@ -47,10 +59,12 @@ export default {
     Input
   },
   props: {
-    urzadzenie: Object,
+    _urzadzenie: Object,
+    small: Boolean,
   },
   data() {
     return {
+      urzadzenie: Object.assign({}, this._urzadzenie),
       sending: false,
       unsaved: false,
       producent_list: [],
@@ -58,7 +72,7 @@ export default {
       model_list: [],
       nr_seryjny_raw_list: [],
       kod_wyrobu_list: [],
-      nr_seryjny_original: this.urzadzenie.nr_seryjny_raw,
+      nr_seryjny_original: this._urzadzenie.nr_seryjny_raw,
       nr_seryjny_searched: null,
     }
   },

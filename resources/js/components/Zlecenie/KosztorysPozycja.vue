@@ -17,7 +17,7 @@
     </b-td>
     <b-td nowrap>
       <i class="fa fa-shopping-cart text-danger" v-if="pozycja.is_zamowione"></i>
-      {{ pozycja.nazwa.substring(0, 35) }}<span v-if="pozycja.nazwa.length > 35">...</span>
+      {{ pozycja.nazwa.substring(0, 50) }}<span v-if="pozycja.nazwa.length > 50">...</span>
     </b-td>
     <b-td nowrap>
       <b-input

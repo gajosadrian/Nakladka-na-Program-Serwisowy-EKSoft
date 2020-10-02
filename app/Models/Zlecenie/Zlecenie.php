@@ -244,7 +244,7 @@ class Zlecenie extends Model
     public function getZleceniodawcaAttribute(): string
     {
         $zleceniodawcy = self::ZLECENIODAWCY;
-        $zleceniodawca_type = trim(str_replace('.', '', strtolower($this->kosztorys_opis->opis ?? '')));
+        $zleceniodawca_type = trim(str_replace('.', '', mb_strtolower($this->kosztorys_opis->opis ?? '')));
         $zleceniodawca = '';
 
         if ($zleceniodawca_type == '' and !in_array($this->znacznik->nazwa, [self::ODPLATNE_NAME, self::SPRZEDAZ_CZESCI_NAME, self::MONTAZ_URZADZENIA_NAME, self::SPRZEDAZ_URZADZENIA_NAME])) {
@@ -338,9 +338,14 @@ class Zlecenie extends Model
         return true;
     }
 
-    public function getTechnikIdAttribute(): int
+    public function getTechnikIdAttribute(): ?int
     {
         return $this->attributes['id_o_technika'];
+    }
+
+    public function setTechnikIdAttribute(?int $technik_id): void
+    {
+        $this->attributes['id_o_technika'] = $technik_id;
     }
 
     public function getIsTechnikAttribute(): bool

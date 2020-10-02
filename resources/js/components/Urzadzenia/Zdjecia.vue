@@ -15,7 +15,7 @@
                 <b-block>
                     <template slot="content">
                         <Info :zlecenie="zlecenie" class="push" />
-                        <Inputs :urzadzenie="zlecenie.urzadzenie" />
+                        <Inputs :_urzadzenie="zlecenie.urzadzenie" />
                     </template>
                 </b-block>
             </b-col>

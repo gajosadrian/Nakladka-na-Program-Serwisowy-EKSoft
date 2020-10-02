@@ -113,10 +113,12 @@ class ZlecenieController extends Controller
     {
         $zlecenie = Zlecenie::with('status_historia', 'zdjecia_do_zlecenia', 'zdjecia_do_urzadzenia')->findOrFail($id);
         $statusy_aktywne = Status::getAktywne();
+        $technicy = Technik::getLast();
 
         return view('zlecenie.pokaz', compact(
             'zlecenie',
-            'statusy_aktywne'
+            'statusy_aktywne',
+            'technicy'
         ));
     }
 
@@ -462,6 +464,29 @@ class ZlecenieController extends Controller
             $zlecenie->terminarz->status_id = $terminarz_status_id;
             $zlecenie->terminarz->save();
         }
+
+        return response()->json('success', 200);
+    }
+
+    public function apiChangeTechnik(Request $request, int $id)
+    {
+        $zlecenie = Zlecenie::findOrFail($id);
+
+        $zlecenie->technik_id = $request->technik_id ?: null;
+        $zlecenie->save();
+
+        return response()->json('success', 200);
+    }
+
+    public function apiChangeZleceniodawca(Request $request, int $id)
+    {
+        $zlecenie = Zlecenie::findOrFail($id);
+
+        $kosztorys_opis = $zlecenie->kosztorys_opis()->firstOrNew([
+            'id_zs' => $zlecenie->id,
+        ]);
+        $kosztorys_opis->opis = $request->zleceniodawca;
+        $kosztorys_opis->save();
 
         return response()->json('success', 200);
     }

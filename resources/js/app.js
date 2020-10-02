@@ -25,10 +25,12 @@ Vue.component('zlecenie-change-status', require('./components/Zlecenie/change-st
 Vue.component('zlecenie-kosztorys', require('./components/Zlecenie/kosztorys.vue').default);
 Vue.component('zlecenie-mobile-app', require('./components/Zlecenie/mobile-app.vue').default);
 Vue.component('zlecenie-akc-kosztow', require('./components/Zlecenie/akc-kosztow.vue').default);
+Vue.component('zlecenie-tabliczka', require('./components/Zlecenie/tabliczka.vue').default);
 Vue.component('date-picker', DatePicker);
 Vue.component('Zdjecia', require('./components/Zdjecia/Zdjecia.vue').default);
 Vue.component('ZdjecieShow', require('./components/Zdjecia/Show.vue').default);
 Vue.component('UrzadzeniaZdjecia', require('./components/Urzadzenia/Zdjecia.vue').default);
+Vue.component('urzadzenie-inputs', require('./components/Urzadzenia/Inputs.vue').default);
 Vue.component('SmsCreate', require('./components/Sms/Create.vue').default);
 
 

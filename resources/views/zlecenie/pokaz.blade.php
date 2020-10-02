@@ -26,7 +26,7 @@
 		</b-row> --}}
         <b-row class="row-deck">
             <b-col lg="5">
-                <b-block title="Kontrahent" theme="bg-primary-light">
+                <b-block title="Kontrahent" theme="bg-primary-light" header-sm>
                     <template slot="content">
                         <table class="table table-sm table-borderless">
                             <tr>
@@ -68,7 +68,7 @@
                 </b-block>
             </b-col>
             <b-col lg="7">
-                <b-block title="Dane zlecenia" theme="bg-primary-light">
+                <b-block title="Dane zlecenia" theme="bg-primary-light" header-sm>
                     <template slot="content">
                         <b-row>
                             <b-col lg="6">
@@ -88,7 +88,12 @@
                                     </tr>
                                     <tr>
                                         <th>Rodzaj:</th>
-                                        <td><i class="{{ $zlecenie->znacznik->icon }}"></i> {{ $zlecenie->znacznik_formatted }}</td>
+                                        <td>
+                                            <span onclick="jQuery('#zleceniodawca-modal').modal('show')" style="cursor:pointer;">
+                                                <i class="{{ $zlecenie->znacznik->icon }}"></i>
+                                                {{ $zlecenie->znacznik_formatted }}
+                                            </span>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Źródło:</th>
@@ -149,7 +154,25 @@
                                     </tr>
                                     <tr>
                                         <th>Technik:</th>
-                                        <td>{{ $zlecenie->technik->nazwa }}</td>
+                                        @if ($user->is_technik)
+                                            <td>{{ $zlecenie->technik->nazwa }}</td>
+                                        @else
+                                            <td>
+                                                <div class="row gutters-tiny">
+                                                    <div class="col-10">
+                                                        <select id="technik_select" class="form-control form-control-sm">
+                                                            <option value="0">Brak technika</option>
+                                                            @foreach ($technicy as $technik)
+                                                                <option value="{{ $technik->id }}" {{ ($technik->id == $zlecenie->technik_id) ? 'selected' : '' }}>{{ $technik->nazwa }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <b-button variant="primary" size="sm" onclick="changeTechnik(Number($('#technik_select').val()))">Ok</b-button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        @endif
                                     </tr>
                                 </table>
                             </b-col>
@@ -159,10 +182,10 @@
             </b-col>
         </b-row>
         <b-row class="row-deck">
-            <b-col lg="3">
-                <b-block title="Urządzenie" theme="bg-primary-light">
+            <b-col lg="2">
+                <b-block title="Urządzenie" theme="bg-primary-light" header-sm>
                     <template slot="content">
-                        <table class="table table-sm table-borderless">
+                        {{-- <table class="table table-sm table-borderless">
                             <tr>
                                 <th style="width:1%">Nazwa:</th>
                                 <td>{{ $zlecenie->urzadzenie->nazwa }}</td>
@@ -183,139 +206,164 @@
                                 <th>Kod&nbsp;wyrobu:</th>
                                 <td>{{ $zlecenie->urzadzenie->kod_wyrobu }}</td>
                             </tr>
-                        </table>
+                        </table> --}}
+
+                        @if ($user->is_technik)
+                            <div class="font-w700">Nazwa:</div>
+                            <input type="text" class="form-control form-control-sm" value="{{ $zlecenie->urzadzenie->nazwa }}" disabled />
+
+                            <div class="font-w700 mt-2">Producent:</div>
+                            <input type="text" class="form-control form-control-sm" value="{{ $zlecenie->urzadzenie->producent }}" disabled />
+
+                            <div class="font-w700 mt-2">Model:</div>
+                            <input type="text" class="form-control form-control-sm" value="{{ $zlecenie->urzadzenie->model }}" disabled />
+
+                            <div class="font-w700 mt-2">Nr seryjny:</div>
+                            <input type="text" class="form-control form-control-sm" value="{{ $zlecenie->urzadzenie->nr_seryjny }}" disabled />
+
+                            <div class="font-w700 mt-2">Kod wyrobu:</div>
+                            <input type="text" class="form-control form-control-sm" value="{{ $zlecenie->urzadzenie->kod_wyrobu }}" disabled />
+                        @else
+                            <urzadzenie-inputs :small="true" :_urzadzenie="{{ json_encode($zlecenie->urzadzenie->only('id', 'producent', 'nazwa', 'model', 'kod_wyrobu', 'nr_seryjny', 'nr_seryjny_raw')) }}" />
+                        @endif
                     </template>
                 </b-block>
             </b-col>
-            <b-col lg="9">
+            <b-col lg="10">
                 <div class="block block-rounded shadow-sm">
                     <ul class="nav nav-tabs nav-tabs-alt align-items-center js-tabs bg-primary-light" data-toggle="tabs" role="tablist">
                         <li class="nav-item">
-                            <a href="#kosztorys" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Kosztorys</a>
+                            <a href="#kosztorys" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)">Kosztorys</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#opis" class="nav-link active show" style="color: rgba(255, 255, 255, 0.9)">Opis</a>
+                            <a href="#opis" class="nav-link py-2 active show" style="color: rgba(255, 255, 255, 0.9)">Opis</a>
                         </li>
                         @if (! $user->is_technik)
                             <li class="nav-item">
-                                <a href="#sms" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">SMS</a>
+                                <a href="#sms" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)">SMS</a>
                             </li>
                         @endif
                         <li class="nav-item">
-                            <a href="#statusy" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Statusy</a>
+                            <a href="#statusy" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)">Statusy</a>
                         </li>
                         <li class="nav-item">
-                            {{-- <button type="button" class="nav-link" style="color: rgba(255, 255, 255, 0.9)" onclick="{{ $zlecenie->popup_zdjecia_link }}">Zdjęcia</button> --}}
-                            <a href="#zdjecia" class="nav-link" style="color: rgba(255, 255, 255, 0.9)">Zdjęcia</a>
+                            {{-- <button type="button" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)" onclick="{{ $zlecenie->popup_zdjecia_link }}">Zdjęcia</button> --}}
+                            <a href="#zdjecia" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)">Zdjęcia</a>
                         </li>
-                        <li class="nav-item ml-auto">
-                            <b-button-group size="sm" class="mr-2">
-                                @if ($user->is_technik)
-                                    @if ($zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
-                                        <zlecenie-change-status
-                                            zlecenie_id=@json($zlecenie->id)
-                                            status_id=@json(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID)
-                                            :remove_termin="0"
-                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
-                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
-                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
-                                        ></zlecenie-change-status>
-                                        @if ($zlecenie->is_gwarancja)
-                                            <zlecenie-change-status class="ml-1"
+                        <li class="nav-item">
+                            {{-- <button type="button" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)" onclick="{{ $zlecenie->popup_zdjecia_link }}">Zdjęcia</button> --}}
+                            <a href="#tabliczka" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)">Tabliczka</a>
+                        </li>
+                        @if ($user->is_desktop)
+                            <li class="nav-item ml-auto">
+                                <b-button-group size="sm" class="mr-2">
+                                    @if ($user->is_technik)
+                                        @if ($zlecenie->status->id == App\Models\Zlecenie\Status::NA_WARSZTACIE_ID)
+                                            <zlecenie-change-status
                                                 zlecenie_id=@json($zlecenie->id)
-                                                status_id=@json(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID)
+                                                status_id=@json(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID)
                                                 :remove_termin="0"
-                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
-                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
-                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
+                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
+                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYJASNIENIA_ID))
                                             ></zlecenie-change-status>
-                                        @else
+                                            @if ($zlecenie->is_gwarancja)
+                                                <zlecenie-change-status class="ml-1"
+                                                    zlecenie_id=@json($zlecenie->id)
+                                                    status_id=@json(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID)
+                                                    :remove_termin="0"
+                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
+                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
+                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_ZAMOWIENIA_ID))
+                                                ></zlecenie-change-status>
+                                            @else
+                                                <zlecenie-change-status class="ml-1"
+                                                    zlecenie_id=@json($zlecenie->id)
+                                                    status_id=@json(App\Models\Zlecenie\Status::DO_WYCENY_ID)
+                                                    :remove_termin="0"
+                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                                ></zlecenie-change-status>
+                                            @endif
+                                            {{-- @if ($zlecenie->is_odplatne)
+                                                <zlecenie-change-status class="ml-1"
+                                                    zlecenie_id=@json($zlecenie->id)
+                                                    status_id=@json(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID)
+                                                    :remove_termin="0"
+                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
+                                                ></zlecenie-change-status>
+                                            @endif --}}
+                                            @if ($zlecenie->was_warsztat)
+                                                <zlecenie-change-status class="ml-1"
+                                                    zlecenie_id=@json($zlecenie->id)
+                                                    status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
+                                                    :remove_termin="0"
+                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                                ></zlecenie-change-status>
+                                            @else
+                                                <zlecenie-change-status class="ml-1"
+                                                    zlecenie_id=@json($zlecenie->id)
+                                                    status_id=@json(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID)
+                                                    :remove_termin="1"
+                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
+                                                ></zlecenie-change-status>
+                                            @endif
+                                        @endif
+                                    @elseif ( ! $user->is_technik)
+                                        @if ( in_array($zlecenie->status->id, [
+                                            App\Models\Zlecenie\Status::DO_ODBIORU_ID,
+                                            App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID
+                                        ]) )
                                             <zlecenie-change-status class="ml-1"
                                                 zlecenie_id=@json($zlecenie->id)
-                                                status_id=@json(App\Models\Zlecenie\Status::DO_WYCENY_ID)
+                                                status_id=@json(App\Models\Zlecenie\Status::DO_ODBIORU_ID)
                                                 :remove_termin="0"
-                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_WYCENY_ID))
-                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_WYCENY_ID))
-                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_WYCENY_ID))
+                                                :dont_change_color="1"
+                                                name="Poinformowano o odbiorze"
+                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
+                                            ></zlecenie-change-status>
+                                            <zlecenie-change-status class="ml-1"
+                                                zlecenie_id=@json($zlecenie->id)
+                                                status_id=@json(App\Models\Zlecenie\Status::NIE_ODBIERA_ID)
+                                                second_status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
+                                                :remove_termin="0"
+                                                :dont_change_color="1"
+                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::NIE_ODBIERA_ID))
+                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::NIE_ODBIERA_ID))
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::NIE_ODBIERA_ID))
                                             ></zlecenie-change-status>
                                         @endif
-                                        {{-- @if ($zlecenie->is_odplatne)
-                                            <zlecenie-change-status class="ml-1"
-                                                zlecenie_id=@json($zlecenie->id)
-                                                status_id=@json(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID)
-                                                :remove_termin="0"
-                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
-                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
-                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_POINFORMOWANIA_ID))
-                                            ></zlecenie-change-status>
-                                        @endif --}}
-                                        @if ($zlecenie->was_warsztat)
-                                            <zlecenie-change-status class="ml-1"
-                                                zlecenie_id=@json($zlecenie->id)
-                                                status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
-                                                :remove_termin="0"
-                                                name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
-                                                icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
-                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
-                                            ></zlecenie-change-status>
-                                        @else
+
+                                        @if (count($zlecenie->errors) > 0)
+                                            <div class="ml-1">
+                                                <b-button onclick="zatwierdzBlad()" size="sm" variant="light">
+                                                    <i class="fa fa-exclamation-triangle text-danger"></i>
+                                                    Usuń błąd
+                                                </b-button>
+                                            </div>
+                                        @endif
+
+                                        {{-- @if ($zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
                                             <zlecenie-change-status class="ml-1"
                                                 zlecenie_id=@json($zlecenie->id)
                                                 status_id=@json(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID)
-                                                :remove_termin="1"
+                                                :remove_termin="true"
                                                 name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
                                                 icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
-                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
-                                            ></zlecenie-change-status>
-                                        @endif
+                                                color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status>
+                                        @endif --}}
                                     @endif
-                                @elseif ( ! $user->is_technik)
-                                    @if ( in_array($zlecenie->status->id, [
-                                        App\Models\Zlecenie\Status::DO_ODBIORU_ID,
-                                        App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID
-                                    ]) )
-                                        <zlecenie-change-status class="ml-1"
-                                            zlecenie_id=@json($zlecenie->id)
-                                            status_id=@json(App\Models\Zlecenie\Status::DO_ODBIORU_ID)
-                                            :remove_termin="0"
-                                            :dont_change_color="1"
-                                            name="Poinformowano o odbiorze"
-                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
-                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
-                                        ></zlecenie-change-status>
-                                        <zlecenie-change-status class="ml-1"
-                                            zlecenie_id=@json($zlecenie->id)
-                                            status_id=@json(App\Models\Zlecenie\Status::NIE_ODBIERA_ID)
-                                            second_status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
-                                            :remove_termin="0"
-                                            :dont_change_color="1"
-                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::NIE_ODBIERA_ID))
-                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::NIE_ODBIERA_ID))
-                                            color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::NIE_ODBIERA_ID))
-                                        ></zlecenie-change-status>
-                                    @endif
-
-                                    @if (count($zlecenie->errors) > 0)
-                                        <div class="ml-1">
-                                            <b-button onclick="zatwierdzBlad()" size="sm" variant="light">
-                                                <i class="fa fa-exclamation-triangle text-danger"></i>
-                                                Usuń błąd
-                                            </b-button>
-                                        </div>
-                                    @endif
-
-                                    {{-- @if ($zlecenie->status->id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID)
-                                        <zlecenie-change-status class="ml-1"
-                                            zlecenie_id=@json($zlecenie->id)
-                                            status_id=@json(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID)
-                                            :remove_termin="true"
-                                            name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
-                                            icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))
-    										color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID))></zlecenie-change-status>
-                                    @endif --}}
-                                @endif
-                            </b-button-group>
-                        </li>
+                                </b-button-group>
+                            </li>
+                        @endif
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">
                         <div class="tab-pane fade" id="kosztorys" role="tabpanel">
@@ -411,40 +459,42 @@
                         <div class="tab-pane fade" id="statusy" role="tabpanel">
                             <b-row>
                                 <b-col cols="12" xl="8">
-                                    <table class="table table-sm table-striped table-vcenter font-size-sm">
-                                        <thead>
-                                            <tr>
-                                                <th class="font-w700" nowrap>Status</th>
-                                                <th class="font-w700" nowrap>Data</th>
-                                                <th class="font-w700" nowrap>Użytkownik</th>
-                                                @role('super-admin')
-                                                    <th class="font-w700"></th>
-                                                @endrole
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($zlecenie->statusy as $status_pozycja)
-                                                @php
-                                                    $status = $status_pozycja->status;
-                                                @endphp
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-striped table-vcenter font-size-sm">
+                                            <thead>
                                                 <tr>
-                                                    <td nowrap class="align-middle {{ $status->color ? 'table-' . $status->color : '' }}">
-                                                        <i class="{{ $status->icon }} {{ $status->color ? 'text-' . $status->color : '' }} mx-2"></i>
-                                                        {{ $status->nazwa }}
-                                                    </td>
-                                                    <td nowrap>{{ $status_pozycja->data }}</td>
-                                                    <td nowrap>{{ $status_pozycja->pracownik->nazwa }}</td>
+                                                    <th class="font-w700" nowrap>Status</th>
+                                                    <th class="font-w700" nowrap>Data</th>
+                                                    <th class="font-w700" nowrap>Użytkownik</th>
                                                     @role('super-admin')
-                                                        <td nowrap>
-                                                            <button onclick="removeStatus(this,{{ $status_pozycja->id }})" type="button" class="btn btn-sm btn-rounded btn-danger">
-                                                                <i class="fa fa-times"></i>
-                                                            </button>
-                                                        </td>
+                                                        <th class="font-w700"></th>
                                                     @endrole
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($zlecenie->statusy as $status_pozycja)
+                                                    @php
+                                                        $status = $status_pozycja->status;
+                                                    @endphp
+                                                    <tr>
+                                                        <td nowrap class="align-middle {{ $status->color ? 'table-' . $status->color : '' }}">
+                                                            <i class="{{ $status->icon }} {{ $status->color ? 'text-' . $status->color : '' }} mx-2"></i>
+                                                            {{ $status->nazwa }}
+                                                        </td>
+                                                        <td nowrap>{{ $status_pozycja->data }}</td>
+                                                        <td nowrap>{{ $status_pozycja->pracownik->nazwa }}</td>
+                                                        @role('super-admin')
+                                                            <td nowrap>
+                                                                <button onclick="removeStatus(this,{{ $status_pozycja->id }})" type="button" class="btn btn-sm btn-rounded btn-danger">
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
+                                                            </td>
+                                                        @endrole
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </b-col>
                             </b-row>
                         </div>
@@ -452,10 +502,37 @@
                             @include('zlecenie-zdjecie.component.index', compact('zlecenie'))
                             {{-- <Zdjecia _token=@json(csrf_token()) :zlecenie_id=@json($zlecenie->id) /> --}}
                         </div>
+                        <div class="tab-pane fade" id="tabliczka" role="tabpanel">
+                            <zlecenie-tabliczka _token=@json(csrf_token()) :zlecenie_id=@json($zlecenie->id) :zdjecia='@json($zlecenie->zdjecia->filter(function ($zdjecie) { return $zdjecie->type == 'tabliczka'; }))' />
+                        </div>
                     </div>
                 </div>
             </b-col>
         </b-row>
+    </div>
+
+    <div class="modal" id="zleceniodawca-modal" tabindex="-1" role="dialog" aria-labelledby="zleceniodawca-modal" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Zleceniodawca</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <input type="text" class="form-control" value="{{ @$zlecenie->kosztorys_opis->opis ?? '' }}">
+                    </div>
+                    <div class="block-content block-content-full text-right bg-light">
+                        <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Anuluj</button>
+                        <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal" onclick="changeZleceniodawca($('#zleceniodawca-modal input').val())">Zapisz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -499,6 +576,45 @@ function changeStatus(status_id) {
             showConfirmButton: false,
             timer: 1500,
         });
+    });
+}
+
+var last_technik_id = @json($zlecenie->technik_id);
+function changeTechnik(technik_id) {
+    if (last_technik_id == technik_id) {
+        swal({
+            position: 'center',
+            type: 'error',
+            title: 'Już ustawiono tego technika',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+        return;
+    }
+
+    last_technik_id = technik_id;
+
+    axios.post( route('zlecenia.api.change_technik', {
+        id: @json($zlecenie->id),
+        technik_id,
+    })).then((response) => {
+        swal({
+            position: 'center',
+            type: 'success',
+            title: 'Technik zmieniony',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    });
+}
+
+function changeZleceniodawca(zleceniodawca) {
+    axios.post( route('zlecenia.api.change_zleceniodawca', {
+        id: @json($zlecenie->id),
+    }), {
+        zleceniodawca,
+    }).then((response) => {
+        location.reload()
     });
 }
 
