@@ -77,6 +77,7 @@ class Zlecenie extends Model
 		'Vienna' => ['vig', 'vienna', 'wienna', 'viena', 'wiena'],
 		'Elterm' => ['elterm'],
 		'TERMICA' => ['termica', 'termika'],
+		'ACV' => ['acv'],
     ];
 
     public const REQUIRED_PHOTOS = [
@@ -748,7 +749,7 @@ class Zlecenie extends Model
     {
         $status_table_color = $this->status->color ? 'table-' . $this->status->color : '';
         $status_text_color = $this->status->color ? 'text-' . $this->status->color : '';
-        $status_nazwa = str_replace(' ', ' ', $this->status->nazwa); // &nbsp;
+        $status_nazwa = $this->status->nazwa;
 
         return <<<HTML
             <td class="{$status_table_color}" nowrap>
@@ -1077,7 +1078,8 @@ HTML;
             $this->opis .= "\r\n# " . $name . ' ' . date('d.m H:i') . ':  ' . $opis;
         } else {
             // TODO: przerobić funkcję
-            $this->opis .= "\r\n" . date('d.m H:i') . ' ' . $user->short_name . ': ' . $opis;
+            // $this->opis .= "\r\n" . date('d.m H:i') . ' ' . $user->short_name . ': ' . $opis;
+            $this->opis .= "\r\n" . $user->short_name . ' ' . date('d.m H:i') . ': ' . $opis;
         }
 
         if ($user->technik_id) {

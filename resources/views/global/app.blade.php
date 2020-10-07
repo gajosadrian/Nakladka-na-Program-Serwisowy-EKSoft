@@ -28,6 +28,7 @@
         {{-- Fonts and Styles --}}
         @yield('css_before')
         <link rel="stylesheet" id="css-main" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
         <link rel="stylesheet" id="css-theme" href="{{ asset('css/dashmix.css') }}">
         <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('js/plugins/datatables/dataTables.bootstrap4.css') }}">
@@ -131,6 +132,7 @@
 		<script>$(function() {
 			$('table.dataTable').DataTable({
 			   paging: false,
+               oSearch: { bSmart: false, bRegex: true },
 			   language: {
 				   search: 'Szukaj:',
 				   // searchPlaceholder: 'Search records',

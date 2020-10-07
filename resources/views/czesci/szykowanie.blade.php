@@ -68,7 +68,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="ribbon ribbon-{{ $color ? $color : 'danger' }}">
+                                <div id="ribbon_{{ $pozycja->id }}" class="ribbon ribbon-{{ $color ? $color : 'danger' }}">
                                     <div class="ribbon-box">{{ $pozycja->state_formatted }}</div>
                                     @if ($pozycja->is_zdjecie)
                                         <div>
@@ -80,9 +80,9 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="bg-{{ $color ? $color : 'danger' }} text-white p-1 mb-1">
+                                <div id="label_{{ $pozycja->id }}" class="bg-{{ $color ? $color : 'danger' }} text-white p-1 mb-1">
                                     <div class="clearfix">
-                                        <div class="float-left font-w700">
+                                        <div class="float-left font-w600">
                                             @if ($pozycja->is_czesc_symbol)
                                                 {{ $pozycja->opis_fixed }}
                                             @else
@@ -97,15 +97,12 @@
                                         @if ( ! $pozycja->is_ekspertyza and ! $pozycja->is_zamowione and (! $pozycja->is_niezamontowane or $is_niezamontowane_gotowe)) {{-- and ! $pozycja->is_niezamontowane --}}
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    @php
-                                                        $random = str_random(8);
-                                                    @endphp
-                                                    <input id="ilosc_{{ $random }}" class="form-control {{ $is_naszykowane ? 'form-control-alt is-valid' : '' }}" type="number" value="{{ $pozycja->naszykowana_czesc ? $pozycja->naszykowana_czesc->ilosc : $pozycja->ilosc }}" onclick="select()">
+                                                    <input id="ilosc_{{ $pozycja->id }}" class="form-control {{ $is_naszykowane ? 'form-control-alt is-valid' : '' }}" type="number" value="{{ $pozycja->naszykowana_czesc ? $pozycja->naszykowana_czesc->ilosc : $pozycja->ilosc }}" onclick="select()">
                                                     <div class="input-group-append">
-                                                        <button class="btn btn-{{ $is_naszykowane ? '' : 'outline-' }}success" onclick="naszykujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
+                                                        <button id="button_{{ $pozycja->id }}" class="btn btn-{{ $is_naszykowane ? '' : 'outline-' }}success" onclick="naszykujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $pozycja->id }}').val()))">
                                                             <i class="fa fa-check"></i>
                                                         </button>
-                                                        {{-- <button class="btn btn-danger" onclick="zamontujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $random }}').val()))">
+                                                        {{-- <button class="btn btn-danger" onclick="zamontujCzesc(@json($pozycja->id), Number($('#ilosc_{{ $pozycja->id }}').val()))">
                                                             <i class="fa fa-exclamation-triangle"></i>
                                                         </button> --}}
                                                     </div>
@@ -122,7 +119,7 @@
                                             <span class="mr-2">{{ $pozycja->symbol_dostawcy }}</span>
                                             <span class="font-w600 bg-info text-white px-1">{{ $pozycja->symbol }}</span>
                                         </div>
-                                        <div class="font-w700 text-success">{{ $pozycja->polka }}</div>
+                                        <div class="font-w600 text-success">{{ $pozycja->polka }}</div>
                                     </div>
                                 </div>
                             </template>
@@ -140,6 +137,11 @@ let technik_id = @json(@$technik->id ?? 0);
 let date_string = @json($date_string);
 
 function naszykujCzesc(kosztorys_pozycja_id, ilosc) {
+    const $ribbon = $('#ribbon_' + kosztorys_pozycja_id)
+    const $label = $('#label_' + kosztorys_pozycja_id)
+    const $ilosc = $('#ilosc_' + kosztorys_pozycja_id)
+    const $button = $('#button_' + kosztorys_pozycja_id)
+
     axios.post( route('czesci.updateNaszykuj', {
         kosztorys_pozycja: kosztorys_pozycja_id,
     }), {
@@ -148,7 +150,22 @@ function naszykujCzesc(kosztorys_pozycja_id, ilosc) {
         technik_id,
         ilosc,
     }).then((response) => {
-        location.reload();
+        // location.reload();
+        $ribbon.removeClass('ribbon-success ribbon-danger ribbon-warning')
+        $label.removeClass('bg-success bg-danger bg-warning')
+        $ilosc.removeClass('form-control-alt is-valid')
+        $button.removeClass('btn-outline-success btn-success')
+
+        if (ilosc > 0) {
+            $ribbon.addClass('ribbon-success')
+            $label.addClass('bg-success')
+            $ilosc.addClass('form-control-alt is-valid')
+            $button.addClass('btn-success')
+        } else {
+            $ribbon.addClass('ribbon-danger')
+            $label.addClass('bg-danger')
+            $button.addClass('btn-outline-success')
+        }
     });
 }
 

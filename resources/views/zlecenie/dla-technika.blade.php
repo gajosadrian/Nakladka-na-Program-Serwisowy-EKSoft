@@ -45,7 +45,7 @@
         @if ($technik)
             <b-block title="Zlecenia" noprint>
                 <template slot="content">
-                    <div class="" style="font-size: 1.1em">
+                    <div style="font-family: 'Nunito Sans'; font-size: 1.1em">
                         <div class="mb-3 clearfix" style="font-size: 2.3em">
                             <div class="float-left">
                                 {{ $technik->nazwa }} {{ $date_formatted }}
@@ -238,7 +238,14 @@
                                                             <td nowrap>{{ $pozycja->polka }}</td>
                                                             <td nowrap>{{ $pozycja->symbol_dostawcy }}</td>
                                                             <td nowrap>{{ $pozycja->symbol }}</td>
-                                                            <td nowrap>{{ str_limit($pozycja->nazwa, 30) }}</td>
+                                                            <td nowrap>
+                                                                @if ($pozycja->is_towar and ! $pozycja->is_zamontowane and ! $pozycja->is_rozpisane and ! $pozycja->is_ekspertyza and ! $pozycja->is_zamowione)
+                                                                    @php
+                                                                        $is_naszykowane = (bool) (($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date)) ?: $pozycja->is_ekspertyza);
+                                                                    @endphp
+                                                                    <i class="{{ ($pozycja->naszykowana_czesc) ? 'fa fa-check' : 'fa fa-times-circle' }}"></i>
+                                                                @endif
+                                                                {{ str_limit($pozycja->nazwa, 30) }}</td>
                                                             <td nowrap>{{ str_limit($pozycja->opis_fixed, 15) }}</td>
                                                             <td class="text-right" nowrap>{{ $pozycja->cena_brutto_formatted }}</td>
                                                             <td class="text-center" nowrap>{!! $pozycja->ilosc != 1 ? ('<span class="bg-gray font-w700 px-1">' . $pozycja->ilosc . '</span>') : '' !!}</td>

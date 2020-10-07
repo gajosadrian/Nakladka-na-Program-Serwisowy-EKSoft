@@ -208,7 +208,7 @@
                             </tr>
                         </table> --}}
 
-                        @if ($user->is_technik)
+                        @if ($user->is_technik or ! $zlecenie->urzadzenie->id)
                             <div class="font-w700">Nazwa:</div>
                             <input type="text" class="form-control form-control-sm" value="{{ $zlecenie->urzadzenie->nazwa }}" disabled />
 

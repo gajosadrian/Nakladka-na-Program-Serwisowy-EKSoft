@@ -7,7 +7,7 @@
         ],
         [
             'name' => 'Lista zleceń',
-            'icon' => 'si si-list',
+            'icon' => 'fa fa-list-ul',
             'route' => 'zlecenia.lista',
             'routeOptions' => [],
         ],
@@ -22,7 +22,7 @@
         ],
         [
             'name' => 'Zlecenia dla technika',
-            'icon' => 'si si-docs',
+            'icon' => 'fa fa-file',
             'route' => 'zlecenia.dla-technika',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -41,7 +41,7 @@
         // ],
         [
             'name' => 'Wyszukiwanie zleceń',
-            'icon' => 'si si-magnifier',
+            'icon' => 'fa fa-search',
             'route' => 'zlecenia.wyszukiwanieZlecenia',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -50,7 +50,7 @@
         ],
         [
             'name' => 'Zdarzenia',
-            'icon' => 'si si-flag',
+            'icon' => 'fa fa-flag',
             'route' => 'zlecenia.logs',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -82,7 +82,7 @@
         ],
         [
             'name' => 'Zdjęcia',
-            'icon' => 'si si-camera',
+            'icon' => 'fa fa-camera',
             'route' => 'urzadzenie.zdjecia',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -91,7 +91,7 @@
         ],
         [
             'name' => 'SMS',
-            'icon' => 'si si-paper-plane',
+            'icon' => 'fa fa-comment-dots',
             'route' => 'sms.create',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -104,7 +104,7 @@
         ],
         [
             'name' => 'Szykowanie części',
-            'icon' => 'si si-briefcase',
+            'icon' => 'fa fa-boxes',
             'route' => 'czesci.indexSzykowanie',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -113,7 +113,7 @@
         ],
         [
             'name' => 'Odbiór części',
-            'icon' => 'si si-check',
+            'icon' => 'fa fa-check',
             'route' => 'czesci.indexOdbior',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -122,7 +122,7 @@
         ],
         [
             'name' => 'Wyszukiwanie części',
-            'icon' => 'si si-magnifier',
+            'icon' => 'fa fa-search',
             'route' => 'zlecenia.wyszukiwanieCzesci',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -143,14 +143,14 @@
         ],
         [
             'name' => 'Zlecenia',
-            'icon' => 'si si-bar-chart',
+            'icon' => 'fa fa-chart-line',
             'route' => 'rozliczenia.lista',
             'routeOptions' => [],
             'role' => 'super-admin',
         ],
         [
             'name' => 'Kilometrówka',
-            'icon' => 'si si-disc',
+            'icon' => 'fa fa-car-side',
             'route' => 'zlecenia.kilometrowka',
             'routeOptions' => [],
             'if' => function() use ($user) {

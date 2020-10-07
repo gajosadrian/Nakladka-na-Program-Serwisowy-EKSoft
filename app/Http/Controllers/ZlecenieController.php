@@ -72,7 +72,7 @@ class ZlecenieController extends Controller
             return $acc;
         }, 0);
 
-        $niesprawdzone_czesci_n = Naszykowana::getNiesprawdzoneCount();
+        // $niesprawdzone_czesci_n = Naszykowana::getNiesprawdzoneCount();
 
         return view('zlecenie.lista', [
             'zlecenia' => $zlecenia_niezakonczone,
@@ -83,7 +83,7 @@ class ZlecenieController extends Controller
             'zlecenia_ukonczone_n' => $zlecenia_ukonczone_n,
             'zlecenia_realizowane_n' => $zlecenia_realizowane_n,
             'errors_n' => $errors_n,
-            'niesprawdzone_czesci_n' => $niesprawdzone_czesci_n,
+            'niesprawdzone_czesci_n' => $niesprawdzone_czesci_n ?? -1,
         ]);
     }
 

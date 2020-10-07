@@ -47,16 +47,16 @@
                     @php
                         $separator = true;
                     @endphp
-                    <b-col cols="12">
+                    <b-col cols="12" style="margin-top: 300px;">
                         <h2 class="content-heading border-black-op">
                             <i class="si si-wrench mr-1"></i>
-                            Pozostałe części
+                            Części naszykowane na kolejne dni
                         </h2>
                     </b-col>
                 @endif
 
                 <b-col lg="6">
-                    <b-block class="{{ $is_mobile ? 'mb-2' : '' }}" full>
+                    <b-block id="block_{{ $naszykowana_czesc->id }}" class="border border-danger border-3 {{ $is_mobile ? 'mb-2' : '' }}" full>
                         <template slot="content">
                             <div class="clearfix {{ $is_mobile ? '' : 'push' }}">
                                 <div class="float-left">
@@ -65,7 +65,7 @@
                                         {{ $zlecenie->klient->nazwa }}
                                     </a>
                                     {{ $naszykowana_czesc->zlecenie_data_formatted }}
-                                    <span class="ml-2">
+                                        <span id="info_{{ $naszykowana_czesc->id }}" class="ml-2">
                                         @if ($naszykowana_czesc->user->technik_id)
                                             <span class="d-none d-sm-inline bg-secondary text-white font-w600 px-1">Część nie była naszykowana</span>
                                         @elseif ( ! $naszykowana_czesc->technik_updated_at)
@@ -141,9 +141,9 @@
                                         </div>
                                     @endif
                                     <div class="mt-2">
-                                        <b-button variant="outline-success" size="sm" onclick="sprawdzCzesc(@json($naszykowana_czesc->id))">
+                                        <b-button id="sprawdz_{{ $naszykowana_czesc->id }}" variant="outline-success" size="sm" onclick="sprawdzCzesc(@json($naszykowana_czesc->id))">
                                             <i class="fa fa-check"></i>
-                                            Sprawdzone
+                                            <span id="text">Sprawdź</span>
                                         </b-button>
                                     </div>
                                 </b-col>
@@ -161,13 +161,26 @@
 let technik_id = @json(@$technik->id ?? 0);
 
 function sprawdzCzesc(naszykowana_czesc_id) {
+    const $block = $('#block_' + naszykowana_czesc_id)
+    const $sprawdz = $('#sprawdz_' + naszykowana_czesc_id)
+    const $sprawdzText = $sprawdz.find('> #text')
+    const $info = $('#info_' + naszykowana_czesc_id)
+
+    $sprawdz.addClass('btn-success').prop('disabled', true)
+
     axios.post( route('czesci.updateSprawdz', {
         naszykowana_czesc: naszykowana_czesc_id,
     }), {
         _token: @json(csrf_token()),
         _method: 'patch',
     }).then((response) => {
-        location.reload();
+        // location.reload()
+        $block.removeClass('border-danger')
+        $sprawdz.removeClass('btn-outline-success')
+
+        $block.addClass('border-success')
+        $sprawdzText.text('Sprawdzone')
+        $info.remove()
     });
 }
 

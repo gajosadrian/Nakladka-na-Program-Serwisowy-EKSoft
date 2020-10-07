@@ -16,7 +16,7 @@ class Urzadzenie extends Model
     *
     */
 
-    public function getIdAttribute(): int
+    public function getIdAttribute(): ?int
     {
         return $this->attributes['ID_MASZYNY'];
     }

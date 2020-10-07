@@ -78,7 +78,7 @@
                             <span class="font-w600 text-danger">{{ $errors_n }}</span>
                         @endif
                         <br>
-                        <span class="{{ ($niesprawdzone_czesci_n > 0) ? 'bg-danger text-white px-1' : '' }}">Niesprawdzonych części: {{ $niesprawdzone_czesci_n }}</span>
+                        {{-- <span class="{{ ($niesprawdzone_czesci_n > 0) ? 'bg-danger text-white px-1' : '' }}">Niesprawdzonych części: {{ $niesprawdzone_czesci_n }}</span> --}}
                     </div>
                 </div>
 
@@ -216,38 +216,40 @@
 @endsection
 
 @section('js_after')<script>$(function(){
-    var $lastRow = null;
-    $('table#zlecenia{{ $room }} > tbody tr:not(#noclicable)').click(function () {
-        let $row = $(this);
 
-        if ($lastRow) {
-            $lastRow.removeClass('table-info');
-        }
-        $row.addClass('table-info');
+var $lastRow = null;
+$('table#zlecenia{{ $room }} > tbody tr:not(#noclicable)').click(function () {
+    let $row = $(this);
 
-        $lastRow = $row;
-    });
-
-    var $searchInput = $('div#zlecenia{{ $room }}_filter input[type=search]');
-    let searchValue = @json($search_value);
-    var searchValue_last = @json($search_value);
-    setInterval(function() {
-        let value = $searchInput.val();
-
-        if (searchValue_last == value) return;
-
-        $.post(route('api.save_field'), {
-            _token: '{{ csrf_token() }}',
-            _method: 'put',
-            name: 'zlecenia.search',
-            value: value
-        })
-        .done(function (data) {
-            searchValue_last = value;
-        });
-    }, 5000)
-
-    if (searchValue) {
-        $('table#zlecenia{{ $room }}').DataTable().data().search(searchValue).draw();
+    if ($lastRow) {
+        $lastRow.removeClass('table-info');
     }
+    $row.addClass('table-info');
+
+    $lastRow = $row;
+});
+
+var $searchInput = $('div#zlecenia{{ $room }}_filter input[type=search]');
+let searchValue = @json($search_value);
+var searchValue_last = @json($search_value);
+setInterval(function() {
+    let value = $searchInput.val();
+
+    if (searchValue_last == value) return;
+
+    $.post(route('api.save_field'), {
+        _token: '{{ csrf_token() }}',
+        _method: 'put',
+        name: 'zlecenia.search',
+        value: value
+    })
+    .done(function (data) {
+        searchValue_last = value;
+    });
+}, 5000)
+
+if (searchValue) {
+    $('table#zlecenia{{ $room }}').DataTable().data().search(searchValue).draw();
+}
+
 })</script>@endsection

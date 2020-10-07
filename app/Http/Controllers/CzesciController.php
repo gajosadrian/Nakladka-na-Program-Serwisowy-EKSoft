@@ -154,10 +154,13 @@ class CzesciController extends Controller
 
         $naszykowane_czesci = [];
         if ($technik) {
-            $naszykowane_czesci = Naszykowana::with('kosztorys_pozycje', 'zlecenie.klient', 'zlecenie.urzadzenie', 'towar', 'user')->where('technik_id', $technik->id)->where(function ($q) {
-                $q  ->where('ilosc_do_zwrotu', '>', 0)
-                    ->orWhereNull('sprawdzone_at');
-            })->orderBy('zlecenie_data')->get();
+            $naszykowane_czesci = Naszykowana::with('kosztorys_pozycje', 'zlecenie.klient', 'zlecenie.urzadzenie', 'towar', 'user')
+                ->where('technik_id', $technik->id)
+                ->where(function ($query) {
+                    $query->where('ilosc_do_zwrotu', '>', 0)
+                          ->orWhereNull('sprawdzone_at');
+                })
+                ->orderBy('zlecenie_data')->get();
         }
 
         return view('czesci.odbior', compact('technik', 'technicy', 'naszykowane_czesci'));
