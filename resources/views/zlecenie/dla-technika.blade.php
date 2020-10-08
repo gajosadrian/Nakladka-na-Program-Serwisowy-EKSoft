@@ -243,7 +243,7 @@
                                                                     @php
                                                                         $is_naszykowane = (bool) (($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date)) ?: $pozycja->is_ekspertyza);
                                                                     @endphp
-                                                                    <i class="{{ ($pozycja->naszykowana_czesc) ? 'fa fa-check' : 'fa fa-times-circle' }}"></i>
+                                                                    <i class="{{ ($is_naszykowane) ? 'fa fa-check' : 'fa fa-times-circle' }}"></i>
                                                                 @endif
                                                                 {{ str_limit($pozycja->nazwa, 30) }}</td>
                                                             <td nowrap>{{ str_limit($pozycja->opis_fixed, 15) }}</td>
