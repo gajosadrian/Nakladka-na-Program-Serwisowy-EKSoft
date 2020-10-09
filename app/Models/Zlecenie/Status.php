@@ -23,7 +23,7 @@ class Status extends Model
         18 => [ 'icon' => 'ponowna_wizyta', 'color' => false ], 25 => [ 'icon' => 'fa fa-exclamation-triangle', 'color' => 'secondary' ], 26 => [ 'icon' => 'fa fa-check-circle', 'color' => 'success' ],
         29 => [ 'icon' => 'fa fa-ban', 'color' => 'secondary' ], 30 => [ 'icon' => 'fa fa-sync-alt', 'color' => 'info' ], 31 => [ 'icon' => 'fa fa-flag', 'color' => 'success' ],
         32 => [ 'icon' => 'upierdliwy_kl', 'color' => false ], 33 => [ 'icon' => 'nie_obslugiwac', 'color' => false ], 34 => [ 'icon' => 'fa fa-dollar-sign', 'color' => 'secondary' ],
-        35 => [ 'icon' => 'uzupelnienie_danych', 'color' => false ], 36 => [ 'icon' => 'czesci_do_wyslania', 'color' => false ], 37 => [ 'icon' => 'fa fa-calculator', 'color' => 'secondary' ],
+        35 => [ 'icon' => 'uzupelnienie_danych', 'color' => false ], 36 => [ 'icon' => 'fa fa-paper-plane', 'color' => 'success' ], 37 => [ 'icon' => 'fa fa-calculator', 'color' => 'secondary' ],
         38 => [ 'icon' => 'fa fa-comments', 'color' => 'info' ], 39 => [ 'icon' => 'fa fa-cart-plus', 'color' => 'secondary' ], 40 => [ 'icon' => 'fa fa-calculator', 'color' => 'secondary' ],
         41 => [ 'icon' => 'fa fa-question', 'color' => 'danger' ], 42 => [ 'icon' => 'fa fa-phone', 'color' => 'secondary' ], 43 => [ 'icon' => 'fa fa-flag', 'color' => 'success' ],
     ];
