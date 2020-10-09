@@ -241,7 +241,7 @@
                                                             <td nowrap>
                                                                 @if ($pozycja->is_towar and ! $pozycja->is_zamontowane and ! $pozycja->is_rozpisane and ! $pozycja->is_ekspertyza and ! $pozycja->is_zamowione)
                                                                     @php
-                                                                        $is_naszykowane = (bool) (($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date)) ?: $pozycja->is_ekspertyza);
+                                                                        $is_naszykowane = (bool) (($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date->copy()->startOfDay())) ?: $pozycja->is_ekspertyza);
                                                                     @endphp
                                                                     <i class="{{ ($is_naszykowane) ? 'fa fa-check' : 'fa fa-times-circle' }}"></i>
                                                                 @endif
