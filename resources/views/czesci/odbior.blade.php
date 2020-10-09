@@ -68,7 +68,7 @@
                                         <span id="info_{{ $naszykowana_czesc->id }}" class="ml-2">
                                         @if ($naszykowana_czesc->user->technik_id)
                                             <span class="d-none d-sm-inline bg-secondary text-white font-w600 px-1">Część nie była naszykowana</span>
-                                        @elseif ( ! $naszykowana_czesc->technik_updated_at)
+                                        @elseif (! $naszykowana_czesc->technik_updated_at)
                                             <span class="d-block d-sm-inline bg-danger text-white font-w600 px-1">Technik nie odznaczył części</span>
                                         @endif
                                     </span>
@@ -142,10 +142,24 @@
                                     @endif
                                     <div class="mt-2">
                                         <b-button id="sprawdz_{{ $naszykowana_czesc->id }}" variant="outline-success" size="sm" onclick="sprawdzCzesc(@json($naszykowana_czesc->id))">
-                                            <i class="fa fa-check"></i>
-                                            <span id="text">Sprawdź</span>
+                                            <i id="icon" class="fa fa-check"></i>
+                                            <span id="text">Odebrano</span>
                                         </b-button>
                                     </div>
+                                    @if (! $naszykowana_czesc->technik_updated_at)
+                                        <hr>
+                                        @if (@$pozycja->id)
+                                            <div id="zamontowano_buttons_{{ $naszykowana_czesc->id }}">
+                                                @for ($i = 1; $i <= $naszykowana_czesc->ilosc; $i++)
+                                                    <b-button id="zamontowano_{{ $naszykowana_czesc->id }}" variant="outline-danger" size="sm" onclick="zamontujCzesc(@json(@$pozycja->id), 'zamontowane', @json($i), @json($naszykowana_czesc->id))">
+                                                        Zamontowano: {{ $i }}
+                                                    </b-button>
+                                                @endfor
+                                            </div>
+                                        @else
+                                            Pozycja o ID <code>${{ $naszykowana_czesc->key }}$</code> usunięta z kosztorysu
+                                        @endif
+                                    @endif
                                 </b-col>
                             </b-row>
                         </template>
@@ -182,6 +196,36 @@ function sprawdzCzesc(naszykowana_czesc_id) {
         $sprawdzText.text('Sprawdzone')
         $info.remove()
     });
+}
+
+function zamontujCzesc(pozycja_id, type, ilosc, naszykowana_czesc_id) {
+    const $sprawdz = $('#sprawdz_' + naszykowana_czesc_id)
+    const $sprawdzIcon = $sprawdz.find('> #icon')
+    const $sprawdzText = $sprawdz.find('> #text')
+    const $zamontowanoButtons = $(`#zamontowano_buttons_${naszykowana_czesc_id} > button`)
+
+    $sprawdz.prop('disabled', true)
+    $sprawdzIcon.remove()
+    $sprawdzText.html('<i class="fa fa-spinner fa-pulse"></i> Czekaj...')
+    $zamontowanoButtons.each(function () {
+        $(this).prop('disabled', true)
+    })
+
+    axios.post( route('czesci.updateZamontuj', {
+        kosztorys_pozycja: pozycja_id,
+    }), {
+        _token: @json(csrf_token()),
+        _method: 'patch',
+        technik_id,
+        type,
+        ilosc,
+    })
+        .then(response => {
+            sprawdzCzesc(naszykowana_czesc_id)
+        })
+        .catch(error => {
+            console.log(error)
+        })
 }
 
 function updateUrl(self, type) {

@@ -17,11 +17,18 @@ class KosztorysController extends Controller
             'id' => $pozycja,
         ]);
 
+        $naszykowana_czesc_key = $pozycja->naszykowana_czesc_key;
+
         $pozycja->towar_id = $towar->id;
         $pozycja->opis = $request->opis ?? '';
         $pozycja->cena = $request->cena;
         $pozycja->vat = $request->vat / 100;
         $pozycja->ilosc = $request->ilosc;
+
+        if ($naszykowana_czesc_key) {
+            $pozycja->naszykowana_czesc_key = $naszykowana_czesc_key;
+        }
+
         $pozycja->save();
 
         return response()->json('success');
