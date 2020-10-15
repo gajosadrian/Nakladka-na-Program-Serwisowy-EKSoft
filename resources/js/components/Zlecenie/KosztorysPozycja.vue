@@ -8,7 +8,7 @@
         :list="`symbolList${_uid}`"
         :state="symbolState"
         @focus="$event.target.select()"
-        :disabled="Boolean(pozycja.id)"
+        :disabled="Boolean(pozycja.id) || ! isEditable"
         required
       />
       <datalist :id="`symbolList${_uid}`">
@@ -33,6 +33,7 @@
         @keyup="updateCenaBrutto()"
         @focus="$event.target.select()"
         required
+        :disabled="! isEditable"
       />
     </b-td>
     <b-td nowrap>
@@ -43,6 +44,7 @@
         @keyup="updateCenaBrutto()"
         @focus="$event.target.select()"
         required
+        :disabled="! isEditable"
       />
     </b-td>
     <b-td nowrap>
@@ -53,6 +55,7 @@
         @keyup="updateCena()"
         @focus="$event.target.select()"
         required
+        :disabled="! isEditable"
       />
     </b-td>
     <b-td nowrap>
@@ -63,6 +66,7 @@
         @keyup="updateCena()"
         @focus="$event.target.select()"
         required
+        :disabled="! isEditable"
       />
     </b-td>
     <b-td class="text-right" nowrap>
@@ -74,6 +78,7 @@
     </b-td>
     <b-td>
       <i
+        v-if="! is_technik"
         class="fa fa-times text-danger"
         @click="remove()"
       ></i>
@@ -88,6 +93,8 @@ export default {
   props: {
     _token: String,
     pozycja: Object,
+    is_technik: Boolean,
+    technik_symbols: Array,
   },
 
   data() {
@@ -151,6 +158,10 @@ export default {
       set(val) {
         this.pozycja.cena_brutto = Number(val)
       },
+    },
+
+    isEditable() {
+      return (this.is_technik && this.technik_symbols.includes(this.pozycja.symbol)) || (! this.is_technik)
     },
   },
 

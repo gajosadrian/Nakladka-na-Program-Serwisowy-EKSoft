@@ -367,7 +367,7 @@
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">
                         <div class="tab-pane fade" id="kosztorys" role="tabpanel">
-                            @if ($user->is_technik)
+                            @if (false)
                                 <table class="table table-sm table-striped table-vcenter font-size-sm">
                                     <thead>
                                         <tr>
@@ -437,7 +437,7 @@
                                     </tfoot>
                                 </table>
                             @else
-                                <zlecenie-kosztorys _token=@json(csrf_token()) :zlecenie_id="{{ $zlecenie->id }}"></zlecenie-kosztorys>
+                                <zlecenie-kosztorys _token=@json(csrf_token()) :zlecenie_id="{{ $zlecenie->id }}" :is_technik="{{ $user->is_technik ? 'true' : 'false' }}" :technik_symbols='@json(App\Models\Zlecenie\Zlecenie::getTechnikSymbols($user->technik_id ?? 0))'></zlecenie-kosztorys>
                             @endif
                         </div>
                         <div class="tab-pane fade active show" id="opis" role="tabpanel">

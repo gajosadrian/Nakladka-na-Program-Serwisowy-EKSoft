@@ -975,6 +975,23 @@ HTML;
         return ($this->is_zakonczone or $status_historia_preautoryzacja);
     }
 
+    public static function getTechnikSymbols(int $technik_id): array
+    {
+        $SYMBOLE_KOSZTORYSU = self::SYMBOLE_KOSZTORYSU;
+        $codes = ['ROBOCIZNY', 'DOJAZDY'];
+        $symbols = [];
+
+        foreach ($codes as $code) {
+            foreach ($SYMBOLE_KOSZTORYSU[$code] as $symbol => $robocizna) {
+                if ($robocizna[1] === $technik_id) {
+                    $symbols[] = $symbol;
+                }
+            }
+        }
+
+        return $symbols;
+    }
+
     private function getCalcKosztorys(string $type): array
     {
         $symbole_robocizn = self::SYMBOLE_KOSZTORYSU[$type];

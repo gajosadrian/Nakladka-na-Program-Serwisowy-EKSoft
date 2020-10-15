@@ -19,6 +19,8 @@
         <KosztorysPozycja
           v-for="pozycja in pozycje" :key="pozycja.id"
           :pozycja="pozycja"
+          :is_technik="is_technik"
+          :technik_symbols="technik_symbols"
           @remove="remove"
         />
         <b-tr>
@@ -74,6 +76,8 @@ export default {
   props: {
     _token: String,
     zlecenie_id: Number,
+    is_technik: Boolean,
+    technik_symbols: Array,
   },
 
   data() {
