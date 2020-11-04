@@ -233,7 +233,7 @@
                 <div class="block block-rounded shadow-sm">
                     <ul class="nav nav-tabs nav-tabs-alt align-items-center js-tabs bg-primary-light" data-toggle="tabs" role="tablist">
                         <li class="nav-item">
-                            <a href="#kosztorys" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)">Kosztorys</a>
+                            <a href="#kosztorys" class="nav-link py-2" style="color: rgba(255, 255, 255, 0.9)" onclick="focusKosztorysInput()">Kosztorys</a>
                         </li>
                         <li class="nav-item">
                             <a href="#opis" class="nav-link py-2 active show" style="color: rgba(255, 255, 255, 0.9)">Opis</a>
@@ -678,6 +678,12 @@ function removeStatus(el, id) {
     .done(function (data) {
         $this.addClass('table-danger');
     });
+}
+
+function focusKosztorysInput() {
+    setTimeout(() => {
+        $('#kosztorys form > input').focus()
+    }, 300)
 }
 
 </script>@append

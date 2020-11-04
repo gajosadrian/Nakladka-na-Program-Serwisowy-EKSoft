@@ -1,4 +1,5 @@
 @extends('global.app')
+@section('datatable_literal_search', true)
 @php
     $room = rand();
 @endphp

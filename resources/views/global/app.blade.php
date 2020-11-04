@@ -45,7 +45,7 @@
         {{-- Scripts --}}
         <script>window.Laravel = {!! json_encode(['csrfToken' => csrf_token(),]) !!};</script>
         <script src="{{ asset('js/helpers.js') }}"></script>
-		<script src="{{ asset('js/app.js') }}" defer></script>
+		<script src="{{ asset('js/app.js?v=4') }}" defer></script>
     </head>
     <body>
         {{--
@@ -131,15 +131,17 @@
 
 		<script>$(function() {
 			$('table.dataTable').DataTable({
-			   paging: false,
-               oSearch: { bSmart: false, bRegex: true },
-			   language: {
-				   search: 'Szukaj:',
-				   // searchPlaceholder: 'Search records',
-				   zeroRecords: 'Brak pozycji',
-				   infoEmpty: '',
-				   info: '',
-			   },
+                paging: false,
+                @if(View::hasSection('datatable_literal_search'))
+                    oSearch: { bSmart: false, bRegex: true },
+                @endif
+                language: {
+                    search: 'Szukaj:',
+                    // searchPlaceholder: 'Search records',
+                    zeroRecords: 'Brak pozycji',
+                    infoEmpty: '',
+                    info: '',
+                },
 			});
 
             $('.js-datepicker').datepicker({

@@ -573,6 +573,9 @@ class ZlecenieController extends Controller
                     'is_umowiono' => $termin->is_umowiono and $termin->zlecenie->is_umowiono,
                     'is_dzwonic' => $termin->zlecenie->is_dzwonic,
                     'is_zakonczone' => $termin->zlecenie->is_zakonczone,
+                    'is_gwarancja' => $termin->zlecenie->is_gwarancja,
+                    'is_ubezpieczenie' => $termin->zlecenie->is_ubezpieczenie,
+                    'is_odplatne' => $termin->zlecenie->is_odplatne,
                     'is_soft_zakonczone' => $is_soft_zakonczone,
                     'is_preautoryzacja' => (bool) $status_historia_preautoryzacja,
                     'preautoryzacja_at' => $status_historia_preautoryzacja ? $status_historia_preautoryzacja->data->format('Y-m-d H:i') : null,
@@ -593,12 +596,15 @@ class ZlecenieController extends Controller
                     ],
                     'kosztorys_pozycje' => $termin->zlecenie->getKosztorysArray(),
                     'zdjecia_url' => route('zlecenia.pokazZdjecia2', $termin->zlecenie->id),
-                    'required_photos' => $termin->zlecenie->required_photos,
                     'has_zdjecia' => $termin->zlecenie->has_zdjecia,
+                    'zdjecia' => $termin->zlecenie->zdjecia->map->only('id', 'zlecenie_id', 'urzadzenie_id', 'type', 'url'),
+                    'photos' => $termin->zlecenie->zdjecia->map->only('type')->pluck('type')->values(),
+                    'required_photos' => $termin->zlecenie->required_photos,
                     'urzadzenie' => null,
                 ];
                 if ($termin->zlecenie->urzadzenie) {
                     $item['zlecenie']['urzadzenie'] = [
+                        'id' => $termin->zlecenie->urzadzenie->id,
                         'producent' => $termin->zlecenie->urzadzenie->producent,
                         'nazwa' => $termin->zlecenie->urzadzenie->nazwa,
                         'model' => $termin->zlecenie->urzadzenie->model ?: 'Brak modelu',
@@ -611,6 +617,7 @@ class ZlecenieController extends Controller
         }
 
         return response()->json([
+            'no_img_url' => asset('media/no-img.jpg'),
             'date_string' => $date_string,
             'technik' => $user->technik->getArray(),
             'terminy' => $array,

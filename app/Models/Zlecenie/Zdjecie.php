@@ -20,7 +20,7 @@ class Zdjecie extends Model
 
     public function getIsDeletableAttribute(): bool
     {
-        return auth()->user()->hasRole('super-admin');
+        return auth()->user()->hasRole('super-admin') or now()->lte($this->created_at->copy()->addDays(3));
     }
 
     public function getUrlAttribute(): string

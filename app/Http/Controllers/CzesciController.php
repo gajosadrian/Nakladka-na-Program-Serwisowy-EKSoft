@@ -75,6 +75,11 @@ class CzesciController extends Controller
         $naszykowana_czesc->ilosc = $ilosc;
         $naszykowana_czesc->ilosc_do_zwrotu = $ilosc;
         $naszykowana_czesc->zlecenie_data = $zlecenie->terminarz->data_rozpoczecia;
+
+        if ($pozycja->is_czesc_symbol and trim($pozycja->opis)) {
+            $naszykowana_czesc->opis = $pozycja->opis;
+        }
+
         $naszykowana_czesc->save();
 
         if ($pozycja->naszykowana_czesc_key != $key) {
@@ -93,9 +98,9 @@ class CzesciController extends Controller
         $technik_id = $request->technik_id;
         $ilosc = str_replace(',', '.', $request->ilosc);
 
-        if ( ! $ilosc or $ilosc == 0) {
-            $request->type = 'niezamontowane';
-        }
+        // if ( ! $ilosc or $ilosc == 0) {
+        //     $request->type = 'niezamontowane';
+        // }
 
         if ( ! $pozycja->naszykowana_czesc and $request->type == 'niezamontowane') {
             $pozycja->opis = '(-' . $pozycja->ilosc . ') niezałożone';
@@ -127,6 +132,14 @@ class CzesciController extends Controller
                 $pozycja->ilosc = 0;
                 break;
 
+            case 'przelozyc':
+                $naszykowana_czesc->ilosc_zamontowane = 0;
+                $naszykowana_czesc->ilosc_rozpisane = 0;
+                $naszykowana_czesc->ilosc_do_zwrotu = $naszykowana_czesc->ilosc;
+                $pozycja->opis = '__';
+                $pozycja->ilosc = $naszykowana_czesc->ilosc;
+                break;
+
             default:
                 $naszykowana_czesc->ilosc_rozpisane = 0;
                 $naszykowana_czesc->ilosc_zamontowane = $ilosc;
@@ -139,6 +152,11 @@ class CzesciController extends Controller
                 $pozycja->ilosc = $ilosc;
                 break;
         }
+
+        if ($pozycja->is_czesc_symbol and $naszykowana_czesc->opis) {
+            $pozycja->opis = trim($naszykowana_czesc->opis . ' ' . $pozycja->opis);
+        }
+
         $naszykowana_czesc->technik_updated_at = now();
         $naszykowana_czesc->save();
         $pozycja->naszykowana_czesc_key = $naszykowana_czesc->key;

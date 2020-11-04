@@ -19,8 +19,8 @@ class Zlecenie extends Model
 
     public const SYMBOLE_KOSZTORYSU = [
         // MOŻNA EDYTOWAĆ IMIONA
-        'ROBOCIZNY' => ['SZEF-R' => ['Szef', -1], 'SZYMEK-R' => ['Szymek', 19], 'MICHAL-R' => ['Michał', 2], 'FILIP-R' => ['Filip', 13], 'MARCIN-R' => ['Marcin', 16], 'BOGUS-R' => ['Bogdan', 17], 'ROBERT-R' => ['Robert', 15], 'DAMIAN-R' => ['Damian', 18]],
-        'DOJAZDY' => ['SZEF-D' => ['Szef', -1], 'SZYMEK-D' => ['Szymek', 19], 'MICHAL-D' => ['Michał', 2], 'FILIP-D' => ['Filip', 13], 'MARCIN-D' => ['Marcin', 16], 'BOGUS-D' => ['Bogdan', 17], 'ROBERT-D' => ['Robert', 15], 'DAMIAN-D' => ['Damian', 18]],
+        'ROBOCIZNY' => ['SZEF-R' => ['Szef', -1], 'SZYMEK-R' => ['Szymek', 19], 'MICHAL-R' => ['Michał', 2], 'FILIP-R' => ['Filip', 13], 'MARCIN-R' => ['Marcin', 16], 'BOGUS-R' => ['Bogdan', 17], 'ROBERT-R' => ['Robert', 15], 'DAMIAN-R' => ['Damian', 18], 'KACPER-R' => ['Kacper', 21]],
+        'DOJAZDY' => ['SZEF-D' => ['Szef', -1], 'SZYMEK-D' => ['Szymek', 19], 'MICHAL-D' => ['Michał', 2], 'FILIP-D' => ['Filip', 13], 'MARCIN-D' => ['Marcin', 16], 'BOGUS-D' => ['Bogdan', 17], 'ROBERT-D' => ['Robert', 15], 'DAMIAN-D' => ['Damian', 18], 'KACPER-D' => ['Kacper', 21]],
     ];
 
     public const ERROR_STR = '*Error*';
@@ -86,7 +86,7 @@ class Zlecenie extends Model
         self::GWARANCJA_NAME => ['tabliczka'],
         'Amica' => ['dowod_zakupu', 'tabliczka'],
         'Gorenje' => ['dowod_zakupu', 'tabliczka'],
-        'ERGO Hestia' => ['polisa', 'tabliczka'],
+        'ERGO Hestia' => ['tabliczka'],
         'Quadra-Net' => ['dowod_zakupu', 'polisa', 'tabliczka'],
         'IBC' => ['tabliczka'],
         'Kernau' => ['dowod_zakupu', 'tabliczka'],
@@ -95,7 +95,7 @@ class Zlecenie extends Model
         'Candy' => ['tabliczka', 'dowod_zakupu'],
         'Europ Assistance' => ['tabliczka'],
         'RTV Euro AGD' => ['polisa', 'tabliczka'],
-        'Mentax' => ['polisa', 'tabliczka'],
+        'Mentax' => ['polisa', 'tabliczka', 'urzadzenie'],
         'De Dietrich' => ['tabliczka', 'gwarancja'],
         'Arconet' => ['gwarancja', 'tabliczka', 'dowod_zakupu', 'polisa'],
         'Ferroli' => ['tabliczka', 'gwarancja'],
@@ -115,8 +115,8 @@ class Zlecenie extends Model
         'Uni-Lux' => ['dowod_zakupu', 'tabliczka', 'gwarancja'],
         'PZU' => ['polisa', 'tabliczka'],
         'VDB' => ['tabliczka', 'dowod_zakupu'],
+        'Honiio' => ['tabliczka'],
         'Unitron' => ['tabliczka', 'gwarancja', 'urzadzenie'],
-        'Honiio' => ['tabliczka']
     ];
 
     /**

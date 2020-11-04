@@ -17,6 +17,7 @@ class KosztorysPozycja extends Model
     private const
         ZAMONTOWANE_KEYS = ['zamontowan', 'zalozon'],
         NIEZAMONTOWANE_KEYS = ['niezamontowan', 'niezalozon'],
+        PRZELOZYC_KEYS = ['__'],
         ODLOZONE_KEYS = ['odlozon'],
         ROZPISANE_KEYS = ['rozpisan'],
         ZAMOWIONE_KEYS = ['zamowion', 'zamowien'],
@@ -233,6 +234,11 @@ class KosztorysPozycja extends Model
         return $this->hasKey(self::NIEZAMONTOWANE_KEYS);
     }
 
+    public function getIsPrzelozycAttribute(): bool
+    {
+        return $this->hasKey(self::PRZELOZYC_KEYS);
+    }
+
     public function getIsOdlozoneAttribute(): bool
     {
         return $this->hasKey(self::ODLOZONE_KEYS);
@@ -373,6 +379,7 @@ class KosztorysPozycja extends Model
             'is_zamowione' => $this->is_zamowione,
             'is_odlozone' => $this->is_odlozone,
             'is_zamontowane' => $this->is_zamontowane,
+            'is_przelozyc' => $this->is_przelozyc,
             'is_niezamontowane' => $this->is_niezamontowane,
             'is_rozpisane' => $this->is_rozpisane,
             'is_zamontowane_or_rozpisane' => ($this->is_zamontowane or $this->is_rozpisane),

@@ -41,15 +41,15 @@
 
                     @php
                         $is_niezamontowane_gotowe = (bool) ($pozycja->is_niezamontowane and $pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->sprawdzone_at and $pozycja->naszykowana_czesc->sprawdzone_at->gte($pozycja->naszykowana_czesc->zlecenie_data));
-                        $is_naszykowane = (bool) (($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date)) ?: $pozycja->is_ekspertyza);
+                        $is_naszykowane = (bool) ($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date));
 
                         $color = null;
-                        if ($pozycja->is_ekspertyza or $pozycja->is_zamowione) {
-                            $color = 'warning';
-                        // } elseif ($pozycja->is_niezamontowane) {
-                        //     $color = 'danger';
-                        } elseif ($is_naszykowane) {
+                        if ($is_naszykowane) {
                             $color = 'success';
+                        } elseif ($pozycja->is_ekspertyza or $pozycja->is_zamowione or $pozycja->zlecenie->status_id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID) {
+                            $color = 'xsmooth-light';
+                        } elseif ($pozycja->is_niezamontowane or ($pozycja->towar->stan->stan == 0 and ! $pozycja->is_czesc_symbol)) {
+                            $color = 'warning';
                         }
                     @endphp
 
@@ -109,9 +109,9 @@
                                                 </div>
                                             </div>
                                         @elseif ($pozycja->is_niezamontowane and ! $is_niezamontowane_gotowe)
-                                            Usuń z opisu "niezałożone" i ustaw ilość
+                                            {{-- <p>Usuń z opisu "niezałożone" i ustaw ilość</p> --}}
                                         @elseif ($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->is_rozliczone)
-                                            Pozycja powinna być rozliczona
+                                            <p>Pozycja powinna być rozliczona</p>
                                         @endif
                                     </div>
                                     <div class="col-8 text-right">
@@ -120,6 +120,11 @@
                                             <span class="font-w600 bg-info text-white px-1">{{ $pozycja->symbol }}</span>
                                         </div>
                                         <div class="font-w600 text-success">{{ $pozycja->polka }}</div>
+                                    </div>
+                                    <div class="col-12">
+                                        @if ($pozycja->towar->stan->stan == 0 and ! $pozycja->is_czesc_symbol)
+                                            <p class="font-w600 text-danger mb-2">Brak części na stanie</p>
+                                        @endif
                                     </div>
                                 </div>
                             </template>

@@ -28,9 +28,9 @@ class ZlecenieZdjecieController extends Controller
 
     public function show2(int $zlecenie_id)
     {
-        $zlecenie = Zlecenie::with(['zdjecia_do_zlecenia', 'zdjecia_do_urzadzenia'])->findOrFail($zlecenie_id);
+        // $zlecenie = Zlecenie::with(['zdjecia_do_zlecenia', 'zdjecia_do_urzadzenia'])->findOrFail($zlecenie_id);
+        $zlecenie = Zlecenie::findOrFail($zlecenie_id);
 
-        // return response()->json($zlecenie->zdjecia, 200);
         return view('zlecenie.zdjecia2', compact('zlecenie'));
     }
 
@@ -43,9 +43,12 @@ class ZlecenieZdjecieController extends Controller
 
     public function store(Request $request)
     {
-        if (( ! $request->zlecenie_id and ! $request->urzadzenie_id) or ! $request->image or ! $request->type) abort(400);
+        if ((! $request->zlecenie_id and ! $request->urzadzenie_id) or ! $request->image or ! $request->type) abort(400);
+        // abort(400);
 
         DB::transaction(function () use ($request) {
+            $path2 = null;
+
             if ($technik = $request->user()->technik) {
                 $zlecenie = Zlecenie::find($request->zlecenie_id);
                 if ($zlecenie->terminarz) {
@@ -58,7 +61,7 @@ class ZlecenieZdjecieController extends Controller
                 $month_name = $months->where('id', $date->month)->first()->name;
                 $image_original_name = $request->image->getClientOriginalName();
 
-                Storage::disk('zdjecia_technikow')->putFileAs(sprintf(Zdjecie::TECHNIK_PATH, 2020, ($month_format.' '.$month_name), $technik->imie, $date->format('d.m')), $request->image, $image_original_name);
+                $path2 = Storage::disk('zdjecia_technikow')->putFileAs(sprintf(Zdjecie::TECHNIK_PATH, 2020, ($month_format.' '.$month_name), $technik->imie, $date->format('d.m')), $request->image, $image_original_name);
             }
 
             Zdjecie::create([
@@ -66,6 +69,7 @@ class ZlecenieZdjecieController extends Controller
                 'urzadzenie_id' => ($request->save_to == 'urzadzenie') ? $request->urzadzenie_id : 0,
                 'type' => $request->type,
                 'path' => Storage::disk('images')->putFile('', $request->image),
+                'path2' => $path2,
             ]);
         });
 
@@ -74,9 +78,11 @@ class ZlecenieZdjecieController extends Controller
 
     public function destroy(Zdjecie $zdjecie)
     {
-        if ( ! $zdjecie->is_deletable) abort(401);
+        if (! $zdjecie->is_deletable) abort(401);
 
         Storage::disk('images')->delete('', $zdjecie->path);
+        if ($zdjecie->path2) Storage::disk('zdjecia_technikow')->delete('', $zdjecie->path2);
+
         $zdjecie->delete();
 
         return redirect()->back();
