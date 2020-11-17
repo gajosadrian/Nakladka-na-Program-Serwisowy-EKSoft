@@ -84,15 +84,28 @@
                                     </tr>
                                     <tr>
                                         <th>Nr&nbsp;obcy:</th>
-                                        <td>{{ $zlecenie->nr_obcy ?: '-' }}</td>
+                                        <td>
+                                            @if ($user->is_technik)
+                                                {{ $zlecenie->nr_obcy ?: '-' }}
+                                            @else
+                                                <span onclick="jQuery('#nrobcy-modal').modal('show')" style="cursor:pointer;">
+                                                    {{ $zlecenie->nr_obcy ?: '-' }}
+                                                </span>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Rodzaj:</th>
                                         <td>
-                                            <span onclick="jQuery('#zleceniodawca-modal').modal('show')" style="cursor:pointer;">
+                                            @if ($user->is_technik)
                                                 <i class="{{ $zlecenie->znacznik->icon }}"></i>
                                                 {{ $zlecenie->znacznik_formatted }}
-                                            </span>
+                                            @else
+                                                <span onclick="jQuery('#zleceniodawca-modal').modal('show')" style="cursor:pointer;">
+                                                    <i class="{{ $zlecenie->znacznik->icon }}"></i>
+                                                    {{ $zlecenie->znacznik_formatted }}
+                                                </span>
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
@@ -534,6 +547,30 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="nrobcy-modal" tabindex="-1" role="dialog" aria-labelledby="nrobcy-modal" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Nr obcy</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <input type="text" class="form-control" value="{{ @$zlecenie->nr_obcy ?? '' }}">
+                    </div>
+                    <div class="block-content block-content-full text-right bg-light">
+                        <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Anuluj</button>
+                        <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal" onclick="changeNrobcy($('#nrobcy-modal input').val())">Zapisz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js_after')<script>
@@ -609,13 +646,26 @@ function changeTechnik(technik_id) {
 }
 
 function changeZleceniodawca(zleceniodawca) {
-    axios.post( route('zlecenia.api.change_zleceniodawca', {
+    axios.post( route('zlecenia.api.change_data', {
         id: @json($zlecenie->id),
+        type: 'zleceniodawca',
     }), {
         zleceniodawca,
     }).then((response) => {
         location.reload()
-    });
+    })
+}
+
+function changeNrobcy(nrobcy) {
+    axios.post( route('zlecenia.api.change_data', {
+        id: @json($zlecenie->id),
+        type: 'nrobcy',
+    }), {
+        // _token: @json(csrf_token()),
+        nrobcy,
+    }).then((response) => {
+        location.reload()
+    })
 }
 
 var timers = [];

@@ -478,15 +478,28 @@ class ZlecenieController extends Controller
         return response()->json('success', 200);
     }
 
-    public function apiChangeZleceniodawca(Request $request, int $id)
+    public function apiChangeData(Request $request, int $id, string $type)
     {
         $zlecenie = Zlecenie::findOrFail($id);
 
-        $kosztorys_opis = $zlecenie->kosztorys_opis()->firstOrNew([
-            'id_zs' => $zlecenie->id,
-        ]);
-        $kosztorys_opis->opis = $request->zleceniodawca;
-        $kosztorys_opis->save();
+        switch ($type) {
+            case 'zleceniodawca':
+                $kosztorys_opis = $zlecenie->kosztorys_opis()->firstOrNew([
+                    'id_zs' => $zlecenie->id,
+                ]);
+                $kosztorys_opis->opis = $request->zleceniodawca;
+                $kosztorys_opis->save();
+                break;
+
+            case 'nrobcy':
+                $zlecenie->nr_obcy = $request->nrobcy;
+                $zlecenie->save();
+                break;
+
+            default:
+                abort(400);
+                break;
+        }
 
         return response()->json('success', 200);
     }

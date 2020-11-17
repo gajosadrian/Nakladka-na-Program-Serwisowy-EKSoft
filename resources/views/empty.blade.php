@@ -17,9 +17,6 @@
             </div>
         </div>
     @endif
-
-    <a href="intent://q=Rudzka/#Intent;package=pl.aqurat.automapa;scheme=geo;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end" class="btn btn-primary">Automapa</a>
-    <a href="intent://50.0614300,19.9365800/#Intent;package=pl.aqurat.automapa;scheme=google.navigation;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end" class="btn btn-primary">Automapa2</a>
 </div>
 
 {{-- <div class="content">

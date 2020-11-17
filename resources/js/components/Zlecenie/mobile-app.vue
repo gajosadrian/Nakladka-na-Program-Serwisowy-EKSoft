@@ -101,13 +101,17 @@
             <div v-if="show_map" class="push">
               <a :href="zlecenie.google_maps_route_link" class="btn btn-light">
                 <i class="fa fa-map-marker-alt text-info"></i>
-                Mapy Google
+                Mapy
               </a>
               <a href="https://play.google.com/store/apps/details?id=pl.neptis.yanosik.mobi.android&launch=true" class="btn btn-light"
                 v-clipboard:copy="address_formatted"
               >
-                <i class="fa fa-map-marker-alt text-danger"></i>
+                <i class="fa fa-location-arrow text-danger"></i>
                 Yanosik
+              </a>
+              <a class="btn btn-light" :href="`intent://q=${address_formatted}/#Intent;package=pl.aqurat.automapa;scheme=geo;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`">
+                <i class="fa fa-road text-primary"></i>
+                Automapa
               </a>
             </div>
             <div v-for="(telefon, t_index) in zlecenie.klient.telefony" class="mt-2">
@@ -265,6 +269,7 @@ export default {
       refresher: 0,
       unsendKeysCount: 0,
       lastBackButtonClick: 0,
+      zlecenieCooldown: 0,
       show_zdjecia: [],
       click_21: null,
       plastic_click_001: null,
@@ -291,6 +296,12 @@ export default {
 
     this.timer = setInterval(this.fetchZlecenia, 300000) // 5 min
     this.timer2 = setInterval(this.syncUnsendImages, 10000) // 10s
+
+    setInterval(() => {
+      if (this.zlecenieCooldown <= 0) return
+      this.zlecenieCooldown -= 100
+    }, 100)
+
     // this.click_21 = new Audio('/sounds/click_021.mp3')
     // this.click_21 = new Audio('/zlecenia/public/sounds/click_021.mp3')
     this.plastic_click_001 = new Audio('/sounds/plastic_click_001.mp3')
@@ -319,8 +330,12 @@ export default {
     },
 
     address_formatted() {
-      if ( ! this.zlecenie) return false;
-      return this.zlecenie.klient.miasto + ', ' + this.zlecenie.klient.adres;
+      if (! this.zlecenie) return false
+      let address_arr = this.zlecenie.klient.adres.split('/')
+      if (address_arr.length > 1) {
+        address_arr.pop()
+      }
+      return this.zlecenie.klient.miasto + ', ' + address_arr.join('/')
     },
 
     suma_kosztorysu() {
@@ -436,31 +451,33 @@ export default {
     },
 
     setZlecenie(zlecenie, scroll = true, scroll_reset = true, blocked = false) {
-      if (blocked) return;
+      if (blocked) return
 
       if (zlecenie) {
-        this.rememberScroll();
-        this.retrieveOpis(zlecenie);
+        // this.rememberScroll()
+        this.retrieveOpis(zlecenie)
+      } else {
+        this.zlecenieCooldown = 500
       }
-      this.zlecenie = zlecenie;
+      this.zlecenie = zlecenie
       if (scroll) {
-        this.doScroll(scroll_reset);
+        this.doScroll(scroll_reset)
       }
-      navigator.vibrate(50);
+      navigator.vibrate(50)
     },
 
     doScroll(reset = false) {
       if (reset) {
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 0)
       } else {
         setTimeout(() => {
-          window.scrollTo(0, this.scroll_pos);
-        }, 500);
+          window.scrollTo(0, this.scroll_pos)
+        }, 500)
       }
     },
 
     rememberScroll() {
-      // this.scroll_pos = window.scrollY;
+      this.scroll_pos = window.scrollY
     },
 
     addOpis() {
@@ -523,12 +540,14 @@ export default {
     },
 
     cancelAutoUpdate() {
-      clearInterval(this.timer);
+      clearInterval(this.timer)
     },
 
     handleScroll () {
-      if (this.zlecenie) return;
-      this.scroll_pos = window.scrollY;
+      if (this.zlecenie) return
+      if (this.zlecenieCooldown > 0) return
+
+      this.scroll_pos = window.scrollY
     },
 
     setShowZdjecia(zlecenie_id, val) {

@@ -136,7 +136,7 @@ class Zlecenie extends Model
             $arr = array_merge($arr, $photos);
         }
 
-        return array_unique($arr);
+        return array_values( array_unique($arr) );
     }
 
     public function getDataAttribute(): Carbon
@@ -306,6 +306,11 @@ class Zlecenie extends Model
     public function getNrObcyAttribute(): string
     {
         return $this->attributes['NrObcy'] ?? false;
+    }
+
+    public function setNrObcyAttribute(?string $nr_obcy): void
+    {
+        $this->attributes['NrObcy'] = $nr_obcy;
     }
 
     public function getNrOrObcyAttribute(): string

@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
         Route::post('api/update_notatka/{id}', 'ZlecenieController@apiUpdateNotatka')->name('api.updateOpis');
         Route::post('api/change_status/{id}', 'ZlecenieController@apiChangeStatus')->name('api.change_status');
         Route::post('api/change_technik/{id}', 'ZlecenieController@apiChangeTechnik')->name('api.change_technik');
-        Route::post('api/change_zleceniodawca/{id}', 'ZlecenieController@apiChangeZleceniodawca')->name('api.change_zleceniodawca');
+        Route::post('api/change_data/{id}/{type}', 'ZlecenieController@apiChangeData')->name('api.change_data');
         Route::post('api/change_kosztorys_pozycja_opis/{kosztorys_pozycja}', 'ZlecenieController@apiChangeKosztorysPozycjaOpis')->name('api.changeKosztorysPozycjaOpis');
         Route::post('api/umow_klienta/{id}', 'ZlecenieController@apiUmowKlienta')->name('api.umow_klienta');
         Route::post('api/nie_odbiera/{id}', 'ZlecenieController@apiNieOdbiera')->name('api.nie_odbiera');
