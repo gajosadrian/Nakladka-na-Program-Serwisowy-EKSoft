@@ -9,7 +9,7 @@ class Sms extends Model
     protected $connection = 'mysql';
     protected $table = 'sms';
     protected $appends = [
-        'message_formatted', 'sms_amount', 'date'
+        'message_formatted', 'sms_amount', 'date_formatted'
     ];
     protected $casts = [
         'phones' => 'array',
@@ -29,7 +29,7 @@ class Sms extends Model
         return ceil(strlen($this->message) / self::SMS_LENGTH);
     }
 
-    public function getDateAttribute()
+    public function getDateFormattedAttribute()
     {
         return $this->created_at->format('Y-m-d H:i');
     }

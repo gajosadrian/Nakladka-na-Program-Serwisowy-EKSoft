@@ -94,7 +94,7 @@
               <span v-if="sms.sms_amount > 1">
                 {{ sms.sms_amount }} smsy
               </span>
-              <span class="ml-3">{{ sms.created_at }}</span>
+              <span class="ml-3">{{ sms.date_formatted }}</span>
             </div>
           </div>
           <nl2br tag="p" :text="sms.message_formatted" />
