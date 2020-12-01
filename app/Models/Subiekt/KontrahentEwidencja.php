@@ -63,7 +63,7 @@ class KontrahentEwidencja extends Model
 
     public function getTelefonyAttribute(): object
     {
-        return $this->telefony_ewidencja->sortByDesc('tel_Podstawowy');
+        return $this->telefony_ewidencja;
     }
 
     public function getTelefonyArrayAttribute(): array
@@ -78,6 +78,6 @@ class KontrahentEwidencja extends Model
 
     public function telefony_ewidencja()
     {
-        return $this->hasMany('App\Models\Subiekt\TelefonEwidencja', 'tel_IdAdresu', 'adr_Id');
+        return $this->hasMany('App\Models\Subiekt\TelefonEwidencja', 'tel_IdAdresu', 'adr_Id')->orderByDesc('tel_Podstawowy');
     }
 }

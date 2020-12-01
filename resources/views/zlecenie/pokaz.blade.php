@@ -126,7 +126,15 @@
                                                         <select id="status_select" class="form-control form-control-sm font-w700 {{ $zlecenie->status->color ? 'bg-'.$zlecenie->status->color.'-lighter' : '' }}">
                                                             <option value="{{ $zlecenie->status->id }}" selected disabled>{{ $zlecenie->status->nazwa }}</option>
                                                             @foreach ($statusy_aktywne as $status)
-                                                                <option value="{{ $status->id }}" {{ ($status->id == $zlecenie->status->id) ? 'selected' : '' }}>{{ $status->nazwa }}</option>
+                                                                <option value="{{ $status->id }}" {{ ($status->id == $zlecenie->status->id) ? 'selected' : '' }}>
+                                                                    {{ $status->nazwa }}
+                                                                    @if (in_array($status->id, [11, 14, 12, 16, 40, 13, 43, 31]) and $zlecenie->status_id !== $status->id)
+                                                                        ✉
+                                                                    @endif
+                                                                    @if (in_array($status->id, [14, 13, 29]) and $zlecenie->status_id != $status->id)
+                                                                        ✖
+                                                                    @endif
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -463,11 +471,7 @@
                             <zlecenie-opis zlecenie_id=@json($zlecenie->id) :is_technik="{{ (int) $user->is_technik }}" />
                         </div>
                         <div class="tab-pane fade" id="sms" role="tabpanel">
-                            <div class="row">
-                                <div class="col-12 col-lg-5">
-                                    <sms-create _token=@json(csrf_token()) :_predefined="true" :_telefony="{{ json_encode($zlecenie->klient->telefony_array) }}" />
-                                </div>
-                            </div>
+                            <sms-create _token=@json(csrf_token()) :_predefined="true" :_telefony="{{ json_encode($zlecenie->klient->telefony_array) }}" :_footer='@json(App\Sms::FOOTER)' :zlecenie_id="{{ $zlecenie->id }}" :zlecenie_status_id="{{ $zlecenie->status_id }}" :smses='@json($zlecenie->smses)' />
                         </div>
                         <div class="tab-pane fade" id="statusy" role="tabpanel">
                             <b-row>
@@ -485,20 +489,20 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($zlecenie->statusy as $status_pozycja)
+                                                @foreach ($zlecenie->statusy as $status_historia)
                                                     @php
-                                                        $status = $status_pozycja->status;
+                                                        $status = $status_historia->status;
                                                     @endphp
                                                     <tr>
                                                         <td nowrap class="align-middle {{ $status->color ? 'table-' . $status->color : '' }}">
                                                             <i class="{{ $status->icon }} {{ $status->color ? 'text-' . $status->color : '' }} mx-2"></i>
                                                             {{ $status->nazwa }}
                                                         </td>
-                                                        <td nowrap>{{ $status_pozycja->data }}</td>
-                                                        <td nowrap>{{ $status_pozycja->pracownik->nazwa }}</td>
+                                                        <td nowrap>{{ $status_historia->data }}</td>
+                                                        <td nowrap>{{ $status_historia->pracownik->nazwa }}</td>
                                                         @role('super-admin')
                                                             <td nowrap>
-                                                                <button onclick="removeStatus(this,{{ $status_pozycja->id }})" type="button" class="btn btn-sm btn-rounded btn-danger">
+                                                                <button onclick="removeStatus(this,{{ $status_historia->id }})" type="button" class="btn btn-sm btn-rounded btn-danger">
                                                                     <i class="fa fa-times"></i>
                                                                 </button>
                                                             </td>
@@ -581,7 +585,9 @@ $(document).keydown(function (e) {
 	}
 });
 
-var last_status_id = @json($zlecenie->status_id);
+let last_status_id = @json($zlecenie->status_id);
+const statusy_removable_termin = [14, 13, 29];
+
 function changeStatus(status_id) {
     if (last_status_id == status_id) {
         swal({
@@ -597,7 +603,7 @@ function changeStatus(status_id) {
     last_status_id = status_id;
 
     let remove_termin = 0;
-    if (status_id == 14 || status_id == 13 || status_id == 29) {
+    if (statusy_removable_termin.includes(status_id)) {
         remove_termin = 1;
     }
 

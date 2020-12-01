@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Czesc\Naszykowana;
+use App\Models\SMS\Pracownik;
 use Facades\App\Models\Zlecenie\Zlecenie;
 use App\Models\Zlecenie\Terminarz;
 use App\Models\Zlecenie\Status;
@@ -111,7 +112,7 @@ class ZlecenieController extends Controller
      */
     public function show($id)
     {
-        $zlecenie = Zlecenie::with('status_historia', 'zdjecia_do_zlecenia', 'zdjecia_do_urzadzenia')->findOrFail($id);
+        $zlecenie = Zlecenie::with('status_historia', 'zdjecia_do_zlecenia', 'zdjecia_do_urzadzenia', 'smses.user', 'smses.zlecenie')->findOrFail($id);
         $statusy_aktywne = Status::getAktywne();
         $technicy = Technik::getLast();
 
@@ -283,6 +284,19 @@ class ZlecenieController extends Controller
         return view('zlecenie-logs.pokaz', compact('date', 'date_string', 'technik', 'technicy', 'logs', 'grouped_logs'));
     }
 
+    public function logsStatusy(int $pracownik_id = null)
+    {
+        $pracownicy = Pracownik::where('aktywny', 1)->orderBy('NAZWISKO')->orderBy('IMIE')->get();
+        $pracownik = Pracownik::find($pracownik_id);
+
+        $statusy_data = [];
+        if ($pracownik) {
+            $statusy_data = StatusHistoria::with('zlecenie')->where('id_user', $pracownik->id)->orderByDesc('data')->limit(200)->get()->groupBy('data_dzien');
+        }
+
+        return view('zlecenie-logs.statusy', compact('pracownicy', 'pracownik', 'statusy_data'));
+    }
+
     public function wyszukiwanieZlecenia(Request $request, string $search = null)
     {
         $search = $request->search ?? $search;
@@ -292,6 +306,8 @@ class ZlecenieController extends Controller
             $q
                 ->where('adr_Nazwa', 'like', '%'.$search.'%')
                 ->orWhere('adr_NazwaPelna', 'like', '%'.$search.'%')
+                ->orWhere('adr_Miejscowosc', 'like', '%'.$search.'%')
+                ->orWhere('adr_Adres', 'like', '%'.$search.'%')
             ;
         })->limit(20)->get(['kh_Id'])->pluck('id')->values();
 
@@ -308,6 +324,9 @@ class ZlecenieController extends Controller
                 ->where($where[0], $where[1], $where[2])
                 ->orWhereIn('id_firmy', $klient_ids)
                 ->orWhere('OpisZlec', 'like', "%{$search}%")
+                ->orWhereHas('urzadzenie', function ($q) use ($search) {
+                    $q->where('SERIAL_NO', $search);
+                })
                 ->orderByDesc('id_zlecenia')->limit(20)->get();
         }
 
@@ -458,6 +477,7 @@ class ZlecenieController extends Controller
         $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->changeStatus($request->status_id, $user->pracownik->id, $request->remove_termin ?? false, $request->add_seconds ?? false);
+        $zlecenie->archiwalny = false;
         $zlecenie->save();
 
         if ($terminarz_status_id = $request->terminarz_status_id) {

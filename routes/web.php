@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::get('wyszukiwanie-czesci/{symbol?}', 'ZlecenieController@wyszukiwanieCzesci')->name('wyszukiwanieCzesci');
         Route::get('menu-czesci', 'CzesciController@indexMenu')->name('indexMenu');
         Route::get('logs/{technik_id?}/{date_string?}', 'ZlecenieController@logs')->name('logs');
+        Route::get('logs-statusy/{pracownik_id?}', 'ZlecenieController@logsStatusy')->name('logs.statusy');
 
         Route::get('api/get_opis/{id}', 'ZlecenieController@apiGetOpis')->name('api.get_opis');
         Route::post('api/append_notatka/{id}', 'ZlecenieController@apiAppendNotatka')->name('api.append_opis');

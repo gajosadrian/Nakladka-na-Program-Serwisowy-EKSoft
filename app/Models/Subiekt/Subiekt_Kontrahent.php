@@ -41,6 +41,26 @@ class Subiekt_Kontrahent extends Model
         return $this->dane->telefon;
     }
 
+    public function getKomorkowyAttribute(): ?string
+    {
+        foreach ($this->dane->telefony as $telefon) {
+            if ($telefon->is_komorkowy) {
+                return $telefon->nr ?: null;
+            }
+        }
+        return null;
+    }
+
+    public function getKomorkowyNumericAttribute(): ?string
+    {
+        foreach ($this->dane->telefony as $telefon) {
+            if ($telefon->is_komorkowy) {
+                return $telefon->phone_nr ?: null;
+            }
+        }
+        return null;
+    }
+
     public function getAdresRawAttribute(): string
     {
         return $this->dane->adres;

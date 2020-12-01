@@ -57,6 +57,13 @@
                 return $user and !$user->technik_id;
             },
         ],
+        [
+            'name' => 'Historia statusów',
+            'icon' => 'fa fa-flag',
+            'route' => 'zlecenia.logs.statusy',
+            'routeOptions' => [],
+            'role' => 'super-admin',
+        ],
         // [
         //     'name' => 'Historia',
         //     'icon' => 'si si-bubbles',

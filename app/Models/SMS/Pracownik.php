@@ -9,6 +9,12 @@ class Pracownik extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'PRACOWNICY';
     protected $primaryKey = 'ID_PRACOWNIKA';
+    protected $hidden = [
+        'pass',
+    ];
+    protected $casts = [
+        'aktywny' => 'boolean',
+    ];
 
     /**
     * Attributes

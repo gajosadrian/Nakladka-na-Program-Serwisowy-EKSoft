@@ -10,14 +10,10 @@
   </div>
 
   <div class="content">
-    <b-row>
-      <b-col lg="4">
-        <b-block full>
-          <template slot="content">
-            <sms-create _token=@json(csrf_token()) />
-          </template>
-        </b-block>
-      </b-col>
-    </b-row>
+    <b-block full>
+      <template slot="content">
+        <sms-create _token=@json(csrf_token()) :_footer='@json(App\Sms::FOOTER)' :smses='@json($smses)' />
+      </template>
+    </b-block>
   </div>
 @endsection

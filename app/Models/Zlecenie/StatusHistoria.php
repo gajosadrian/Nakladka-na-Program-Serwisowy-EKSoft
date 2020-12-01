@@ -18,14 +18,19 @@ class StatusHistoria extends Model
     *
     */
 
-    public function getIdAttribute(): string
+    public function getIdAttribute(): int
     {
         return $this->attributes['id_hist'];
     }
 
-    public function getStatusIdAttribute(): string
+    public function getStatusIdAttribute(): int
     {
-        return $this->status->id;
+        return $this->attributes['id_status'];
+    }
+
+    public function setStatusIdAttribute(int $value): void
+    {
+        $this->attributes['id_status'] = $value;
     }
 
     public function getNazwaAttribute(): string
@@ -38,12 +43,17 @@ class StatusHistoria extends Model
         return Carbon::parse($this->attributes['data']);
     }
 
-    public function getDataFormattedAttribute(): String
+    public function getDataFormattedAttribute(): string
     {
         return $this->data->format('Y-m-d H:i');
     }
 
-    public function getGodzinaFormattedAttribute(): String
+    public function getDataDzienAttribute(): string
+    {
+        return $this->data->format('Y-m-d');
+    }
+
+    public function getGodzinaFormattedAttribute(): string
     {
         return $this->data->format('H:i');
     }
@@ -51,11 +61,6 @@ class StatusHistoria extends Model
     public function setPracownikIdAttribute(int $value): void
     {
         $this->attributes['id_user'] = $value;
-    }
-
-    public function setStatusIdAttribute(int $value): void
-    {
-        $this->attributes['id_status'] = $value;
     }
 
     public function setZlecenieIdAttribute(int $value): void
@@ -78,5 +83,10 @@ class StatusHistoria extends Model
     public function pracownik()
     {
         return $this->hasOne('App\Models\SMS\Pracownik', 'ID_PRACOWNIKA', 'id_user');
+    }
+
+    public function zlecenie()
+    {
+        return $this->belongsTo('App\Models\Zlecenie\Zlecenie', 'id_zs', 'id_zlecenia');
     }
 }

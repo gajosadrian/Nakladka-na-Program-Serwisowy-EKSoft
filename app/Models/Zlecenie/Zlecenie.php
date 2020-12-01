@@ -12,6 +12,12 @@ class Zlecenie extends Model
     protected $table = 'ser_Zlecenia';
     protected $primaryKey = 'id_zlecenia';
     protected $with = ['kosztorys_opis', 'terminarz'];
+    protected $visible = [
+        'id', 'klient_id', 'urzadzenie_id', 'zrodlo', 'znacznik', 'znacznik_formatted', 'nr', 'nr_obcy', 'nr_or_obcy', 'status_id', 'archiwalny', 'anulowany', 'technik_id', 'is_technik', 'is_odplatne', 'is_gwarancja', 'is_ubezpieczenie', 'popup_link'
+    ];
+    protected $appends = [
+        'id', 'klient_id', 'urzadzenie_id', 'zrodlo', 'znacznik', 'znacznik_formatted', 'nr', 'nr_obcy', 'nr_or_obcy', 'status_id', 'archiwalny', 'anulowany', 'technik_id', 'is_technik', 'is_odplatne', 'is_gwarancja', 'is_ubezpieczenie', 'popup_link'
+    ];
     public $timestamps = false;
 
     private $_czas_oczekiwania;
@@ -333,6 +339,11 @@ class Zlecenie extends Model
         return $this->attributes['Archiwalny'] ?? false;
     }
 
+    public function setArchiwalnyAttribute(bool $val): void
+    {
+        $this->attributes['Archiwalny'] = $val ? 1 : 0;
+    }
+
     public function getAnulowanyAttribute(): bool
     {
         return $this->attributes['Anulowany'] ?? false;
@@ -397,6 +408,11 @@ class Zlecenie extends Model
     public function getIsUmowionoAttribute(): bool
     {
         return ($this->status_id == Status::UMOWIONO_ID);
+    }
+
+    public function getIsUrzadzenieAttribute(): bool
+    {
+        return $this->attributes['id_maszyny'] ? true : false;
     }
 
     public function getIsWarsztatAttribute(): bool
@@ -665,7 +681,7 @@ class Zlecenie extends Model
             $array[] = 'Ustal termin';
 
         if ($this->dni_od_zakonczenia >= 2 and $this->isAktywnyBlad(2) and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::PREAUTORYZACJA_ID]))
-            $array[] = 'Zlecenie niezamknięte';
+            $array[] = 'Brak reakcji';
 
         if ($this->dni_od_statusu >= 1 and $this->isAktywnyBlad(1) and in_array($this->status_id, [Status::DO_POINFORMOWANIA_ID, Status::INFO_O_KOSZTACH_ID]))
             $array[] = 'Dzwonić do klienta';
@@ -820,10 +836,11 @@ HTML;
 
     public function scopeNiezakonczone($query)
     {
-        foreach (Status::ZAKONCZONE_IDS as $status_id) {
-            $query->where('id_status', '!=', $status_id);
-        }
-        return $query->where('Archiwalny', false)->where('Anulowany', null);
+        // foreach (Status::ZAKONCZONE_IDS as $status_id) {
+        //     $query->where('id_status', '!=', $status_id);
+        // }
+        $query->whereNotIn('id_status', Status::ZAKONCZONE_IDS);
+        return $query->where('Archiwalny', 0)->whereNull('Anulowany');
     }
 
     public function scopeZakonczone($query)
@@ -933,6 +950,16 @@ HTML;
     public function test_zlecenie()
     {
         return $this->hasOne('App\Test\Models\TestZlecenie', 'zlecenie_id', 'id_zlecenia');
+    }
+
+    public function last_sms()
+    {
+        return $this->hasOne('App\Sms', 'zlecenie_id')->latest();
+    }
+
+    public function smses()
+    {
+        return $this->hasMany('App\Sms', 'zlecenie_id')->latest();
     }
 
     /**

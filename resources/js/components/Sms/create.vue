@@ -1,71 +1,107 @@
 <template>
   <div>
+    <b-row>
+      <b-col lg="5">
+        <b-form @submit.prevent="submit">
 
-    <b-form @submit.prevent="submit">
-
-      <!-- Customer -->
-      <b-form-group
-        v-if="! _predefined"
-        label="Kontrahent"
-      >
-        <b-form-input v-model="form.customer" />
-        <b-list-group>
-          <b-list-group-item
-            href="javascript:;"
-            v-show="! customer.selected || customer.selected.klient_id == kh.klient_id"
-            v-for="kh in customer.list" :key="kh.klient_id"
-            :active="customer.selected && customer.selected.klient_id == kh.klient_id"
-            @click="selectCustomer(kh)"
+          <!-- Customer -->
+          <b-form-group
+            v-if="! _predefined"
+            label="Kontrahent"
           >
-            {{ kh.pelna_nazwa }}, {{ kh.adres }}, {{ kh.kod_pocztowy }} {{ kh.miejscowosc }}
-          </b-list-group-item>
-        </b-list-group>
-      </b-form-group>
+            <b-form-input v-model="form.customer" />
+            <b-list-group>
+              <b-list-group-item
+                href="javascript:;"
+                v-show="! customer.selected || customer.selected.klient_id == kh.klient_id"
+                v-for="kh in customer.list" :key="kh.klient_id"
+                :active="customer.selected && customer.selected.klient_id == kh.klient_id"
+                @click="selectCustomer(kh)"
+              >
+                {{ kh.pelna_nazwa }}, {{ kh.adres }}, {{ kh.kod_pocztowy }} {{ kh.miejscowosc }}
+              </b-list-group-item>
+            </b-list-group>
+          </b-form-group>
 
-      <!-- Phones -->
-      <b-form-group
-        v-if="customer.selected || _predefined"
-        label="Wybierz telefon"
-      >
-        <b-list-group>
-          <b-list-group-item
-            href="javascript:;"
-            v-for="(phone, index) in telefony" :key="index"
-            class="border border-primary"
-            @click="usePhone(phone)"
+          <!-- Phones -->
+          <b-form-group
+            v-if="customer.selected || _predefined"
+            label="Wybierz telefon"
           >
-            {{ phone }}
-          </b-list-group-item>
-        </b-list-group>
-      </b-form-group>
+            <b-list-group>
+              <b-list-group-item
+                href="javascript:;"
+                v-for="(phone, index) in telefony" :key="index"
+                class="border border-primary"
+                @click="usePhone(phone)"
+              >
+                {{ phone }}
+              </b-list-group-item>
+            </b-list-group>
+          </b-form-group>
 
-      <!-- Phones -->
-      <b-form-group
-        label="Telefony"
-        description="Podawać po przecinku"
-      >
-        <b-form-input v-model.trim="form.phones" />
-      </b-form-group>
+          <!-- Phones -->
+          <b-form-group
+            label="Telefony"
+            description="Podawać po przecinku"
+          >
+            <b-form-input v-model.trim="form.phones" />
+          </b-form-group>
 
-      <!-- Message -->
-      <b-form-group
-        label="Treść wiadomości"
-        :description="`Ilość SMS: ${smsCount}, Znaków: ${message.length}/${maxSmsLength}`"
-      >
-        <b-form-textarea
-          v-model="form.message"
-          rows="6"
-        />
-        <b-select v-model="predefinedMessage.selected" :options="predefinedMessage.list" />
-      </b-form-group>
+          <!-- Message -->
+          <b-form-group
+            label="Treść wiadomości"
+            :description="`Ilość SMS: ${smsCount}, Znaków: ${message.length}/${maxSmsLength}`"
+          >
+            <b-form-textarea
+              v-model="form.message"
+              rows="6"
+            />
+            <b-select v-model="predefinedMessage.selected" :options="predefinedMessage.list" />
+          </b-form-group>
 
-      <!-- Buttons -->
-      <b-button type="submit" :variant="hasErrors ? 'danger' : 'success'" :disabled="hasErrors">
-        <span v-if="! sending">Wyślij</span>
-        <span v-else>Proszę czekać...</span>
-      </b-button>
+          <!-- Buttons -->
+          <b-button type="submit" :variant="hasErrors ? 'danger' : 'success'" :disabled="hasErrors">
+            <span v-if="! sending">Wyślij</span>
+            <span v-else>Proszę czekać...</span>
+          </b-button>
 
-    </b-form>
+        </b-form>
+      </b-col>
+      <b-col lg="7">
+        <h6>Historia</h6>
+
+        <div v-for="sms in smses" :key="sms.id">
+          <div class="clearfix">
+            <div class="float-left">
+              <span
+                class="font-w600"
+                :class="sms.auto ? 'text-success' : 'text-info'"
+              >
+                {{ sms.auto ? 'Automat' : sms.user.name }}
+              </span>
+              <span>
+                -> {{ sms.phones.join(', ') }}
+              </span>
+              <span
+                v-if="! zlecenie_id && sms.zlecenie"
+                class="ml-3"
+              >
+                <a href="javascript:;" :onclick="sms.zlecenie.popup_link"><u>{{ sms.zlecenie.nr_or_obcy }}</u></a>
+              </span>
+            </div>
+            <div class="float-right text-muted">
+              <span v-if="sms.sms_amount > 1">
+                {{ sms.sms_amount }} smsy
+              </span>
+              <span class="ml-3">{{ sms.created_at }}</span>
+            </div>
+          </div>
+          <nl2br tag="p" :text="sms.message_formatted" />
+          <hr>
+        </div>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -77,6 +113,10 @@ export default {
     _token: String,
     _predefined: Boolean,
     _telefony: Array,
+    _footer: String,
+    zlecenie_id: Number,
+    zlecenie_status_id: Number,
+    smses: Array,
   },
 
   data() {
@@ -120,7 +160,7 @@ export default {
         return letter
       }).join('')
 
-      return `${message}\n\n--\nSerwis DAR-GAZ\nSamsonowicza 18K\nOstrowiec Sw.\ntel. 412474575`
+      return `${message}${this._footer}`
     },
 
     isBasicGSM() {
@@ -190,6 +230,8 @@ export default {
       axios.post(route('sms.store'), {
         phones: this.phones,
         message: this.message,
+        zlecenie_id: this.zlecenie_id,
+        zlecenie_status_id: this.zlecenie_status_id,
       })
         .then(response => {
           this.clearForm()
