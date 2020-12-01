@@ -65,7 +65,9 @@
                                                 <i class="{{ $status->status->icon }} text-{{ $status->status->color }}"></i>
                                                 {{ $status->nazwa }}
                                             </td>
-                                            <td nowrap>{{ $status->zlecenie ? $status->zlecenie->nr : '' }}</td>
+                                            <td onclick="{{ $status->zlecenie ? $status->zlecenie->popup_link : '' }}" style="cursor:pointer;" nowrap>
+                                                {{ $status->zlecenie ? $status->zlecenie->nr : '' }}
+                                            </td>
                                             <td nowrap>{{ $status->pracownik->nazwa }}</td>
                                         </tr>
                                     @endforeach
