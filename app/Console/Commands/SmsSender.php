@@ -35,7 +35,7 @@ class SmsSender extends Command
             'gwarancja' => 'Potwierdzamy wizyte technika do naprawy urzadzenia %producent% %data%',
             'ubezpieczenie' => 'Potwierdzamy wizyte technika do naprawy urzadzenia %nr_obcy% %data%',
             'odplatne' => 'Potwierdzamy wizyte technika do naprawy %nazwa_urzadzenia% %data%',
-            'brak_urzadzenia' => 'Potwierdzamy wizyte technika %data%',
+            'brak_urzadzenia' => 'Potwierdzamy wizyte technika do zlecenia, %data%',
         ],
         Status::NA_WARSZTACIE_ID => [
             'repeat' => null,
