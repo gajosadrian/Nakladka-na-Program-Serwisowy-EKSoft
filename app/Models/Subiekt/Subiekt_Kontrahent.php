@@ -96,7 +96,7 @@ class Subiekt_Kontrahent extends Model
         if (str_contains($miejscowosc, 'Ostrowiec Św')) {
             $miejscowosc = 'Ostrowiec Świętokrzyski';
         }
-        return $miejscowosc;
+        return trim($miejscowosc);
     }
 
     public function getMiastoAttribute(): string
@@ -106,6 +106,15 @@ class Subiekt_Kontrahent extends Model
             $miasto = explode(',', $adres)[0];
         } else {
             $miasto = $this->miasto_raw;
+        }
+        return trim($miasto);
+    }
+
+    public function getMiastoShortAttribute(): string
+    {
+        $miasto = $this->miasto;
+        if ($miasto == 'Ostrowiec Świętokrzyski') {
+            return 'Ostrowiec Św.';
         }
         return $miasto;
     }

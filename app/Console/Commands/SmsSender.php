@@ -27,49 +27,49 @@ class SmsSender extends Command
             'repeat' => null,
             'gwarancja' => 'Zlecenie naprawy urzadzenia %producent% jest w trakcie planowania wizyty technika. Prosimy oczekiwac kontaktu w najblizszych dniach',
             'ubezpieczenie' => 'Zlecenie naprawy urzadzenia %nr_obcy% jest w trakcie planowania wizyty technika. Prosimy oczekiwac kontaktu w najblizszych dniach',
-            'odplatne' => 'Zlecenie naprawy urzadzenia %nazwa_urzadzenia% jest w trakcie planowania wizyty technika. Prosimy oczekiwac kontaktu w najblizszych dniach',
+            'odplatne' => 'Zlecenie naprawy %nazwa_urzadzenia% jest w trakcie planowania wizyty technika. Prosimy oczekiwac kontaktu w najblizszych dniach',
             'brak_urzadzenia' => 'Zlecenie jest w trakcie planowania wizyty technika. Prosimy oczekiwac kontaktu w najblizszych dniach',
         ],
         Status::UMOWIONO_ID => [
             'repeat' => null,
             'gwarancja' => 'Potwierdzamy wizyte technika do naprawy urzadzenia %producent% %data%',
             'ubezpieczenie' => 'Potwierdzamy wizyte technika do naprawy urzadzenia %nr_obcy% %data%',
-            'odplatne' => 'Potwierdzamy wizyte technika do naprawy urzadzenia %nazwa_urzadzenia% %data%',
+            'odplatne' => 'Potwierdzamy wizyte technika do naprawy %nazwa_urzadzenia% %data%',
             'brak_urzadzenia' => 'Potwierdzamy wizyte technika %data%',
         ],
         Status::NA_WARSZTACIE_ID => [
             'repeat' => null,
             'gwarancja' => 'Zlecenie naprawy urzadzenia %producent% otrzymalo status "na warsztacie". Prosimy oczekiwac dalszych informacji',
             'ubezpieczenie' => 'Zlecenie naprawy urzadzenia %nr_obcy% otrzymalo status "na warsztacie". Prosimy oczekiwac dalszych informacji',
-            'odplatne' => 'Zlecenie naprawy urzadzenia %nazwa_urzadzenia% otrzymalo status "na warsztacie". Prosimy oczekiwac dalszych informacji',
+            'odplatne' => 'Zlecenie naprawy %nazwa_urzadzenia% otrzymalo status "na warsztacie". Prosimy oczekiwac dalszych informacji',
             'brak_urzadzenia' => 'Zlecenie otrzymalo status "na warsztacie". Prosimy oczekiwac dalszych informacji',
         ],
         Status::DO_WYCENY_ID => [
             'repeat' => null,
             'gwarancja' => null,
             'ubezpieczenie' => 'Zlecenie naprawy urzadzenia %nr_obcy% jest w trakcie wyceny. Prosimy oczekiwac kontaktu',
-            'odplatne' => 'Zlecenie naprawy urzadzenia %nazwa_urzadzenia% jest w trakcie wyceny. Prosimy oczekiwac kontaktu',
+            'odplatne' => 'Zlecenie naprawy %nazwa_urzadzenia% jest w trakcie wyceny. Prosimy oczekiwac kontaktu',
             'brak_urzadzenia' => 'Zlecenie jest w trakcie wyceny. Prosimy oczekiwac kontaktu',
         ],
         Status::ZAMOWIONO_CZESC_ID => [
             'repeat' => null,
             'gwarancja' => 'Informujemy o zamowieniu czesci do zlecenia naprawy urzadzenia %producent%',
             'ubezpieczenie' => 'Informujemy o zamowieniu czesci do zlecenia naprawy urzadzenia %nr_obcy%',
-            'odplatne' => 'Informujemy o zamowieniu czesci do zlecenia naprawy urzadzenia %nazwa_urzadzenia%',
+            'odplatne' => 'Informujemy o zamowieniu czesci do zlecenia naprawy %nazwa_urzadzenia%',
             'brak_urzadzenia' => 'Informujemy o zamowieniu czesci do zlecenia',
         ],
         Status::DZWONIC_PO_ODBIOR_ID => [
             'repeat' => 3,
             'gwarancja' => 'Urzadzenie %producent% jest naprawione i oczekuje na odbior',
             'ubezpieczenie' => '%nazwa_urzadzenia% ze zlecenia %nr_obcy% jest naprawione i oczekuje na odbior',
-            'odplatne' => 'Urzadzenie %nazwa_urzadzenia% jest naprawione i oczekuje na odbior',
+            'odplatne' => '%nazwa_urzadzenia% jest naprawione i oczekuje na odbior',
             'brak_urzadzenia' => null,
         ],
         Status::DO_ODBIORU_ID => [
             'repeat' => 3,
             'gwarancja' => 'Przypominamy, urzadzenie %producent% jest naprawione i oczekuje na odbior',
             'ubezpieczenie' => 'Przypominamy, %nazwa_urzadzenia% ze zlecenia %nr_obcy% jest naprawione i oczekuje na odbior',
-            'odplatne' => 'Przypominamy, urzadzenie %nazwa_urzadzenia% jest naprawione i oczekuje na odbior',
+            'odplatne' => 'Przypominamy, %nazwa_urzadzenia% jest naprawione i oczekuje na odbior',
             'brak_urzadzenia' => null,
         ],
     ];
@@ -110,7 +110,7 @@ class SmsSender extends Command
                     $message = Str::replaceFirst('%producent%', $zlecenie->urzadzenie->producent, $message);
                     $message = Str::replaceFirst('%nr_obcy%', $zlecenie->nr_obcy, $message);
                     $message = Str::replaceFirst('%nazwa_urzadzenia%', $zlecenie->urzadzenie->nazwa, $message);
-                    if ($zlecenie->terminarz and $zlecenie->data) {
+                    if ($zlecenie->terminarz->is_data_rozpoczecia) {
                         $message = Str::replaceFirst('%data%', $zlecenie->data->format('Y-m-d'), $message);
                     } else {
                         $message = Str::replaceFirst('%data%', '', $message);
