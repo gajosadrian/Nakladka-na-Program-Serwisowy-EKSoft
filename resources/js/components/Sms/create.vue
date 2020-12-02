@@ -1,5 +1,7 @@
 <template>
   <div>
+    <span class="d-none">{{ refresher }}</span>
+
     <b-row>
       <b-col lg="5">
         <b-form @submit.prevent="submit">
@@ -76,13 +78,22 @@
             <div class="float-left">
               <span
                 class="font-w600"
-                :class="sms.auto ? 'text-success' : 'text-info'"
+                :class="! sms.auto ? 'text-info' : (sms.type == 'error') ? 'bg-danger text-white px-1' : 'text-success'"
               >
-                {{ sms.auto ? 'Automat' : sms.user.name }}
+                {{ ! sms.auto ? sms.user.name : (sms.type == 'error') ? 'Error' : 'Automat' }}
               </span>
-              <span>
+              <span v-if="sms.phones.length > 0">
                 -> {{ sms.phones.join(', ') }}
               </span>
+              <b-button
+                v-if="sms.type == 'error'"
+                variant="outline-success"
+                size="sm"
+                class="ml-1"
+                @click="resolveError(sms)"
+              >
+                <i class="fa fa-check text-succes"></i>
+              </b-button>
               <span
                 v-if="! zlecenie_id && sms.zlecenie"
                 class="ml-3"
@@ -121,6 +132,7 @@ export default {
 
   data() {
     return {
+      refresher: 0,
       sending: false,
       customer: {
         selected: null,
@@ -276,6 +288,11 @@ export default {
       this.form.phones = phone
     },
 
+    resolveError(sms) {
+      sms.type = 'error_resolved'
+      this.refresh()
+    },
+
     swal(type, text) {
       swal({
         position: 'center',
@@ -284,6 +301,10 @@ export default {
         showConfirmButton: false,
         timer: 1500
       });
+    },
+
+    refresh() {
+      return this.refresher++
     },
   },
 

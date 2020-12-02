@@ -1,6 +1,7 @@
 @extends('global.app')
 @section('datatable_literal_search', true)
 @php
+    $user = auth()->user();
     $room = rand();
 @endphp
 @if ($autorefresh)
@@ -104,11 +105,20 @@
 						<tbody>
 							@php $counter = 0 @endphp
 							@foreach ($zlecenia as $zlecenie)
-								<tr class="{{ ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat) ? 'table-success' : '' }}">
+								{{-- <tr class="{{ ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat) ? 'table-success' : '' }}"> --}}
+                                <tr class="
+                                    @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
+                                        table-success
+                                    @elseif (! $user->is_technik and @$zlecenie->last_sms->type == 'error')
+                                        table-danger
+                                    @endif
+                                ">
 									<th class="text-muted">{{ ++$counter }}</th>
 									<td nowrap>
                                         @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
                                             <i class="fa fa-check-circle text-success"></i>
+                                        @elseif (! $user->is_technik and @$zlecenie->last_sms->type == 'error')
+                                        <i class="fa fa-envelope text-danger"></i>
                                         @endif
 										{{ str_limit($zlecenie->klient->nazwa, 30) }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>

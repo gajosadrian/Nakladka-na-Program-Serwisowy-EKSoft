@@ -320,11 +320,11 @@
                                             @if ($zlecenie->was_warsztat)
                                                 <zlecenie-change-status class="ml-1"
                                                     zlecenie_id=@json($zlecenie->id)
-                                                    status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
+                                                    status_id=@json(App\Models\Zlecenie\Status::DO_ODBIORU_ID)
                                                     :remove_termin="0"
-                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
-                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
-                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
+                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
+                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
                                                 ></zlecenie-change-status>
                                             @else
                                                 <zlecenie-change-status class="ml-1"
