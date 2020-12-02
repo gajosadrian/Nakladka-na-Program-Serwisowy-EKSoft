@@ -107,7 +107,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('sms')->name('sms.')->group(function () {
         Route::get('create', 'SmsController@create')->name('create');
-        Route::get('history', 'SmsController@history')->name('history');
+        Route::post('{sms}/resolve', 'SmsController@resolve')->name('resolve');
         Route::post('/', 'SmsController@store')->name('store');
     });
 

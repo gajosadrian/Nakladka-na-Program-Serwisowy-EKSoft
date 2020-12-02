@@ -288,9 +288,15 @@ export default {
       this.form.phones = phone
     },
 
-    resolveError(sms) {
-      sms.type = 'error_resolved'
-      this.refresh()
+    resolve(sms) {
+      axios.post(route('sms.resolve', sms.id))
+        .then(response => {
+          sms.type += '_resolved'
+          this.refresh()
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
 
     swal(type, text) {

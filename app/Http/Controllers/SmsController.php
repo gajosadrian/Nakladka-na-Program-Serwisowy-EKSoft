@@ -15,6 +15,19 @@ class SmsController extends Controller
         return view('sms.create', compact('smses'));
     }
 
+    public function resolve(Request $request, Sms $sms)
+    {
+        if ($sms->type == 'error') {
+            $sms->type .= '_resolved';
+        } else {
+            abort(406);
+        }
+
+        $sms->save();
+
+        return response()->json('success');
+    }
+
     public function store(Request $request, HostedSms $hostedSms)
     {
         $hostedSms->send($request->phones, $request->message, [
