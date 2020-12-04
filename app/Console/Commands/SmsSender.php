@@ -99,8 +99,9 @@ class SmsSender extends Command
                 $message = self::MESSAGES[$zlecenie->status_id] ?? null;
 
                 if (! $message) continue;
-                if ($zlecenie->last_sms and $zlecenie->last_sms->zlecenie_status_id == $zlecenie->status_id and ! $message['repeat']) continue;
-                if ($message['repeat'] and $zlecenie->last_sms and $zlecenie->last_sms->created_at->copy()->startOfDay()->diffInDays(now()->startOfDay(), false) < $message['repeat']) continue;
+                $is_same_status = ($zlecenie->last_sms and $zlecenie->last_sms->zlecenie_status_id == $zlecenie->status_id);
+                if (! $message['repeat'] and $is_same_status) continue;
+                if ($message['repeat'] and $is_same_status and $zlecenie->last_sms->created_at->copy()->startOfDay()->diffInDays(today(), false) < $message['repeat']) continue;
 
                 if (! $zlecenie->is_urzadzenie) {
                     $message = $message['brak_urzadzenia'];
