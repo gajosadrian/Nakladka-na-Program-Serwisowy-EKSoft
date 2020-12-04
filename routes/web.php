@@ -15,6 +15,11 @@ Route::middleware('auth')->group(function () {
     Route::view('/', 'empty')->name('home');
     Route::view('szukaj', 'empty')->name('szukaj');
 
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('{user?}', 'ProfileController@show')->name('show');
+        Route::put('{user}', 'ProfileController@update')->name('update');
+    });
+
     Route::put('save-field', 'SavedFieldController@update')->name('api.save_field');
 
     Route::prefix('zlecenia')->name('zlecenia.')->group(function () {
