@@ -3,6 +3,7 @@
 
 @php
     $user = auth()->user();
+    $is_up_to_date_termin = ($zlecenie->terminarz->is_data_rozpoczecia and $zlecenie->data_zakonczenia->copy()->startOfDay()->gte(today()));
 @endphp
 
 @section('content')
@@ -131,7 +132,7 @@
                                                                     @if (in_array($status->id, [11, 14, 12, 16, 40, 13, 43, 31]) and $zlecenie->status_id !== $status->id)
                                                                         ✉
                                                                     @endif
-                                                                    @if (in_array($status->id, [14, 13, 29]) and $zlecenie->status_id != $status->id)
+                                                                    @if ((in_array($status->id, [13, 29]) or $status->id == 14 and ! $is_up_to_date_termin) and $zlecenie->status_id != $status->id)
                                                                         ✖
                                                                     @endif
                                                                 </option>
@@ -587,6 +588,7 @@ $(document).keydown(function (e) {
 
 let last_status_id = @json($zlecenie->status_id);
 const statusy_removable_termin = [14, 13, 29];
+const IS_UP_TO_DATE_TERMIN = {{ $is_up_to_date_termin ? 'true' : 'false' }};
 
 function changeStatus(status_id) {
     if (last_status_id == status_id) {
@@ -605,6 +607,9 @@ function changeStatus(status_id) {
     let remove_termin = 0;
     if (statusy_removable_termin.includes(status_id)) {
         remove_termin = 1;
+    }
+    if (status_id == 14 && IS_UP_TO_DATE_TERMIN) {
+        remove_termin = 0;
     }
 
     axios.post( route('zlecenia.api.change_status', {
