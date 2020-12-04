@@ -70,14 +70,14 @@ class SmsSender extends Command
             'gwarancja' => 'Urzadzenie %producent% oczekuje na odbior',
             'ubezpieczenie' => '%nazwa_urzadzenia% ze zlecenia %nr_obcy% oczekuje na odbior',
             'odplatne' => 'Urzadzenie %nazwa_urzadzenia% oczekuje na odbior',
-            'brak_urzadzenia' => null,
+            'brak_urzadzenia' => 'Zlecenie otrzymalo status "do odbioru". Prosimy o odbior',
         ],
         Status::DO_ODBIORU_ID => [
             'repeat' => 7,
             'gwarancja' => 'Urzadzenie %producent% oczekuje na odbior',
             'ubezpieczenie' => '%nazwa_urzadzenia% ze zlecenia %nr_obcy% oczekuje na odbior',
             'odplatne' => 'Urzadzenie %nazwa_urzadzenia% oczekuje na odbior',
-            'brak_urzadzenia' => null,
+            'brak_urzadzenia' => 'Zlecenie otrzymalo status "do odbioru". Prosimy o odbior',
         ],
     ];
 
@@ -113,7 +113,7 @@ class SmsSender extends Command
                     $message = $message['odplatne'];
                 }
 
-                // if (! $message) continue;
+                if (! $message) continue;
 
                 $message = Str::replaceFirst('%producent%', $zlecenie->urzadzenie->producent, $message);
                 $message = Str::replaceFirst('%nr_obcy%', $zlecenie->nr_obcy, $message);
