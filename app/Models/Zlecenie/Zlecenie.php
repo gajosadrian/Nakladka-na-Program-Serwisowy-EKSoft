@@ -150,6 +150,11 @@ class Zlecenie extends Model
         return $this->data_zakonczenia->startOfDay();
     }
 
+    public function getIsUpToDateTerminAttribute(): bool
+    {
+        return ($this->terminarz->is_data_rozpoczecia and $this->data_zakonczenia->copy()->startOfDay()->gte(today()));
+    }
+
     public function getIdAttribute(): int
     {
         return $this->attributes['id_zlecenia'];

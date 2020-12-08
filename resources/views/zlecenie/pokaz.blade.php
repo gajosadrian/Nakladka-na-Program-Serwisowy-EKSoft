@@ -3,7 +3,7 @@
 
 @php
     $user = auth()->user();
-    $is_up_to_date_termin = ($zlecenie->terminarz->is_data_rozpoczecia and $zlecenie->data_zakonczenia->copy()->startOfDay()->gte(today()));
+    $is_up_to_date_termin = $zlecenie->is_up_to_date_termin;
 @endphp
 
 @section('content')
