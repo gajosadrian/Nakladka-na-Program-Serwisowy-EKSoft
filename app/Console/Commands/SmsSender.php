@@ -76,7 +76,7 @@ class SmsSender extends Command
             'repeat' => 7,
             'gwarancja' => 'Urzadzenie %producent% oczekuje na odbior',
             'ubezpieczenie' => '%nazwa_urzadzenia% ze zlecenia %nr_obcy% oczekuje na odbior',
-            'odplatne' => 'Urzadzenie %nazwa_urzadzenia% oczekuje na odbior',
+            'odplatne' => 'Zlecenie otrzymalo status "do odbioru". Prosimy o odbior',
             'brak_urzadzenia' => 'Zlecenie otrzymalo status "do odbioru". Prosimy o odbior',
         ],
     ];
