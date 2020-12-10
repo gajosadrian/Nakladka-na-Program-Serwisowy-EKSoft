@@ -69,7 +69,11 @@
                                                     <i
                                                         class="fa fa-check-circle text-success"
                                                         data-toggle="tooltip" data-placement="left"
-                                                        title="Sprawdzone lub nie wymaga zwrotu"
+                                                        @if ($kosztorys_pozycja->naszykowana_czesc->sprawdzone_at)
+                                                            title="Sprawdzone {{ $kosztorys_pozycja->naszykowana_czesc->user_sprawdzil ? "({$kosztorys_pozycja->naszykowana_czesc->user_sprawdzil->name}, {$kosztorys_pozycja->naszykowana_czesc->sprawdzone_at->format('Y-m-d H:i')})" : '' }}"
+                                                        @else
+                                                            title="Nie wymaga zwrotu"
+                                                        @endif
                                                     ></i>
                                                 @else
                                                     <i
