@@ -21,6 +21,7 @@ class KosztorysPozycja extends Model
         ODLOZONE_KEYS = ['odlozon'],
         ROZPISANE_KEYS = ['rozpisan'],
         ZAMOWIONE_KEYS = ['zamowion', 'zamowien'],
+        WYCENA_KEYS = ['wycena'],
         EKSPERTYZA_KEYS = ['ekspertyza'];
 
     /**
@@ -252,6 +253,11 @@ class KosztorysPozycja extends Model
     public function getIsZamowioneAttribute(): bool
     {
         return $this->hasKey(self::ZAMOWIONE_KEYS);
+    }
+
+    public function getIsWycenaAttribute(): bool
+    {
+        return $this->hasKey(self::WYCENA_KEYS);
     }
 
     public function getIsEkspertyzaAttribute(): bool

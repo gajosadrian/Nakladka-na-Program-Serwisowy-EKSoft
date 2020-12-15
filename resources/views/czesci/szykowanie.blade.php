@@ -46,7 +46,7 @@
                         $color = null;
                         if ($is_naszykowane) {
                             $color = 'success';
-                        } elseif ($pozycja->is_ekspertyza or $pozycja->is_zamowione or $pozycja->zlecenie->status_id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID) {
+                        } elseif ($pozycja->is_ekspertyza or $pozycja->is_zamowione or $pozycja->is_wycena or $pozycja->zlecenie->status_id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID) {
                             $color = 'xsmooth-light';
                         } elseif ($pozycja->is_niezamontowane or ($pozycja->towar->stan->stan == 0 and ! $pozycja->is_czesc_symbol)) {
                             $color = 'warning';
