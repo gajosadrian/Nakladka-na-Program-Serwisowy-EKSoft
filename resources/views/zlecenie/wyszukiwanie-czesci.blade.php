@@ -65,7 +65,7 @@
                                         <td nowrap>{{ $kosztorys_pozycja->symbol_dostawcy }}</td>
                                         <td class="text-danger" nowrap>
                                             @if ($kosztorys_pozycja->naszykowana_czesc)
-                                                @if ($kosztorys_pozycja->naszykowana_czesc->sprawdzone_at or (! $kosztorys_pozycja->zlecenie->is_gwarancja and $kosztorys_pozycja->naszykowana_czesc->ilosc_do_zwrotu == 0))
+                                                @if ($kosztorys_pozycja->naszykowana_czesc->sprawdzone_at or ($kosztorys_pozycja->zlecenie->is_odplatne and $kosztorys_pozycja->naszykowana_czesc->ilosc_do_zwrotu == 0))
                                                     <i
                                                         class="fa fa-check-circle text-success"
                                                         data-toggle="tooltip" data-placement="left"

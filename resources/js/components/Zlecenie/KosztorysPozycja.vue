@@ -23,6 +23,8 @@
       <b-input
         v-model="pozycja.opis"
         size="sm"
+        ref="kosztorys_opis"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_opis')"
       />
     </b-td>
     <b-td nowrap>
@@ -30,6 +32,8 @@
         v-model="cenaFixed"
         type="number"
         size="sm"
+        ref="kosztorys_cena"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_cena')"
         @keyup="updateCenaBrutto()"
         @focus="$event.target.select()"
         required
@@ -41,6 +45,8 @@
         v-model="pozycja.vat_procent"
         type="number"
         size="sm"
+        ref="kosztorys_vat"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_vat')"
         @keyup="updateCenaBrutto()"
         @focus="$event.target.select()"
         required
@@ -52,6 +58,8 @@
         v-model="cenaBruttoFixed"
         type="number"
         size="sm"
+        ref="kosztorys_cena_brutto"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_cena_brutto')"
         @keyup="updateCena()"
         @focus="$event.target.select()"
         required
@@ -63,6 +71,8 @@
         v-model="pozycja.ilosc"
         type="number"
         size="sm"
+        ref="kosztorys_ilosc"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_ilosc')"
         @keyup="updateCena()"
         @focus="$event.target.select()"
         required
@@ -91,6 +101,7 @@ import { debounce } from 'debounce'
 
 export default {
   props: {
+    index: Number,
     _token: String,
     pozycja: Object,
     is_technik: Boolean,
@@ -225,6 +236,10 @@ export default {
 
     isValidSymbol() {
       return this.symbolState === null ? true : false
+    },
+
+    focus(key) {
+      this.$nextTick(() => this.$refs[key].$el.focus())
     },
   },
 

@@ -612,10 +612,30 @@ function changeStatus(status_id) {
         remove_termin = 0;
     }
 
+    const TERMINARZ_RED = '8689404';
+    const TERMINARZ_GREEN = '6610596';
+    const TERMINARZ_YELLOW = '7661308';
+    const TERMINARZ_BLUE = '14982788';
+
+    let terminarz_status_id;
+
+    if (! IS_UP_TO_DATE_TERMIN) {
+        if ([26, 29, 30, 31, 36, 37, 38, 39, 40, 43].includes(status_id)) {
+            terminarz_status_id = TERMINARZ_GREEN;
+        }
+    } else {
+        if (status_id == 12) {
+            terminarz_status_id = TERMINARZ_RED;
+        } else if ([26, 29, 30, 31, 36, 38, 39, 40, 43].includes(status_id)) {
+            terminarz_status_id = TERMINARZ_GREEN;
+        }
+    }
+
     axios.post( route('zlecenia.api.change_status', {
         id: @json($zlecenie->id),
         status_id,
         remove_termin,
+        terminarz_status_id,
     })).then((response) => {
         swal({
             position: 'center',

@@ -39,7 +39,7 @@
                     $towar = $naszykowana_czesc->towar;
 
                     // if ( ! $pozycja) continue;
-                    if (! $zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_do_zwrotu == 0) continue;
+                    if ($zlecenie->is_odplatne and $naszykowana_czesc->ilosc_do_zwrotu == 0) continue;
                     if (! $towar) continue;
                 @endphp
 
@@ -114,14 +114,14 @@
                                         </div>
                                     </div>
 
-                                    @if ($naszykowana_czesc->ilosc_do_zwrotu > 0 or ! $zlecenie->is_gwarancja)
+                                    @if ($naszykowana_czesc->ilosc_do_zwrotu > 0 or $zlecenie->is_odplatne)
                                         <div>
                                             Do zwrotu nowe:
                                             <span class="font-w600 bg-danger text-white px-1">{{ $naszykowana_czesc->ilosc_do_zwrotu }}</span>
                                             <small class="text-secondary">({{ $naszykowana_czesc->ilosc }})</small>
                                         </div>
                                     @endif
-                                    @if ($zlecenie->is_gwarancja and $naszykowana_czesc->ilosc_zamontowane > 0)
+                                    @if (! $zlecenie->is_odplatne and $naszykowana_czesc->ilosc_zamontowane > 0)
                                         <div>
                                             Do zwrotu zużyte:
                                             <span class="font-w600 bg-warning text-white px-1">{{ $naszykowana_czesc->ilosc_zamontowane }}</span>

@@ -17,11 +17,14 @@
       </b-thead>
       <b-tbody>
         <KosztorysPozycja
-          v-for="pozycja in pozycje" :key="pozycja.id"
+          v-for="(pozycja, index) in pozycje" :key="pozycja.id"
+          ref="kosztorys"
+          :index="index"
           :pozycja="pozycja"
           :is_technik="is_technik"
           :technik_symbols="technik_symbols"
           @remove="remove"
+          @keydown="handleKeydown"
         />
         <b-tr>
           <b-td></b-td>
@@ -190,6 +193,24 @@ export default {
     isValidSymbol() {
       const symbolList = this.symbolList.map(symbol => symbol.toLowerCase())
       return symbolList.includes( this.newSymbol.toLowerCase() )
+    },
+
+    handleKeydown(e, index, key, keyLeft, keyRight) {
+      const KEY_DOWN = 40
+      const KEY_UP = 38
+      const KEY_LEFT = 37
+      const KEY_RIGHT = 39
+
+      if (key.substring(0, 10) == 'kosztorys_') {
+        let vector
+        if (e.keyCode == KEY_DOWN) vector = 1
+        else if (e.keyCode == KEY_UP) vector = -1
+        else return
+
+        const item = this.$refs.kosztorys[index + vector]
+        if (item) item.focus(key)
+        e.preventDefault()
+      }
     },
   },
 

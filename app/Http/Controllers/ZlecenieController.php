@@ -480,7 +480,7 @@ class ZlecenieController extends Controller
         $zlecenie->archiwalny = false;
         $zlecenie->save();
 
-        if ($terminarz_status_id = $request->terminarz_status_id) {
+        if (! $request->remove_termin and $terminarz_status_id = $request->terminarz_status_id) {
             $zlecenie->terminarz->status_id = $terminarz_status_id;
             $zlecenie->terminarz->save();
         }
