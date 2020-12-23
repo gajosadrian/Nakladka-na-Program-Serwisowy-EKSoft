@@ -110,6 +110,8 @@
                                     <div class="font-w700 p-1
                                         @if ($zlecenie->is_zamowiono)
                                             bg-xsmooth-lighter
+                                        @elseif ($zlecenie->is_zakonczone)
+                                            bg-info-light
                                         @elseif ($is_soft_zakonczone)
                                             bg-success-light
                                         @else
