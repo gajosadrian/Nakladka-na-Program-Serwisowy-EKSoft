@@ -93,6 +93,11 @@
                                                     {{ $zlecenie->nr_obcy ?: '-' }}
                                                 </span>
                                             @endif
+											@if ($zlecenie->nr_obcy)
+												<a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{{ $zlecenie->nr_obcy }}'">
+													<i class="far fa-copy"></i>
+												</a>
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
