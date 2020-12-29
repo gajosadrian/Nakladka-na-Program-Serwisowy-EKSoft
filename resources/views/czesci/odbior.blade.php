@@ -14,20 +14,30 @@
     </div>
 
     <div class="content">
-        <b-block title="Parametry" theme="{{ $is_mobile ? 'bg-primary' : '' }}" full>
+        <b-block title="Parametry" theme="{{ $is_mobile ? 'bg-primary' : '' }}" {{ $is_mobile ? 'full' : '' }}>
             <template slot="content">
-                <b-row>
-                    <b-col>
-                        <select class="form-control form-control-alt" onchange="updateUrl(this, 'technik_id')">
-                            <option value="0">-- Technik --</option>
-                            @foreach ($technicy as $_technik)
-                                <option value="{{ $_technik->id }}" {{ ($_technik->id == @$technik->id) ? 'selected' : '' }}>
-                                    {{ $_technik->nazwa }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </b-col>
-                </b-row>
+                @if ($is_mobile)
+                    <b-row>
+                        <b-col>
+                            <select class="form-control form-control-alt" onchange="updateUrl(this, 'technik_id')">
+                                <option value="0">-- Technik --</option>
+                                @foreach ($technicy as $_technik)
+                                    <option value="{{ $_technik->id }}" {{ ($_technik->id == @$technik->id) ? 'selected' : '' }}>
+                                        {{ $_technik->nazwa }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </b-col>
+                    </b-row>
+                @else
+                    <div class="mb-3">
+                        @foreach ($technicy as $_technik)
+                            <b-button variant="outline-primary" class="{{ ($_technik->id == @$technik->id) ? 'active' : '' }}" onclick="updateUrl({{ $_technik->id }}, 'technik_id')">
+                                {{ $_technik->nazwa }}
+                            </b-button>
+                        @endforeach
+                    </div>
+                @endif
             </template>
         </b-block>
 
@@ -229,7 +239,12 @@ function zamontujCzesc(pozycja_id, type, ilosc, naszykowana_czesc_id) {
 }
 
 function updateUrl(self, type) {
-    let value = $(self).val();
+    let value;
+    if (Number.isInteger(self)) {
+        value = self;
+    } else {
+        value = $(self).val()
+    }
 
     window.location.replace(route('czesci.indexOdbior', {
         technik_id: (type == 'technik_id') && value || technik_id,

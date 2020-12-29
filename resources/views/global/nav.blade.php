@@ -6,7 +6,7 @@
             'name' => 'Zlecenia',
         ],
         [
-            'name' => 'Lista zleceń',
+            'name' => 'Zlecenia',
             'icon' => 'fa fa-list-ul',
             'route' => 'zlecenia.lista',
             'routeOptions' => [],
@@ -48,22 +48,6 @@
                 return $user and !$user->technik_id;
             },
         ],
-        [
-            'name' => 'Zdarzenia',
-            'icon' => 'fa fa-flag',
-            'route' => 'zlecenia.logs',
-            'routeOptions' => [],
-            'if' => function() use ($user) {
-                return $user and !$user->technik_id;
-            },
-        ],
-        [
-            'name' => 'Historia statusów',
-            'icon' => 'fa fa-flag',
-            'route' => 'zlecenia.logs.statusy',
-            'routeOptions' => [],
-            'role' => 'super-admin',
-        ],
         // [
         //     'name' => 'Historia',
         //     'icon' => 'si si-bubbles',
@@ -88,7 +72,7 @@
             'name' => 'Dodatki',
         ],
         [
-            'name' => 'Zdjęcia',
+            'name' => 'Zdjęcia tabliczek',
             'icon' => 'fa fa-camera',
             'route' => 'urzadzenie.zdjecia',
             'routeOptions' => [],
@@ -104,6 +88,22 @@
             'if' => function() use ($user) {
                 return $user and !$user->technik_id;
             },
+        ],
+        [
+            'name' => 'Historia techników',
+            'icon' => 'fa fa-history',
+            'route' => 'zlecenia.logs',
+            'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and !$user->technik_id;
+            },
+        ],
+        [
+            'name' => 'Historia statusów',
+            'icon' => 'fa fa-history',
+            'route' => 'zlecenia.logs.statusy',
+            'routeOptions' => [],
+            'role' => 'super-admin',
         ],
 
         [

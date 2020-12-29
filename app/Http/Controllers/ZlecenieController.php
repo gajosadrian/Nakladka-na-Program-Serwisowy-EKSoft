@@ -314,7 +314,7 @@ class ZlecenieController extends Controller
         if ($search) {
             // $search = strtoupper($search);
 
-            if (str_contains($search, 'ZS/')) {
+            if (str_contains2($search, ['ZS/', 'zs/'])) {
                 $where = ['NrZlecenia', '=', $search];
             } else {
                 $where = ['NrObcy', 'like', '%'.$search.'%'];

@@ -14,9 +14,9 @@
     </div>
 
     <div class="content">
-        <b-block title="Parametry" full>
+        <b-block title="Parametry">
             <template slot="content">
-                <b-row>
+                {{-- <b-row>
                     <b-col>
                         <select class="form-control form-control-alt" onchange="updateUrl(this, 'pracownik_id')">
                             <option value="0">-- Pracownik --</option>
@@ -27,7 +27,14 @@
                             @endforeach
                         </select>
                     </b-col>
-                </b-row>
+                </b-row> --}}
+                <div class="mb-3">
+                    @foreach ($pracownicy as $_pracownik)
+                        <b-button variant="outline-primary" class="{{ ($_pracownik->id == @$pracownik->id) ? 'active' : '' }}" onclick="updateUrl({{ $_pracownik->id }}, 'pracownik_id')">
+                            {{ $_pracownik->nazwa }}
+                        </b-button>
+                    @endforeach
+                </div>
             </template>
         </b-block>
 
@@ -86,7 +93,12 @@
 const pracownik_id = @json(@$pracownik->id ?? 0)
 
 function updateUrl(self, type) {
-    const value = $(self).val()
+    let value;
+    if (Number.isInteger(self)) {
+        value = self;
+    } else {
+        value = $(self).val()
+    }
 
     location.replace(route('zlecenia.logs.statusy', {
         pracownik_id: (type == 'pracownik_id') && value || pracownik_id,

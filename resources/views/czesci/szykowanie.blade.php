@@ -16,21 +16,38 @@
     <div class="content">
         <b-block title="Parametry" theme="{{ $is_mobile ? 'bg-primary' : '' }}" full>
             <template slot="content">
-                <b-row>
-                    <b-col>
-                        <select class="form-control form-control-alt" onchange="updateUrl(this, 'technik_id')">
-                            <option value="0">-- Technik --</option>
-                            @foreach ($technicy as $_technik)
-                                <option value="{{ $_technik->id }}" {{ ($_technik->id == @$technik->id) ? 'selected' : '' }}>
-                                    {{ $_technik->nazwa }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </b-col>
-                    <b-col>
-                        <input type="text" class="js-datepicker form-control form-control-alt" value="{{ $date_string }}" onchange="updateUrl(this, 'date_string')">
-                    </b-col>
-                </b-row>
+                @if ($is_mobile)
+                    <b-row>
+                        <b-col>
+                            <select class="form-control form-control-alt" onchange="updateUrl(this, 'technik_id')">
+                                <option value="0">-- Technik --</option>
+                                @foreach ($technicy as $_technik)
+                                    <option value="{{ $_technik->id }}" {{ ($_technik->id == @$technik->id) ? 'selected' : '' }}>
+                                        {{ $_technik->nazwa }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </b-col>
+                        <b-col>
+                            <input type="text" class="js-datepicker form-control form-control-alt" value="{{ $date_string }}" onchange="updateUrl(this, 'date_string')">
+                        </b-col>
+                    </b-row>
+                @else
+                    <div class="mb-3">
+                        @foreach ($technicy as $_technik)
+                            <b-button variant="outline-primary" class="{{ ($_technik->id == @$technik->id) ? 'active' : '' }}" onclick="updateUrl({{ $_technik->id }}, 'technik_id')">
+                                {{ $_technik->nazwa }}
+                            </b-button>
+                        @endforeach
+                    </div>
+                    @if ($technik)
+                        <b-row>
+                            <b-col cols="2">
+                                <input type="text" class="js-datepicker form-control" value="{{ $date_string }}" onchange="updateUrl(this, 'date_string')">
+                            </b-col>
+                        </b-row>
+                    @endif
+                @endif
             </template>
         </b-block>
 
@@ -188,7 +205,12 @@ function naszykujCzesc(kosztorys_pozycja_id, ilosc) {
 // }
 
 function updateUrl(self, type) {
-    let value = $(self).val();
+    let value;
+    if (Number.isInteger(self)) {
+        value = self;
+    } else {
+        value = $(self).val()
+    }
 
     window.location.replace(route('czesci.indexSzykowanie', {
         technik_id: (type == 'technik_id') && value || technik_id,

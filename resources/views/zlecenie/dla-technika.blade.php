@@ -20,8 +20,8 @@
                     </div>
                 @endif
 
-                <b-row>
-                    @if ($technik)
+                @if ($technik)
+                    <b-row>
                         <b-col cols="2">
                             <input type="text" class="js-datepicker form-control" value="{{ $date_string }}" onchange="updateUrl(this)">
                         </b-col>
@@ -37,8 +37,8 @@
                                 </b-link>
                             </b-col>
                         @endif
-                    @endif
-                </b-row>
+                    </b-row>
+                @endif
             </template>
         </b-block>
 
