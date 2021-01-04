@@ -100,7 +100,7 @@ function get_string_between(string $string, string $start, string $end): string
     return substr($string, $ini, $len);
 }
 
-function str_contains2(string $str, $values): bool {
+function str_contains2(string $str, $values): ?bool {
     switch (gettype($values)) {
         case 'string':
             return str_contains($str, $values);
@@ -112,6 +112,9 @@ function str_contains2(string $str, $values): bool {
                 }
             }
             return false;
+            break;
+        default:
+            return null;
             break;
     }
 }

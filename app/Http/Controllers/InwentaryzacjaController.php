@@ -23,15 +23,15 @@ class InwentaryzacjaController extends Controller
         $towar = Subiekt_Towar::where('tw_Symbol', $symbol)->first();
 
         $_polka = null;
-        if ($polka) { // and ($pojemnik or str_contains($polka, ['m', 'M']))
-            if (!$pojemnik) { // str_contains($polka, ['m', 'M'])
+        if ($polka) { // and ($pojemnik or str_contains2($polka, ['m', 'M']))
+            if (!$pojemnik) { // str_contains2($polka, ['m', 'M'])
                 $_polka = preg_replace('/\s+/', '', strtolower($polka));
             } else {
                 $_polka = preg_replace('/\s+/', '', strtolower($polka . '-' . $pojemnik));
             }
         }
         $_towar_polka = $towar ? preg_replace('/\s+/', '', strtolower($towar->polka)) : '';
-        $valid_polka = str_contains($_towar_polka, $_polka) and ($_towar_polka and $_polka);
+        $valid_polka = str_contains2($_towar_polka, $_polka) and ($_towar_polka and $_polka);
 
         // if ($user->id == 1) {
         //     dd($_polka);

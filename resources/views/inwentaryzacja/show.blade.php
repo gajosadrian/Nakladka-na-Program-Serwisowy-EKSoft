@@ -86,8 +86,9 @@
                                     <input type="hidden" name="symbol" value="{{ $towar->symbol }}">
                                     <input type="hidden" name="polka" value="{{ $_polka ?? '' }}">
                                     <input type="text" name="stan" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Stan" value="{{ $stan->stan ?? '' }}" @if( ! $stan) onfocus="select()" autofocus @endif>
-                                    {{-- @if (!$valid_polka and (!$towar->polka or (str_contains($towar->polka, ['s', 'S']) and str_contains($_polka, ['m', 'M'])))) --}}
-                                    @if (!$valid_polka and (!$towar->polka or str_contains($_polka, ['m', 'M'])))
+                                    {{-- @if (!$valid_polka and (!$towar->polka or (str_contains2($towar->polka, ['s', 'S']) and str_contains2($_polka, ['m', 'M'])))) --}}
+                                    {{-- @if (!$valid_polka and (!$towar->polka or str_contains2($_polka ?: '', ['m', 'M']))) --}}
+                                    @if (!$valid_polka)
                                         <input type="text" name="polka_new" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Półka" value="{{ $towar->polka }}">
                                     @endif
                                     <button type="submit" class="btn {{ $stan ? 'btn-warning' : 'btn-success' }}">{{ $stan ? 'Edytuj' : 'Dodaj' }}</button>

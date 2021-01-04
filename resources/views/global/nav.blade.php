@@ -57,17 +57,6 @@
         //         return $user and !$user->technik_id;
         //     },
         // ],
-        // [
-        //     'name' => 'Magazyn',
-        //     'role' => 'super-admin',
-        // ],
-        // [
-        //     'name' => 'Inwentaryzacja',
-        //     'icon' => 'si si-flag',
-        //     'route' => 'inwentaryzacja.show',
-        //     'routeOptions' => [],
-        //     'role' => 'super-admin',
-        // ],
         [
             'name' => 'Dodatki',
         ],
@@ -88,6 +77,12 @@
             'if' => function() use ($user) {
                 return $user and !$user->technik_id;
             },
+        ],
+        [
+            'name' => 'Inwentaryzacja',
+            'icon' => 'fa fa-warehouse',
+            'route' => 'inwentaryzacja.show',
+            'routeOptions' => [],
         ],
         [
             'name' => 'Historia techników',
