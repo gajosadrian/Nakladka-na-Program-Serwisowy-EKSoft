@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Inwentaryzacja\Stan;
 use App\Models\Inwentaryzacja\StanLog;
 use App\Models\Subiekt\Subiekt_Towar;
@@ -59,40 +60,42 @@ class InwentaryzacjaController extends Controller
             }
         }
 
-        if ($request->polka_new) {
-            $towar = Subiekt_Towar::where('tw_Symbol', $request->symbol)->first();
-            $towar->polka = $request->polka_new;
-            $towar->save();
-        }
-
-        $stan = Stan::firstOrCreate([
-            'user_id' => $user->id,
-            'symbol' => $request->symbol,
-            'polka' => $request->polka,
-        ]);
-
-        // if ($request_stan) {
-            $stan->towar_id = $request->towar_id;
-            $stan->stan = $request_stan;
-            $stan->save();
-            if ($stan->wasRecentlyCreated) {
-                $status = 'new';
-            } else {
-                $status = 'update';
+        DB::transaction(function () use ($request, $user, $request_stan) {
+            if ($request->polka_new) {
+                $towar = Subiekt_Towar::where('tw_Symbol', $request->symbol)->first();
+                $towar->polka = $request->polka_new;
+                $towar->save();
             }
-        // } else {
-        //     $stan->delete();
-        //     $status = 'delete';
-        // }
 
-        $stan_log = new StanLog;
-        $stan_log->user_id = $user->id;
-        $stan_log->towar_id = $request->towar_id;
-        $stan_log->symbol = $request->symbol;
-        $stan_log->polka = $request->polka;
-        $stan_log->status = $status;
-        $stan_log->stan = $request_stan;
-        $stan_log->save();
+            $stan = Stan::firstOrCreate([
+                'user_id' => $user->id,
+                'symbol' => $request->symbol,
+                'polka' => $request->polka,
+            ]);
+
+            // if ($request_stan) {
+                $stan->towar_id = $request->towar_id;
+                $stan->stan = $request_stan;
+                $stan->save();
+                if ($stan->wasRecentlyCreated) {
+                    $status = 'new';
+                } else {
+                    $status = 'update';
+                }
+            // } else {
+            //     $stan->delete();
+            //     $status = 'delete';
+            // }
+
+            $stan_log = new StanLog;
+            $stan_log->user_id = $user->id;
+            $stan_log->towar_id = $request->towar_id;
+            $stan_log->symbol = $request->symbol;
+            $stan_log->polka = $request->polka;
+            $stan_log->status = $status;
+            $stan_log->stan = $request_stan;
+            $stan_log->save();
+        });
 
         return redirect()->back();
     }

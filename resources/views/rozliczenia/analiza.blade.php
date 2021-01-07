@@ -112,7 +112,7 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    <td class="d-none"></td>
                                 </tr>
                             @endforeach
                         </tbody>

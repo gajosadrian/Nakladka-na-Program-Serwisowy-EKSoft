@@ -3,6 +3,22 @@
     $routeName = Route::currentRouteName();
     $nav = [
         [
+            'name' => @$user->name,
+            'icon' => 'fa fa-user',
+            'subitems' => [
+                [
+                    'name' => 'Profil',
+                    'route' => 'profile.show',
+                    'routeOptions' => [],
+                ],
+                [
+                    'name' => 'Wyloguj',
+                    'route' => 'logout',
+                    'routeOptions' => [],
+                ],
+            ],
+        ],
+        [
             'name' => 'Zlecenia',
         ],
         [
@@ -10,6 +26,15 @@
             'icon' => 'fa fa-list-ul',
             'route' => 'zlecenia.lista',
             'routeOptions' => [],
+        ],
+        [
+            'name' => 'Zlecenia',
+            'icon' => 'fa fa-list-ul',
+            'route' => 'zlecenia.lista2',
+            'routeOptions' => [],
+            'if' => function() use ($user) {
+                return $user and $user->id === 1;
+            },
         ],
         [
             'name' => 'Aplikacja mobilna',
@@ -167,6 +192,7 @@
         //     'role' => 'super-admin',
         // ],
     ];
+
 @endphp
 
 <ul class="nav-main">

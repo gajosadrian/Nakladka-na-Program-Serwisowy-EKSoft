@@ -16,6 +16,11 @@
                     <b-row>
                         <b-col cols="7" lg="2">
                             <input name="symbol" type="text" class="form-control" value="{{ $symbol }}">
+
+                            <div class="mt-2">
+                                <b-badge variant="info">Symbol krótki</b-badge>
+                                <b-badge variant="info">Symbol producenta</b-badge>
+                            </div>
                         </b-col>
                         <b-col cols="5" lg="1">
                             <b-button type="submit" class="btn-rounded shadow" variant="info" size="sm">

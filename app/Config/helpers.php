@@ -118,3 +118,13 @@ function str_contains2(string $str, $values): ?bool {
             break;
     }
 }
+
+function string_matches_zipcode(?string $str): ?string {
+    if (! $str) return null;
+    if (preg_match("/[0-9]{2}-[0-9]{3}/", $str, $matches)) {
+        if ($zipcode = $matches[0]) {
+            return $zipcode;
+        }
+    }
+    return null;
+}

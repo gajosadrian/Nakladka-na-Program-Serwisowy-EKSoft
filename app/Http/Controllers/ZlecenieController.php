@@ -88,22 +88,9 @@ class ZlecenieController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     */
-    public function create()
+    public function index2()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     */
-    public function store(Request $request)
-    {
-        //
+        return view('zlecenie.lista2');
     }
 
     /**
@@ -302,7 +289,7 @@ class ZlecenieController extends Controller
         $search = $request->search ?? $search;
         $zlecenia = null;
 
-        $klient_ids = Klient::whereHas('ewidencja', function ($q) use ($search) {
+        $klient_ids = Klient::where('kh_Symbol', $search)->orWhereHas('ewidencja', function ($q) use ($search) {
             $q
                 ->where('adr_Nazwa', 'like', '%'.$search.'%')
                 ->orWhere('adr_NazwaPelna', 'like', '%'.$search.'%')
@@ -325,7 +312,8 @@ class ZlecenieController extends Controller
                 ->orWhereIn('id_firmy', $klient_ids)
                 ->orWhere('OpisZlec', 'like', "%{$search}%")
                 ->orWhereHas('urzadzenie', function ($q) use ($search) {
-                    $q->where('SERIAL_NO', $search);
+                    $q->where('KATEGORIA', $search);
+                    $q->orWhere('SERIAL_NO', 'like', '%'.$search.'%');
                 })
                 ->orderByDesc('id_zlecenia')->limit(20)->get();
         }

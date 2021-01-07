@@ -12,19 +12,19 @@
     <div class="content">
         <b-block title="Parametry" theme="{{ $valid_polka ? '' : 'bg-danger' }}" full>
             <template slot="content">
-                <form action="{{ route('inwentaryzacja.show') }}" method="get">
+                <form id="szukanie" action="{{ route('inwentaryzacja.show') }}" method="get">
                     <b-row class="gutters-tiny">
                         <b-col cols="4" lg="2">
-                            <input name="symbol" type="number" class="form-control push" placeholder="Symbol" value="{{ $symbol }}" onclick="select()" @if($stan) onfocus="select()" autofocus @endif>
+                            <input id="symbol" name="symbol" type="number" class="form-control push" placeholder="Symbol" value="{{ $symbol }}" onclick="select()" @if($stan) onfocus="select()" autofocus @endif>
                         </b-col>
                         <b-col cols="4" lg="2">
-                            <input name="polka" type="text" class="form-control push" placeholder="Półka" value="{{ $polka }}">
+                            <input id="polka" name="polka" type="text" class="form-control push" placeholder="Półka" value="{{ $polka }}">
                         </b-col>
                         <b-col cols="4" lg="2">
-                            <input name="pojemnik" type="number" class="form-control push" placeholder="Pojemnik" value="{{ $pojemnik }}" onclick="select()">
+                            <input id="pojemnik" name="pojemnik" type="number" class="form-control push" placeholder="Pojemnik" value="{{ $pojemnik }}" onclick="select()">
                         </b-col>
                         <b-col cols="12" class="mt-2">
-                            <b-button type="submit" class="btn-rounded shadow" variant="info" size="sm">
+                            <b-button id="szukaj" type="submit" class="btn-rounded shadow" variant="info" size="sm">
                                 <i class="fa fa-search"></i> Szukaj
                             </b-button>
                         </b-col>
@@ -78,21 +78,26 @@
                                 <div class="font-w600 text-danger">Brak przypisanej półki</div>
                             @endif
                             <div class="mt-2">
-                                <form class="form-inline" action="{{ route('inwentaryzacja.update', $towar->symbol) }}" method="post">
+                                <form id="zatwierdzanie" class="form-inline" action="{{ route('inwentaryzacja.update', $towar->symbol) }}" method="post">
                                     @csrf
                                     @method('put')
                                     <input type="hidden" name="is_new" value="{{ $stan ? 0 : 1 }}">
                                     <input type="hidden" name="towar_id" value="{{ $towar->id }}">
                                     <input type="hidden" name="symbol" value="{{ $towar->symbol }}">
                                     <input type="hidden" name="polka" value="{{ $_polka ?? '' }}">
-                                    <input type="text" name="stan" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Stan" value="{{ $stan->stan ?? '' }}" @if( ! $stan) onfocus="select()" autofocus @endif>
+                                    <input type="number" step="0.1" id="stan" name="stan" autocomplete="off" class="form-control mb-2 mr-sm-2 mb-sm-0 {{ $is_stan_logs ? '' : 'bg-danger-light' }}" placeholder="Stan" value="{{ $stan->stan ?? '' }}" @if( ! $stan) onfocus="select()" autofocus @endif>
                                     {{-- @if (!$valid_polka and (!$towar->polka or (str_contains2($towar->polka, ['s', 'S']) and str_contains2($_polka, ['m', 'M'])))) --}}
                                     {{-- @if (!$valid_polka and (!$towar->polka or str_contains2($_polka ?: '', ['m', 'M']))) --}}
                                     @if (!$valid_polka)
-                                        <input type="text" name="polka_new" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Półka" value="{{ $towar->polka }}">
+                                        <input type="text" id="polka_new" name="polka_new" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Półka" value="{{ $towar->polka }}">
                                     @endif
-                                    <button type="submit" class="btn {{ $stan ? 'btn-warning' : 'btn-success' }}">{{ $stan ? 'Edytuj' : 'Dodaj' }}</button>
+                                    <button id="submit" type="submit" class="btn {{ $stan ? 'btn-warning' : 'btn-success' }}">{{ $stan ? 'Edytuj' : 'Dodaj' }}</button>
                                 </form>
+
+                                <div id="dodawanie_spinner" class="font-w600 text-info mt-2 d-none">
+                                    <i class="fa fa-spinner fa-pulse"></i>
+                                    Dodawanie...
+                                </div>
                             </div>
                         </b-col>
                     </b-row>
@@ -102,3 +107,25 @@
         @endif
     </div>
 @endsection
+
+@section('js_after')<script>$(function(){
+
+function disableButtons() {
+    $('#symbol').prop('readonly', true)
+    $('#polka').prop('readonly', true)
+    $('#pojemnik').prop('readonly', true)
+    $('#szukaj').prop('readonly', true)
+    $('#stan').prop('readonly', true)
+    $('#polka_new').prop('readonly', true)
+    $('#submit').prop('readonly', true)
+}
+
+$('form#szukanie').submit(function(e) {
+    disableButtons()
+})
+$('form#zatwierdzanie').submit(function(e) {
+    disableButtons()
+    $('#dodawanie_spinner').removeClass('d-none')
+})
+
+})</script>@endsection

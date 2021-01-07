@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('zlecenia')->name('zlecenia.')->group(function () {
         Route::get('mobile-app', 'ZlecenieController@mobileApp')->name('mobileApp');
         Route::get('lista', 'ZlecenieController@index')->name('lista');
+        Route::get('lista2', 'ZlecenieController@index2')->name('lista2');
         Route::get('pokaz/{id}', 'ZlecenieController@show')->name('pokaz');
         Route::get('pokaz/{zlecenie_id}/zdjecia', 'ZlecenieZdjecieController@show')->name('pokazZdjecia');
         Route::get('pokaz/{zlecenie_id}/zdjecia/v2', 'ZlecenieZdjecieController@show2')->name('pokazZdjecia2');

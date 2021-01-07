@@ -36,6 +36,7 @@
         <link rel="stylesheet" href="{{ asset('js/plugins/sweetalert2/sweetalert2.min.css') }}">
         <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">
         <link rel="stylesheet" href="{{ asset('js/plugins/magnific-popup/magnific-popup.css') }}">
+        <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
 
         {{-- Theme --}}
         <link rel="stylesheet" href="{{ asset('css/themes/xmodern.css') }}">
@@ -97,10 +98,11 @@
         --}}
         @routes
 
-        <div id="page-container" class="@empty($window) sidebar-o @empty($static) page-header-fixed @endempty @endempty enable-page-overlay side-scroll page-header-dark">
+        {{--                                                                      page-header-fixed --}}
+        <div id="page-container" class="@empty($window) sidebar-o @empty($static)                   @endempty @endempty enable-page-overlay side-scroll page-header-dark sidebar-dark">
             @empty($window)
                 @include('global.sidebar')
-                @include('global.header')
+                {{-- @include('global.header') --}}
             @endempty
             <main id="main-container">
                 <div id="app">
@@ -108,7 +110,9 @@
                 </div>
             </main>
             @empty($window)
-                @include('global.footer')
+                @empty($nofooter)
+                    @include('global.footer')
+                @endempty
             @endempty
         </div>
         {{-- END Page Container --}}

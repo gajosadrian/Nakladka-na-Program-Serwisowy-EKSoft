@@ -22,6 +22,16 @@
                                 <i class="fa fa-search"></i> Szukaj
                             </b-button>
                         </b-col>
+                        <b-col cols="12" lg="9">
+                            <b-badge variant="info">Kod klienta</b-badge>
+                            <b-badge variant="info">Imię i nazwisko</b-badge>
+                            <b-badge variant="info">Miejscowość</b-badge>
+                            <b-badge variant="info">Adres</b-badge>
+                            <b-badge variant="info">Nr zlecenia</b-badge>
+                            <b-badge variant="info">Opis zlecenia</b-badge>
+                            <b-badge variant="info">Marka</b-badge>
+                            <b-badge variant="info">Nr seryjny</b-badge>
+                        </b-col>
                     </b-row>
                 </form>
             </template>

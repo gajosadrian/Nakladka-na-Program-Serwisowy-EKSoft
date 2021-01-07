@@ -11,9 +11,8 @@
 --}}
 <nav id="sidebar" aria-label="Main Navigation">
     {{-- Side Header --}}
-    <div class="bg-header-dark">
+    {{-- <div class="bg-header-dark">
         <div class="content-header bg-white-10">
-            {{-- Logo --}}
             <a class="link-fx font-w600 font-size-lg text-white" href="{{ route('home') }}">
                 <span class="smini-visible">
                     <span class="text-white-75">S</span><span class="text-white">S</span>
@@ -22,21 +21,16 @@
                     <span class="text-white-75">SE</span><span class="text-white">R</span><span class="text-white-75">WIS</span>
                 </span>
             </a>
-            {{-- END Logo --}}
 
-            {{-- Options --}}
             <div>
-                {{-- Close Sidebar, Visible only on mobile screens --}}
-                {{-- Layout API, functionality initialized in Template._uiApiLayout() --}}
                 <a class="d-lg-none text-white ml-2" data-toggle="layout" data-action="sidebar_close" href="javascript:void(0)">
                     <i class="fa fa-times-circle"></i>
                 </a>
-                {{-- END Close Sidebar --}}
             </div>
-            {{-- END Options --}}
         </div>
-    </div>
+    </div> --}}
     {{-- END Side Header --}}
+
     {{-- Side Navigation --}}
     <div class="content-side content-side-full">
         @include('global.nav')

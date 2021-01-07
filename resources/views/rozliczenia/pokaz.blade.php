@@ -16,20 +16,43 @@
         <b-block full>
             <template slot="content">
                 <b-row>
-                    <b-col cols="6">
-                        @foreach ($rozliczenie->robocizny as $symbol => $kwota)
-                            <div>
-                                <span class="font-w700">{{ $symbol }}:</span> {{ $kwota }}
-                            </div>
-                        @endforeach
+                    <b-col cols="12" lg="5" xl="4">
+                        @php
+                            $percent = 0.35;
+                        @endphp
+                        <table id="robocizna" class="table table-sm" style="font-family: Verdana, Geneva, Tahoma, sans-serif">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th nowrap>Symbol</th>
+                                    <th nowrap>Rob. 100%</th>
+                                    <th nowrap>Rob. {{ $percent*100 }}%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($rozliczenie->robocizny as $symbol => $kwota)
+                                    <tr>
+                                        <td nowrap>{{ $symbol }}</td>
+                                        <td nowrap>{{ $kwota }}</td>
+                                        <td class="font-w700" nowrap>{{ floor($kwota * $percent) }} zł</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
                         @if (! $rozliczenie->is_closed)
-                            <b-link href="{{ route('rozliczenia.hardreload', [ 'id' => $rozliczenie->id ]) }}" size="sm" class="btn btn-sm btn-primary">
-                                <i class="fa fa-sync-alt mr-1"></i>
-                                Przeładuj wszystkie zlecenia
-                            </b-link>
+                            <div class="mt-4">
+                                <b-link href="{{ route('rozliczenia.hardreload', ['id' => $rozliczenie->id]) }}" size="sm" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-sync-alt mr-1"></i>
+                                    Przeładuj wszystkie zlecenia
+                                </b-link>
+                            </div>
                         @endif
                     </b-col>
-                    <b-col cols="6">
+                    <b-col cols="12" lg="7" xl="8">
+                        <b-button variant="info" size="sm" onclick="copyRobocizna()">
+                            <i class="fa fa-copy"></i>
+                            Skopiuj do schowka
+                        </b-button>
                     </b-col>
                 </b-row>
             </template>
@@ -252,5 +275,37 @@
                 $zlecenia_nierozliczone.text(zlecenia_nierozliczone_amount - zlecenia_ids.length);
                 $rozliczone_zlecenia.text(rozliczone_zlecenia_amount + zlecenia_ids.length);
             });
+    }
+
+    function selectElementContents(el) {
+        let body = document.body, range, sel;
+        if (document.createRange && window.getSelection) {
+            range = document.createRange();
+            sel = window.getSelection();
+            sel.removeAllRanges();
+            try {
+                range.selectNodeContents(el);
+                sel.addRange(range);
+            } catch (e) {
+                range.selectNode(el);
+                sel.addRange(range);
+            }
+        } else if (body.createTextRange) {
+            range = body.createTextRange();
+            range.moveToElementText(el);
+            range.select();
+        }
+    }
+
+    function copyRobocizna() {
+        selectElementContents( document.querySelector('table#robocizna') )
+        document.execCommand('copy')
+        swal({
+            position: 'center',
+            type: 'success',
+            title: 'Skopiowano',
+            showConfirmButton: false,
+            timer: 1000,
+        })
     }
 </script>@endsection

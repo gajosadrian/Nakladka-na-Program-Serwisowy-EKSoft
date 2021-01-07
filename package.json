@@ -27,9 +27,21 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@progress/kendo-data-query": "^1.5.4",
+        "@progress/kendo-drawing": "^1.9.3",
+        "@progress/kendo-licensing": "^1.1.3",
+        "@progress/kendo-theme-default": "^4.30.0",
+        "@progress/kendo-vue-animation": "^2.0.0",
+        "@progress/kendo-vue-data-tools": "^2.0.0",
+        "@progress/kendo-vue-dateinputs": "^2.0.0",
+        "@progress/kendo-vue-dropdowns": "^2.0.0",
+        "@progress/kendo-vue-grid": "^2.0.0",
+        "@progress/kendo-vue-inputs": "^2.0.0",
+        "@progress/kendo-vue-intl": "^2.0.0",
         "bootstrap-vue": "^2.0.0-rc.12",
         "debounce": "^1.2.0",
         "vue-clipboard2": "^0.3.0",
+        "vue-multiselect": "^2.1.6",
         "vue-nl2br": "^0.1.1",
         "vue2-datepicker": "^2.12.0"
     }

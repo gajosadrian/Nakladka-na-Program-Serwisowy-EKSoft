@@ -13,6 +13,8 @@ import BootstrapVue from 'bootstrap-vue'; import 'bootstrap-vue/dist/bootstrap-v
 import VueClipboard from 'vue-clipboard2'
 import Nl2br from 'vue-nl2br'
 import DatePicker from 'vue2-datepicker'
+import Multiselect from 'vue-multiselect'
+import '@progress/kendo-theme-default/dist/all.css'
 
 
 
@@ -32,6 +34,8 @@ Vue.component('ZdjecieShow', require('./components/Zdjecia/Show.vue').default);
 Vue.component('UrzadzeniaZdjecia', require('./components/Urzadzenia/Zdjecia.vue').default);
 Vue.component('urzadzenie-inputs', require('./components/Urzadzenia/Inputs.vue').default);
 Vue.component('SmsCreate', require('./components/Sms/Create.vue').default);
+Vue.component('zlecenie-lista', require('./components/Zlecenie/Lista/Lista.vue').default);
+Vue.component('multiselect', Multiselect)
 
 
 
