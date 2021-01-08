@@ -14,7 +14,9 @@ import VueClipboard from 'vue-clipboard2'
 import Nl2br from 'vue-nl2br'
 import DatePicker from 'vue2-datepicker'
 import Multiselect from 'vue-multiselect'
+
 import '@progress/kendo-theme-default/dist/all.css'
+// import '@progress/kendo-theme-bootstrap/dist/all.css'
 
 
 

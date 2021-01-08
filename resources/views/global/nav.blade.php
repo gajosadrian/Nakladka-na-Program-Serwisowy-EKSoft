@@ -103,12 +103,12 @@
                 return $user and !$user->technik_id;
             },
         ],
-        [
-            'name' => 'Inwentaryzacja',
-            'icon' => 'fa fa-warehouse',
-            'route' => 'inwentaryzacja.show',
-            'routeOptions' => [],
-        ],
+        // [
+        //     'name' => 'Inwentaryzacja',
+        //     'icon' => 'fa fa-warehouse',
+        //     'route' => 'inwentaryzacja.show',
+        //     'routeOptions' => [],
+        // ],
         [
             'name' => 'Historia techników',
             'icon' => 'fa fa-history',

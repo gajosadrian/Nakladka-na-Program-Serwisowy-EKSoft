@@ -98,11 +98,12 @@
         --}}
         @routes
 
-        {{--                                                                      page-header-fixed --}}
-        <div id="page-container" class="@empty($window) sidebar-o @empty($static)                   @endempty @endempty enable-page-overlay side-scroll page-header-dark sidebar-dark">
+        <div id="page-container" class="@empty($window) sidebar-o @if(@(auth()->user())->is_mobile) page-header-fixed @endif @endempty enable-page-overlay side-scroll page-header-dark sidebar-dark">
             @empty($window)
                 @include('global.sidebar')
-                {{-- @include('global.header') --}}
+                @if(@(auth()->user())->is_mobile)
+                    @include('global.header')
+                @endif
             @endempty
             <main id="main-container">
                 <div id="app">
@@ -169,9 +170,11 @@
             {{-- page preloader --}}
             $(window).on('beforeunload', function(e) {
                 Dashmix.layout('header_loader_on');
+                document.body.style.cursor = 'wait'
             });
             $(function() {
                 Dashmix.layout('header_loader_off');
+                document.body.style.cursor = 'default'
             });
 		})</script>
 
