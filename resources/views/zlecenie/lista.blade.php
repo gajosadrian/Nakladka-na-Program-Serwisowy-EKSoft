@@ -160,7 +160,13 @@
 										{{ $zlecenie->urzadzenie->producent }}
 									</td>
 
-                                    {!! $zlecenie->tableCellStatusHTML !!}
+                                    {{-- {!! $zlecenie->tableCellStatusHTML !!} --}}
+                                    <td nowrap>
+                                        <span class="rounded p-2 table-{{ $zlecenie->status->color }}">
+                                            <i class="{{ $zlecenie->status->icon }} text-{{ $zlecenie->status->color }}"></i>
+                                            {{ $zlecenie->status->nazwa }}
+                                        </span>
+                                    </td>
 
 									<td nowrap>
                                         {{-- @if ($zlecenie->is_termin)
