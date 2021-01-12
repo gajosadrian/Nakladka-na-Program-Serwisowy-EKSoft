@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="zdjecie in zdjecia" :key="zdjecie.id">
+    <div v-for="zdjecie in zdjecia" :key="zdjecie.id" class="push">
       <Zdjecie :url="zdjecie.url" />
     </div>
   </div>

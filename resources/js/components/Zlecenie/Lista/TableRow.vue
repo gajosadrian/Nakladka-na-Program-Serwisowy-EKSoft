@@ -47,7 +47,6 @@ export default {
       })
       return data
     },
-
     onClick(field, dataItem) {
       this.$emit('onCellClick', field, dataItem)
     },

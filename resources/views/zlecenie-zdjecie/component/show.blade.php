@@ -6,7 +6,7 @@
     <h4 class="mb-0">{{ $title }}</h4>
     <hr class="mt-1">
 
-    <b-row>
+    <b-row class="no-gutters">
         <b-col cols="12">
             @csrf
             <input type="hidden" name="zlecenie_id" id="zlecenie_id{{ $room }}" value="{{ $zlecenie->id }}">
@@ -20,7 +20,7 @@
         </b-col>
     </b-row>
 
-    <b-row class="gutters-tiny js-gallery img-fluid-100">
+    <b-row class="no-gutters js-gallery img-fluid-100">
         @foreach ($zlecenie->zdjecia->where('type', $type) as $zdjecie)
             <div class="col-4 col-md-3 col-lg-2 animated ribbon ribbon-danger">
                 @if ($zdjecie->is_deletable)

@@ -110,7 +110,7 @@
                                     <div class="font-w700 p-1
                                         @if ($zlecenie->is_zamowiono)
                                             bg-xsmooth-lighter
-                                        @elseif ($zlecenie->is_zakonczone)
+                                        @elseif ($zlecenie->is_zakonczone or ! in_array($zlecenie->status_id, [11, 12, 14, 41]))
                                             bg-info-light
                                         @elseif ($is_soft_zakonczone)
                                             bg-success-light

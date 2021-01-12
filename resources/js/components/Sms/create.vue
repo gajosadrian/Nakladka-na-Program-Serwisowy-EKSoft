@@ -2,7 +2,7 @@
   <div>
     <span class="d-none">{{ refresher }}</span>
 
-    <b-row>
+    <b-row class="no-gutters">
       <b-col lg="5">
         <b-form @submit.prevent="submit">
 

@@ -393,7 +393,7 @@
                         @endif
                     </ul>
                     <div class="block-content tab-content overflow-hidden block-content-full">
-                        <div class="tab-pane fade" id="kosztorys" role="tabpanel">
+                        <div class="tab-pane fade" id="kosztorys" role="tabpanel" style="overflow:scroll; height:510px;">
                             @if (false)
                                 <table class="table table-sm table-striped table-vcenter font-size-sm">
                                     <thead>
@@ -476,11 +476,11 @@
                             @endif
                             <zlecenie-opis zlecenie_id=@json($zlecenie->id) :is_technik="{{ (int) $user->is_technik }}" />
                         </div>
-                        <div class="tab-pane fade" id="sms" role="tabpanel">
+                        <div class="tab-pane fade" id="sms" role="tabpanel" style="overflow:scroll; height:510px;">
                             <sms-create _token=@json(csrf_token()) :_predefined="true" :_telefony="{{ json_encode($zlecenie->klient->telefony_array) }}" :_footer='@json(App\Sms::FOOTER)' :zlecenie_id="{{ $zlecenie->id }}" :zlecenie_status_id="{{ $zlecenie->status_id }}" :smses='@json($zlecenie->smses)' />
                         </div>
-                        <div class="tab-pane fade" id="statusy" role="tabpanel">
-                            <b-row>
+                        <div class="tab-pane fade" id="statusy" role="tabpanel" style="overflow:scroll; height:510px;">
+                            <b-row class="no-gutters">
                                 <b-col cols="12" xl="8">
                                     <div class="table-responsive">
                                         <table class="table table-sm table-striped table-vcenter font-size-sm">
@@ -521,12 +521,12 @@
                                 </b-col>
                             </b-row>
                         </div>
-                        <div class="tab-pane fade" id="zdjecia" role="tabpanel">
+                        <div class="tab-pane fade" id="zdjecia" role="tabpanel" style="overflow:scroll; height:510px;">
                             @include('zlecenie-zdjecie.component.index', compact('zlecenie'))
                             {{-- <Zdjecia _token=@json(csrf_token()) :zlecenie_id=@json($zlecenie->id) /> --}}
                         </div>
-                        <div class="tab-pane fade" id="tabliczka" role="tabpanel">
-                            <zlecenie-tabliczka _token=@json(csrf_token()) :zlecenie_id=@json($zlecenie->id) :zdjecia='@json($zlecenie->zdjecia->filter(function ($zdjecie) { return $zdjecie->type == 'tabliczka'; }))' />
+                        <div class="tab-pane fade" id="tabliczka" role="tabpanel" style="overflow:scroll; height:510px;">
+                            <zlecenie-tabliczka _token=@json(csrf_token()) :zlecenie_id=@json($zlecenie->id) :zdjecia='@json($zlecenie->zdjecia->filter(function ($zdjecie) { return $zdjecie->type == 'tabliczka'; })->values())' />
                         </div>
                     </div>
                 </div>

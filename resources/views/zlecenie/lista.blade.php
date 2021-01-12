@@ -91,14 +91,15 @@
 								<th class="font-w700">Lp.</th>
 								<th class="font-w700">Nazwa</th>
 								<th class="font-w700">Adres</th>
+                                @if ($show_errors)
+                                    <th class="font-w700"></th>
+                                @endif
 								<th class="font-w700">Nr zlecenia</th>
 								<th class="font-w700">Urządzenie</th>
 								<th class="font-w700">Status</th>
-                                @if ($show_errors)
-                                    <th class="font-w700">Błędy</th>
-                                @endif
                                 {{-- <th class="font-w700">Ostatnia data</th> --}}
-								<th class="font-w700">Data przyjęcia</th>
+								<th class="font-w700">Przyjęcie</th>
+								<th class="font-w700">Termin</th>
 								<th class="d-none"></th>
 							</tr>
 						</thead>
@@ -120,7 +121,7 @@
                                         @elseif (! $user->is_technik and @$zlecenie->last_sms->type == 'error')
                                         <i class="fa fa-envelope text-danger"></i>
                                         @endif
-										{{ str_limit($zlecenie->klient->nazwa, 30) }}<br>
+										{{ str_limit($zlecenie->klient->nazwa, 25) }}<br>
 										<small class="text-muted">({{ $zlecenie->klient->symbol }})</small>
 									</td>
 
@@ -128,6 +129,29 @@
 										{{ $zlecenie->klient->adres }}<br>
 										{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto_short }}
 									</td>
+
+                                    @if ($show_errors)
+    									{{-- <td class="{{ (count($zlecenie->errors) > 0) ? 'table-danger' : '' }} font-small">
+                                            <ul class="list-unstyled mb-0 d-none">
+        										@foreach ($zlecenie->errors as $error)
+                                                    <li>
+                                                        <i class="fa fa-exclamation-triangle text-danger"></i>
+            											{{ $error }}
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </td> --}}
+                                        <td class="text-center">
+                                            @if (count($zlecenie->errors) > 0)
+                                                <div class="d-none">{{ implode(' ', $zlecenie->errors) }}</div>
+                                                <i
+                                                    class="fa fa-exclamation-triangle text-danger"
+                                                    data-toggle="tooltip" data-placement="left"
+                                                    title="{{ implode('. ', $zlecenie->errors) }}"
+                                                ></i>
+                                            @endif
+    									</td>
+                                    @endif
 
 									{!! $zlecenie->tableCellNrHTML !!}
 
@@ -137,19 +161,6 @@
 									</td>
 
                                     {!! $zlecenie->tableCellStatusHTML !!}
-
-                                    @if ($show_errors)
-    									<td class="{{ (count($zlecenie->errors) > 0) ? 'table-danger' : '' }} font-small">
-                                            <ul class="list-unstyled mb-0">
-        										@foreach ($zlecenie->errors as $error)
-                                                    <li>
-                                                        <i class="fa fa-exclamation-triangle text-danger"></i>
-            											{{ $error }}
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-    									</td>
-                                    @endif
 
 									<td nowrap>
                                         {{-- @if ($zlecenie->is_termin)
@@ -179,7 +190,7 @@
     										@endif
                                         </small> --}}
 
-                                        {{ $zlecenie->data_przyjecia_formatted }}
+                                        {{ $zlecenie->data_przyjecia->format('Y-m-d') }}
                                         <br>
                                         @php
                                             $dni_od_przyjecia = $zlecenie->dni_od_przyjecia;
@@ -195,7 +206,13 @@
                                                 (dzisiaj)
                                             @endif
                                         </small>
-									</td>
+                                    </td>
+
+                                    <td nowrap>
+                                        @if ($zlecenie->is_termin)
+                                            {{ $zlecenie->data_zakonczenia_formatted }}
+                                        @endif
+                                    </td>
 
 									<td class="d-none">
                                         {{ $zlecenie->nr }} {{ $zlecenie->nr_obcy }}

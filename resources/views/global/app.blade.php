@@ -46,7 +46,7 @@
         {{-- Scripts --}}
         <script>window.Laravel = {!! json_encode(['csrfToken' => csrf_token(),]) !!};</script>
         <script src="{{ asset('js/helpers.js') }}"></script>
-		<script src="{{ asset('js/app.js?v=9') }}" defer></script>
+		<script src="{{ asset('js/app.js?v=10') }}" defer></script>
     </head>
     <body>
         {{--

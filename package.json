@@ -44,6 +44,7 @@
         "vue-clipboard2": "^0.3.0",
         "vue-multiselect": "^2.1.6",
         "vue-nl2br": "^0.1.1",
+        "vue-zoom-scroll": "^1.0.29",
         "vue2-datepicker": "^2.12.0"
     }
 }
