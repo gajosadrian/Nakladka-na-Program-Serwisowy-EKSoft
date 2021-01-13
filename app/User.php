@@ -89,7 +89,7 @@ class User extends Authenticatable
         if (empty($this->saved_fields[$field_name])) {
             return false;
         }
-        return $this->saved_fields[$field_name];
+        return trim($this->saved_fields[$field_name]);
     }
 
     public function setSaveField($field_name, $field_value, $save = true)

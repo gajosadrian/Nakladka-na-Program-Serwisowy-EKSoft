@@ -90,7 +90,39 @@ class ZlecenieController extends Controller
 
     public function index2()
     {
-        return view('zlecenie.lista2');
+        $user = auth()->user();
+
+        $savedSearch = $user->getSavedField('zlecenia2.search');
+        $search = [
+            'customerName' => $savedSearch['customerName'] ?: '',
+            'customerCity' => $savedSearch['customerCity'] ?: '',
+            'customerAddress' => $savedSearch['customerAddress'] ?: '',
+            'deviceBrand' => $savedSearch['deviceBrand'] ?: '',
+            'deviceSerial' => $savedSearch['deviceSerial'] ?: '',
+            'serviceOpen' => $savedSearch['serviceOpen'] ?: 1,
+            'serviceStatuses' => $savedSearch['serviceStatuses'] ?: [],
+            'serviceTechnician' => $savedSearch['serviceTechnician'] ?: 0,
+            'serviceBuyer' => $savedSearch['serviceBuyer'] ?: '',
+        ];
+
+        return view('zlecenie.lista2', compact('search'));
+    }
+
+    public function apiGetList()
+    {
+        $zlecenia = Zlecenie::with('klient')->whereNull('Anulowany')->limit(10)->get();
+
+        return response()->json([
+            'zlecenia' => $zlecenia->transform(function ($zlecenie) {
+                return [
+                    'id' => $zlecenie->id,
+                    'nr' => $zlecenie->nr,
+                    'nr_obcy' => $zlecenie->nr_obcy,
+                    'nr_or_obcy' => $zlecenie->nr_or_obcy,
+                    'klient' => $zlecenie->klient ? $zlecenie->klient->only('id', 'symbol', 'nazwa') : null,
+                ];
+            }),
+        ]);
     }
 
     /**

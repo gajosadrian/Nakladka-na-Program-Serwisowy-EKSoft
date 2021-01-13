@@ -4,7 +4,7 @@
       <div v-if="title" class="text-center">
         <label class="m-0">{{ title }}</label>
       </div>
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>

@@ -3,54 +3,54 @@
     <b-row class="gutters-tiny row-deck" style="margin-top: 10px; margin-bottom: 10px;">
       <b-col cols="2">
         <SearchBlock title="Klient">
-          <b-input v-model="searchCustomerName" type="text" size="sm"></b-input>
+          <b-input v-model="search.customerName" type="text" size="sm" :class="{'bg-info-light text-white': search.customerName}" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
         <SearchBlock title="Miejscowość">
-          <b-input v-model="searchCustomerCity" type="text" size="sm"></b-input>
+          <b-input v-model="search.customerCity" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
         <SearchBlock title="Adres">
-          <b-input v-model="searchCustomerAddress" type="text" size="sm"></b-input>
+          <b-input v-model="search.customerAddress" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
         <SearchBlock title="Marka">
-          <b-input v-model="searchDeviceBrand" type="text" size="sm"></b-input>
+          <b-input v-model="search.deviceBrand" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
         <SearchBlock title="Nr Seryjny">
-          <b-input v-model="searchDeviceSerial" type="text" size="sm"></b-input>
+          <b-input v-model="search.deviceSerial" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
         <SearchBlock>
-          <b-form-radio v-model="searchServiceOpen" value="1">Otwarte zlecenia</b-form-radio>
-          <!-- <b-form-radio v-model="searchServiceOpen" value="2">Zamknięte</b-form-radio> -->
-          <b-form-radio v-model="searchServiceOpen" value="3">Wszystkie zlecenia</b-form-radio>
+          <b-form-radio v-model="search.serviceOpen" value="1">Otwarte zlecenia</b-form-radio>
+          <!-- <b-form-radio v-model="search.serviceOpen" value="2">Zamknięte</b-form-radio> -->
+          <b-form-radio v-model="search.serviceOpen" value="3">Wszystkie zlecenia</b-form-radio>
         </SearchBlock>
       </b-col>
       <b-col cols="2">
         <SearchBlock title="Status">
-          <multiselect :options="[]" :searchable="false" :close-on-select="false" :show-labels="false" size="sm" placeholder="Wszystko"></multiselect>
+          <multiselect :options="[]" :searchable="false" :close-on-select="false" :show-labels="false" size="sm" placeholder="Wszystko" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
         <SearchBlock title="Technik">
-          <multiselect :options="[]" :searchable="false" :close-on-select="false" :show-labels="false" placeholder="Wszystko"></multiselect>
+          <multiselect :options="[]" :searchable="false" :close-on-select="false" :show-labels="false" placeholder="Wszystko" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
         <SearchBlock title="Zleceniodawca" disabled>
-          <multiselect :options="[]" :searchable="false" :close-on-select="false" :show-labels="false" placeholder="Wszystko" disabled></multiselect>
+          <multiselect :options="[]" :searchable="false" :close-on-select="false" :show-labels="false" placeholder="Wszystko" disabled />
         </SearchBlock>
       </b-col>
     </b-row>
 
-    <Table />
+    <Table :zlecenia="zlecenia" />
   </div>
 </template>
 
@@ -66,20 +66,33 @@ export default {
 
   props: {
     _token: String,
+    _search: Object,
+    _tableWidths: Object,
   },
 
   data() {
     return {
-      searchCustomerName: '',
-      searchCustomerCity: '',
-      searchCustomerAddress: '',
-      searchDeviceBrand: '',
-      searchDeviceSerial: '',
-      searchServiceOpen: 1,
-      serviceStatuses: [],
-      serviceTechnician: 0,
-      serviceBuyer: '',
+      zlecenia: [],
+      search: this._search,
     }
+  },
+
+  methods: {
+    fetchData() {
+      axios.get(route('zlecenia.api.getList'), {
+        search: this.search,
+      })
+        .then(response => {
+          const data = response.data
+
+          this.zlecenia = data.zlecenia
+          console.log(data.zlecenia)
+        })
+    },
+  },
+
+  created() {
+    this.fetchData()
   },
 }
 </script>

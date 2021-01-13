@@ -5,6 +5,9 @@
 
 @section('content')
   <div class="content py-0">
-    <zlecenie-lista _token="{{ csrf_token() }}"></zlecenie-lista>
+    <zlecenie-lista
+      _token="{{ csrf_token() }}"
+      :_search='@json($search)'
+    ></zlecenie-lista>
   </div>
 @endsection

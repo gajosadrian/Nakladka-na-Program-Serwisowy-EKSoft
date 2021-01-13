@@ -1,7 +1,10 @@
 <template>
   <td v-if="field == 'customer'" :class="className" nowrap @click="onClick(field, dataItem)">
-    {{ customer[0] }}<br>
-    <small class="text-muted">{{ customer[1] }}</small>
+    {{ klient.nazwa }}<br>
+    <small class="text-muted">{{ klient.symbol }}</small>
+  </td>
+  <td v-else-if="field == 'service'" :class="className" nowrap @click="onClick(field, dataItem)">
+    {{ zlecenie.nr_or_obcy }}
   </td>
   <td v-else-if="field == 'status'" :class="className" class="p-1" nowrap @click="onClick(field, dataItem)">
     <b-badge class="bg-info d-block">
@@ -30,8 +33,15 @@ export default {
   },
 
   computed: {
-    customer() {
-      return this.getNestedValue('customer', this.dataItem)
+    zlecenie() {
+      return {
+        nr: this.getNestedValue('nr', this.dataItem),
+        nr_obcy: this.getNestedValue('nr_obcy', this.dataItem),
+        nr_or_obcy: this.getNestedValue('nr_or_obcy', this.dataItem),
+      }
+    },
+    klient() {
+      return this.getNestedValue('klient', this.dataItem)
     },
     status() {
       return this.getNestedValue('status', this.dataItem)
@@ -51,7 +61,5 @@ export default {
       this.$emit('onCellClick', field, dataItem)
     },
   },
-
-  created() {},
 }
 </script>
