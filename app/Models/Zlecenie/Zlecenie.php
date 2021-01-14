@@ -293,6 +293,18 @@ class Zlecenie extends Model
         return 'https://www.google.com/maps/dir//' . $this->google_maps_address . '/';
     }
 
+    public function getGoogleMapsLinkAttribute(): string
+    {
+        $place = urlencode('Jana Samsonowicza 18, 27-400 Ostrowiec Świętokrzyski, Polska');
+        return 'https://www.google.com/maps/dir/' . $place . '/' . $this->google_maps_address . '/';
+    }
+
+    public function getGoogleMapsCityLinkAttribute(): string
+    {
+        $place = urlencode('Jana Samsonowicza 18, 27-400 Ostrowiec Świętokrzyski, Polska');
+        return 'https://www.google.com/maps/dir/' . $place . '/' . $this->google_maps_city . '/';
+    }
+
     public function getGoogleMapsAddressAttribute(): string
     {
         if ( ! str_contains2($this->klient->miasto, ['Ostrowiec Świętokrzyski', 'Ćmielów', 'Bodzechów', 'Kunów']) ) {
@@ -301,6 +313,11 @@ class Zlecenie extends Model
         return urlencode($this->klient->adres2 . ', ' . $this->klient->kod_pocztowy . ' ' . $this->klient->miasto);
         // return urlencode($this->klient->kod_pocztowy . ' ' . $this->klient->miasto . ', ' . $this->klient->adres2); // BAD
         // return urlencode($this->klient->adres2 . ', ' . $this->klient->miasto);
+    }
+
+    public function getGoogleMapsCityAttribute(): string
+    {
+        return urlencode($this->klient->kod_pocztowy . ' ' . $this->klient->miasto);
     }
 
     public static function getGoogleMapsKmLink(array $places): string
@@ -809,7 +826,8 @@ HTML;
 
     public function getPopupLinkAttribute(): string
     {
-        return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', screen.availWidth * .95, screen.availHeight * .9)";
+        // return "PopupCenter('" . route('zlecenia.pokaz', $this->id) . "', 'zlecenie" . $this->id . "', screen.availWidth * .95, screen.availHeight * .9)";
+        return "OpenZlecenie('" . route('zlecenia.pokaz', $this->id) . "', " . $this->id . ")";
     }
 
     public function getPopupZdjeciaLinkAttribute(): string

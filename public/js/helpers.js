@@ -17,6 +17,10 @@ function PopupCenter(url, title, w, h, ox, oy) {
     if (window.focus) newWindow.focus();
 }
 
+function OpenZlecenie(url, zlecenieId) {
+		PopupCenter(url, `zlecenie${zlecenieId}`, screen.availWidth * .95, screen.availHeight * .9);
+}
+
 function toggleFullScreen() {
     var doc = window.document;
     var docEl = doc.documentElement;

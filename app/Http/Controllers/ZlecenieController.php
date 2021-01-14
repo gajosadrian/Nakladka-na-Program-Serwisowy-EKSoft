@@ -105,12 +105,16 @@ class ZlecenieController extends Controller
             'serviceBuyer' => $savedSearch['serviceBuyer'] ?: '',
         ];
 
-        return view('zlecenie.lista2', compact('search'));
+        $savedWidths = $user->getSavedField('zlecenia2.columnWidths');
+        $columnWidths = [
+        ];
+
+        return view('zlecenie.lista2', compact('search', 'columnWidths'));
     }
 
     public function apiGetList()
     {
-        $zlecenia = Zlecenie::with('klient')->whereNull('Anulowany')->limit(10)->get();
+        $zlecenia = Zlecenie::with('klient')->whereNull('Anulowany')->orderByDesc('id_zlecenia')->limit(10)->get();
 
         return response()->json([
             'zlecenia' => $zlecenia->transform(function ($zlecenie) {
@@ -119,6 +123,8 @@ class ZlecenieController extends Controller
                     'nr' => $zlecenie->nr,
                     'nr_obcy' => $zlecenie->nr_obcy,
                     'nr_or_obcy' => $zlecenie->nr_or_obcy,
+                    'opis' => $zlecenie->opis,
+                    'url' => route('zlecenia.pokaz', $zlecenie->id),
                     'klient' => $zlecenie->klient ? $zlecenie->klient->only('id', 'symbol', 'nazwa') : null,
                 ];
             }),

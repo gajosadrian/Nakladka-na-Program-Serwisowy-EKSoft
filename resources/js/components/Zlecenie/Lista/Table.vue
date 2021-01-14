@@ -9,6 +9,7 @@
     @rowclick="onRowClick"
     @rowdblclick="onRowDoubleClick"
     @onCellClick="onCellClick"
+    @columnresize="onColumnResize"
   />
 </template>
 
@@ -30,7 +31,7 @@ export default {
     return {
       cellTemplate: TableRow,
       selectedZlecenieField: 'selected',
-      selectedZlecenieId: 0,
+      selectedZlecenie: null,
       columns: [
         // { field: 'lp', title: 'Lp.', width: '55px' },
         { field: 'customer', title: 'Klient', width: '80px' },
@@ -46,22 +47,41 @@ export default {
 
   computed: {
     items() {
-      return this.zlecenia.map((item) => ({ ...item, selected: item.id === this.selectedZlecenieId }))
+      const selectedZlecenieId = this.selectedZlecenie && this.selectedZlecenie.id || 0
+      return this.zlecenia.map(zlecenie => ({ ...zlecenie, selected: zlecenie.id === selectedZlecenieId }))
     },
   },
 
   methods: {
     onRowClick(e) {
-      const item = e.dataItem
-      this.selectedZlecenieId = item.id
+      const zlecenie = e.dataItem
+      this.selectedZlecenie = zlecenie
+      this.$emit('onZlecenie', zlecenie)
     },
     onRowDoubleClick(e) {
-      const item = e.dataItem
-      this.selectedZlecenieId = item.id
-      console.log(item.id)
+      const zlecenie = e.dataItem
+      this.selectedZlecenie = zlecenie
+
+      OpenZlecenie(zlecenie.url, zlecenie.id)
     },
     onCellClick(field, item) {
       // console.log(field, item)
+    },
+    onColumnResize({columns, end, newWidth, index}) {
+      if (! end) return
+
+      const column = columns[index]
+    },
+    saveUserField() {
+      axios.put(route('api.save_field'), {
+        _token: this._token,
+        _method: 'put',
+        name: 'test',
+        value,
+      })
+        .catch((err) => {
+          console.log(err)
+        })
     },
   }
 }

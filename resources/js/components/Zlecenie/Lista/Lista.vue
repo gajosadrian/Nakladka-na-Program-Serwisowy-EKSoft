@@ -3,7 +3,7 @@
     <b-row class="gutters-tiny row-deck" style="margin-top: 10px; margin-bottom: 10px;">
       <b-col cols="2">
         <SearchBlock title="Klient">
-          <b-input v-model="search.customerName" type="text" size="sm" :class="{'bg-info-light text-white': search.customerName}" />
+          <b-input v-model="search.customerName" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
@@ -48,9 +48,16 @@
           <multiselect :options="[]" :searchable="false" :close-on-select="false" :show-labels="false" placeholder="Wszystko" disabled />
         </SearchBlock>
       </b-col>
+      <b-col cols="6">
+        <div class="block">
+          <div class="block-content p-1 opis">
+            <span v-if="selectedZlecenie">{{ selectedZlecenie.opis }}</span>
+          </div>
+        </div>
+      </b-col>
     </b-row>
 
-    <Table :zlecenia="zlecenia" />
+    <Table :zlecenia="zlecenia" @onZlecenie="onZlecenie" />
   </div>
 </template>
 
@@ -72,12 +79,16 @@ export default {
 
   data() {
     return {
+      selectedZlecenie: null,
       zlecenia: [],
       search: this._search,
     }
   },
 
   methods: {
+    onZlecenie(zlecenie) {
+      this.selectedZlecenie = zlecenie
+    },
     fetchData() {
       axios.get(route('zlecenia.api.getList'), {
         search: this.search,
@@ -86,7 +97,6 @@ export default {
           const data = response.data
 
           this.zlecenia = data.zlecenia
-          console.log(data.zlecenia)
         })
     },
   },
@@ -96,3 +106,10 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+div.opis {
+  height: 5em;
+  overflow: hidden;
+}
+</style>

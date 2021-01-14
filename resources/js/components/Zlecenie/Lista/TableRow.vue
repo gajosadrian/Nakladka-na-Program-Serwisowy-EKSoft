@@ -7,10 +7,10 @@
     {{ zlecenie.nr_or_obcy }}
   </td>
   <td v-else-if="field == 'status'" :class="className" class="p-1" nowrap @click="onClick(field, dataItem)">
-    <b-badge class="bg-info d-block">
-      <i class="fa fa-file-signature mr-1"></i>
-      {{ status }}
-    </b-badge>
+    <span class="rounded p-2 table-info" style="color: #495057;">
+      <i class="fa fa-file-signature text-info"></i>
+      {{ status }}test
+    </span>
   </td>
   <td v-else :class="className" nowrap>
     {{ getNestedValue(field, dataItem)}}
@@ -63,3 +63,13 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+td {
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+</style>

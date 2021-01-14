@@ -36,11 +36,21 @@
                             </tr>
                             <tr>
                                 <th class="text-right">Ulica:</th>
-                                <td>{{ $zlecenie->klient->adres }}</td>
+                                <td>
+                                    {{ $zlecenie->klient->adres }}
+                                    <a href="{{ $zlecenie->google_maps_link }}" target="_blank">
+                                        <i class="fa fa-map-marked-alt ml-2"></i>
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <th class="text-right">Miasto:</th>
-                                <td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
+                                <td>
+                                    {{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}
+                                    <a href="{{ $zlecenie->google_maps_city_link }}" target="_blank">
+                                        <i class="fa fa-map-marked-alt ml-2"></i>
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <th class="text-right">Telefony:</th>

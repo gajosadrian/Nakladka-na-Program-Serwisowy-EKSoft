@@ -8,6 +8,7 @@
     <zlecenie-lista
       _token="{{ csrf_token() }}"
       :_search='@json($search)'
+      :_columnWidths='@json($columnWidths)'
     ></zlecenie-lista>
   </div>
 @endsection
