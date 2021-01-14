@@ -123,13 +123,14 @@
         <script src="{{ asset('js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('js/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
         <script src="{{ asset('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+        {{-- <script src="{{ asset('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.pl.min.js') }}"></script> --}}
         <script src="{{ asset('js/plugins/chart.js/Chart.bundle.min.js') }}"></script>
         <script src="{{ asset('js/plugins/es6-promise/es6-promise.auto.min.js') }}"></script>
         <script src="{{ asset('js/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
         <script src="{{ asset('js/plugins/select2/js/select2.full.min.js') }}"></script>
         <script src="{{ asset('js/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
         <script src="{{ asset('js/plugins/image-compressor/image-compressor.min.js') }}"></script>
-        {{-- <script src="{{ asset('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.pl.min.js') }}"></script> --}}
+        <script src="{{ asset('js/plugins/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
 
         {{-- Laravel Scaffolding JS --}}
         {{-- <script src="{{ asset('js/laravel.app.js') }}"></script> --}}
@@ -157,7 +158,7 @@
                 format: 'yyyy-mm-dd',
             });
 
-            Dashmix.helpers(['table-tools-checkable', 'datepicker', 'select2', 'magnific-popup']);
+            Dashmix.helpers(['table-tools-checkable', 'datepicker', 'select2', 'magnific-popup', 'notify']);
 
             {{-- fixing printing background --}}
             window.onbeforeprint = function() {

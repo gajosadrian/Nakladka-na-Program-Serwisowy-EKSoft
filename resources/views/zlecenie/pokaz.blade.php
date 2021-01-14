@@ -88,7 +88,7 @@
                                         <th style="width:1%">Numer:</th>
                                         <td>
                                             {{ $zlecenie->nr }}
-                                            <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{{ $zlecenie->nr }}'">
+                                            <a href="javascript:void(0)" class="js-notify ml-2" v-clipboard:copy="'{{ $zlecenie->nr }}'" data-type="danger" data-message="Skopiowano!">
                                                 <i class="far fa-copy"></i>
                                             </a>
                                         </td>
@@ -104,7 +104,7 @@
                                                 </span>
                                             @endif
 											@if ($zlecenie->nr_obcy)
-												<a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{{ $zlecenie->nr_obcy }}'">
+												<a href="javascript:void(0)" class="js-notify ml-2" v-clipboard:copy="'{{ $zlecenie->nr_obcy }}'" data-type="danger" data-message="Skopiowano!">
 													<i class="far fa-copy"></i>
 												</a>
                                             @endif

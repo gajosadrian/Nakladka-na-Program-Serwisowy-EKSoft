@@ -817,7 +817,7 @@ HTML;
                     <i class="{$this->znacznik->icon} mr-1"></i>
                     {$this->nr_or_obcy}
                 </a>
-                <a href="javascript:void(0)" class="ml-2" v-clipboard:copy="'{$copy_nr}'">
+                <a href="javascript:void(0)" class="js-notify ml-2" v-clipboard:copy="'{$copy_nr}'" data-type="danger" data-message="Skopiowano!">
                     <i class="far fa-copy"></i>
                 </a>
             </td>
