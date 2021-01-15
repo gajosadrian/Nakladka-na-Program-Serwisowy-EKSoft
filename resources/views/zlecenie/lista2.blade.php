@@ -4,11 +4,13 @@
 @endphp
 
 @section('content')
-  <div class="content py-0">
+  <div class="content px-2 py-0">
     <zlecenie-lista
       _token="{{ csrf_token() }}"
+      :statusy='@json($statusy)'
+      :technicy='@json($technicy)'
       :_search='@json($search)'
-      :_columnWidths='@json($columnWidths)'
+      :_column-widths='@json($columnWidths)'
     ></zlecenie-lista>
   </div>
 @endsection

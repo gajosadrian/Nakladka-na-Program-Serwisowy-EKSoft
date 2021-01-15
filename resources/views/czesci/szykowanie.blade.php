@@ -63,10 +63,13 @@
                         $color = null;
                         if ($is_naszykowane) {
                             $color = 'success';
-                        } elseif ($pozycja->is_ekspertyza or $pozycja->is_zamowione or $pozycja->is_wycena or $pozycja->zlecenie->status_id == App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID) {
+                            $ribbon_color = 'success';
+                        } elseif ($pozycja->is_zamowione or $pozycja->zlecenie->status_id == \App\Models\Zlecenie\Status::ZAMOWIONO_CZESC_ID or $pozycja->is_wycena) {
                             $color = 'xsmooth-light';
-                        } elseif ($pozycja->is_niezamontowane or ($pozycja->towar->stan->stan == 0 and ! $pozycja->is_czesc_symbol)) {
+                            $ribbon_color = 'info';
+                        } elseif (! $pozycja->is_depozyt and $pozycja->towar->stan->stan == 0 and ! $pozycja->is_czesc_symbol) {
                             $color = 'warning';
+                            $ribbon_color = 'warning';
                         }
                     @endphp
 
@@ -79,14 +82,26 @@
                                         {{ $termin->zlecenie->nr }},
                                         <span class="font-w600">{{ $termin->zlecenie->klient->nazwa }}</span>
                                     </div>
-                                    @if ($pozycja->naszykowana_czesc)
+                                    @if ($is_naszykowane)
                                         <div>
                                             Naszykował: <span class="font-w600 text-info">{{ $pozycja->naszykowana_czesc->user->name }}</span>
                                         </div>
                                     @endif
                                 </div>
-                                <div id="ribbon_{{ $pozycja->id }}" class="ribbon ribbon-{{ $color ? $color : 'danger' }}">
-                                    <div class="ribbon-box">{{ $pozycja->state_formatted }}</div>
+                                @if(! in_array($pozycja->state_formatted, ['-', '__']))
+                                    <div id="ribbon_{{ $pozycja->id }}" class="ribbon ribbon-{{ $color ? $ribbon_color : 'danger' }}">
+                                        <div class="ribbon-box">{{ $pozycja->state_formatted }}</div>
+                                        @if ($pozycja->is_zdjecie)
+                                            <div>
+                                                <img src="{{ $pozycja->zdjecie_url }}" alt="zdjęcie" class="img-fluid">
+                                            </div>
+                                        @else
+                                            <div class="py-5 text-center border">
+                                                <span class="font-w600"><i class="fa fa-camera fa-2x"></i> Brak zdjęcia</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @else
                                     @if ($pozycja->is_zdjecie)
                                         <div>
                                             <img src="{{ $pozycja->zdjecie_url }}" alt="zdjęcie" class="img-fluid">
@@ -96,7 +111,7 @@
                                             <span class="font-w600"><i class="fa fa-camera fa-2x"></i> Brak zdjęcia</span>
                                         </div>
                                     @endif
-                                </div>
+                                @endif
                                 <div id="label_{{ $pozycja->id }}" class="bg-{{ $color ? $color : 'danger' }} text-white p-1 mb-1">
                                     <div class="clearfix">
                                         <div class="float-left font-w600">

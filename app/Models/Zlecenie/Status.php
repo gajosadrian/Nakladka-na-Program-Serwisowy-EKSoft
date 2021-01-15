@@ -36,12 +36,14 @@ class Status extends Model
         self::DO_ZAMOWIENIA_ID,
         self::DO_POINFORMOWANIA_ID,
         self::INFO_O_KOSZTACH_ID,
+        self::ZALICZKA_ID,
         self::ZAMOWIONO_CZESC_ID,
         self::DZWONIC_PO_ODBIOR_ID,
         self::NIE_ODBIERA_ID,
         self::DO_ODBIORU_ID,
         self::ZAKONCZONE_ID,
         self::DO_ROZLICZENIA_ID,
+        self::WNIOSEK_O_WYMIANE_ID,
         self::ODWOLANO_ID,
     ];
 

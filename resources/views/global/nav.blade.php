@@ -46,7 +46,7 @@
             },
         ],
         [
-            'name' => 'Zlecenia dla technika',
+            'name' => 'Umawianie',
             'icon' => 'fa fa-file',
             'route' => 'zlecenia.dla-technika',
             'routeOptions' => [],
@@ -130,7 +130,7 @@
             'name' => 'Części',
         ],
         [
-            'name' => 'Szykowanie części',
+            'name' => 'Szykowanie',
             'icon' => 'fa fa-boxes',
             'route' => 'czesci.indexSzykowanie',
             'routeOptions' => [],
@@ -139,8 +139,12 @@
             },
         ],
         [
-            'name' => 'Odbiór części',
+            'name' => 'Odbiór',
             'icon' => 'fa fa-check',
+            'badge' => \Illuminate\Support\Facades\Cache::remember('niesprawdzone_czesci_count', 30*60, function () {
+                return \App\Models\Czesc\Naszykowana::getNiesprawdzoneCount();
+            }),
+            'badgeColor' => 'danger',
             'route' => 'czesci.indexOdbior',
             'routeOptions' => [],
             'if' => function() use ($user) {
@@ -203,9 +207,9 @@
                     <a class="nav-main-link {{ $routeName == $item['route'] ? 'active' : '' }}" href="{{ route($item['route'], $item['routeOptions']) ?? [] }}">
                         <i class="nav-main-link-icon {{ $item['icon'] }}"></i>
                         <span class="nav-main-link-name">{{ $item['name'] }}</span>
-                        @isset($item['badge'])
+                        @if(isset($item['badge']) and $item['badge'] > 0)
                             <span class="nav-main-link-badge badge badge-pill badge-{{ $item['badgeColor'] ?? 'success' }}">{{ $item['badge'] }}</span>
-                        @endisset
+                        @endif
                     </a>
                 </li>
             @elseif (@$item['subitems'])
@@ -219,9 +223,9 @@
                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="true" href="#">
                         <i class="nav-main-link-icon {{ $item['icon'] }}"></i>
                         <span class="nav-main-link-name">{{ $item['name'] }}</span>
-                        @isset($item['badge'])
+                        @if(isset($item['badge']) and $item['badge'] > 0)
                             <span class="nav-main-link-badge badge badge-pill badge-{{ $item['badgeColor'] ?? 'success' }}">{{ $item['badge'] }}</span>
-                        @endisset
+                        @endif
                     </a>
                     <ul class="nav-main-submenu">
                         @foreach ($item['subitems'] as $subitem)

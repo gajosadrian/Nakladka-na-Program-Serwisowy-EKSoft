@@ -3,7 +3,7 @@
     <b-table-simple small caption-top responsive>
       <b-thead>
         <b-tr>
-          <b-th class="font-w700" nowrap style="width:1%;">Symbol dost.</b-th>
+          <b-th class="font-w700" nowrap style="width:180px;">Symbol dost.</b-th>
           <b-th class="font-w700" nowrap style="width:130px;">Symbol</b-th>
           <b-th class="font-w700" nowrap style="width:1%; min-width:100px;">Nazwa</b-th>
           <b-th class="font-w700" nowrap>Opis</b-th>
@@ -27,21 +27,34 @@
           @keydown="handleKeydown"
         />
         <b-tr>
-          <b-td></b-td>
-          <b-td colspan="2">
+          <b-td colspan="3">
             <b-form @submit.prevent="submit()" inline>
+              <b-input
+                v-model="newSymbolDostawcy"
+                :state="symbolDostawcyState"
+                :list="`symbol_dostawcyList${_uid}`"
+                size="sm"
+                autocomplete="off"
+                style="width:172px;"
+              />
+              <datalist :id="`symbol_dostawcyList${_uid}`">
+                <option v-for="symbol in symbol_dostawcyList" :key="symbol">{{ symbol }}</option>
+              </datalist>
+
               <b-input
                 v-model="newSymbol"
                 :state="symbolState"
                 :list="`symbolList${_uid}`"
+                class="ml-2"
                 size="sm"
-                required
+                autocomplete="off"
                 style="width:122px;"
               />
               <datalist :id="`symbolList${_uid}`">
                 <option v-for="symbol in symbolList" :key="symbol">{{ symbol }}</option>
               </datalist>
-              <b-button type="submit" size="sm" variant="primary" class="ml-1" :disabled="! isValidSymbol()">
+
+              <b-button type="submit" size="sm" variant="primary" class="ml-1" :disabled="(! isValidSymbol() && ! isValidSymbolDostawcy())">
                 Dodaj
               </b-button>
             </b-form>
@@ -88,6 +101,8 @@ export default {
       pozycje: [],
       newSymbol: '',
       symbolList: [],
+      newSymbolDostawcy: '',
+      symbol_dostawcyList: [],
     }
   },
 
@@ -112,11 +127,23 @@ export default {
       }
       return false
     },
+
+    symbolDostawcyState() {
+      const length = this.symbol_dostawcyList.length
+      if (length === 0 || this.isValidSymbolDostawcy()) {
+        return null
+      }
+      return false
+    },
   },
 
   watch: {
     newSymbol(val) {
       this.fetchProp('symbol', val)
+    },
+
+    newSymbolDostawcy(val) {
+      this.fetchProp('symbol_dostawcy', val)
     },
   },
 
@@ -144,11 +171,12 @@ export default {
         })
     },
 
-    add(symbol) {
+    add(type, symbol) {
       return new Promise((resolve, reject) => {
         axios.post(route('kosztorys.storePozycja'), {
           _token: this._token,
           zlecenieId: this.zlecenie_id,
+          type,
           symbol,
         })
           .then(() => {
@@ -161,9 +189,19 @@ export default {
     },
 
     submit() {
-      if (! this.newSymbol) return;
+      let symbol, type
 
-      this.add(this.newSymbol)
+      if (this.isValidSymbol()) {
+        type = 'symbol'
+        symbol = this.newSymbol
+      } else if (this.isValidSymbolDostawcy()) {
+        type = 'symbol_dostawcy'
+        symbol = this.newSymbolDostawcy
+      } else {
+        return
+      }
+
+      this.add(type, symbol)
         .then(() => {
           this.fetchKosztorys()
         })
@@ -172,6 +210,7 @@ export default {
         })
 
       this.newSymbol = ''
+      this.newSymbolDostawcy = ''
     },
 
     fetchProp(prop, search, callback) {
@@ -183,7 +222,7 @@ export default {
       })
         .then(res => {
           this[`${prop}List`] = res.data
-          if (callback) callback(res.data);
+          if (callback) callback(res.data)
         })
         .catch(err => {
           console.log(err)
@@ -193,6 +232,11 @@ export default {
     isValidSymbol() {
       const symbolList = this.symbolList.map(symbol => symbol.toLowerCase())
       return symbolList.includes( this.newSymbol.toLowerCase() )
+    },
+
+    isValidSymbolDostawcy() {
+      const symbolDostawcyList = this.symbol_dostawcyList.map(symbol => symbol.toLowerCase())
+      return symbolDostawcyList.includes( this.newSymbolDostawcy.toLowerCase() )
     },
 
     handleKeydown(e, index, key, keyLeft, keyRight) {
@@ -205,11 +249,26 @@ export default {
         let vector
         if (e.keyCode == KEY_DOWN) vector = 1
         else if (e.keyCode == KEY_UP) vector = -1
+        else if (e.keyCode == KEY_LEFT) vector = -10
+        else if (e.keyCode == KEY_RIGHT) vector = 10
         else return
 
-        const item = this.$refs.kosztorys[index + vector]
-        if (item) item.focus(key)
-        e.preventDefault()
+        let item
+        if (vector == -10 && keyLeft) {
+          item = this.$refs.kosztorys[index]
+          if (item) item.focus(keyLeft)
+          e.preventDefault()
+
+        } else if (vector == 10 && keyRight) {
+          item = this.$refs.kosztorys[index]
+          if (item) item.focus(keyRight)
+          e.preventDefault()
+
+        } else if ([1, -1].includes(vector)) {
+          item = this.$refs.kosztorys[index + vector]
+          if (item) item.focus(key)
+          e.preventDefault()
+        }
       }
     },
   },

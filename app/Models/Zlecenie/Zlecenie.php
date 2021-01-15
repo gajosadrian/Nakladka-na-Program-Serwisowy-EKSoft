@@ -199,42 +199,42 @@ class Zlecenie extends Model
             'A' => (object) [
                 'nazwa' => self::GWARANCJA_NAME,
                 'icon' => 'fa fa-shield-alt',
-                'color' => false,
+                'color' => 'danger',
             ],
             'B' => (object) [
                 'nazwa' => self::ODPLATNE_NAME,
                 'icon' => 'fa fa-dollar-sign',
-                'color' => false,
+                'color' => 'muted',
             ],
             'H' => (object) [
                 'nazwa' => self::UBEZPIECZENIE_NAME,
                 'icon' => 'fa fa-hands-helping',
-                'color' => false,
+                'color' => 'info',
             ],
             'G' => (object) [
                 'nazwa' => 'NKS',
                 'icon' => 'fa fa-sync-alt',
-                'color' => false,
+                'color' => 'warning',
             ],
             'D' => (object) [
                 'nazwa' => self::SPRZEDAZ_CZESCI_NAME,
                 'icon' => 'fa fa-shopping-cart',
-                'color' => false,
+                'color' => 'muted',
             ],
             'E' => (object) [
                 'nazwa' => self::MONTAZ_URZADZENIA_NAME,
                 'icon' => 'fa fa-dollar-sign',
-                'color' => false,
+                'color' => 'muted',
             ],
             'F' => (object) [
                 'nazwa' => self::SPRZEDAZ_URZADZENIA_NAME,
                 'icon' => 'fa fa-dollar-sign',
-                'color' => false,
+                'color' => 'muted',
             ],
             '_default' => (object) [
                 'nazwa' => 'Inne',
                 'icon' => 'far fa-bookmark',
-                'color' => false,
+                'color' => 'muted',
             ],
         ];
         $znacznik = $array[$this->attributes['Z']] ?? $array['_default'];
@@ -623,6 +623,14 @@ class Zlecenie extends Model
         return $this->opisToHtml($this->opis_technik);
     }
 
+    public function getOpisLastAttribute(): string
+    {
+        $n = 1;
+        $lines = explode("\n", $this->opis);
+        $lines = array_slice($lines, -$n);
+        return implode("\n", $lines);
+    }
+
     public function setOpisAttribute(string $value): void
     {
         $this->attributes['OpisZlec'] = $value;
@@ -993,6 +1001,14 @@ HTML;
     * Methods
     *
     */
+
+    public function fixOpis()
+    {
+        $this->opis = strtr(ucfirst(trim($this->opis)), [
+            ' ,' => ',',
+            ' .' => '.',
+        ]);
+    }
 
     public function opisToHtml(string $opis)
     {

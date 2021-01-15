@@ -175,8 +175,8 @@ class CzesciController extends Controller
             $naszykowane_czesci = Naszykowana::with('kosztorys_pozycje', 'zlecenie.klient', 'zlecenie.urzadzenie', 'towar', 'user')
                 ->where('technik_id', $technik->id)
                 ->where(function ($query) {
-                    $query->where('ilosc_do_zwrotu', '>', 0)
-                          ->orWhereNull('sprawdzone_at');
+                    $query->where('ilosc_do_zwrotu', '>', 0);
+                    $query->orWhereNull('sprawdzone_at');
                 })
                 ->orderBy('zlecenie_data')->get();
         }
@@ -201,10 +201,15 @@ class CzesciController extends Controller
         switch ($prop) {
             case 'symbol':
                 $prop_name = 'tw_Symbol';
+                $search = "{$request->search}%";
+                break;
+            case 'symbol_dostawcy':
+                $prop_name = 'tw_DostSymbol';
+                $search = "%{$request->search}%";
                 break;
         }
 
-        $props = Subiekt_Towar::where($prop_name, 'like', "{$request->search}%")->orderBy($prop_name)->select($prop_name)
+        $props = Subiekt_Towar::where($prop_name, 'like', $search)->orderBy($prop_name)->select($prop_name)
             ->distinct()->limit(10)->get()
             ->pluck($prop)->all();
 

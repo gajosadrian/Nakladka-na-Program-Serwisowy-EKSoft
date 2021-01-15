@@ -98,13 +98,13 @@ class Naszykowana extends Model
         $naszykowane = static::with(['towar', 'zlecenie'])
             ->whereDate('zlecenie_data', '<', today())
             ->where(function ($query) {
-                $query->whereNull('sprawdzone_at');
-                $query->orWhere('ilosc_do_zwrotu', '>', 0);
+                $query->where('ilosc_do_zwrotu', '>', 0);
+                $query->orWhereNull('sprawdzone_at');
             })
             ->get();
 
         $naszykowane = $naszykowane->filter(function ($naszykowana) {
-            return $naszykowana->towar and ($naszykowana->zlecenie->is_gwarancja or $naszykowana->ilosc_do_zwrotu > 0);
+            return $naszykowana->towar and (! $naszykowana->zlecenie->is_odplatne or $naszykowana->ilosc_do_zwrotu > 0);
         });
 
         return $naszykowane->count();

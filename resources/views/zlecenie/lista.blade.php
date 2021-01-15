@@ -74,7 +74,7 @@
                     </div>
                     <div class="col-lg-8">
                         Ilość błędów:
-                        @if ($errors_n > 5)
+                        @if ($errors_n > 10)
                             <span class="font-w600 bg-danger text-white px-1">{{ $errors_n }}</span>
                         @else
                             <span class="font-w600 text-danger">{{ $errors_n }}</span>

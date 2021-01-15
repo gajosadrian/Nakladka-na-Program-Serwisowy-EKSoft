@@ -16,6 +16,7 @@ use App\Models\Subiekt\Subiekt_Towar;
 use App\Models\Subiekt\Subiekt_Kontrahent as Klient;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class ZlecenieController extends Controller
 {
@@ -73,7 +74,9 @@ class ZlecenieController extends Controller
             return $acc;
         }, 0);
 
-        // $niesprawdzone_czesci_n = Naszykowana::getNiesprawdzoneCount();
+        // $niesprawdzone_czesci_n = Cache::remember('niesprawdzone_czesci_count', 15*60, function () {
+        //     return Naszykowana::getNiesprawdzoneCount();
+        // });
 
         return view('zlecenie.lista', [
             'zlecenia' => $zlecenia_niezakonczone,
@@ -98,23 +101,51 @@ class ZlecenieController extends Controller
             'customerCity' => $savedSearch['customerCity'] ?: '',
             'customerAddress' => $savedSearch['customerAddress'] ?: '',
             'deviceBrand' => $savedSearch['deviceBrand'] ?: '',
+            'deviceType' => $savedSearch['deviceBrand'] ?: '',
             'deviceSerial' => $savedSearch['deviceSerial'] ?: '',
+            'partSymbol' => $savedSearch['partSymbol'] ?: '',
+            'serviceNo' => $savedSearch['serviceNo'] ?: '',
             'serviceOpen' => $savedSearch['serviceOpen'] ?: 1,
             'serviceStatuses' => $savedSearch['serviceStatuses'] ?: [],
-            'serviceTechnician' => $savedSearch['serviceTechnician'] ?: 0,
+            'serviceTechnician' => $savedSearch['serviceTechnician'] ?: null,
             'serviceBuyer' => $savedSearch['serviceBuyer'] ?: '',
         ];
 
         $savedWidths = $user->getSavedField('zlecenia2.columnWidths');
         $columnWidths = [
+            'lp' => $savedWidths['lp'] ?: 0,
+            'customer' => $savedWidths['customer'] ?: 0,
+            'address' => $savedWidths['address'] ?: 0,
+            'service' => $savedWidths['service'] ?: 0,
+            'device' => $savedWidths['device'] ?: 0,
+            'status' => $savedWidths['status'] ?: 0,
+            'dateRegister' => $savedWidths['dateRegister'] ?: 0,
+            'dateCalendar' => $savedWidths['dateCalendar'] ?: 0,
         ];
 
-        return view('zlecenie.lista2', compact('search', 'columnWidths'));
+        $technicy = Technik::getLast()->values()->map(function ($status) {
+            return [
+                'id' => $status->id,
+                'imie' => $status->imie,
+                'nazwisko' => $status->nazwisko,
+                'nazwa' => $status->nazwa,
+            ];
+        });
+        $statusy = Status::getAktywne()->values()->map(function ($status) {
+            return [
+                'id' => $status->id,
+                'nazwa' => $status->nazwa,
+                'icon' => $status->icon,
+                'color' => $status->color,
+            ];
+        });
+
+        return view('zlecenie.lista2', compact('search', 'columnWidths', 'technicy', 'statusy'));
     }
 
     public function apiGetList()
     {
-        $zlecenia = Zlecenie::with('klient')->whereNull('Anulowany')->orderByDesc('id_zlecenia')->limit(10)->get();
+        $zlecenia = Zlecenie::with('klient', 'urzadzenie', 'status')->whereNull('Anulowany')->orderByDesc('id_zlecenia')->niezakonczone()->get();
 
         return response()->json([
             'zlecenia' => $zlecenia->transform(function ($zlecenie) {
@@ -124,8 +155,17 @@ class ZlecenieController extends Controller
                     'nr_obcy' => $zlecenie->nr_obcy,
                     'nr_or_obcy' => $zlecenie->nr_or_obcy,
                     'opis' => $zlecenie->opis,
+                    'opis_last' => $zlecenie->opis_last,
+                    'znacznik' => $zlecenie->znacznik,
+                    'znacznik_formatted' => $zlecenie->znacznik_formatted,
+                    'data_przyjecia_formatted' => $zlecenie->data_przyjecia->format('Y-m-d'),
+                    'data_zakonczenia_formatted' => $zlecenie->data_zakonczenia_formatted,
+                    'dni_od_przyjecia' => $zlecenie->dni_od_przyjecia,
+                    'is_termin' => $zlecenie->is_termin,
                     'url' => route('zlecenia.pokaz', $zlecenie->id),
-                    'klient' => $zlecenie->klient ? $zlecenie->klient->only('id', 'symbol', 'nazwa') : null,
+                    'klient' => $zlecenie->klient ? $zlecenie->klient->only('id', 'symbol', 'nazwa', 'adres', 'kod_pocztowy', 'miasto', 'miasto_short') : null,
+                    'urzadzenie' => (@$zlecenie->urzadzenie->id) ? $zlecenie->urzadzenie->only('id', 'producent', 'nazwa', 'model', 'kod_wyrobu', 'nr_seryjny', 'nr_seryjny_raw') : null,
+                    'status' => (@$zlecenie->status->id) ? $zlecenie->status->only('id', 'color', 'icon', 'nazwa') : null,
                 ];
             }),
         ]);
@@ -482,6 +522,7 @@ class ZlecenieController extends Controller
         $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->appendOpis($request->opis, $user->short_name, ($user->technik_id == 0));
+        $zlecenie->fixOpis();
         $zlecenie->save();
 
         return response()->json($zlecenie->opis, 200);
@@ -492,6 +533,7 @@ class ZlecenieController extends Controller
         $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->opis = $request->opis;
+        $zlecenie->fixOpis();
         $zlecenie->save();
 
         return response()->json($zlecenie->opis, 200);
@@ -564,7 +606,9 @@ class ZlecenieController extends Controller
         $zlecenie = Zlecenie::findOrFail($id);
 
         $zlecenie->changeStatus(Status::UMOWIONO_ID, $user->pracownik->id, false);
+        $zlecenie->fixOpis();
         $zlecenie->save();
+
         if (! $request->dzwonic_wczesniej) {
             $zlecenie->terminarz->status_id = Terminarz::UMOWIONO_ID;
         } else {

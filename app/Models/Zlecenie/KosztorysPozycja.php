@@ -21,7 +21,8 @@ class KosztorysPozycja extends Model
         ODLOZONE_KEYS = ['odlozon'],
         ROZPISANE_KEYS = ['rozpisan'],
         ZAMOWIONE_KEYS = ['zamowion', 'zamowien'],
-        WYCENA_KEYS = ['wycena'],
+        WYCENA_KEYS = ['wycena', 'wycenion'],
+        DEPOZYT_KEYS = ['depozyt'],
         EKSPERTYZA_KEYS = ['ekspertyza'];
 
     /**
@@ -260,6 +261,11 @@ class KosztorysPozycja extends Model
         return $this->hasKey(self::WYCENA_KEYS);
     }
 
+    public function getIsDepozytAttribute(): bool
+    {
+        return $this->hasKey(self::DEPOZYT_KEYS);
+    }
+
     public function getIsEkspertyzaAttribute(): bool
     {
         return $this->hasKey(self::EKSPERTYZA_KEYS);
@@ -277,6 +283,10 @@ class KosztorysPozycja extends Model
             return 'Zamówione';
         } elseif ($this->is_niezamontowane) {
             return 'Niezamontowane';
+        } elseif ($this->is_wycena) {
+            return 'Wycena';
+        } elseif ($this->is_depozyt) {
+            return 'Depozyt';
         } elseif (!$this->is_czesc_symbol and $this->opis) {
             return $this->opis;
         }

@@ -43,7 +43,12 @@ class KosztorysController extends Controller
     public function storePozycja(Request $request)
     {
         $zlecenie = Zlecenie::findOrFail($request->zlecenieId);
-        $towar = Towar::where('tw_Symbol', $request->symbol)->firstOrFail();
+
+        if ($request->type == 'symbol') {
+            $towar = Towar::where('tw_Symbol', $request->symbol)->firstOrFail();
+        } elseif ($request->type == 'symbol_dostawcy') {
+            $towar = Towar::where('tw_DostSymbol', $request->symbol)->firstOrFail();
+        }
 
         $zlecenie->kosztorys_pozycje()->create([
             'zlecenie_id' => $zlecenie->id,

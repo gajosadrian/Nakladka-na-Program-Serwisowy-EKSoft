@@ -1,15 +1,35 @@
 <template>
   <b-tr>
-    <b-td nowrap>{{ pozycja.symbol_dostawcy }}</b-td>
+    <!-- <b-td nowrap>{{ pozycja.symbol_dostawcy }}</b-td> -->
+    <b-td nowrap>
+      <b-input
+        v-model="pozycja.symbol_dostawcy"
+        size="sm"
+        :list="`symbolDostawcyList${_uid}`"
+        autocomplete="off"
+        :state="symbolDostawcyState"
+        :readonly="Boolean(pozycja.id) || ! isEditable"
+        required
+        ref="kosztorys_symbol_dostawcy"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_symbol_dostawcy', null, 'kosztorys_symbol')"
+        @focus="$event.target.select()"
+      />
+      <datalist :id="`symbolList${_uid}`">
+        <option v-for="symbol in symbolList" :key="symbol">{{ symbol }}</option>
+      </datalist>
+    </b-td>
     <b-td nowrap>
       <b-input
         v-model="pozycja.symbol"
         size="sm"
         :list="`symbolList${_uid}`"
+        autocomplete="off"
         :state="symbolState"
-        @focus="$event.target.select()"
-        :disabled="Boolean(pozycja.id) || ! isEditable"
+        :readonly="Boolean(pozycja.id) || ! isEditable"
         required
+        ref="kosztorys_symbol"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_symbol', 'kosztorys_symbol_dostawcy')"
+        @focus="$event.target.select()"
       />
       <datalist :id="`symbolList${_uid}`">
         <option v-for="symbol in symbolList" :key="symbol">{{ symbol }}</option>
@@ -32,6 +52,7 @@
         v-model="cenaFixed"
         type="number"
         size="sm"
+        autocomplete="off"
         ref="kosztorys_cena"
         @keydown="$emit('keydown', $event, index, 'kosztorys_cena')"
         @keyup="updateCenaBrutto()"
@@ -45,6 +66,7 @@
         v-model="pozycja.vat_procent"
         type="number"
         size="sm"
+        autocomplete="off"
         ref="kosztorys_vat"
         @keydown="$emit('keydown', $event, index, 'kosztorys_vat')"
         @keyup="updateCenaBrutto()"
@@ -58,6 +80,7 @@
         v-model="cenaBruttoFixed"
         type="number"
         size="sm"
+        autocomplete="off"
         ref="kosztorys_cena_brutto"
         @keydown="$emit('keydown', $event, index, 'kosztorys_cena_brutto')"
         @keyup="updateCena()"
@@ -71,6 +94,7 @@
         v-model="pozycja.ilosc"
         type="number"
         size="sm"
+        autocomplete="off"
         ref="kosztorys_ilosc"
         @keydown="$emit('keydown', $event, index, 'kosztorys_ilosc')"
         @keyup="updateCena()"
@@ -111,6 +135,7 @@ export default {
   data() {
     return {
       symbolList: [null],
+      symbolDostawcyList: [null],
     }
   },
 
@@ -149,6 +174,10 @@ export default {
 
     symbolState() {
       return this.symbolList.length === 1 ? null : false
+    },
+
+    symbolDostawcyState() {
+      return null
     },
 
     cenaFixed: {
