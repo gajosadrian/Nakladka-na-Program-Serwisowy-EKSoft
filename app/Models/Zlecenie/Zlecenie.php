@@ -1096,7 +1096,7 @@ HTML;
             $pozycja_symbol = $symbole_pocyzji[$symbol];
             $pozycja_imie = $pozycja_symbol[0];
 
-            $str .= '<span class="mr-2"><span class="font-w700">' . $pozycja_imie . '</span>: ' . round($kwota, 2) . ' zł</span> ';
+            $str .= '<span class="mr-2"><span class="font-w700">' . $pozycja_imie . '</span>: .' . round($kwota, 2) . 'zł</span> ';
         }
 
         return $str;

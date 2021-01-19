@@ -122,6 +122,7 @@
                                 <thead>
                                     <th class="font-w700" style="width:1%">Lp.</th>
                                     <th class="font-w700" nowrap>Nr zlecenia</th>
+                                    <th class="font-w700">Miejscowość</th>
                                     <th class="font-w700">Zleceniodawca</th>
                                     <th class="font-w700">Robocizny</th>
                                     <th class="font-w700">Dojazdy</th>
@@ -137,9 +138,13 @@
                                         <tr id="{{ $rozliczone_zlecenie->id }}">
                                             <th>{{ ++$counter }}</th>
                                             {!! $rozliczone_zlecenie->zlecenie->tableCellNrHTML !!}
-                                            <td>{{ $rozliczone_zlecenie->zleceniodawca }}</td>
+                                            <td nowrap>
+                                                {{ $rozliczone_zlecenie->zlecenie->klient->kod_pocztowy }}
+                                                {{ $rozliczone_zlecenie->zlecenie->klient->miasto_short }}
+                                            </td>
+                                            <td nowrap>{{ $rozliczone_zlecenie->zleceniodawca }}</td>
                                             <td>{!! $rozliczone_zlecenie->robocizny_html !!}</td>
-                                            <td nowrap>{!! $rozliczone_zlecenie->dojazdy_html !!}</td>
+                                            <td>{!! $rozliczone_zlecenie->dojazdy_html !!}</td>
                                             <td nowrap>{{ $rozliczone_zlecenie->zlecenie->technik->nazwa }}</td>
                                             <td nowrap>{{ $rozliczone_zlecenie->zlecenie->data_zakonczenia->toDateString() }}</td>
                                             <td nowrap>
