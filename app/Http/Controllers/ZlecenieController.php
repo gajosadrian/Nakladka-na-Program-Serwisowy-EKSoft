@@ -95,6 +95,32 @@ class ZlecenieController extends Controller
     {
         $user = auth()->user();
 
+        $technicy = Technik::getLast()->values()->map(function ($status) {
+            return [
+                'id' => $status->id,
+                'imie' => $status->imie,
+                'nazwisko' => $status->nazwisko,
+                'nazwa' => $status->nazwa,
+            ];
+        });
+        $statusy = Status::getAktywne()->values()->map(function ($status) {
+            return [
+                'id' => $status->id,
+                'nazwa' => $status->nazwa,
+                'icon' => $status->icon,
+                'color' => $status->color,
+            ];
+        });
+        $serviceScopes = [
+            ['id' => 1, 'name' => 'Otwarte'],
+            ['id' => 2, 'name' => 'Zamknięte'],
+            ['id' => 3, 'name' => 'Wszystkie'],
+            ['id' => 4, 'name' => 'Ten miesiąc'],
+            ['id' => 5, 'name' => 'Poprzedni miesiąc'],
+            ['id' => 6, 'name' => '3 miesiące'],
+            ['id' => 7, 'name' => 'Ten rok'],
+        ];
+
         $savedSearch = $user->getSavedField('zlecenia2.search');
         $search = [
             'customerName' => $savedSearch['customerName'] ?: '',
@@ -105,7 +131,7 @@ class ZlecenieController extends Controller
             'deviceSerial' => $savedSearch['deviceSerial'] ?: '',
             'partSymbol' => $savedSearch['partSymbol'] ?: '',
             'serviceNo' => $savedSearch['serviceNo'] ?: '',
-            'serviceOpen' => $savedSearch['serviceOpen'] ?: 1,
+            'serviceScope' => $savedSearch['serviceScope'] ?: null,
             'serviceStatuses' => $savedSearch['serviceStatuses'] ?: [],
             'serviceTechnician' => $savedSearch['serviceTechnician'] ?: null,
             'serviceBuyer' => $savedSearch['serviceBuyer'] ?: '',
@@ -123,24 +149,7 @@ class ZlecenieController extends Controller
             'dateCalendar' => $savedWidths['dateCalendar'] ?: 0,
         ];
 
-        $technicy = Technik::getLast()->values()->map(function ($status) {
-            return [
-                'id' => $status->id,
-                'imie' => $status->imie,
-                'nazwisko' => $status->nazwisko,
-                'nazwa' => $status->nazwa,
-            ];
-        });
-        $statusy = Status::getAktywne()->values()->map(function ($status) {
-            return [
-                'id' => $status->id,
-                'nazwa' => $status->nazwa,
-                'icon' => $status->icon,
-                'color' => $status->color,
-            ];
-        });
-
-        return view('zlecenie.lista2', compact('search', 'columnWidths', 'technicy', 'statusy'));
+        return view('zlecenie.lista2', compact('search', 'columnWidths', 'technicy', 'statusy', 'serviceScopes'));
     }
 
     public function apiGetList()

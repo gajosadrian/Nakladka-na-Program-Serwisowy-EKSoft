@@ -160,6 +160,12 @@
                 return $user and !$user->technik_id;
             },
         ],
+        [
+            'name' => 'Bez zdjęć',
+            'icon' => 'fa fa-image',
+            'route' => 'czesci.bezZdjec',
+            'routeOptions' => [],
+        ],
         // [
         //     'name' => 'Dodawanie części',
         //     'icon' => 'si si-plus',

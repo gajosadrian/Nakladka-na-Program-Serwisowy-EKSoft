@@ -202,7 +202,7 @@
                         <option v-for="n in (pozycja.naszykowana_czesc && pozycja.naszykowana_czesc.ilosc || pozycja.ilosc)" :key="n" :value="'zamontowane#' + n">Zamontowane - {{ n }} szt.</option>
                         <option v-for="n in (pozycja.naszykowana_czesc && pozycja.naszykowana_czesc.ilosc || pozycja.ilosc)" :key="n" :value="'rozpisane#' + n">Rozpisane - {{ n }} szt.</option>
                         <option value="przelozyc">Na inny termin</option>
-                        <option value="niezamontowane">Do usunięcia</option>
+                        <option value="niezamontowane">Niepotrzebne</option>
                       </select>
                     </div>
                   </div>

@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('czesci')->name('czesci.')->group(function () {
+        Route::get('bez-zdjec', 'CzesciController@bezZdjec')->name('bezZdjec');
         Route::get('szykowanie/{technik_id?}/{date_string?}', 'CzesciController@indexSzykowanie')->name('indexSzykowanie');
         Route::patch('naszykuj/{kosztorys_pozycja}', 'CzesciController@updateNaszykuj')->name('updateNaszykuj');
         Route::patch('zamontuj/{kosztorys_pozycja}', 'CzesciController@updateZamontuj')->name('updateZamontuj');

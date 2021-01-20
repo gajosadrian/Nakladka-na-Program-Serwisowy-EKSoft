@@ -93,6 +93,16 @@ class Subiekt_Towar extends Model
         return route('zdjecie_towaru', ['id' => $this->id]);
     }
 
+    public function getIsTowarAttribute(): bool
+    {
+        return $this->rodzaj == 1;
+    }
+
+    public function getIsUslugaAttribute(): bool
+    {
+        return $this->rodzaj == 2;
+    }
+
     /**
      * Relations
      *

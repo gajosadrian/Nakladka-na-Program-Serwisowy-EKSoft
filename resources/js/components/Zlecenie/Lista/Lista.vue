@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-row class="gutters-tiny row-deck" style="margin-top: 10px; margin-bottom: 10px;">
-      <b-col cols="1">
+      <b-col cols="2">
         <SearchBlock title="Klient">
           <b-input v-model="search.customerName" type="text" size="sm" />
         </SearchBlock>
@@ -11,12 +11,12 @@
           <b-input v-model="search.customerAddress" type="text" size="sm" />
         </SearchBlock>
       </b-col>
-      <b-col cols="1">
+      <b-col cols="2">
         <SearchBlock title="Miejscowość">
           <b-input v-model="search.customerCity" type="text" size="sm" />
         </SearchBlock>
       </b-col>
-      <b-col cols="2">
+      <b-col cols="1">
         <SearchBlock title="Nr zlecenia">
           <b-input v-model="search.serviceNo" type="text" size="sm" />
         </SearchBlock>
@@ -31,7 +31,7 @@
           <b-input v-model="search.deviceBrand" type="text" size="sm" />
         </SearchBlock>
       </b-col>
-      <b-col cols="2">
+      <b-col cols="1">
         <SearchBlock title="Nr Seryjny">
           <b-input v-model="search.deviceSerial" type="text" size="sm" />
         </SearchBlock>
@@ -69,10 +69,14 @@
         </SearchBlock>
       </b-col>
       <b-col cols="2">
-        <SearchBlock>
-          <b-form-radio v-model="search.serviceOpen" value="1">Otwarte</b-form-radio>
-          <!-- <b-form-radio v-model="search.serviceOpen" value="2">Zamknięte</b-form-radio> -->
-          <b-form-radio v-model="search.serviceOpen" value="3">Wszystkie</b-form-radio>
+        <SearchBlock title="Okres zleceń">
+          <ComboBox
+            v-model="search.serviceScope"
+            :data-items="serviceScopes"
+            text-field="name"
+            data-item-key="id"
+            :placeholder="serviceScopes[0].name"
+          />
         </SearchBlock>
       </b-col>
       <b-col cols="4">
@@ -89,6 +93,7 @@
 </template>
 
 <script>
+import { debounce } from 'debounce'
 import { MultiSelect, DropDownList, ComboBox } from '@progress/kendo-vue-dropdowns'
 import SearchBlock from './SearchBlock'
 import Table from './Table'
@@ -103,6 +108,7 @@ export default {
   props: {
     statusy: Array,
     technicy: Array,
+    serviceScopes: Array,
     _token: String,
     _search: Object,
     _columnWidths: Object,
@@ -134,6 +140,7 @@ export default {
 
   created() {
     this.fetchData()
+    this.fetchData = debounce(this.fetchData, 1000)
   },
 }
 </script>

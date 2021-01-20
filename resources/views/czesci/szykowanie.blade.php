@@ -54,7 +54,7 @@
         <b-row>
             @foreach ($terminy as $termin)
                 @foreach ($termin->zlecenie->kosztorys_pozycje as $pozycja)
-                    @continue( ! $pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane )
+                    @continue( ! $pozycja->is_towar or $pozycja->is_zamontowane or $pozycja->is_rozpisane or $pozycja->is_niezamontowane )
 
                     @php
                         $is_niezamontowane_gotowe = (bool) ($pozycja->is_niezamontowane and $pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->sprawdzone_at and $pozycja->naszykowana_czesc->sprawdzone_at->gte($pozycja->naszykowana_czesc->zlecenie_data));

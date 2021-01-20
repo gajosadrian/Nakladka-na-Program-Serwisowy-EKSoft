@@ -103,7 +103,7 @@ class CzesciController extends Controller
         // }
 
         if ( ! $pozycja->naszykowana_czesc and $request->type == 'niezamontowane') {
-            $pozycja->opis = '(-' . $pozycja->ilosc . ') niezałożone';
+            $pozycja->opis = '(-' . $pozycja->ilosc . ') niepotrzebne';
             $pozycja->ilosc = 0;
             $pozycja->save();
             return response()->json('saved', 200);
@@ -128,7 +128,7 @@ class CzesciController extends Controller
                 $naszykowana_czesc->ilosc_zamontowane = 0;
                 $naszykowana_czesc->ilosc_rozpisane = 0;
                 $naszykowana_czesc->ilosc_do_zwrotu = $naszykowana_czesc->ilosc;
-                $pozycja->opis = '(-' . $naszykowana_czesc->ilosc . ') niezałożone';
+                $pozycja->opis = '(-' . $naszykowana_czesc->ilosc . ') niepotrzebne';
                 $pozycja->ilosc = 0;
                 break;
 
@@ -214,5 +214,14 @@ class CzesciController extends Controller
             ->pluck($prop)->all();
 
         return response()->json($props);
+    }
+
+    public function bezZdjec()
+    {
+        $towary = Subiekt_Towar::where('tw_Rodzaj', 1)->without('zdjecia')->whereDoesntHave('zdjecia')->whereHas('stan', function ($query) {
+            $query->where('st_Stan', '>', 0);
+        })->orderBy('tw_PKWiU')->get();
+
+        return view('czesci.bez-zdjec', compact('towary'));
     }
 }

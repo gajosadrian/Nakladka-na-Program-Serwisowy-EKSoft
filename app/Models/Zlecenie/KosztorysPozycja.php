@@ -16,7 +16,7 @@ class KosztorysPozycja extends Model
 
     private const
         ZAMONTOWANE_KEYS = ['zamontowan', 'zalozon'],
-        NIEZAMONTOWANE_KEYS = ['niezamontowan', 'niezalozon'],
+        NIEZAMONTOWANE_KEYS = ['niezamontowan', 'niezalozon', 'niepotrzeb'],
         PRZELOZYC_KEYS = ['__'],
         ODLOZONE_KEYS = ['odlozon'],
         ROZPISANE_KEYS = ['rozpisan'],
@@ -282,7 +282,7 @@ class KosztorysPozycja extends Model
         } elseif ($this->is_zamowione) {
             return 'Zamówione';
         } elseif ($this->is_niezamontowane) {
-            return 'Niezamontowane';
+            return 'Niepotrzebne';
         } elseif ($this->is_wycena) {
             return 'Wycena';
         } elseif ($this->is_depozyt) {
