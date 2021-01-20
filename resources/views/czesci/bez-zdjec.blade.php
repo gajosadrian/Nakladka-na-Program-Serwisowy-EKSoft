@@ -37,15 +37,17 @@
                     <table class="table table-sm table-striped font-size-sm">
                         <thead>
                             <tr class="text-uppercase">
+                                <th class="font-w700" style="width: 50px;">Lp.</th>
                                 <th class="font-w700" style="width: 100px;">Symbol</th>
                                 <th class="font-w700" style="width: 100px;">Półka</th>
                                 <th class="font-w700">Nazwa</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($towary as $towar)
+                            @foreach ($towary as $key => $towar)
                                 <tr>
-                                    <td nowrap>{{ $towar->symbol }}</td>
+                                    <td>{{ $key+1 }}.</td>
+                                    <th nowrap>{{ $towar->symbol }}</th>
                                     <td nowrap>{{ $towar->polka }}</td>
                                     <td nowrap>{{ $towar->nazwa }}</td>
                                 </tr>
