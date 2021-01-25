@@ -110,8 +110,10 @@
                                     <div class="font-w700 p-1
                                         @if ($zlecenie->is_zamowiono)
                                             bg-xsmooth-lighter
-                                        @elseif ($zlecenie->is_zakonczone or ! in_array($zlecenie->status_id, [11, 12, 14, 41]))
+                                        @elseif ($zlecenie->is_zakonczone or ! in_array($zlecenie->status_id, [11, 12, 14, 41, 16]))
                                             bg-info-light
+                                        @elseif ($zlecenie->status_id == 16)
+                                            bg-warning-light
                                         @elseif ($is_soft_zakonczone)
                                             bg-success-light
                                         @else
@@ -129,7 +131,7 @@
                                                 <b-col cols="4" class="text-right">
                                                     @if ($zlecenie->is_warsztat)
                                                         <span class="bg-dark text-white px-1">WARSZTAT</span>
-                                                    @elseif ($zlecenie->is_na_warsztacie)
+                                                    @elseif ($zlecenie->is_do_odwiezienia)
                                                         <span class="bg-dark text-white px-1">ODWIEŹĆ</span>
                                                     @endif
                                                     {{ $terminarz->godzina_rozpoczecia }} - {{ $terminarz->przeznaczony_czas_formatted }}

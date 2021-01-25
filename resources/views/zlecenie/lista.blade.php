@@ -95,6 +95,7 @@
                                     <th class="font-w700"></th>
                                 @endif
 								<th class="font-w700">Nr zlecenia</th>
+                                <th class="font-w700"></th>
 								<th class="font-w700">Urządzenie</th>
 								<th class="font-w700">Status</th>
                                 {{-- <th class="font-w700">Ostatnia data</th> --}}
@@ -109,7 +110,7 @@
 								{{-- <tr class="{{ ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat) ? 'table-success' : '' }}"> --}}
                                 <tr class="
                                     @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
-                                        table-success
+                                        {{-- table-success --}}
                                     @elseif (! $user->is_technik and @$zlecenie->last_sms->type == 'error')
                                         table-danger
                                     @endif
@@ -117,7 +118,7 @@
 									<th class="text-muted">{{ ++$counter }}</th>
 									<td nowrap>
                                         @if ($zlecenie->is_akc_kosztow and $zlecenie->is_warsztat)
-                                            <i class="fa fa-check-circle text-success"></i>
+                                            {{-- <i class="fa fa-check-circle text-success"></i> --}}
                                         @elseif (! $user->is_technik and @$zlecenie->last_sms->type == 'error')
                                         <i class="fa fa-envelope text-danger"></i>
                                         @endif
@@ -153,7 +154,17 @@
     									</td>
                                     @endif
 
-									{!! $zlecenie->tableCellNrHTML !!}
+                                    {!! $zlecenie->tableCellNrHTML !!}
+
+                                    <td class="text-center">
+                                        @if ($zlecenie->is_na_warsztacie)
+                                            <i
+                                                class="fa fa-home text-warning"
+                                                data-toggle="tooltip" data-placement="left"
+                                                title="Na warsztacie"
+                                            ></i>
+                                        @endif
+                                    </td>
 
 									<td nowrap>
 										{{ $zlecenie->urzadzenie->nazwa }}<br>

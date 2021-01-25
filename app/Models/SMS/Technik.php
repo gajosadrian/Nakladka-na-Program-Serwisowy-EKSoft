@@ -22,7 +22,7 @@ class Technik extends Model
     * Attributes
     *
     */
-    public function getIdAttribute(): int
+    public function getIdAttribute(): ?int
     {
         return $this->attributes['id_technika'];
     }
@@ -52,7 +52,7 @@ class Technik extends Model
         $words = explode(' ', $this->nazwa);
         $acronym = '';
         foreach ($words as $w) {
-            $acronym .= $w[0];
+            $acronym .= $w;
         }
         return $acronym;
     }

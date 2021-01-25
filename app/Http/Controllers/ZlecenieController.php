@@ -682,6 +682,7 @@ class ZlecenieController extends Controller
                     'checkable_umowiono' => $termin->data_rozpoczecia->gte(now()->startOfDay()) and !$is_soft_zakonczone,
                     'is_do_wyjasnienia' => $termin->zlecenie->_do_wyjasnienia ?? false,
                     'is_warsztat' => $termin->zlecenie->is_warsztat,
+                    'is_do_odwiezienia' => $termin->zlecenie->is_do_odwiezienia,
                     'is_umowiono' => $termin->is_umowiono and $termin->zlecenie->is_umowiono,
                     'is_dzwonic' => $termin->zlecenie->is_dzwonic,
                     'is_zakonczone' => $termin->zlecenie->is_zakonczone,

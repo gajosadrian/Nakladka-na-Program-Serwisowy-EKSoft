@@ -459,16 +459,45 @@ class Zlecenie extends Model
         return false;
     }
 
-    public function getIsNaWarsztacieAttribute()
+    public function getIsNaWarsztacieAttribute(): bool
     {
-        foreach ($this->statusy as $status) {
-            if ($status->status_id == Status::NA_WARSZTACIE_ID) {
-                return true;
-            } elseif ($status->status_id == Status::PREAUTORYZACJA_ID) {
-                return false;
-            }
+        // foreach ($this->statusy as $status) {
+        //     if ($status->status_id == Status::NA_WARSZTACIE_ID) {
+        //         return true;
+        //     } elseif ($status->status_id == Status::PREAUTORYZACJA_ID) {
+        //         return false;
+        //     }
+        // }
+        // return false;
+        return $this->gdzie_urzadzenie == 'serwis';
+    }
+
+    public function getIsDoOdwiezieniaAttribute(): bool
+    {
+        if ($this->gdzie_urzadzenie == 'serwis' and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::UMOWIONO_ID])) {
+            return true;
         }
         return false;
+    }
+
+    public function getGdzieUrzadzenieAttribute(): string
+    {
+        $gdzie = 'klient';
+        $zrobione = false;
+        foreach ($this->statusy_asc as $status) {
+            $status_id = $status->status_id;
+            if ($status_id == Status::NA_WARSZTACIE_ID) {
+                $gdzie = 'serwis';
+                $zrobione = false;
+            } elseif ($status_id == Status::PREAUTORYZACJA_ID and $gdzie == 'serwis' and $zrobione) {
+                $gdzie = 'klient';
+                $zrobione = false;
+            } elseif ($status_id == Status::GOTOWE_DO_WYJAZDU_ID and $gdzie == 'serwis' and ! $zrobione) {
+                $gdzie = 'serwis';
+                $zrobione = true;
+            }
+        }
+        return $gdzie;
     }
 
     public function getIsGotoweAttribute(): bool
@@ -846,6 +875,11 @@ HTML;
     public function getStatusyAttribute()
     {
         return $this->status_historia->sortByDesc('data');
+    }
+
+    public function getStatusyAscAttribute()
+    {
+        return $this->status_historia->sortBy('data');
     }
 
     public function getZdjeciaAttribute()

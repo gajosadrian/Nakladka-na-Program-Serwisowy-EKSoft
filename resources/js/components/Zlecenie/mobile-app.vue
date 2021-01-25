@@ -63,6 +63,7 @@
           <div v-if="termin.zlecenie" class="clearfix">
             <div class="float-left">
               <div class="font-w700">
+                <span v-if="termin.zlecenie.is_do_odwiezienia" class="bg-success-light px-1">Odwieźć</span>
                 <span v-if="termin.zlecenie.is_warsztat" class="bg-warning px-1">Warsztat</span>
                 <span v-else-if="termin.zlecenie.is_dzwonic" class="bg-info text-white px-1">Dzwonić</span>
                 <span v-else-if="termin.zlecenie.checkable_umowiono && !termin.zlecenie.is_umowiono" class="bg-danger text-white px-1">Nieumówione</span>
@@ -504,14 +505,14 @@ export default {
         //     timer: 1500
         // });
 
-        if (! this.has_zdjecia) {
-          swal({
-            position: 'center',
-            type: 'error',
-            title: 'Brak dodanych zdjęć',
-            showConfirmButton: true
-          });
-        }
+        // if (! this.has_zdjecia) {
+        //   swal({
+        //     position: 'center',
+        //     type: 'error',
+        //     title: 'Brak dodanych zdjęć',
+        //     showConfirmButton: true
+        //   });
+        // }
 
         this.changeStatus(41);
         this.fetchZlecenia();
