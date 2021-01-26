@@ -88,7 +88,28 @@
       </b-col>
     </b-row>
 
-    <Table :zlecenia="zlecenia" :columnWidths="columnWidths" @onZlecenie="onZlecenie" />
+    <Table ref="ZleceniaTable" :zlecenia="zleceniaData" :columnWidths="columnWidths" @onZlecenie="onZlecenie" />
+
+    <SearchBlock
+      v-if="hasZlecenia"
+      class="mt-2 mb-0"
+    >
+      <div class="clearfix">
+        <div class="float-left">
+          <b-pagination
+            v-show="zlecenia.last_page > 1"
+            v-model="zlecenia.current_page"
+            :total-rows="zlecenia.total"
+            :per-page="zlecenia.per_page"
+            class="m-0"
+            @input="onPage"
+          />
+        </div>
+        <div class="float-right">
+          <span class="mr-4">{{ zlecenia.total }} zleceń</span>
+        </div>
+      </div>
+    </SearchBlock>
   </div>
 </template>
 
@@ -117,18 +138,58 @@ export default {
   data() {
     return {
       selectedZlecenie: null,
-      zlecenia: [],
+      zlecenia: {
+        current_page: localStorage.zlecenia2_page,
+      },
       search: this._search,
       columnWidths: this._columnWidths,
     }
+  },
+
+  watch: {
+    'search.customerName': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchData()
+    },
+    'search.customerAddress': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchData()
+    },
+    'search.customerCity': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchData()
+    },
+    'search.serviceScope': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchDataInstant()
+    },
+  },
+
+  computed: {
+    hasZlecenia() {
+      return this.zlecenia && this.zlecenia.data
+    },
+    zleceniaData() {
+      return this.hasZlecenia || []
+    },
   },
 
   methods: {
     onZlecenie(zlecenie) {
       this.selectedZlecenie = zlecenie
     },
-    fetchData() {
-      axios.get(route('zlecenia.api.getList'), {
+    onPage(page) {
+      localStorage.zlecenia2_page = page
+      this.fetchDataInstant(true)
+    },
+    fetchData(keepPage = false, keepScroll = false) {
+      if (! keepScroll && this.$refs.ZleceniaTable) {
+        this.$refs.ZleceniaTable.scrollTop()
+      }
+
+      this.zlecenia.data = []
+      axios.post(route('zlecenia.api.getList'), {
+        page: keepPage && this.zlecenia.current_page || 1,
         search: this.search,
       })
         .then(response => {
@@ -136,11 +197,28 @@ export default {
           this.zlecenia = data.zlecenia
         })
     },
+    saveUserField(field, value) {
+      axios.put(route('api.save_field'), {
+        _token: this._token,
+        _method: 'put',
+        name: field,
+        value,
+      })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
   },
 
-  created() {
-    this.fetchData()
-    this.fetchData = debounce(this.fetchData, 1000)
+  mounted() {
+    this.fetchDataInstant = this.fetchData
+    this.fetchData = debounce(this.fetchData, 500)
+    this.saveUserField = debounce(this.saveUserField, 500)
+
+    this.fetchDataInstant(true, true)
+    setInterval(() => {
+      this.fetchData(true, true)
+    }, 5 *60*1000)
   },
 }
 </script>

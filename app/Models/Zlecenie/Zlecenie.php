@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class Zlecenie extends Model
 {
     protected $connection = 'sqlsrv';
-    protected $table = 'ser_Zlecenia';
+    protected $table = 'EKSOFT_GT.dbo.ser_Zlecenia';
     protected $primaryKey = 'id_zlecenia';
     protected $with = ['kosztorys_opis', 'terminarz'];
     protected $visible = [

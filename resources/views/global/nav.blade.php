@@ -141,7 +141,7 @@
         [
             'name' => 'Odbiór',
             'icon' => 'fa fa-check',
-            'badge' => \Illuminate\Support\Facades\Cache::remember('niesprawdzone_czesci_count', 30*60, function () {
+            'badge' => \Illuminate\Support\Facades\Cache::remember('niesprawdzone_czesci_count', 30 *60, function () {
                 return \App\Models\Czesc\Naszykowana::getNiesprawdzoneCount();
             }),
             'badgeColor' => 'danger',

@@ -1,6 +1,7 @@
 <template>
   <Grid
-    :style="{height: 'calc(100vh - 165px)'}"
+    ref="grid"
+    :style="{height: 'calc(100vh - 220px)'}"
     :data-items="items"
     :cell-render="cellTemplate"
     :selected-field="selectedZlecenieField"
@@ -77,6 +78,9 @@ export default {
       const column = columns[index]
       this.columnWidths[column.field] = newWidth
       this.saveUserField('zlecenia2.columnWidths', this.columnWidths)
+    },
+    scrollTop(pos = 0) {
+      this.$el.querySelector('.k-grid-content').scrollTop = pos
     },
     saveUserField(field, value) {
       axios.put(route('api.save_field'), {

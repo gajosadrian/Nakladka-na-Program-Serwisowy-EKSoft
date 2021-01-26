@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf8e1f1bc1016574c3d56236ae087c42",
+    "content-hash": "99a01f5c72d6b2f30634011f697f3cac",
     "packages": [
         {
             "name": "awobaz/compoships",
@@ -2666,6 +2666,46 @@
             "time": "2020-02-21T04:36:14+00:00"
         },
         {
+            "name": "reinink/remember-query-strings",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reinink/remember-query-strings.git",
+                "reference": "91c7723a4545ba96d0474581563b30cd262f56e2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reinink/remember-query-strings/zipball/91c7723a4545ba96d0474581563b30cd262f56e2",
+                "reference": "91c7723a4545ba96d0474581563b30cd262f56e2",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Reinink\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Reinink",
+                    "email": "jonathan@reinink.ca",
+                    "homepage": "https://reinink.ca"
+                }
+            ],
+            "description": "Laravel middleware that automatically remembers and restores query strings.",
+            "homepage": "https://github.com/reinink/remember-query-strings",
+            "keywords": [
+                "laravel",
+                "middleware",
+                "query-strings"
+            ],
+            "time": "2019-04-02T17:35:40+00:00"
+        },
+        {
             "name": "spatie/laravel-permission",
             "version": "2.38.0",
             "source": {
@@ -4235,12 +4275,12 @@
             "version": "v0.6.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/tightenco/ziggy.git",
+                "url": "https://github.com/tighten/ziggy.git",
                 "reference": "0f59b703236f6b19002bc28d1d3eafcbf479bd43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tightenco/ziggy/zipball/0f59b703236f6b19002bc28d1d3eafcbf479bd43",
+                "url": "https://api.github.com/repos/tighten/ziggy/zipball/0f59b703236f6b19002bc28d1d3eafcbf479bd43",
                 "reference": "0f59b703236f6b19002bc28d1d3eafcbf479bd43",
                 "shasum": ""
             },

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class KontrahentEwidencja extends Model
 {
     protected $connection = 'sqlsrv2';
-    protected $table = 'adr__Ewid';
+    protected $table = 'DARGAZ.dbo.adr__Ewid';
     protected $primaryKey = 'adr_Id';
     protected $with = ['telefony_ewidencja'];
 

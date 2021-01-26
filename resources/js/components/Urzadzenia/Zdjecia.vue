@@ -26,6 +26,7 @@
                             <div
                                 v-for="zdjecie in getZdjeciaTabliczka(zlecenie)" :key="zdjecie.id"
                                 class="text-center"
+                                style="overflow:scroll; width: 100%;"
                             >
                                 <Zdjecie :url="zdjecie.url" />
                             </div>

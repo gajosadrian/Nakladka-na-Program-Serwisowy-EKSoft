@@ -118,7 +118,8 @@ class ZlecenieController extends Controller
             ['id' => 4, 'name' => 'Ten miesiąc'],
             ['id' => 5, 'name' => 'Poprzedni miesiąc'],
             ['id' => 6, 'name' => '3 miesiące'],
-            ['id' => 7, 'name' => 'Ten rok'],
+            ['id' => 7, 'name' => '6 miesięcy'],
+            ['id' => 8, 'name' => 'Ten rok'],
         ];
 
         $savedSearch = $user->getSavedField('zlecenia2.search');
@@ -152,30 +153,68 @@ class ZlecenieController extends Controller
         return view('zlecenie.lista2', compact('search', 'columnWidths', 'technicy', 'statusy', 'serviceScopes'));
     }
 
-    public function apiGetList()
+    public function apiGetList(Request $request)
     {
-        $zlecenia = Zlecenie::with('klient', 'urzadzenie', 'status')->whereNull('Anulowany')->orderByDesc('id_zlecenia')->niezakonczone()->get();
+        $LIMIT = 200;
+
+        $_customerName = $request->search['customerName'];
+        $customerName = ! is_numeric($_customerName) ? $_customerName : null;
+        $customerSymbol = is_numeric($_customerName) ? $_customerName : null;
+
+        $_customerCity = $request->search['customerCity'];
+        $customerZipCode = string_matches_zipcode($_customerCity);
+        $customerCity = (! $customerZipCode) ? $_customerCity : trim(str_replace($customerZipCode, '', $_customerCity));
+
+        $customerAddress = $request->search['customerAddress'];
+        $serviceScopeId = @$request->search['serviceScope']['id'];
+
+        $zlecenia = Zlecenie::with('klient', 'urzadzenie', 'status')->whereNull('Anulowany')->orderByDesc('id_zlecenia');
+        if ($serviceScopeId == 2) {
+            $zlecenia->where('Archiwalny', 1);
+        } elseif ($serviceScopeId == 3) {
+            // all
+        } else {
+            $zlecenia->where('Archiwalny', 0);
+        }
+        if ($customerSymbol) {
+            $zlecenia->whereHas('klient', function ($query) use ($customerSymbol) {
+                $query->where('kh_Symbol', $customerSymbol);
+            });
+        }
+        if ($customerName or $customerCity or $customerZipCode or $customerAddress) {
+            $zlecenia->whereHas('klient.ewidencja', function ($query) use ($customerName, $customerCity, $customerZipCode, $customerAddress) {
+                if ($customerName) $query->where(function ($query) use ($customerName) {
+                    $query->where('adr_NazwaPelna', 'like', "%$customerName%");
+                    $query->orWhere('adr_Nazwa', 'like', "%$customerName%");
+                });
+                if ($customerCity) $query->where('adr_Miejscowosc', 'like', "$customerCity%");
+                if ($customerZipCode) $query->where('adr_Kod', $customerZipCode);
+                if ($customerAddress) $query->where('adr_Adres', 'like', "%$customerAddress%");
+            });
+        }
 
         return response()->json([
-            'zlecenia' => $zlecenia->transform(function ($zlecenie) {
-                return [
-                    'id' => $zlecenie->id,
-                    'nr' => $zlecenie->nr,
-                    'nr_obcy' => $zlecenie->nr_obcy,
-                    'nr_or_obcy' => $zlecenie->nr_or_obcy,
-                    'opis' => $zlecenie->opis,
-                    'opis_last' => $zlecenie->opis_last,
-                    'znacznik' => $zlecenie->znacznik,
-                    'znacznik_formatted' => $zlecenie->znacznik_formatted,
-                    'data_przyjecia_formatted' => $zlecenie->data_przyjecia->format('Y-m-d'),
-                    'data_zakonczenia_formatted' => $zlecenie->data_zakonczenia_formatted,
-                    'dni_od_przyjecia' => $zlecenie->dni_od_przyjecia,
-                    'is_termin' => $zlecenie->is_termin,
-                    'url' => route('zlecenia.pokaz', $zlecenie->id),
-                    'klient' => $zlecenie->klient ? $zlecenie->klient->only('id', 'symbol', 'nazwa', 'adres', 'kod_pocztowy', 'miasto', 'miasto_short') : null,
-                    'urzadzenie' => (@$zlecenie->urzadzenie->id) ? $zlecenie->urzadzenie->only('id', 'producent', 'nazwa', 'model', 'kod_wyrobu', 'nr_seryjny', 'nr_seryjny_raw') : null,
-                    'status' => (@$zlecenie->status->id) ? $zlecenie->status->only('id', 'color', 'icon', 'nazwa') : null,
-                ];
+            'zlecenia' => tap($zlecenia->paginate($LIMIT), function ($paginatedInstance) {
+                return $paginatedInstance->getCollection()->transform(function ($zlecenie) {
+                    return [
+                        'id' => $zlecenie->id,
+                        'nr' => $zlecenie->nr,
+                        'nr_obcy' => $zlecenie->nr_obcy,
+                        'nr_or_obcy' => $zlecenie->nr_or_obcy,
+                        'opis' => $zlecenie->opis,
+                        'opis_last' => $zlecenie->opis_last,
+                        'znacznik' => $zlecenie->znacznik,
+                        'znacznik_formatted' => $zlecenie->znacznik_formatted,
+                        'data_przyjecia_formatted' => $zlecenie->data_przyjecia->format('Y-m-d'),
+                        'data_zakonczenia_formatted' => $zlecenie->data_zakonczenia_formatted,
+                        'dni_od_przyjecia' => $zlecenie->dni_od_przyjecia,
+                        'is_termin' => $zlecenie->is_termin,
+                        'url' => route('zlecenia.pokaz', $zlecenie->id),
+                        'klient' => $zlecenie->klient ? $zlecenie->klient->only('id', 'symbol', 'nazwa', 'adres', 'kod_pocztowy', 'miasto', 'miasto_short') : null,
+                        'urzadzenie' => (@$zlecenie->urzadzenie->id) ? $zlecenie->urzadzenie->only('id', 'producent', 'nazwa', 'model', 'kod_wyrobu', 'nr_seryjny', 'nr_seryjny_raw') : null,
+                        'status' => (@$zlecenie->status->id) ? $zlecenie->status->only('id', 'color', 'icon', 'nazwa') : null,
+                    ];
+                });
             }),
         ]);
     }
