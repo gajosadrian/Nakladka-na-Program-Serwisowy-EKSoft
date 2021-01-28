@@ -67,15 +67,15 @@
         //         return $user and !$user->technik_id;
         //     },
         // ],
-        [
-            'name' => 'Wyszukiwanie zleceń',
-            'icon' => 'fa fa-search',
-            'route' => 'zlecenia.wyszukiwanieZlecenia',
-            'routeOptions' => [],
-            'if' => function() use ($user) {
-                return $user and !$user->technik_id;
-            },
-        ],
+        // [
+        //     'name' => 'Wyszukiwanie zleceń',
+        //     'icon' => 'fa fa-search',
+        //     'route' => 'zlecenia.wyszukiwanieZlecenia',
+        //     'routeOptions' => [],
+        //     'if' => function() use ($user) {
+        //         return $user and !$user->technik_id;
+        //     },
+        // ],
         // [
         //     'name' => 'Historia',
         //     'icon' => 'si si-bubbles',
