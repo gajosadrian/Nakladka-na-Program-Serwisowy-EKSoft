@@ -26,6 +26,9 @@
             'icon' => 'fa fa-list-ul',
             'route' => 'zlecenia.lista',
             'routeOptions' => [],
+            'if' => function() use ($user) {
+                return @$user->is_technik;
+            },
         ],
         [
             'name' => 'Zlecenia',
@@ -33,7 +36,7 @@
             'route' => 'zlecenia.lista2',
             'routeOptions' => [],
             'if' => function() use ($user) {
-                return $user and $user->id === 1;
+                return ! @$user->is_technik;
             },
         ],
         [

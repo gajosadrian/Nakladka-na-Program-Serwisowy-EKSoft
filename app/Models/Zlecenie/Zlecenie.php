@@ -83,7 +83,8 @@ class Zlecenie extends Model
 		'Vienna' => ['vig', 'vienna', 'wienna', 'viena', 'wiena'],
 		'Elterm' => ['elterm'],
 		'TERMICA' => ['termica', 'termika'],
-		'ACV' => ['acv'],
+        'ACV' => ['acv'],
+        'BIAWAR' => ['biawar'],
     ];
 
     public const REQUIRED_PHOTOS = [
@@ -1099,6 +1100,21 @@ HTML;
         }
 
         return $symbols;
+    }
+
+    public static function getZleceniodawcy(): array {
+        $zleceniodawcy = self::ZLECENIODAWCY;
+        ksort($zleceniodawcy);
+
+        $array = [];
+        foreach ($zleceniodawcy as $zleceniodawca => $words) {
+            $array[] = [
+                'key' => $zleceniodawca,
+                'name' => $zleceniodawca,
+                'words' => $words,
+            ];
+        }
+        return $array;
     }
 
     private function getCalcKosztorys(string $type): array

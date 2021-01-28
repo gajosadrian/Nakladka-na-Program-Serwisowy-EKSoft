@@ -7,9 +7,8 @@ use Awobaz\Compoships\Database\Eloquent\Model;
 
 class KosztorysPozycja extends Model
 {
-
     protected $connection = 'sqlsrv';
-    protected $table = 'ser_ZlecKosztPoz';
+    protected $table = 'EKSOFT_GT.dbo.ser_ZlecKosztPoz';
     protected $with = ['towar'];
     protected $guarded = ['id'];
     public $timestamps = false;

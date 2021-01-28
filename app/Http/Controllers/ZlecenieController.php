@@ -111,6 +111,7 @@ class ZlecenieController extends Controller
                 'color' => $status->color,
             ];
         });
+        $zleceniodawcy = Zlecenie::getZleceniodawcy();
         $serviceScopes = [
             ['id' => 1, 'name' => 'Otwarte'],
             ['id' => 2, 'name' => 'Zamknięte'],
@@ -135,7 +136,7 @@ class ZlecenieController extends Controller
             'serviceScope' => $savedSearch['serviceScope'] ?: null,
             'serviceStatuses' => $savedSearch['serviceStatuses'] ?: [],
             'serviceTechnician' => $savedSearch['serviceTechnician'] ?: null,
-            'serviceBuyer' => $savedSearch['serviceBuyer'] ?: '',
+            'serviceBuyer' => $savedSearch['serviceBuyer'] ?: null,
         ];
 
         $savedWidths = $user->getSavedField('zlecenia2.columnWidths');
@@ -150,13 +151,16 @@ class ZlecenieController extends Controller
             'dateCalendar' => $savedWidths['dateCalendar'] ?: 0,
         ];
 
-        return view('zlecenie.lista2', compact('search', 'columnWidths', 'technicy', 'statusy', 'serviceScopes'));
+        return view('zlecenie.lista2', compact('search', 'columnWidths', 'technicy', 'statusy', 'zleceniodawcy', 'serviceScopes'));
     }
 
     public function apiGetList(Request $request)
     {
         $LIMIT = 200;
 
+        /**
+         * Customer
+         */
         $_customerName = $request->search['customerName'];
         $customerName = ! is_numeric($_customerName) ? $_customerName : null;
         $customerSymbol = is_numeric($_customerName) ? $_customerName : null;
@@ -166,8 +170,31 @@ class ZlecenieController extends Controller
         $customerCity = (! $customerZipCode) ? $_customerCity : trim(str_replace($customerZipCode, '', $_customerCity));
 
         $customerAddress = $request->search['customerAddress'];
-        $serviceScopeId = @$request->search['serviceScope']['id'];
 
+        /**
+         * Service
+         */
+        $serviceNo = $request->search['serviceNo'];
+        $serviceScopeId = @$request->search['serviceScope']['id'];
+        $serviceStatusIds = $request->search['serviceStatuses'] ? collect($request->search['serviceStatuses'])->pluck('id')->values() : null;
+        $serviceTechnicianId = @$request->search['serviceTechnician']['id'];
+        $serviceBuyer = $request->search['serviceBuyer'];
+
+        /**
+         * Device
+         */
+        $deviceBrand = $request->search['deviceBrand'];
+        $deviceType = $request->search['deviceType'];
+        $deviceSerial = $request->search['deviceSerial'];
+
+        /**
+         * Part
+         */
+        $partSymbol = $request->search['partSymbol'];
+
+        /**
+         * Zlecenia
+         */
         $zlecenia = Zlecenie::with('klient', 'urzadzenie', 'status')->whereNull('Anulowany')->orderByDesc('id_zlecenia');
         if ($serviceScopeId == 2) {
             $zlecenia->where('Archiwalny', 1);
@@ -175,6 +202,31 @@ class ZlecenieController extends Controller
             // all
         } else {
             $zlecenia->where('Archiwalny', 0);
+        }
+        if ($serviceNo) {
+            $zlecenia->where(function ($query) use ($serviceNo) {
+                $query->where('NrZlecenia', 'like', "%$serviceNo%");
+                $query->orWhere('NrObcy', 'like', "%$serviceNo%");
+            });
+        }
+        if ($serviceStatusIds) {
+            $zlecenia->where(function ($query) use ($serviceStatusIds) {
+                foreach ($serviceStatusIds as $statusId) {
+                    $query->orWhere('id_status', $statusId);
+                }
+            });
+        }
+        if ($serviceTechnicianId) {
+            $zlecenia->where('id_o_technika', $serviceTechnicianId);
+        }
+        if ($serviceBuyer) {
+            $zlecenia->whereHas('kosztorys_opis', function ($query) use ($serviceBuyer) {
+                $query->where(function ($query) use ($serviceBuyer) {
+                    foreach ($serviceBuyer['words'] as $word) {
+                        $query->orWhere('opis', 'like', "$word%");
+                    }
+                });
+            });
         }
         if ($customerSymbol) {
             $zlecenia->whereHas('klient', function ($query) use ($customerSymbol) {
@@ -190,6 +242,25 @@ class ZlecenieController extends Controller
                 if ($customerCity) $query->where('adr_Miejscowosc', 'like', "$customerCity%");
                 if ($customerZipCode) $query->where('adr_Kod', $customerZipCode);
                 if ($customerAddress) $query->where('adr_Adres', 'like', "%$customerAddress%");
+            });
+        }
+        if ($deviceBrand or $deviceSerial or $deviceType) {
+            $zlecenia->whereHas('urzadzenie', function ($query) use ($deviceBrand, $deviceSerial, $deviceType) {
+                if ($deviceBrand) $query->where('KATEGORIA', 'like', "%$deviceBrand%");
+                if ($deviceType) $query->where('NAZWA_MASZ', 'like', "%$deviceType%");
+                if ($deviceSerial) $query->where('SERIAL_NO', 'like', "$deviceSerial%");
+            });
+        }
+        if ($partSymbol) {
+            $zlecenia->where(function ($query) use ($partSymbol) {
+                $query->whereHas('kosztorys_pozycje', function ($query) use ($partSymbol) {
+                    $query->where('opis_dodatkowy', 'like', "%$partSymbol%");
+                });
+                $query->orWhereHas('kosztorys_pozycje.towar', function ($query) use ($partSymbol) {
+                    $query->where('tw_Symbol', $partSymbol);
+                    $query->orWhere('tw_DostSymbol', $partSymbol);
+                    $query->orWhere('tw_Pole3', $partSymbol);
+                });
             });
         }
 

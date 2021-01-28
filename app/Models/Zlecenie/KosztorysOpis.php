@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class KosztorysOpis extends Model
 {
     protected $connection = 'sqlsrv';
-    protected $table = 'ser_ZlecKosztOpis';
+    protected $table = 'EKSOFT_GT.dbo.ser_ZlecKosztOpis';
     protected $guarded = [];
     public $timestamps = false;
 

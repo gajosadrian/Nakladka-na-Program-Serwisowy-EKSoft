@@ -66,6 +66,13 @@
       </b-col>
       <b-col cols="2">
         <SearchBlock title="Zleceniodawca" disabled>
+          <ComboBox
+            v-model="search.serviceBuyer"
+            :data-items="zleceniodawcy"
+            text-field="name"
+            data-item-key="key"
+            placeholder="Wszystko"
+          />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
@@ -129,6 +136,7 @@ export default {
   props: {
     statusy: Array,
     technicy: Array,
+    zleceniodawcy: Array,
     serviceScopes: Array,
     _token: String,
     _search: Object,
@@ -159,9 +167,41 @@ export default {
       this.saveUserField('zlecenia2.search', this.search)
       this.fetchData()
     },
+    'search.serviceNo': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchData()
+    },
     'search.serviceScope': function () {
       this.saveUserField('zlecenia2.search', this.search)
       this.fetchDataInstant()
+    },
+    'search.serviceStatuses': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchDataInstant()
+    },
+    'search.serviceTechnician': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchDataInstant()
+    },
+    'search.serviceBuyer': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchDataInstant()
+    },
+    'search.deviceBrand': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchData()
+    },
+    'search.deviceType': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchData()
+    },
+    'search.deviceSerial': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchData()
+    },
+    'search.partSymbol': function () {
+      this.saveUserField('zlecenia2.search', this.search)
+      this.fetchData()
     },
   },
 
@@ -187,7 +227,8 @@ export default {
         this.$refs.ZleceniaTable.scrollTop()
       }
 
-      this.zlecenia.data = []
+      if (! keepScroll) this.zlecenia.data = []
+
       axios.post(route('zlecenia.api.getList'), {
         page: keepPage && this.zlecenia.current_page || 1,
         search: this.search,
@@ -195,6 +236,12 @@ export default {
         .then(response => {
           const data = response.data
           this.zlecenia = data.zlecenia
+
+          if (keepScroll == 2) {
+            setTimeout(() => {
+              this.$refs.ZleceniaTable.restoreScrollPos()
+            }, 1000)
+          }
         })
     },
     saveUserField(field, value) {
@@ -215,7 +262,7 @@ export default {
     this.fetchData = debounce(this.fetchData, 500)
     this.saveUserField = debounce(this.saveUserField, 500)
 
-    this.fetchDataInstant(true, true)
+    this.fetchDataInstant(true, 2)
     setInterval(() => {
       this.fetchData(true, true)
     }, 5 *60*1000)

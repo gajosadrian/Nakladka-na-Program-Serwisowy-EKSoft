@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Subiekt_Towar extends Model
 {
     protected $connection = 'sqlsrv2';
-    protected $table = 'tw__Towar';
+    protected $table = 'DARGAZ.dbo.tw__Towar';
     protected $primaryKey = 'tw_Id';
     protected $with = ['zdjecia'];
 

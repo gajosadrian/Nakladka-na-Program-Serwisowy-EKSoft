@@ -9,6 +9,7 @@
       _token="{{ csrf_token() }}"
       :statusy='@json($statusy)'
       :technicy='@json($technicy)'
+      :zleceniodawcy='@json($zleceniodawcy)'
       :service-scopes='@json($serviceScopes)'
       :_search='@json($search)'
       :_column-widths='@json($columnWidths)'

@@ -82,6 +82,9 @@ export default {
     scrollTop(pos = 0) {
       this.$el.querySelector('.k-grid-content').scrollTop = pos
     },
+    restoreScrollPos() {
+      this.scrollTop(localStorage.zlecenia2_scroll)
+    },
     saveUserField(field, value) {
       axios.put(route('api.save_field'), {
         _token: this._token,
@@ -93,6 +96,14 @@ export default {
           console.log(err)
         })
     },
+  },
+
+  mounted() {
+    const $gridContent = this.$el.querySelector('.k-grid-content')
+
+    $gridContent.addEventListener('scroll', () => {
+      localStorage.zlecenia2_scroll = $gridContent.scrollTop
+    })
   },
 }
 </script>
