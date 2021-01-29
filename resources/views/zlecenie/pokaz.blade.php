@@ -632,7 +632,7 @@ function changeStatus(status_id) {
     const TERMINARZ_YELLOW = '7661308';
     const TERMINARZ_BLUE = '14982788';
 
-    let terminarz_status_id;
+    let terminarz_status_id = 0;
 
     if (! IS_UP_TO_DATE_TERMIN) {
         if ([26, 29, 30, 31, 36, 37, 38, 39, 40, 43].includes(status_id)) {
@@ -648,10 +648,11 @@ function changeStatus(status_id) {
 
     axios.post( route('zlecenia.api.change_status', {
         id: @json($zlecenie->id),
+    }), {
         status_id,
         remove_termin,
         terminarz_status_id,
-    })).then((response) => {
+    }).then(response => {
         swal({
             position: 'center',
             type: 'success',
@@ -659,6 +660,10 @@ function changeStatus(status_id) {
             showConfirmButton: false,
             timer: 1500,
         });
+        zlecenieUpdated();
+    })
+    .catch(err => {
+        console.log(err)
     });
 }
 
@@ -688,6 +693,7 @@ function changeTechnik(technik_id) {
             showConfirmButton: false,
             timer: 1500,
         });
+        zlecenieUpdated();
     });
 }
 
@@ -698,6 +704,7 @@ function changeZleceniodawca(zleceniodawca) {
     }), {
         zleceniodawca,
     }).then((response) => {
+        zlecenieUpdated()
         location.reload()
     })
 }
@@ -710,6 +717,7 @@ function changeNrobcy(nrobcy) {
         // _token: @json(csrf_token()),
         nrobcy,
     }).then((response) => {
+        zlecenieUpdated()
         location.reload()
     })
 }
@@ -727,6 +735,7 @@ function changeOpis(pozycja_id, opis) {
             _token: @json(csrf_token()),
         }).then((response) => {
             pozycjaStatus(pozycja_id, 'success');
+            zlecenieUpdated();
         }).catch((response) => {
             pozycjaStatus(pozycja_id, 'error');
         });
@@ -759,6 +768,7 @@ function zatwierdzBlad() {
     axios.post(route('zlecenia.api.zatwierdz_blad', { id: @json($zlecenie->id) }))
         .then(function (response) {
             window.close();
+            zlecenieUpdated();
         });
 }
 
@@ -780,6 +790,10 @@ function focusKosztorysInput() {
     setTimeout(() => {
         $('#kosztorys form > input').focus()
     }, 300)
+}
+
+function zlecenieUpdated() {
+    localStorage.zlecenieUpdated = 1
 }
 
 </script>@append

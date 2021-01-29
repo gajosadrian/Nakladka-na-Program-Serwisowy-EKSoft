@@ -2,47 +2,47 @@
   <div>
     <b-row class="gutters-tiny row-deck" style="margin-top: 10px; margin-bottom: 10px;">
       <b-col cols="2">
-        <SearchBlock title="Klient">
+        <SearchBlock title="Klient" :active="search.customerName.length > 0">
           <b-input v-model="search.customerName" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
-        <SearchBlock title="Adres">
+        <SearchBlock title="Adres" :active="search.customerAddress.length > 0">
           <b-input v-model="search.customerAddress" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
-        <SearchBlock title="Miejscowość">
+        <SearchBlock title="Miejscowość" :active="search.customerCity.length > 0">
           <b-input v-model="search.customerCity" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="1">
-        <SearchBlock title="Nr zlecenia">
+        <SearchBlock title="Nr zlecenia" :active="search.serviceNo.length > 0">
           <b-input v-model="search.serviceNo" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="1">
-        <SearchBlock title="Urządzenie">
+        <SearchBlock title="Urządzenie" :active="search.deviceType.length > 0">
           <b-input v-model="search.deviceType" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="1">
-        <SearchBlock title="Marka">
+        <SearchBlock title="Marka" :active="search.deviceBrand.length > 0">
           <b-input v-model="search.deviceBrand" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="1">
-        <SearchBlock title="Nr Seryjny">
+        <SearchBlock title="Nr Seryjny" :active="search.deviceSerial.length > 0">
           <b-input v-model="search.deviceSerial" type="text" size="sm" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
-        <SearchBlock title="Część">
-          <b-input v-model="search.partSymbol" type="text" size="sm" />
+        <SearchBlock title="Część" :active="search.partSymbol.length > 0">
+          <b-input v-model="search.partSymbol" type="text" size="sm" class="active" />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
-        <SearchBlock title="Status">
+        <SearchBlock title="Status" :active="search.serviceStatuses.length > 0">
           <MultiSelect
             v-model="search.serviceStatuses"
             :data-items="statusy"
@@ -50,11 +50,12 @@
             data-item-key="id"
             placeholder="Wszystko"
             :tags="(search.serviceStatuses && search.serviceStatuses.length > 0) ? [{text: `${search.serviceStatuses.length} status(y)`, data: [...search.serviceStatuses]}] : []"
+            class="active"
           />
         </SearchBlock>
       </b-col>
       <b-col cols="2">
-        <SearchBlock title="Technik">
+        <SearchBlock title="Technik" :active="Boolean(search.serviceTechnician)">
           <ComboBox
             v-model="search.serviceTechnician"
             :data-items="technicy"
@@ -65,7 +66,7 @@
         </SearchBlock>
       </b-col>
       <b-col cols="2">
-        <SearchBlock title="Zleceniodawca" disabled>
+        <SearchBlock title="Zleceniodawca" :active="Boolean(search.serviceBuyer)" disabled>
           <ComboBox
             v-model="search.serviceBuyer"
             :data-items="zleceniodawcy"
@@ -76,7 +77,7 @@
         </SearchBlock>
       </b-col>
       <b-col cols="2">
-        <SearchBlock title="Okres zleceń">
+        <SearchBlock title="Okres zleceń" :active="search.serviceScope && search.serviceScope['id'] > 1">
           <ComboBox
             v-model="search.serviceScope"
             :data-items="serviceScopes"
@@ -95,7 +96,14 @@
       </b-col>
     </b-row>
 
-    <Table ref="ZleceniaTable" :zlecenia="zleceniaData" :columnWidths="columnWidths" @onZlecenie="onZlecenie" />
+    <Table
+      ref="ZleceniaTable"
+      :zlecenia="zleceniaData"
+      :page="currentPage"
+      :perPage="perPage"
+      :columnWidths="columnWidths"
+      @onZlecenie="onZlecenie"
+    />
 
     <SearchBlock
       v-if="hasZlecenia"
@@ -212,6 +220,18 @@ export default {
     zleceniaData() {
       return this.hasZlecenia || []
     },
+    currentPage() {
+      if (this.hasZlecenia) {
+        return this.zlecenia.current_page
+      }
+      return 1
+    },
+    perPage() {
+      if (this.hasZlecenia) {
+        return this.zlecenia.per_page
+      }
+      return 0
+    },
   },
 
   methods: {
@@ -251,7 +271,7 @@ export default {
         name: field,
         value,
       })
-        .catch((err) => {
+        .catch(err => {
           console.log(err)
         })
     },
@@ -266,6 +286,13 @@ export default {
     setInterval(() => {
       this.fetchData(true, true)
     }, 5 *60*1000)
+
+    setInterval(() => {
+      if (localStorage.zlecenieUpdated > 0) {
+        localStorage.zlecenieUpdated = 0
+        this.fetchDataInstant(true, true)
+      }
+    }, 1000)
   },
 }
 </script>

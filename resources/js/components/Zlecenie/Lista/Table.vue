@@ -26,6 +26,8 @@ export default {
 
   props: {
     zlecenia: Array,
+    page: Number,
+    perPage: Number,
     columnWidths: Object,
   },
 
@@ -53,7 +55,7 @@ export default {
       return this.zlecenia.map((zlecenie, idx) => ({
         ...zlecenie,
         selected: (zlecenie.id === selectedZlecenieId),
-        lp: idx + 1,
+        lp: (this.perPage * (this.page - 1)) + idx + 1,
       }))
     },
   },

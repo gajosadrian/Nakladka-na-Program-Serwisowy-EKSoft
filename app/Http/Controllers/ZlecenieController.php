@@ -220,11 +220,28 @@ class ZlecenieController extends Controller
             $zlecenia->where('id_o_technika', $serviceTechnicianId);
         }
         if ($serviceBuyer) {
-            $zlecenia->whereHas('kosztorys_opis', function ($query) use ($serviceBuyer) {
-                $query->where(function ($query) use ($serviceBuyer) {
-                    foreach ($serviceBuyer['words'] as $word) {
-                        $query->orWhere('opis', 'like', "$word%");
-                    }
+            $zlecenia->where(function ($query) use ($serviceBuyer) {
+                $query->whereHas('kosztorys_opis', function ($query) use ($serviceBuyer) {
+                    $query->where(function ($query) use ($serviceBuyer) {
+                        if ($serviceBuyer['key'] == 'Odpłatne') {
+                            $query->orWhere('Z', 'B');
+                        }
+                        foreach ($serviceBuyer['words'] as $word) {
+                            if (! $word) continue;
+                            $query->orWhere('opis', 'like', "$word%");
+                        }
+                    });
+                });
+                $query->orWhere(function ($query) use ($serviceBuyer) {
+                    $query->where('Z', 'A');
+                    $query->whereHas('urzadzenie', function ($query) use ($serviceBuyer) {
+                        $query->where(function ($query) use ($serviceBuyer) {
+                            foreach ($serviceBuyer['words'] as $word) {
+                                if (! $word) continue;
+                                $query->orWhere('KATEGORIA', 'like', "$word%");
+                            }
+                        });
+                    });
                 });
             });
         }
@@ -667,7 +684,7 @@ class ZlecenieController extends Controller
         $zlecenie->archiwalny = false;
         $zlecenie->save();
 
-        if (! $request->remove_termin and $terminarz_status_id = $request->terminarz_status_id) {
+        if (! $request->remove_termin and $terminarz_status_id = $request->terminarz_status_id and $zlecenie->is_termin) {
             $zlecenie->terminarz->status_id = $terminarz_status_id;
             $zlecenie->terminarz->save();
         }
