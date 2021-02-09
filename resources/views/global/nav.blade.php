@@ -24,20 +24,24 @@
         [
             'name' => 'Zlecenia',
             'icon' => 'fa fa-list-ul',
-            'route' => 'zlecenia.lista',
+            'route' => 'zlecenia.lista2',
             'routeOptions' => [],
+            'badge' => 'N',
+            'badgeColor' => 'success',
             'if' => function() use ($user) {
-                return @$user->is_technik;
+                return ! @$user->is_technik;
             },
         ],
         [
             'name' => 'Zlecenia',
             'icon' => 'fa fa-list-ul',
-            'route' => 'zlecenia.lista2',
+            'route' => 'zlecenia.lista',
             'routeOptions' => [],
-            'if' => function() use ($user) {
-                return ! @$user->is_technik;
-            },
+            'badge' => 'S',
+            'badgeColor' => 'danger',
+            // 'if' => function() use ($user) {
+            //     return @$user->is_technik;
+            // },
         ],
         [
             'name' => 'Aplikacja mobilna',
@@ -216,7 +220,7 @@
                     <a class="nav-main-link {{ $routeName == $item['route'] ? 'active' : '' }}" href="{{ route($item['route'], $item['routeOptions']) ?? [] }}">
                         <i class="nav-main-link-icon {{ $item['icon'] }}"></i>
                         <span class="nav-main-link-name">{{ $item['name'] }}</span>
-                        @if(isset($item['badge']) and $item['badge'] > 0)
+                        @if(isset($item['badge']) and $item['badge'])
                             <span class="nav-main-link-badge badge badge-pill badge-{{ $item['badgeColor'] ?? 'success' }}">{{ $item['badge'] }}</span>
                         @endif
                     </a>
@@ -232,7 +236,7 @@
                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="true" href="#">
                         <i class="nav-main-link-icon {{ $item['icon'] }}"></i>
                         <span class="nav-main-link-name">{{ $item['name'] }}</span>
-                        @if(isset($item['badge']) and $item['badge'] > 0)
+                        @if(isset($item['badge']) and $item['badge'])
                             <span class="nav-main-link-badge badge badge-pill badge-{{ $item['badgeColor'] ?? 'success' }}">{{ $item['badge'] }}</span>
                         @endif
                     </a>

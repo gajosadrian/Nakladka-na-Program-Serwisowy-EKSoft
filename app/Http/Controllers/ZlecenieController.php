@@ -492,7 +492,7 @@ class ZlecenieController extends Controller
 
         $statusy_data = [];
         if ($pracownik) {
-            $statusy_data = StatusHistoria::with('zlecenie')->where('id_user', $pracownik->id)->orderByDesc('data')->limit(200)->get()->groupBy('data_dzien');
+            $statusy_data = StatusHistoria::with('zlecenie')->where('id_user', $pracownik->id)->orderByDesc('data')->limit(500)->get()->groupBy('data_dzien');
         }
 
         return view('zlecenie-logs.statusy', compact('pracownicy', 'pracownik', 'statusy_data'));
