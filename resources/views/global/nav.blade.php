@@ -26,19 +26,12 @@
             'icon' => 'fa fa-list-ul',
             'route' => 'zlecenia.lista2',
             'routeOptions' => [],
-            'badge' => 'N',
-            'badgeColor' => 'success',
-            'if' => function() use ($user) {
-                return ! @$user->is_technik;
-            },
         ],
         [
-            'name' => 'Zlecenia',
+            'name' => 'Zlecenia otwarte',
             'icon' => 'fa fa-list-ul',
             'route' => 'zlecenia.lista',
             'routeOptions' => [],
-            'badge' => 'S',
-            'badgeColor' => 'danger',
             // 'if' => function() use ($user) {
             //     return @$user->is_technik;
             // },
@@ -148,7 +141,7 @@
         [
             'name' => 'Odbiór',
             'icon' => 'fa fa-check',
-            'badge' => \Illuminate\Support\Facades\Cache::remember('niesprawdzone_czesci_count', 30 *60, function () {
+            'badge' => \Illuminate\Support\Facades\Cache::remember('niesprawdzone_czesci_count', 30, function () {
                 return \App\Models\Czesc\Naszykowana::getNiesprawdzoneCount();
             }),
             'badgeColor' => 'danger',
