@@ -80,6 +80,9 @@
                             <span class="font-w600 text-danger">{{ $errors_n }}</span>
                         @endif
                         <br>
+                        <b-button variant="info" size="sm" pill onclick="jQuery('#bledy-modal').modal('show')">
+                            &nbsp;<i class="fa fa-info"></i>&nbsp;
+                        </b-button>
                         {{-- <span class="{{ ($niesprawdzone_czesci_n > 0) ? 'bg-danger text-white px-1' : '' }}">Niesprawdzonych części: {{ $niesprawdzone_czesci_n }}</span> --}}
                     </div>
                 </div>
@@ -257,6 +260,41 @@
                 </div>
             </template>
         </b-block>
+    </div>
+
+    <div class="modal" id="bledy-modal" tabindex="-1" role="dialog" aria-labelledby="bledy-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Błędy do zleceń otwartych</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <ul>
+                            <li><strong>Ustal termin</strong> – komunikat od razu, nieustalony termin</li>
+                            <li><strong>Brak reakcji</strong> – po 2 dniach od statusów Umówiono, Gotowe do wyjazdu, Na warsztacie, Preautoryzacja</li>
+                            <li><strong>Dzwonić do klienta</strong> – po 1 dniu od statusu Poinformować o kosztach</li>
+                            <li><strong>Akc. kosztów? Dzwonić</strong> – po 3 dniach od statusu Informacja o kosztach</li>
+                            <li><strong>Brak reakcji</strong> – po 1 dniu od statusów Do zamówienia, Do wyceny</li>
+                            <li><strong>Brak reakcji</strong> – po 3 dniach od statusu Do wyjaśnienia</li>
+                            <li><strong>Zaliczka</strong> – po 3 dniach od statusu Zaliczka</li>
+                            <li><strong>Dzwonić po odbiór</strong> – po 1 dniu od statusu Dzwonić po odbiór</li>
+                            <li><strong>Dzwonić po odbiór</strong> – po 7 dniach od statusu Do odbioru</li>
+                            <li><strong>Nierozliczone</strong> – po 7 dniach od statusu Do rozliczenia</li>
+                            <li><strong>Co z częścią?</strong> – po 7 dniach od statusu Zamówiono część</li>
+                        </ul>
+                    </div>
+                    <div class="block-content block-content-full text-right bg-light">
+                        <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Zamknij</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
