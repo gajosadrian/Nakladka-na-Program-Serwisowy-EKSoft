@@ -142,6 +142,8 @@ export default {
         selected: null,
         list: [
           { text: '-- Wiadomości predefiniowane --', value: null },
+          'Prosimy o przyslanie zdjecia tabliczki znamionowej na nr tel. 666650660',
+          'Prosimy o przyslanie zdjecia dowodu zakupu na nr tel. 666650660',
           'Urządzenie gotowe do odbioru',
           `Dane przelewu:\n"DAR-GAZ" Dariusz Gajos\nNr konta: 50 1940 1076 3097 3581 0000 0000\n\nProszę o zadatek w kwocie `,
         ],

@@ -759,8 +759,8 @@ class Zlecenie extends Model
     {
         $array = [];
 
-        // if (!$this->is_termin and $this->dni_od_statusu >= 3 and $this->isAktywnyBlad(3) and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID]))
-        if (!$this->is_termin and $this->isAktywnyBlad(3) and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID, Status::NA_WARSZTACIE_ID]))
+        if (!$this->is_termin and $this->dni_od_statusu >= 3 and $this->isAktywnyBlad(3) and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID]))
+        // if (!$this->is_termin and $this->isAktywnyBlad(3) and in_array($this->status_id, [Status::GOTOWE_DO_WYJAZDU_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::ZLECENIE_WPISANE_ID, Status::NA_WARSZTACIE_ID]))
             $array[] = 'Ustal termin';
 
         if ($this->dni_od_zakonczenia >= 2 and $this->isAktywnyBlad(2) and in_array($this->status_id, [Status::UMOWIONO_ID, Status::GOTOWE_DO_WYJAZDU_ID, Status::NA_WARSZTACIE_ID, Status::NIE_ODBIERA_ID, Status::PONOWNA_WIZYTA_ID, Status::PREAUTORYZACJA_ID]))

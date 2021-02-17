@@ -74,11 +74,13 @@
                     </div>
                     <div class="col-lg-8">
                         Ilość błędów:
-                        @if ($errors_n > 10)
-                            <span class="font-w600 bg-danger text-white px-1">{{ $errors_n }}</span>
-                        @else
-                            <span class="font-w600 text-danger">{{ $errors_n }}</span>
-                        @endif
+                        <span style="cursor: pointer;" onclick="szukajBledow()">
+                            @if ($errors_n > 5)
+                                <span class="font-w600 bg-danger text-white px-1">{{ $errors_n }}</span>
+                            @else
+                                <span class="font-w600 text-danger">{{ $errors_n }}</span>
+                            @endif
+                        </span>
                         <br>
                         <b-button variant="info" size="sm" pill onclick="jQuery('#bledy-modal').modal('show')">
                             &nbsp;<i class="fa fa-info"></i>&nbsp;
@@ -146,8 +148,11 @@
                                             </ul>
                                         </td> --}}
                                         <td class="text-center">
-                                            @if (count($zlecenie->errors) > 0)
-                                                <div class="d-none">{{ implode(' ', $zlecenie->errors) }}</div>
+                                            @if ($zlecenie->has_errors)
+                                                <div class="d-none">
+                                                    błąd
+                                                    {{ implode(' ', $zlecenie->errors) }}
+                                                </div>
                                                 <i
                                                     class="fa fa-exclamation-triangle text-danger"
                                                     data-toggle="tooltip" data-placement="left"
@@ -231,6 +236,10 @@
                                     <td nowrap>
                                         @if ($zlecenie->is_termin)
                                             {{ $zlecenie->data_zakonczenia_formatted }}
+                                        @elseif(in_array($zlecenie->status_id, [\App\Models\Zlecenie\Status::GOTOWE_DO_WYJAZDU_ID, \App\Models\Zlecenie\Status::NIE_ODBIERA_ID, \App\Models\Zlecenie\Status::PONOWNA_WIZYTA_ID, \App\Models\Zlecenie\Status::ZLECENIE_WPISANE_ID]))
+                                            <div class="d-none">
+                                                ustal termin
+                                            </div>
                                         @endif
                                     </td>
 
@@ -330,6 +339,10 @@ setInterval(function() {
         searchValue_last = value;
     });
 }, 5000)
+
+szukajBledow = () => {
+    $('table#zlecenia{{ $room }}').DataTable().data().search('błąd').draw();
+}
 
 if (searchValue) {
     $('table#zlecenia{{ $room }}').DataTable().data().search(searchValue).draw();
