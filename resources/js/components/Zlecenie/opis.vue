@@ -4,7 +4,7 @@
       v-if="! is_technik"
       v-model="opis"
       id="opis"
-      :rows="opisRows"
+      :rows="14"
       class="mb-3"
       @input="updateNotatka"
     />
@@ -58,6 +58,11 @@ export default {
         this.disable_button = false
         this.opis = response.data
         this.new_opis = ''
+
+        this.$nextTick(() => {
+          let $opis = $('textarea#opis')
+          $opis.scrollTop($opis[0].scrollHeight)
+        })
       })
     },
 
@@ -74,6 +79,11 @@ export default {
     }))
       .then(response => {
         this.opis = response.data
+
+        this.$nextTick(() => {
+          let $opis = $('textarea#opis')
+          $opis.scrollTop($opis[0].scrollHeight)
+        })
       })
   },
 
