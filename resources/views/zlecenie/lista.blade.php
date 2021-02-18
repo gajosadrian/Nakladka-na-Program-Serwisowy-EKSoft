@@ -285,8 +285,8 @@
                     </div>
                     <div class="block-content">
                         <ul>
-                            <li><strong>Ustal termin</strong> – komunikat od razu, nieustalony termin</li>
-                            <li><strong>Brak reakcji</strong> – po 2 dniach od statusów Umówiono, Gotowe do wyjazdu, Na warsztacie, Preautoryzacja</li>
+                            <li><strong>Ustal termin</strong> – komunikat po 3 dniach. Można wyszkuwać wszystkie zlecenia bez terminu po tej nazwie błędu.</li>
+                            <li><strong>Brak reakcji</strong> – po 2 dniach od statusów Umówiono, Gotowe do wyjazdu, Na warsztacie, Preautoryzacja, Na warsztacie</li>
                             <li><strong>Dzwonić do klienta</strong> – po 1 dniu od statusu Poinformować o kosztach</li>
                             <li><strong>Akc. kosztów? Dzwonić</strong> – po 3 dniach od statusu Informacja o kosztach</li>
                             <li><strong>Brak reakcji</strong> – po 1 dniu od statusów Do zamówienia, Do wyceny</li>
