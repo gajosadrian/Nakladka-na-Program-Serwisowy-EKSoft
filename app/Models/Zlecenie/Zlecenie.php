@@ -1231,7 +1231,7 @@ HTML;
 
     public function appendOpis(string $opis, string $name, bool $minified = false, bool $handleError = true): void
     {
-        $user = auth()->user();
+        $user = @auth()->user();
 
         if (! $minified) {
             if (substr($this->opis, -1) != "\n" and ! strpos($this->opis, '#')) {
@@ -1243,7 +1243,7 @@ HTML;
         } else {
             // TODO: przerobić funkcję
             // $this->opis .= "\r\n" . date('d.m H:i') . ' ' . $user->short_name . ': ' . $opis;
-            $this->opis .= "\r\n" . ($name ?: $user->short_name) . ' ' . date('d.m H:i') . ': ' . $opis;
+            $this->opis .= "\r\n" . ($name ?: @$user->short_name) . ' ' . date('d.m H:i') . ': ' . $opis;
         }
 
         if ($user and $user->technik_id) {
