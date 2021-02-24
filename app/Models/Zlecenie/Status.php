@@ -20,7 +20,7 @@ class Status extends Model
     private static $PROPERTIES = [
         11 => [ 'icon' => 'fa fa-file-signature', 'color' => 'danger' ], 12 => [ 'icon' => 'fa fa-calendar-check', 'color' => 'danger' ], 13 => [ 'icon' => 'fa fa-shopping-cart', 'color' => 'info' ],
         14 => [ 'icon' => 'fa fa-car-side', 'color' => 'danger' ], 16 => [ 'icon' => 'fa fa-home', 'color' => 'warning' ], 17 => [ 'icon' => 'fa fa-phone-slash', 'color' => 'secondary' ],
-        18 => [ 'icon' => 'ponowna_wizyta', 'color' => false ], 25 => [ 'icon' => 'fa fa-exclamation-triangle', 'color' => 'secondary' ], 26 => [ 'icon' => 'fa fa-check-circle', 'color' => 'success' ],
+        18 => [ 'icon' => 'ponowna_wizyta', 'color' => false ], 25 => [ 'icon' => 'fa fa-exclamation-triangle', 'color' => 'secondary' ], 26 => [ 'icon' => 'fa fa-check', 'color' => 'success' ],
         29 => [ 'icon' => 'fa fa-ban', 'color' => 'secondary' ], 30 => [ 'icon' => 'fa fa-sync-alt', 'color' => 'info' ], 31 => [ 'icon' => 'fa fa-check', 'color' => 'success' ],
         32 => [ 'icon' => 'upierdliwy_kl', 'color' => false ], 33 => [ 'icon' => 'nie_obslugiwac', 'color' => false ], 34 => [ 'icon' => 'fa fa-dollar-sign', 'color' => 'secondary' ],
         35 => [ 'icon' => 'fa fa-question', 'color' => 'info' ], 36 => [ 'icon' => 'fa fa-paper-plane', 'color' => 'success' ], 37 => [ 'icon' => 'fa fa-calculator', 'color' => 'secondary' ],
