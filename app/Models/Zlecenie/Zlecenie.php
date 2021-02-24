@@ -787,7 +787,7 @@ class Zlecenie extends Model
         if ($this->dni_od_statusu >= 7 and $this->isAktywnyBlad(7) and in_array($this->status_id, [Status::DO_ODBIORU_ID]))
             $array[] = 'Dzwonić po odbiór';
 
-        if ($this->dni_od_statusu >= 7 and $this->isAktywnyBlad(7) and in_array($this->status_id, [Status::DO_ROZLICZENIA_ID]))
+        if ($this->dni_od_statusu >= 3 and $this->isAktywnyBlad(3) and in_array($this->status_id, [Status::DO_ROZLICZENIA_ID]))
             $array[] = 'Nierozliczone';
 
         if ($this->dni_od_statusu >= 7 and $this->isAktywnyBlad(7) and in_array($this->status_id, [Status::ZAMOWIONO_CZESC_ID]))
@@ -1229,7 +1229,7 @@ HTML;
         }
     }
 
-    public function appendOpis(string $opis, string $name, bool $minified = false): void
+    public function appendOpis(string $opis, string $name, bool $minified = false, bool $handleError = true): void
     {
         $user = auth()->user();
 
@@ -1243,17 +1243,19 @@ HTML;
         } else {
             // TODO: przerobić funkcję
             // $this->opis .= "\r\n" . date('d.m H:i') . ' ' . $user->short_name . ': ' . $opis;
-            $this->opis .= "\r\n" . $user->short_name . ' ' . date('d.m H:i') . ': ' . $opis;
+            $this->opis .= "\r\n" . ($name ?: $user->short_name) . ' ' . date('d.m H:i') . ': ' . $opis;
         }
 
-        if ($user->technik_id) {
+        if ($user and $user->technik_id) {
             $this->addLog(Log::TYPE_OPIS, $user->id, $opis);
         } else {
-            $this->zatwierdzony_blad()->delete();
+            if ($handleError) {
+                $this->zatwierdzony_blad()->delete();
 
-            $zatwierdzony_blad = new ZatwierdzonyBlad;
-            $zatwierdzony_blad->status_id = $this->status_id;
-            $this->zatwierdzony_blad()->save($zatwierdzony_blad);
+                $zatwierdzony_blad = new ZatwierdzonyBlad;
+                $zatwierdzony_blad->status_id = $this->status_id;
+                $this->zatwierdzony_blad()->save($zatwierdzony_blad);
+            }
         }
     }
 

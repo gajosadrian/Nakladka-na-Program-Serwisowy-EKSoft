@@ -294,7 +294,7 @@
                             <li><strong>Zaliczka</strong> – po 3 dniach od statusu Zaliczka</li>
                             <li><strong>Dzwonić po odbiór</strong> – po 1 dniu od statusu Dzwonić po odbiór</li>
                             <li><strong>Dzwonić po odbiór</strong> – po 7 dniach od statusu Do odbioru</li>
-                            <li><strong>Nierozliczone</strong> – po 7 dniach od statusu Do rozliczenia</li>
+                            <li><strong>Nierozliczone</strong> – po 3 dniach od statusu Do rozliczenia</li>
                             <li><strong>Co z częścią?</strong> – po 7 dniach od statusu Zamówiono część</li>
                         </ul>
                     </div>

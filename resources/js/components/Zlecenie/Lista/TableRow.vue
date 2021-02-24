@@ -31,7 +31,7 @@
 
   <td v-else-if="field == 'status'" :class="className" class="p-1" nowrap @click="onClick(field, dataItem)">
     <span v-if="status" class="rounded p-2" :class="`table-${status.color}`" style="color: #495057;">
-      <i :class="`fa fa-file-${status.icon} text-${status.color}`"></i>
+      <i :class="`${status.icon} text-${status.color}`"></i>
       {{ status.nazwa }}
     </span>
   </td>
