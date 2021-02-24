@@ -130,7 +130,7 @@ class SmsSender extends Command
                         'zlecenie_id' => $zlecenie->id,
                         'zlecenie_status_id' => $zlecenie->status_id,
                     ]);
-                    $zlecenie->appendOpis($message, 'SMS', false, false);
+                    $zlecenie->appendOpis($message, 'SMS', true, false);
                     $zlecenie->save();
                 } elseif (@$zlecenie->last_sms->type != 'error' and in_array($zlecenie->status_id, self::REQUIRED_MESSAGES)) {
                     $sms = new Sms;
