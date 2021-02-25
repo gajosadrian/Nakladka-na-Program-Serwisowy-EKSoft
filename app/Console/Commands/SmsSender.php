@@ -39,10 +39,10 @@ class SmsSender extends Command
         ],
         Status::UMOWIONO_ID => [
             'repeat' => null,
-            'gwarancja' => 'Potwierdzamy wizyte technika do urzadzenia %producent% %data%',
-            'ubezpieczenie' => 'Potwierdzamy wizyte technika do zlecenia nr %nr_obcy% %data%',
-            'odplatne' => 'Potwierdzamy wizyte technika do %nazwa_urzadzenia% %data%',
-            'brak_urzadzenia' => 'Potwierdzamy wizyte technika do zlecenia, %data%',
+            'gwarancja' => 'Potwierdzamy wizyte technika do urzadzenia %producent% dnia %data%',
+            'ubezpieczenie' => 'Potwierdzamy wizyte technika do zlecenia nr %nr_obcy% dnia %data%',
+            'odplatne' => 'Potwierdzamy wizyte technika do %nazwa_urzadzenia% dnia %data%',
+            'brak_urzadzenia' => 'Potwierdzamy wizyte technika do zlecenia dnia %data%',
         ],
         Status::NA_WARSZTACIE_ID => [
             'repeat' => null,
