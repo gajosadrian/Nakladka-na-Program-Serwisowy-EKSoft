@@ -89,6 +89,13 @@ class SmsSender extends Command
     public function handle(HostedSms $hostedSms)
     {
         while (true) {
+            $godzina_9 = today()->copy()->addHours(9);
+            $godzina_18 = today()->copy()->addHours(19);
+            if (! now()->between($godzina_9, $godzina_18)) {
+                sleep(60);
+                continue;
+            }
+
             $this->line('Listening to send SMSes... ' . now());
 
             $zlecenia = Zlecenie::with(['klient', 'urzadzenie', 'terminarz', 'last_sms'])->niezakonczone()->get();

@@ -142,9 +142,12 @@ export default {
         selected: null,
         list: [
           { text: '-- Wiadomości predefiniowane --', value: null },
+          'Urządzenie gotowe do odbioru',
           'Prosimy o przyslanie zdjecia tabliczki znamionowej na nr tel. 666650660',
           'Prosimy o przyslanie zdjecia dowodu zakupu na nr tel. 666650660',
-          'Urządzenie gotowe do odbioru',
+          'Prosimy o odbior sprzetu w terminie 3 dni. Po uplywie tego terminu naliczana bedzie oplata magazynowa zgodnie z regulaminem naprawy serwisowej http://dar-gaz.pl/regulamin',
+          'W przypadku braku checi odbioru urzadzenia, Serwis moze go zutylizowac. Prosimy o decyzje w sprawie utylizacji sprzetu przeslac w formie SMS na nr 666650660 podajac nr zgloszenia i dane osoby zglaszajacej',
+          'Przypominamy o odbiorze sprzetu. Po uplywie 14 dni, sprzet zostanie przekazany do depozytu sadowego na Panstwa koszt, zgodnie z regulaminem naprawy serwisowej http://dar-gaz.pl/regulamin',
           `Dane przelewu:\n"DAR-GAZ" Dariusz Gajos\nNr konta: 50 1940 1076 3097 3581 0000 0000\n\nProszę o zadatek w kwocie `,
         ],
       },
