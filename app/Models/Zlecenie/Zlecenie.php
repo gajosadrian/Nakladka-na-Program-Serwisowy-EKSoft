@@ -36,6 +36,7 @@ class Zlecenie extends Model
             'DAMIAN-R' => ['Damian', 18],
             'KACPER-R' => ['Kacper', 21],
             'SEBASTIAN-R' => ['Sebastian', 22],
+            'KAMIL-R' => ['Kamil', 23],
         ],
         'DOJAZDY' => [
             'SZEF-D' => ['Szef', -1],
@@ -48,6 +49,7 @@ class Zlecenie extends Model
             'DAMIAN-D' => ['Damian', 18],
             'KACPER-D' => ['Kacper', 21],
             'SEBASTIAN-D' => ['Sebastian', 22],
+            'KAMIL-D' => ['Kamil', 23],
         ],
     ];
 
