@@ -408,7 +408,13 @@ class KosztorysPozycja extends Model
                 'ilosc_zamontowane',
                 'ilosc_rozpisane',
             ]);
-            $array['naszykowana_czesc']['is_editable'] = $this->naszykowana_czesc->technik_updated_at ? $this->naszykowana_czesc->technik_updated_at->isToday() : true;
+            $is_editable = false;
+            if ($this->naszykowana_czesc->is_naszykowane) {
+                if (! $this->naszykowana_czesc->technik_updated_at or $this->naszykowana_czesc->technik_updated_at->isToday()) {
+                    $is_editable = true;
+                }
+            }
+            $array['naszykowana_czesc']['is_editable'] = $is_editable;
         }
         return $array;
     }

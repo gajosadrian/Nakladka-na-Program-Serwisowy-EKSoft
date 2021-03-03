@@ -37,6 +37,11 @@ class Naszykowana extends Model
         return $this->is_zamontowane or $this->is_rozpisane;
     }
 
+    public function getIsNaszykowaneAttribute(): bool
+    {
+        return ! $this->sprawdzone_at;
+    }
+
     public function getTechnikUpdatedAtFormattedAttribute(): string
     {
         return $this->technik_updated_at->format('Y-m-d H:i');

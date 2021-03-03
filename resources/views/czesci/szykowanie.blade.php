@@ -58,7 +58,7 @@
 
                     @php
                         $is_niezamontowane_gotowe = (bool) ($pozycja->is_niezamontowane and $pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->sprawdzone_at and $pozycja->naszykowana_czesc->sprawdzone_at->gte($pozycja->naszykowana_czesc->zlecenie_data));
-                        $is_naszykowane = (bool) ($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->zlecenie_data->gte($date));
+                        $is_naszykowane = (bool) ($pozycja->naszykowana_czesc and $pozycja->naszykowana_czesc->is_naszykowane and $pozycja->naszykowana_czesc->zlecenie_data->gte($date));
 
                         $color = null;
                         if ($is_naszykowane) {

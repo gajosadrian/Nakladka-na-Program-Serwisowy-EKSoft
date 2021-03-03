@@ -71,6 +71,7 @@ class CzesciController extends Controller
         $naszykowana_czesc->sprawdzone_at = null;
         $naszykowana_czesc->sprawdzil_user_id = null;
         $naszykowana_czesc->user_id = $user->id;
+        $naszykowana_czesc->technik_updated_at = null;
         $naszykowana_czesc->technik_id = $technik_id;
         $naszykowana_czesc->ilosc = $ilosc;
         $naszykowana_czesc->ilosc_do_zwrotu = $ilosc;
