@@ -61,6 +61,11 @@ class Subiekt_Kontrahent extends Model
         return null;
     }
 
+    public function getIsKomorkowyAttribute(): bool
+    {
+        return (bool) $this->komorkowy;
+    }
+
     public function getAdresRawAttribute(): string
     {
         return $this->dane->adres;

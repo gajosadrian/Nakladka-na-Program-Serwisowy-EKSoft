@@ -5,7 +5,7 @@
         <b-tr>
           <b-th class="font-w700" nowrap style="width:180px;">Symbol dost.</b-th>
           <b-th class="font-w700" nowrap style="width:130px;">Symbol</b-th>
-          <b-th class="font-w700" nowrap style="width:1%; min-width:100px;">Nazwa</b-th>
+          <b-th class="font-w700" nowrap style="width:500px;">Nazwa</b-th>
           <b-th class="font-w700" nowrap>Opis</b-th>
           <b-th class="font-w700" style="width:90px;">Cena<br>netto</b-th>
           <b-th class="font-w700" nowrap style="width:50px;">VAT</b-th>

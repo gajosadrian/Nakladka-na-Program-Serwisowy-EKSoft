@@ -62,6 +62,7 @@ export default {
         this.$nextTick(() => {
           let $opis = $('textarea#opis')
           $opis.scrollTop($opis[0].scrollHeight)
+          removeBladHtml()
         })
       })
     },

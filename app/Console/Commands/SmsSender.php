@@ -65,15 +65,8 @@ class SmsSender extends Command
             'odplatne' => 'Informujemy o zamowieniu czesci do zlecenia na %nazwa_urzadzenia%',
             'brak_urzadzenia' => 'Informujemy o zamowieniu czesci do zlecenia',
         ],
-        Status::DZWONIC_PO_ODBIOR_ID => [
-            'repeat' => 7,
-            'gwarancja' => 'Urzadzenie %producent% oczekuje na odbior',
-            'ubezpieczenie' => '%nazwa_urzadzenia% ze zlecenia %nr_obcy% oczekuje na odbior',
-            'odplatne' => 'Urzadzenie %nazwa_urzadzenia% oczekuje na odbior',
-            'brak_urzadzenia' => 'Zlecenie otrzymalo status "do odbioru". Prosimy o odbior',
-        ],
         Status::DO_ODBIORU_ID => [
-            'repeat' => 7,
+            'repeat' => 5,
             'gwarancja' => 'Urzadzenie %producent% oczekuje na odbior',
             'ubezpieczenie' => '%nazwa_urzadzenia% ze zlecenia %nr_obcy% oczekuje na odbior',
             'odplatne' => 'Zlecenie otrzymalo status "do odbioru". Prosimy o odbior',
@@ -91,7 +84,7 @@ class SmsSender extends Command
         while (true) {
             $godzina_9 = today()->copy()->addHours(9);
             $godzina_18 = today()->copy()->addHours(19);
-            if (! now()->between($godzina_9, $godzina_18)) {
+            if (! now()->between($godzina_9, $godzina_18) or now()->isSaturday() or now()->isSunday()) {
                 sleep(60);
                 continue;
             }
@@ -137,7 +130,7 @@ class SmsSender extends Command
                         'zlecenie_id' => $zlecenie->id,
                         'zlecenie_status_id' => $zlecenie->status_id,
                     ]);
-                    $zlecenie->appendOpis($message, 'SMS', true, false);
+                    $zlecenie->appendOpis($message, '@ SMS', true, false);
                     $zlecenie->save();
                 } elseif (@$zlecenie->last_sms->type != 'error' and in_array($zlecenie->status_id, self::REQUIRED_MESSAGES)) {
                     $sms = new Sms;

@@ -54,7 +54,12 @@
                             </tr>
                             <tr>
                                 <th class="text-right">Telefony:</th>
-                                <td>{{ $zlecenie->klient->telefony_formatted }}</td>
+                                <td>
+                                    {{ $zlecenie->klient->telefony_formatted }}
+                                    @if (! $zlecenie->klient->is_komorkowy)
+                                        <span class="text-danger font-w600">(Brak nr komórkowego)</span>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th class="text-right" nowrap>Akc. kosztów:</th>
@@ -144,7 +149,7 @@
                                                             @foreach ($statusy_aktywne as $status)
                                                                 <option value="{{ $status->id }}" {{ ($status->id == $zlecenie->status->id) ? 'selected' : '' }}>
                                                                     {{ $status->nazwa }}
-                                                                    @if (in_array($status->id, [11, 14, 12, 16, 40, 13, 43, 31]) and $zlecenie->status_id !== $status->id)
+                                                                    @if (in_array($status->id, [11, 14, 12, 16, 40, 13, 31]) and $zlecenie->status_id !== $status->id)
                                                                         ✉
                                                                     @endif
                                                                     @if ((in_array($status->id, [13, 29]) or $status->id == 14 and ! $is_up_to_date_termin) and $zlecenie->status_id != $status->id)
@@ -336,11 +341,11 @@
                                             @if ($zlecenie->was_warsztat)
                                                 <zlecenie-change-status class="ml-1"
                                                     zlecenie_id=@json($zlecenie->id)
-                                                    status_id=@json(App\Models\Zlecenie\Status::DO_ODBIORU_ID)
+                                                    status_id=@json(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID)
                                                     :remove_termin="0"
-                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
-                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
-                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DO_ODBIORU_ID))
+                                                    name=@json(App\Models\Zlecenie\Status::getName(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                                    icon=@json(App\Models\Zlecenie\Status::getIcon(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
+                                                    color=@json(App\Models\Zlecenie\Status::getColor(App\Models\Zlecenie\Status::DZWONIC_PO_ODBIOR_ID))
                                                 ></zlecenie-change-status>
                                             @else
                                                 <zlecenie-change-status class="ml-1"
@@ -381,7 +386,7 @@
 
                                         @if (count($zlecenie->errors) > 0)
                                             <div class="ml-1">
-                                                <b-button onclick="zatwierdzBlad()" size="sm" variant="light">
+                                                <b-button id="blad_button" size="sm" variant="light" onclick="jQuery('#bledy-modal').modal('show')">
                                                     <i class="fa fa-exclamation-triangle text-danger"></i>
                                                     Usuń błąd
                                                 </b-button>
@@ -479,7 +484,7 @@
                         </div>
                         <div class="tab-pane fade active show" id="opis" role="tabpanel">
                             @if ($zlecenie->errors)
-                                <div class="font-w600 text-danger">
+                                <div id="blad_message" class="font-w600 text-danger">
                                     <i class="fa fa-exclamation-triangle"></i>
                                     {{ implode(', ', $zlecenie->errors) }}
                                 </div>
@@ -591,6 +596,29 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="bledy-modal" tabindex="-1" role="dialog" aria-labelledby="bledy-modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary-dark">
+                        <h3 class="block-title">Błędy w zleceniu</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        Dodanie opisu, wysłanie SMS lub zmiana statusu automatycznie usuwa błąd.
+                    </div>
+                    <div class="block-content block-content-full text-right bg-light">
+                        <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Zamknij</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js_after')<script>
@@ -660,6 +688,7 @@ function changeStatus(status_id) {
             showConfirmButton: false,
             timer: 1500,
         });
+        removeBladHtml();
         zlecenieUpdated();
     })
     .catch(err => {
@@ -770,6 +799,11 @@ function zatwierdzBlad() {
             window.close();
             zlecenieUpdated();
         });
+}
+
+function removeBladHtml() {
+    $('#blad_button').remove();
+    $('#blad_message').remove();
 }
 
 function removeStatus(el, id) {

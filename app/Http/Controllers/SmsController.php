@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Zlecenie\Zlecenie;
 use Illuminate\Http\Request;
 use App\Services\HostedSms;
 use App\Sms;
@@ -36,6 +37,16 @@ class SmsController extends Controller
             'zlecenie_status_id' => $request->zlecenie_status_id,
         ]);
 
-        return response()->json('success');
+        $user = @auth()->user();
+        $opis = null;
+        if ($user and $request->zlecenie_id and $zlecenie = Zlecenie::find($request->zlecenie_id)) {
+            $zlecenie->appendOpis('SMS: ' . $request->message_form, $user->short_name, ($user->technik_id == 0));
+            $zlecenie->save();
+            $opis = $zlecenie->opis;
+        }
+
+        return response()->json([
+            'opis' => $opis,
+        ]);
     }
 }

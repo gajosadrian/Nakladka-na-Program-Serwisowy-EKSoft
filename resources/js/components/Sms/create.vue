@@ -247,12 +247,19 @@ export default {
       axios.post(route('sms.store'), {
         phones: this.phones,
         message: this.message,
+        message_form: this.form.message,
         zlecenie_id: this.zlecenie_id,
         zlecenie_status_id: this.zlecenie_status_id,
       })
         .then(response => {
           this.clearForm()
           this.swal('success', 'Wysłano!')
+
+          const opis = response.data.opis
+          if (opis) {
+            document.querySelector('textarea#opis').value += opis
+            removeBladHtml()
+          }
         })
         .catch(error => {
           this.swal('error', 'Wystąpił problem')

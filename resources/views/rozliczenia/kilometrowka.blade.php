@@ -47,84 +47,88 @@
         </b-block>
 
         @if ($technik)
-            <b-block title="Zlecenia" noprint>
-                <template slot="content">
-					<div class="mx-3">
-                        <div class="mb-3 clearfix" style="font-size: 2em">
-                            <div class="float-left">
-                                {{ $technik->nazwa }} - {{ $year_id }} {{ $month->name }}
-                                <span class="font-size-sm text-muted">(<span id="zlecenia_n"></span> zlec.)</span>
-                            </div>
-                            <div class="float-right">
-                                <b-img src="{{ asset('media/dargaz-logo.png') }}" alt="logo"></b-img>
-                            </div>
-                        </div>
+            <b-row>
+                <b-col xl="8">
+                    <b-block title="Kilometrówka" noprint>
+                        <template slot="content">
+                            <div class="mx-3">
+                                <div class="mb-3 clearfix" style="font-size: 2em">
+                                    <div class="float-left">
+                                        {{ $technik->nazwa }} - {{ $year_id }} {{ $month->name }}
+                                        <span class="font-size-sm text-muted">(<span id="zlecenia_n"></span> zlec.)</span>
+                                    </div>
+                                    <div class="float-right">
+                                        <b-img src="{{ asset('media/dargaz-logo.png') }}" alt="logo"></b-img>
+                                    </div>
+                                </div>
 
-						<table class="table table-sm table-vcenter">
-							<thead>
-								<tr class="text-uppercase">
-									<th class="font-w700">Data</th>
-									<th class="font-w700">Zlecenie</th>
-									<th class="font-w700">Miasto</th>
-									<th class="font-w700">Adres</th>
-								</tr>
-							</thead>
-							<tbody>
-                                @php
-                                    $zlecenia_n = 0;
-                                @endphp
-								@foreach ($grouped_terminy ?? [] as $date_string => $grouped_termin)
-                                    @php
-                                        $array = [];
-                                    @endphp
-
-									<tr>
-										<td class="bg-gray font-w700" colspan="4">{{ $date_string }}</td>
-									</tr>
-
-									@foreach ($grouped_termin as $termin)
-										@php
-											$zlecenie = $termin->zlecenie;
-										@endphp
-										@if ($zlecenie->id and !$zlecenie->was_warsztat and !$zlecenie->is_odwolano)
+                                <table class="table table-sm table-vcenter">
+                                    <thead>
+                                        <tr class="text-uppercase">
+                                            <th class="font-w700">Data</th>
+                                            <th class="font-w700">Zlecenie</th>
+                                            <th class="font-w700">Miasto</th>
+                                            <th class="font-w700">Adres</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $zlecenia_n = 0;
+                                        @endphp
+                                        @foreach ($grouped_terminy ?? [] as $date_string => $grouped_termin)
                                             @php
-                                                $zlecenia_n++;
-                                                $array[] = $zlecenie->google_maps_address;
+                                                $array = [];
                                             @endphp
-											<tr>
-												<th class="text-right">{{ $zlecenia_n }}.</th>
-												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
-												<td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
-												<td>{{ $zlecenie->klient->adres }}</td>
-											</tr>
-										@elseif ($zlecenie->id and $zlecenie->was_warsztat)
-											<tr>
-												<td></td>
-												<td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
-												<td colspan="2"><i>Warsztat</i></td>
-											</tr>
-										@elseif ($termin->temat)
-											<tr>
-												<td></td>
-												<td colspan="3"><i>{{ $termin->temat }}</i></td>
-											</tr>
-										@endif
-									@endforeach
 
-                                    <tr class="text-center font-w600 d-print-none">
-                                        <td colspan="4">
-                                            <a href="{{ App\Models\Zlecenie\Zlecenie::getGoogleMapsKmLink($array) }}" target="_blank">
-                                                <i class="fa fa-map-marked-alt"></i>
-                                                Mapa
-                                            </a>
-                                        </td>
-                                    </tr>
-								@endforeach
-							</tbody>
-						</table>
-					</div>
-                </template>
-            </b-block>
+                                            <tr>
+                                                <td class="bg-gray font-w700" colspan="4">{{ $date_string }}</td>
+                                            </tr>
+
+                                            @foreach ($grouped_termin as $termin)
+                                                @php
+                                                    $zlecenie = $termin->zlecenie;
+                                                @endphp
+                                                @if ($zlecenie->id and !$zlecenie->was_warsztat and !$zlecenie->is_odwolano)
+                                                    @php
+                                                        $zlecenia_n++;
+                                                        $array[] = $zlecenie->google_maps_address;
+                                                    @endphp
+                                                    <tr>
+                                                        <th class="text-right">{{ $zlecenia_n }}.</th>
+                                                        <td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
+                                                        <td>{{ $zlecenie->klient->kod_pocztowy }} {{ $zlecenie->klient->miasto }}</td>
+                                                        <td>{{ $zlecenie->klient->adres }}</td>
+                                                    </tr>
+                                                @elseif ($zlecenie->id and $zlecenie->was_warsztat)
+                                                    <tr>
+                                                        <td></td>
+                                                        <td><span onclick="{{ $zlecenie->popup_link }}" style="cursor:pointer">{{ $zlecenie->nr }}</span></td>
+                                                        <td colspan="2"><i>Warsztat</i></td>
+                                                    </tr>
+                                                @elseif ($termin->temat)
+                                                    <tr>
+                                                        <td></td>
+                                                        <td colspan="3"><i>{{ $termin->temat }}</i></td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+
+                                            <tr class="text-center font-w600 d-print-none">
+                                                <td colspan="4">
+                                                    <a href="{{ App\Models\Zlecenie\Zlecenie::getGoogleMapsKmLink($array) }}" target="_blank">
+                                                        <i class="fa fa-map-marked-alt"></i>
+                                                        Mapa
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                    </b-block>
+                </b-col>
+            </b-row>
         @endif
     </div>
 @endsection

@@ -148,15 +148,23 @@
                                             </ul>
                                         </td> --}}
                                         <td class="text-center">
-                                            @if ($zlecenie->has_errors)
+                                            @php
+                                                $is_sms_error = (bool) (@$zlecenie->last_sms->type == 'error');
+                                            @endphp
+                                            @if ($zlecenie->has_errors or $is_sms_error)
                                                 <div class="d-none">
-                                                    błąd
-                                                    {{ implode(' ', $zlecenie->errors) }}
+                                                    błąd {{ implode(' ', $zlecenie->errors) }}
+                                                    @if ($is_sms_error)
+                                                        błąd sms
+                                                    @endif
                                                 </div>
                                                 <i
                                                     class="fa fa-exclamation-triangle text-danger"
                                                     data-toggle="tooltip" data-placement="left"
-                                                    title="{{ implode('. ', $zlecenie->errors) }}"
+                                                    title="{{ implode('. ', $zlecenie->errors) }}
+                                                        @if ($is_sms_error)
+                                                            Nie można wysłać SMS.
+                                                        @endif"
                                                 ></i>
                                             @endif
     									</td>
@@ -293,7 +301,7 @@
                             <li><strong>Brak reakcji</strong> – po 3 dniach od statusu Do wyjaśnienia</li>
                             <li><strong>Zaliczka</strong> – po 3 dniach od statusu Zaliczka</li>
                             <li><strong>Dzwonić po odbiór</strong> – po 1 dniu od statusu Dzwonić po odbiór</li>
-                            <li><strong>Dzwonić po odbiór</strong> – po 7 dniach od statusu Do odbioru</li>
+                            <li><strong>Dzwonić po odbiór</strong> – po 5 dniach od statusu Odbiór własny</li>
                             <li><strong>Nierozliczone</strong> – po 3 dniach od statusu Do rozliczenia</li>
                             <li><strong>Co z częścią?</strong> – po 7 dniach od statusu Zamówiono część</li>
                         </ul>

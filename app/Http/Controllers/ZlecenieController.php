@@ -70,7 +70,7 @@ class ZlecenieController extends Controller
         $zlecenia_realizowane_n = $zlecenia_n - $zlecenia_ukonczone_n;
 
         $errors_n = $zlecenia_niezakonczone->reduce(function ($acc, $zlecenie) {
-            if ($zlecenie->has_errors) return $acc + 1;
+            if ($zlecenie->has_errors or @$zlecenie->last_sms->type == 'error') return $acc + 1;
             return $acc;
         }, 0);
 

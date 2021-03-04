@@ -28,7 +28,7 @@
         :readonly="Boolean(pozycja.id) || ! isEditable"
         required
         ref="kosztorys_symbol"
-        @keydown="$emit('keydown', $event, index, 'kosztorys_symbol', 'kosztorys_symbol_dostawcy')"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_symbol', 'kosztorys_symbol_dostawcy', 'kosztorys_cena')"
         @focus="$event.target.select()"
       />
       <datalist :id="`symbolList${_uid}`">
@@ -36,8 +36,18 @@
       </datalist>
     </b-td>
     <b-td nowrap>
-      <i class="fa fa-shopping-cart text-danger" v-if="pozycja.is_zamowione"></i>
-      {{ pozycja.nazwa.substring(0, 50) }}<span v-if="pozycja.nazwa.length > 50">...</span>
+      <!-- <i class="fa fa-shopping-cart text-danger" v-if="pozycja.is_zamowione"></i>
+      {{ pozycja.nazwa.substring(0, 50) }}<span v-if="pozycja.nazwa.length > 50">...</span> -->
+      <b-input
+        v-model="pozycja.nazwa"
+        size="sm"
+        autocomplete="off"
+        readonly
+        required
+        ref="kosztorys_nazwa"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_nazwa', 'kosztorys_symbol', 'kosztorys_cena')"
+        @focus="$event.target.select()"
+      />
     </b-td>
     <b-td nowrap>
       <b-input
@@ -54,7 +64,7 @@
         size="sm"
         autocomplete="off"
         ref="kosztorys_cena"
-        @keydown="$emit('keydown', $event, index, 'kosztorys_cena')"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_cena', 'kosztorys_symbol', 'kosztorys_vat')"
         @keyup="updateCenaBrutto()"
         @focus="$event.target.select()"
         required
@@ -68,7 +78,7 @@
         size="sm"
         autocomplete="off"
         ref="kosztorys_vat"
-        @keydown="$emit('keydown', $event, index, 'kosztorys_vat')"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_vat', 'kosztorys_cena', 'kosztorys_cena_brutto')"
         @keyup="updateCenaBrutto()"
         @focus="$event.target.select()"
         required
@@ -82,7 +92,7 @@
         size="sm"
         autocomplete="off"
         ref="kosztorys_cena_brutto"
-        @keydown="$emit('keydown', $event, index, 'kosztorys_cena_brutto')"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_cena_brutto', 'kosztorys_vat', 'kosztorys_ilosc')"
         @keyup="updateCena()"
         @focus="$event.target.select()"
         required
@@ -96,7 +106,7 @@
         size="sm"
         autocomplete="off"
         ref="kosztorys_ilosc"
-        @keydown="$emit('keydown', $event, index, 'kosztorys_ilosc')"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_ilosc', 'kosztorys_cena_brutto', 'kosztorys_wartosc_brutto')"
         @keyup="updateCena()"
         @focus="$event.target.select()"
         required
@@ -107,7 +117,11 @@
       <b-input
         :value="wartoscBrutto.toFixed(2)"
         size="sm"
-        disabled
+        readonly
+        ref="kosztorys_wartosc_brutto"
+        @keydown="$emit('keydown', $event, index, 'kosztorys_wartosc_brutto', 'kosztorys_ilosc')"
+        @keyup="updateCena()"
+        @focus="$event.target.select()"
       />
     </b-td>
     <b-td>

@@ -18,6 +18,17 @@
                 ],
             ],
         ],
+        // [
+        //     'name' => 'Zmiany',
+        //     'badge' => 'nowe',
+        //     'badgeColor' => 'danger',
+        //     'icon' => 'fa fa-file-alt',
+        //     'route' => 'zlecenia.lista2',
+        //     'routeOptions' => [],
+        //     'if' => function() use ($user) {
+        //         return @$user->id === 1;
+        //     },
+        // ],
         [
             'name' => 'Zlecenia',
         ],
